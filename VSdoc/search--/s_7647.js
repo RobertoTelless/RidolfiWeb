@@ -1,0 +1,1 @@
+search_result['7647']=["topic_0000000000001491.html","CLIENTE.CLIE_NM_NATURALIDADE Property",""];

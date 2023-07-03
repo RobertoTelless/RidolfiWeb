@@ -1,0 +1,1 @@
+c['5317']=[['5318',"MENSAGEM_AUTOMACAO Property","topic_0000000000001738.html",0],['5319',"PERI_CD_ID Property","topic_0000000000001734.html",0],['5320',"PERI_IN_ATIVO Property","topic_0000000000001737.html",0],['5321',"PERI_NM_NOME Property","topic_0000000000001735.html",0],['5322',"PERI_NR_DIAS Property","topic_0000000000001736.html",0]];

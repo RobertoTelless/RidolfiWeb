@@ -1,0 +1,1 @@
+c['7219']=[['7220',"Create(TIPO_PESSOA) Method","topic_00000000000012FA.html",0],['7221',"Create(TIPO_PESSOA, LOG) Method","topic_00000000000012F9.html",0]];

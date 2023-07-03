@@ -1,0 +1,567 @@
+﻿@using Presentation.Extensions
+@using EntitiesServices.Work_Classes;
+@model ERP_Condominios_Solution.ViewModels.CRMPedidoViewModel
+@{
+    Layout = "~/Views/Shared/_Layout_Admin.cshtml";
+}
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="page-title">
+        <h3 class="title">Processos - CRM</h3>
+        <br />
+        <ol class="breadcrumb">
+            <li>
+                <a href="@Url.Action("CarregarBase", "BaseAdmin")">Dashboard</a>
+            </li>
+            <li>
+                <a href="@Url.Action("MontarTelaDashboardCRMNovo", "CRM")">Dashboard de Processos</a>
+            </li>
+            <li>
+                <a href="@Url.Action("MontarTelaCRM", "CRM")">Processos - CRM</a>
+            </li>
+            <li>
+                <a href="@Url.Action("AcompanhamentoProcessoCRM", "CRM")">Acompanhamento - Processos - CRM</a>
+            </li>
+            <li class="active">
+                <strong>Proposta - Envio</strong>
+            </li>
+        </ol>
+        <br />
+    </div>
+    <div class="row">
+        <div class="col-lg-12 col-md-12 col-xs-12">
+            <div class="col-lg-12 col-md-12 col-xs-12 ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>Proposta - Envio para Aprovação</h5>
+                </div>
+                <div class="ibox-content">
+                    @Html.AntiForgeryToken()
+                    @if (!ViewData.ModelState.IsValid)
+                    {
+                        <div class="alert alert-danger">
+                            <button type="button" class="close" data-dismiss="alert">Fechar</button>
+                            @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+                        </div>
+                    }
+                    <div class="form-group">
+                        @Html.ButtonLinkIndex(text: "Voltar", action: "VoltarAcompanhamentoCRM", controller: "CRM")
+                    </div>
+                    <div class="tabs-container">
+                        <ul class="nav nav-tabs">
+                            <li class="active"><a data-toggle="tab" href="#tab-1">Envio para Aprovação</a></li>
+                            <li class=""><a data-toggle="tab" href="#tab-3">Comentários</a></li>
+                            <li class=""><a data-toggle="tab" href="#tab-2">Anexos</a></li>
+                        </ul>
+                        <div class="tab-content">
+                            @*Dados Gerais*@
+                            <div id="tab-1" class="tab-pane active">
+                                <div class="panel-body">
+                                    @using (Html.BeginForm("EnviarPedido", "CRM", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", @id = "pwd-container1" }))
+                                    {
+                                        <div class="form-group">
+                                            @Html.HiddenFor(m => m.ASSI_CD_ID)
+                                            @Html.HiddenFor(m => m.CRM1_CD_ID)
+                                            @Html.HiddenFor(m => m.CRPV_IN_NUMERO_GERADO)
+                                            @Html.HiddenFor(m => m.CLIE_CD_ID)
+                                            @Html.HiddenFor(m => m.CRPV_DS_APROVACAO)
+                                            @Html.HiddenFor(m => m.CRPV_DS_CANCELAMENTO)
+                                            @Html.HiddenFor(m => m.CRPV_DT_APROVACAO)
+                                            @Html.HiddenFor(m => m.CRPV_DT_CANCELAMENTO)
+                                            @Html.HiddenFor(m => m.CRPV_DT_PEDIDO)
+                                            @Html.HiddenFor(m => m.CRPV_DT_REPROVACAO)
+                                            @Html.HiddenFor(m => m.CRPV_DT_VALIDADE)
+                                            @Html.HiddenFor(m => m.CRPV_IN_ATIVO)
+                                            @Html.HiddenFor(m => m.CRPV_IN_GERAR_CR)
+                                            @Html.HiddenFor(m => m.CRPV_IN_GEROU_NF)
+                                            @Html.HiddenFor(m => m.CRPV_IN_PRAZO_ENTREGA)
+                                            @Html.HiddenFor(m => m.CRPV_IN_STATUS)
+                                            @Html.HiddenFor(m => m.CRPV_NM_NOME)
+                                            @Html.HiddenFor(m => m.CRPV_NR_NOTA_FISCAL)
+                                            @Html.HiddenFor(m => m.CRPV_NR_NUMERO)
+                                            @Html.HiddenFor(m => m.CRPV_TOTAL_PEDIDO)
+                                            @Html.HiddenFor(m => m.CRPV_TX_CONDICOES_COMERCIAIS)
+                                            @Html.HiddenFor(m => m.CRPV_TX_INFORMACOES_GERAIS)
+                                            @Html.HiddenFor(m => m.CRPV_TX_INTRODUCAO)
+                                            @Html.HiddenFor(m => m.CRPV_TX_OBSERVACAO)
+                                            @Html.HiddenFor(m => m.CRPV_TX_OUTROS_ITENS)
+                                            @Html.HiddenFor(m => m.CRPV_VL_DESCONTO)
+                                            @Html.HiddenFor(m => m.CRPV_VL_FRETE)
+                                            @Html.HiddenFor(m => m.CRPV_VL_ICMS)
+                                            @Html.HiddenFor(m => m.CRPV_VL_IPI)
+                                            @Html.HiddenFor(m => m.CRPV_VL_PESO_BRUTO)
+                                            @Html.HiddenFor(m => m.CRPV_VL_PESO_LIQUIDO)
+                                            @Html.HiddenFor(m => m.CRPV_VL_TOTAL_ITENS)
+                                            @Html.HiddenFor(m => m.CRPV_VL_TOTAL_SERVICOS)
+                                            @Html.HiddenFor(m => m.CRPV_VL_VALOR)
+                                            @Html.HiddenFor(m => m.FILI_CD_ID)
+                                            @Html.HiddenFor(m => m.FOEN_CD_ID)
+                                            @Html.HiddenFor(m => m.FOFR_CD_ID)
+                                            @Html.HiddenFor(m => m.USUA_CD_ID)
+                                            @Html.HiddenFor(m => m.MOCA_CD_ID)
+                                            @Html.HiddenFor(m => m.CRPV_CD_ID)
+                                            @Html.HiddenFor(m => m.TEPR_CD_ID)
+                                            @Html.HiddenFor(m => m.EMPR_CD_ID)
+                                            @Html.ButtonActionSubmit(text: "Confirma Envio para Aprovação", htmlAttributes: new { id = "basictoast" })
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-lg-4">
+                                                <div class="ibox float-e-margins" style="border-bottom: solid; border-bottom-color: darkblue; border-bottom-width: 1px; border-left: solid; border-left-color: darkblue; border-left-width: 1px; border-right: solid; border-right-color: darkblue; border-right-width: 1px; border-top: solid; border-top-color: darkblue; border-top-width: 1px; height: 250px" >
+                                                    <div class="ibox-title"  style="color: black">
+                                                        <h5>Dados do Cliente</h5>
+                                                        <span style="float: right"><a href="@Url.Action("EnviarEMailCliente", "CRM", new { id = Model.CRM.CLIE_CD_ID})" />Enviar E-Mail</span>
+                                                    </div>
+                                                    <div class="ibox-content" style="color: black">
+                                                        <h3 style="color: green"><strong><a href="@Url.Action("EditarCliente", "Cliente", new { id = Model.CRM.CLIE_CD_ID })">@Model.CRM.CLIENTE.CLIE_NM_NOME</a></strong></h3>
+                                                        @if (Model.CRM.CLIENTE.CLIE_NM_ENDERECO != null)
+                                                        {
+                                                            <address>
+                                                                @Model.CRM.CLIENTE.CLIE_NM_ENDERECO @Model.CRM.CLIENTE.CLIE_NR_NUMERO @Model.CRM.CLIENTE.CLIE_NM_COMPLEMENTO<br>
+                                                                @Model.CRM.CLIENTE.CLIE_NM_BAIRRO  - @Model.CRM.CLIENTE.CLIE_NM_CIDADE - @Model.CRM.CLIENTE.UF.UF_SG_SIGLA - @Model.CRM.CLIENTE.CLIE_NR_CEP<br>
+                                                                @if (Model.CRM.CLIENTE.CLIE_NR_TELEFONE != null)
+	                                                            {
+                                                                    <abbr title="Fone">P:</abbr> @Model.CRM.CLIENTE.CLIE_NR_TELEFONE
+                                                                    <br />
+	                                                            }
+                                                                <abbr title="Cel">C:</abbr> <a href="@Url.Action("EnviarSMSCliente", "CRM", new { id = Model.CRM.CLIENTE.CLIE_CD_ID })">@Model.CRM.CLIENTE.CLIE_NR_CELULAR</a>
+                                                            </address>
+                                                        }
+                                                        else
+                                                        {
+                                                            <h5>Não informado</h5>
+                                                        }
+                                                        <p><i class="fa fa-envelope"></i><a href="@Url.Action("EnviarEMailCliente", "CRM", new { id = Model.CRM.CLIE_CD_ID})"> @Model.CRM.CLIENTE.CLIE_NM_EMAIL</a></p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-8">
+                                                <div class="ibox float-e-margins" style="border-bottom: solid; border-bottom-color: darkblue; border-bottom-width: 1px; border-left: solid; border-left-color: darkblue; border-left-width: 1px; border-right: solid; border-right-color: darkblue; border-right-width: 1px; border-top: solid; border-top-color: darkblue; border-top-width: 1px; height: 250px" >
+                                                    <div class="ibox-title" style="color: black">
+                                                        <h5 style="color: black">Dados da Proposta</h5>
+                                                    </div>
+                                                    <div class="ibox-content"  style="color: black">
+                                                        <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
+                                                            <div class="col-lg-12 col-md-12 col-xs-12">
+                                                                Nome
+                                                                @Html.TextBoxFor(m => m.CRPV_NM_NOME, new { @class = "form-control", autofocus = true, @readonly="readonly" })
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
+                                                            <div class="col-lg-1 col-md-1 col-xs-12" style="color:green; font-weight:bold">
+                                                                Número
+                                                                @Html.TextBoxFor(m => m.CRPV_IN_NUMERO_GERADO, new { @class = "form-control", autofocus = true, @readonly="readonly" })
+                                                            </div>
+                                                            <div class="col-lg-2 col-md-2 col-xs-12">
+                                                                Data Proposta
+                                                                @Html.TextBoxFor(m => m.CRPV_DT_PEDIDO, "{0:dd/MM/yyyy}", new { @class = "form-control", autofocus = true, @id="data1", @readonly="readonly" })
+                                                            </div>
+                                                            <div class="col-lg-2 col-md-2 col-xs-12">
+                                                                Data Envio
+                                                                @Html.TextBoxFor(m => m.CRPV_DT_ENVIO, "{0:dd/MM/yyyy}", new { @class = "form-control", autofocus = true, @id="data1", @readonly="readonly" })
+                                                            </div>
+                                                            <div class="col-lg-3 col-md-3 col-xs-12">
+                                                                Template do E-Mail
+                                                                @Html.DropDownListFor(m => m.CRPC_IN_EMAIL, (SelectList)ViewBag.Templates, "Selecionar", new { @class = "form-control", autofocus = true, @id="modelo", onchange = "RecuperaModelo($(this).val())" })
+                                                                @Html.ValidationMessageFor(m => m.CRPC_IN_EMAIL, "", new { @style = "color:red" })
+                                                            </div>
+                                                            <div class="col-lg-4 col-md-4 col-xs-12">
+                                                                Link a ser enviado
+                                                                @Html.TextBoxFor(m => m.CRPV_LK_LINK, new { @class = "form-control", autofocus = true })
+                                                                @Html.ValidationMessageFor(m => m.CRPV_LK_LINK, "", new { @style = "color:red" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-lg-12" id="conteudo">
+                                                <div class="ibox float-e-margins" style="border-bottom: solid; border-bottom-color: darkblue; border-bottom-width: 1px; border-left: solid; border-left-color: darkblue; border-left-width: 1px; border-right: solid; border-right-color: darkblue; border-right-width: 1px; border-top: solid; border-top-color: darkblue; border-top-width: 1px; height: 490px" >
+                                                    <div class="ibox-title">
+                                                        <h5 style="color: black">Conteúdo da Mensagem (E-Mail)</h5>
+                                                    </div>
+                                                    <div class="ibox-content"  style="color: black">
+                                                            <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
+                                                            <div class="col-lg-12 col-md-12 col-xs-12">
+                                                                @Html.TextAreaFor(m => m.CRPV_DS_ENVIO, new { @class = "form-control", style = "width: 100%; height: 350px;", autofocus = true })
+                                                                @Html.ValidationMessageFor(m => m.CRPV_DS_ENVIO, "", new { @style = "color:red" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    }
+                                </div>
+                            </div>
+
+                            @*Comentários*@
+                            <div id="tab-3" class="tab-pane">
+                                <div class="panel-body">
+                                    <div class="ibox float-e-margins" style="border-bottom: solid; border-bottom-color: darkblue; border-bottom-width: 1px; border-left: solid; border-left-color: darkblue; border-left-width: 1px; border-right: solid; border-right-color: darkblue; border-right-width: 1px; border-top: solid; border-top-color: darkblue; border-top-width: 1px; height: 800px" >
+                                        <div class="ibox-title"  style="color: black">
+                                            <h5>Comentários - Follow-Up</h5>
+                                        </div>
+                                        <div class="ibox-content" style="color: black; overflow: auto">
+                                            <div class="row">
+                                                <div class="col-lg-12">
+                                                    @if (Model.CRM_PEDIDO_VENDA_ACOMPANHAMENTO.Count > 0)
+                                                    {
+                                                        foreach (var item in (Model.CRM_PEDIDO_VENDA_ACOMPANHAMENTO))
+                                                        {
+                                                            <div class="social-feed-box">
+                                                                <div class="social-avatar">
+                                                                    <a href="" class="pull-left">
+                                                                        <img src="@Url.Content(item.USUARIO.USUA_AQ_FOTO)" style="width: auto; height: auto; max-height: 110px; max-width: 90px;">
+                                                                    </a>
+                                                                    <div class="media-body">
+                                                                        <a href="#">
+                                                                            @item.USUARIO.USUA_NM_NOME
+                                                                        </a>
+                                                                        <small class="text-muted">@item.CRPC_DT_ACOMPANHAMENTO.ToString("dd/MM/yyyy HH:mm")</small>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="social-body">
+                                                                    <p>
+                                                                        @item.CRPC_TX_ACOMPANHAMENTO
+                                                                    </p>
+                                                                </div>
+                                                            </div>
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        <div class="row">
+                                                            <div class="col-lg-4 col-md-4 col-xs-2">
+
+                                                            </div>
+                                                            <div style="border: 5px solid #F6A54A; padding: 10px; border-radius: 8px 8px; " class="col-lg-4 col-md-4 col-xs-8">
+                                                                <h2 style="font-weight: bold">Nenhum comentário cadastrado nesse pedido</h2>
+                                                            </div>
+                                                            <div class="col-lg-4 col-md-4 col-xs-2">
+
+                                                            </div>
+                                                        </div>
+                                                    }
+                                                </div>
+                                            </div>
+                                            <br />
+                                            <div class="form-group">
+                                                @Html.ButtonLinkIndex(text: "Incluir Novo Comentário", action: "IncluirComentarioPedidoCRM", controller: "CRM")
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            @*Imagens - Foto e Anexos*@
+                            <div id="tab-2" class="tab-pane">
+                                <div class="panel-body">
+                                    <div class="row">
+                                        <div class="col-lg-12 col-md-12 col-xs-12">
+                                            <h4>Anexos</h4>
+                                            <br />
+                                            <div class="form-group">
+                                                @using (Html.BeginForm("UploadFileCRMPedido", "CRM", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { enctype = "multipart/form-data", @id = "pwd-container2" }))
+                                                {
+                                                    <div class="ibox-content">
+                                                        @if (Model.CRM_PEDIDO_VENDA_ANEXO.Count > 0)
+                                                        {
+                                                            <table class="table table-striped table-bordered table-hover dataTables-example">
+                                                                <thead style="background-color:lightsteelblue">
+                                                                    <tr>
+                                                                        <th>Título</th>
+                                                                        <th>Data</th>
+                                                                        <th>Tipo</th>
+                                                                        <th class="td-one-action">Ações</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    @foreach (var cond in (Model.CRM_PEDIDO_VENDA_ANEXO))
+                                                                    {
+                                                                        <tr>
+                                                                            <td>@cond.CRPA_NM_TITULO</td>
+                                                                            <td>@cond.CRPA_DT_ANEXO.ToShortDateString()</td>
+                                                                            @if (cond.CRPA_IN_TIPO == 1)
+                                                                            {
+                                                                                <td>Imagem</td>
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                <td>Arquivo</td>
+                                                                            }
+                                                                            <td class="td-one-action">
+                                                                                @if (cond.CRPA_IN_TIPO == 1 || cond.CRPA_IN_TIPO == 2)
+                                                                                {
+                                                                                    @Html.TableLinkDetails(cond.CRPA_CD_ID, "VerAnexoCRMPedido", "fa-camera", "Visualizar")
+                                                                                }
+                                                                                @if (cond.CRPA_IN_TIPO == 3)
+                                                                                {
+                                                                                    <a title="Visualizar" class="fa fa-camera fa-lg" href="~/PdfViewer/web/viewer.html?file=@(cond.CRPA_AQ_ARQUIVO.Replace("~", ""))&ReturnUrl=@Request.Url.AbsolutePath" target="_blank"></a>
+                                                                                }
+                                                                                @Html.TableLinkDetails(cond.CRPA_CD_ID, "DownloadCRMPedido", "fa-download", "Download")
+                                                                            </td>
+                                                                        </tr>
+                                                                    }
+                                                                </tbody>
+                                                            </table>
+                                                        }
+                                                    </div>
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <link href="~/Content/themes/base/jquery-ui.min.css" rel="stylesheet" />
+    <link href="~/Content/themes/base/all.css" rel="stylesheet" />
+    <link href="~/Content/jquery.datetimepicker.css" rel="stylesheet" />
+    @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
+    @Styles.Render("~/plugins/jasnyBootstrapStyles")
+    @Styles.Render("~/plugins/toastrStyles")
+    @*@Styles.Render("~/Content/plugins/summernote/summernote.css")*@
+    <link href="~/Content/jquery-ui-timepicker-addon.min.css" rel="stylesheet" />
+    <link href="~/Content/plugins/select2/select2.min.css" rel="stylesheet" />
+    @Styles.Render("~/plugins/summernoteStyles")
+    @Styles.Render("~/Content/plugins/summernote/summernote.css")
+}
+@section Scripts {
+    <script src="~/Scripts/jquery.datetimepicker.full.min.js"></script>
+    <script type="text/javascript" src="~/Scripts/moment.min.js"></script>
+    <script type="text/javascript" src="~/Scripts/bootstrap.min.js"></script>
+    <script type="text/javascript" src="~/Scripts/jquery.datetimepicker"></script>
+    <script src="~/Scripts/jquery-ui-timepicker-addon.min.js"></script>
+    @Scripts.Render("~/plugins/toastr")
+    <script src="~/Scripts/jquery-ui-1.12.1.min.js"></script>
+    @Scripts.Render("~/plugins/dataTables")
+    @Scripts.Render("~/bundles/inputmask")
+    @Scripts.Render("~/plugins/jasnyBootstrap")
+    @Scripts.Render("~/plugins/sparkline")
+    @*@Scripts.Render("~/Scripts/plugins/summernote/summernote.min.js")*@
+    <script src="~/Scripts/plugins/select2/select2.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.maskedinput/1.4.1/jquery.maskedinput.js"></script>    
+    <script src="~/Scripts/uploadAnexo.js"></script>
+    @Scripts.Render("~/plugins/summernote")
+    @Scripts.Render("~/Scripts/plugins/summernote/summernote.min.js")
+
+    <script>
+        function MudaIdCliente(id) {
+            $('#idClie').val(id);
+        }
+    </script>
+    <script type="text/javascript">
+        function RecuperaModelo(valModelo) {
+            if (valModelo == '4') {
+                $("#conteudo").show();
+            } else if (valModelo != '4' ) {
+
+                $("#conteudo").hide();
+            }
+        }
+        $(document).ready(function () {
+            RecuperaModelo($('#modelo').val());
+        });
+    </script>
+    <script type="text/javascript" language="javascript">
+        $(function () {
+            $('.date-picker').datepicker(
+                {
+                    dateFormat: 'dd/mm/yy',
+                    dayNames: ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'],
+                    dayNamesMin: ['D', 'S', 'T', 'Q', 'Q', 'S', 'S', 'D'],
+                    dayNamesShort: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'],
+                    monthNames: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'],
+                    monthNamesShort: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
+                    nextText: 'Proximo',
+                    prevText: 'Anterior',
+                    showOn: "focus"
+                }
+            )
+                .css("display", "normal")
+                .next("button").button({
+                    icons: { primary: "ui-icon-calendar" },
+                    label: "Selecione uma data",
+                    text: false
+                });
+        });
+    </script>
+
+
+    <script type="text/javascript">
+        $(function () {
+            $("#data1").mask("99/99/9999");
+            $("#data2").mask("99/99/9999");
+        });
+    </script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            var i = -1;
+            var toastCount = 0;
+            var $toastlast;
+            var getMessage = function () {
+                var msg = 'Hi, welcome to Inspinia. This is example of Toastr notification box.';
+                return msg;
+            };
+
+            $('#basictoast').click(function () {
+                // Display a success toast, with a title
+                toastr.success('Envio am andamento!')
+            });
+            $('#showtoast').click(function () {
+                var shortCutFunction = $("#toastTypeGroup input:radio:checked").val();
+                var msg = $('#message').val();
+                var title = $('#title').val() || '';
+                var $showDuration = $('#showDuration');
+                var $hideDuration = $('#hideDuration');
+                var $timeOut = $('#timeOut');
+                var $extendedTimeOut = $('#extendedTimeOut');
+                var $showEasing = $('#showEasing');
+                var $hideEasing = $('#hideEasing');
+                var $showMethod = $('#showMethod');
+                var $hideMethod = $('#hideMethod');
+                var toastIndex = toastCount++;
+                toastr.options = {
+                    closeButton: $('#closeButton').prop('checked'),
+                    debug: $('#debugInfo').prop('checked'),
+                    progressBar: $('#progressBar').prop('checked'),
+                    positionClass: $('#positionGroup input:radio:checked').val() || 'toast-top-right',
+                    onclick: null
+                };
+                if ($('#addBehaviorOnToastClick').prop('checked')) {
+                    toastr.options.onclick = function () {
+                        alert('You can perform some custom action after a toast goes away');
+                    };
+                }
+                if ($showDuration.val().length) {
+                    toastr.options.showDuration = $showDuration.val();
+                }
+                if ($hideDuration.val().length) {
+                    toastr.options.hideDuration = $hideDuration.val();
+                }
+                if ($timeOut.val().length) {
+                    toastr.options.timeOut = $timeOut.val();
+                }
+                if ($extendedTimeOut.val().length) {
+                    toastr.options.extendedTimeOut = $extendedTimeOut.val();
+                }
+                if ($showEasing.val().length) {
+                    toastr.options.showEasing = $showEasing.val();
+                }
+                if ($hideEasing.val().length) {
+                    toastr.options.hideEasing = $hideEasing.val();
+                }
+                if ($showMethod.val().length) {
+                    toastr.options.showMethod = $showMethod.val();
+                }
+                if ($hideMethod.val().length) {
+                    toastr.options.hideMethod = $hideMethod.val();
+                }
+                if (!msg) {
+                    msg = getMessage();
+                }
+                $("#toastrOptions").text("Command: toastr["
+                    + shortCutFunction
+                    + "](\""
+                    + msg
+                    + (title ? "\", \"" + title : '')
+                    + "\")\n\ntoastr.options = "
+                    + JSON.stringify(toastr.options, null, 2)
+                );
+                var $toast = toastr[shortCutFunction](msg, title); // Wire up an event handler to a button in the toast, if it exists
+                $toastlast = $toast;
+                if ($toast.find('#okBtn').length) {
+                    $toast.delegate('#okBtn', 'click', function () {
+                        alert('you clicked me. i was toast #' + toastIndex + '. goodbye!');
+                        $toast.remove();
+                    });
+                }
+                if ($toast.find('#surpriseBtn').length) {
+                    $toast.delegate('#surpriseBtn', 'click', function () {
+                        alert('Surprise! you clicked me. i was toast #' + toastIndex + '. You could perform an action here.');
+                    });
+                }
+            });
+            function getLastToast() {
+                return $toastlast;
+            }
+            $('#clearlasttoast').click(function () {
+                toastr.clear(getLastToast());
+            });
+            $('#cleartoasts').click(function () {
+                toastr.clear();
+            });
+
+        });
+    </script>
+    <script>
+
+        function SubmitCEP() {
+
+            var usr= document.getElementById('cep1').value;
+
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("BuscarCEPCliente")',
+                data: "CEP:" + usr
+            });
+
+            return true;
+        }
+    </script>
+
+    <script>
+        function PesquisaCep(cep, btn, tipoEnd) {
+            data = {
+                cep: cep
+                , tipoEnd: tipoEnd
+            }
+
+            $(btn).attr("disabled", "disabled");
+
+            $.ajax({
+                url: '../PesquisaCEP_Javascript'
+                , type: 'POST'
+                , data: data
+                , success: function (r) {
+                    if (tipoEnd == 1) {
+                        $('#endereco').val(r.CLIE_NM_ENDERECO);
+                        $('#bairro').val(r.CLIE_NM_BAIRRO);
+                        $('#cidade').val(r.CLIE_NM_CIDADE);
+
+                        $('#uf option[value="' + r.UF_CD_ID + '"]').attr("selected", "selected");
+                        $('#btnBuscaCep').removeAttr("disabled");
+                    }
+                }
+            });
+        }
+    </script>
+
+     <script>
+        function MudaIdCliente(id) {
+            $('#idClie').val(id);
+        }
+    </script>
+
+    @if (ViewBag.Message != null)
+    {
+        <script type="text/javascript">
+            window.onload = function () {
+                  alert("@ViewBag.Message");
+            };
+        </script>
+    }
+}
+

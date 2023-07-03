@@ -1,0 +1,1 @@
+c['990']=[['991',"NoticiaAppService Constructor","topic_0000000000000C3C.html",0],['992',"Methods","topic_0000000000000C3B_methods--.html",1]];

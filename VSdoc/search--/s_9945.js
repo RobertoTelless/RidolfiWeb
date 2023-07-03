@@ -1,0 +1,1 @@
+search_result['9945']=["topic_0000000000001A8B.html","DistanceUnitsOfMeasureEnum Enumeration","Enumerated constant to reflect what type of length is used"];

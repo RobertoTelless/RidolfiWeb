@@ -1,0 +1,570 @@
+﻿@using Presentation.Extensions
+@model ERP_Condominios_Solution.ViewModels.MensagemViewModel
+@{
+    Layout = "~/Views/Shared/_Layout_Admin.cshtml";
+}
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="page-title">
+        <h3 class="title">Mensagens</h3>
+        <br />
+        <ol class="breadcrumb">
+            <li>
+                <a href="@Url.Action("CarregarBase", "BaseAdmin")">Dashboard</a>
+            </li>
+            <li>
+                <a href="@Url.Action("MontarTelaDashboardMensagens", "Mensagem")">Dashboard</a>
+            </li>
+            <li>
+                <a href="@Url.Action("MontarTelaMensagemEMail", "Mensagem")">Central de E-Mails</a>
+            </li>
+            <li class="active">
+                <strong>E-Mail - Criação</strong>
+            </li>
+        </ol>
+        <br />
+    </div>
+    <div class="row">
+        <div class="col-lg-12 col-md-12 col-xs-12">
+            <div class="col-lg-12 col-md-12 col-xs-12 ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>E-Mail - Criação</h5>
+                </div>
+                <div class="ibox-content">
+                    @if (!ViewData.ModelState.IsValid)
+                    {
+                        <div class="alert alert-danger">
+                            <button type="button" class="close" data-dismiss="alert">Fechar</button>
+                            @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+                        </div>
+                    }
+                    <h4 style="color: green; font-weight: bold; background-color:antiquewhite">ATENÇÃO: Todas as mensagens serão geradas na empresa/filial do usuário logado</h4>
+                    <div class="tabs-container">
+                        @using (Html.BeginForm("IncluirMensagemEMail", "Mensagem", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", @id = "pwd-container1" }))
+                        {
+                            <div class="form-group">
+                                <br />
+                                <div class="col-lg-12 col-md-12 col-xs-12">
+                                    @Html.ButtonActionSubmit(text: "BtnSubmit", htmlAttributes: new { id = "submit", style = "display: none;" })
+                                    <button class="btnSubmit btn btn-sm btn-success" id="basictoast" type="button">Confirma Envio do E-Mail</button>
+                                    @Html.ButtonLinkIndex(text: "Inclusão de Clientes", action: "IncluirClienteRapido", controller: "Cliente")
+                                    @Html.ButtonLinkIndex(text: "Voltar", action: "VoltarBaseMensagemEMail", controller: "Mensagem")
+                                </div>
+                            </div>
+                            
+                            <ul class="nav nav-tabs">
+                                <li class="active"><a data-toggle="tab" href="#tab-1">Montagem do E-Mail</a></li>
+                            </ul>
+
+                            <div class="tab-content">
+                                @*Dados Gerais*@
+                                <div id="tab-1" class="tab-pane active">
+                                    <div class="panel-body">
+                                        <div class="row">
+                                            <div class="col-lg-5 col-md-5 col-xs-12">
+                                                <div class="col-lg-12 col-md-12 col-xs-12 ibox float-e-margins" style="border-bottom: solid; border-bottom-color: darkblue; border-bottom-width: 2px; border-left: solid; border-left-color: darkblue; border-left-width: 1px; border-right: solid; border-right-color: darkblue; border-right-width: 1px; border-top: solid; border-top-color: darkblue; border-top-width: 1px; height: 280px">
+                                                    <div class="ibox-title">
+                                                        <h4>Dados da Mensagem</h4>
+                                                    </div>
+                                                    <div class="ibox-content">
+                                                        <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
+                                                            <div class="col-lg-12 col-md-12 col-xs-12">
+                                                                @Html.HiddenFor(m => m.ASSI_CD_ID)
+                                                                @Html.HiddenFor(m => m.MENS_IN_ATIVO)
+                                                                @Html.HiddenFor(m => m.MENS_DT_CRIACAO)
+                                                                @Html.HiddenFor(m => m.USUA_CD_ID)
+                                                                @Html.HiddenFor(m => m.MENS_IN_TIPO)
+                                                                @Html.HiddenFor(m => m.EMPR_CD_ID)
+                                                                Nome da Mensagem*
+                                                                @Html.TextBoxFor(m => m.MENS_NM_NOME, new { @class = "form-control", autofocus = true })
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
+                                                            <div class="col-lg-4 col-md-4 col-xs-12">
+                                                                Data Criação
+                                                                @Html.TextBoxFor(m => m.MENS_DT_CRIACAO, "{0:dd/MM/yyyy}", new { @class = "form-control", autofocus = true, @id = "dn", @readonly = "readonly", @style = "font-weight:bold; color: green" })
+                                                            </div>
+                                                            <div class="col-lg-6 col-md-6 col-xs-12">
+                                                                Tipo de E-Mail*
+                                                                @Html.DropDownListFor(m => m.MENS_IN_TIPO_EMAIL, (SelectList)ViewBag.Tipos, "Selecionar", new { @class = "form-control", autofocus = true, @id = "tipo", onchange = "ValidaTipo($(this).val())" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-lg-7 col-md-7 col-xs-12">
+                                                <div class="col-lg-12 col-md-12 col-xs-12 ibox float-e-margins" style="border-bottom: solid; border-bottom-color: darkblue; border-bottom-width: 2px; border-left: solid; border-left-color: darkblue; border-left-width: 1px; border-right: solid; border-right-color: darkblue; border-right-width: 1px; border-top: solid; border-top-color: darkblue; border-top-width: 1px; height: 280px">
+                                                    <div class="ibox-title">
+                                                        <h4>Destinatários</h4>
+                                                    </div>
+                                                    <div class="ibox-content">
+                                                        <h5 style="color:brown">Selecione um cliente ou um grupo de clientes para enviar a mensagem. Ao escolher um cliente, ela terá prevalência sobre o grupo</h5>
+                                                        <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
+                                                            <div class="col-lg-11 col-md-11 col-xs-12">
+                                                                Nome do Cliente
+                                                                <select name="ID" id="lstCliente" class="form-control" data-val="true" style="display: none;">
+                                                                </select>
+                                                            </div> 
+                                                        </div>
+                                                        <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
+                                                            <div class="col-lg-10 col-md-10 col-xs-12">
+                                                                Grupo de Clientes
+                                                                @Html.DropDownListFor(m => m.GRUP_CD_ID, (SelectList)ViewBag.Grupos, "Selecionar", new { @class = "form-control", autofocus = true, @id="gr" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-lg-5 col-md-5 col-xs-12">
+                                                <div class="col-lg-12 col-md-12 col-xs-12 ibox float-e-margins" id="link" style="border-bottom: solid; border-bottom-color: darkblue; border-bottom-width: 2px; border-left: solid; border-left-color: darkblue; border-left-width: 1px; border-right: solid; border-right-color: darkblue; border-right-width: 1px; border-top: solid; border-top-color: darkblue; border-top-width: 1px">
+                                                    <div class="ibox-title">
+                                                        <h4>Conteúdo da Mensagem</h4>
+                                                    </div>
+                                                    <div class="ibox-content">
+                                                        <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
+                                                            <div class="col-lg-12 col-md-12 col-xs-12" id="EM">
+                                                                Link a ser incluído na mensagem
+                                                                @Html.TextBoxFor(m => m.MENS_NM_LINK, new { @class = "form-control", autofocus = true, @id="link" })
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
+                                                            <div class="col-lg-12 col-md-12 col-xs-12">
+                                                                Modelo E-Mail
+                                                                @Html.DropDownListFor(m => m.TEEM_CD_ID, (SelectList)ViewBag.Temp, "Selecionar", new { @class = "form-control", autofocus = true, @id = "temp", onchange = "PesquisaTemplate($(this).val())" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-lg-12 col-md-12 col-xs-12 ibox float-e-margins" style="border-bottom: solid; border-bottom-color: darkblue; border-bottom-width: 2px; border-left: solid; border-left-color: darkblue; border-left-width: 1px; border-right: solid; border-right-color: darkblue; border-right-width: 1px; border-top: solid; border-top-color: darkblue; border-top-width: 1px; height: 300px; overflow-y: scroll" >
+                                                    <div class="ibox-title">
+                                                        <h4>Anexos</h4><input class="btn btn-sm btn-warning" id="inputFile" type="file" multiple />
+                                                    </div>
+                                                    <div class="ibox-content">
+                                                        <div class="row" style="display: none">
+                                                            <div style="margin-left: 15px;" class="col-lg-12 col-md-12 col-xs-12">
+                                                                <div class="form-group">
+                                                                    <h4>Logotipo/Foto</h4><input type="file" accept=".jpg, .png, .jpeg, .gif|images/*" name="file" id="imgCliente" class="btn btn-sm btn-warning" multiple />
+                                                                    <br />
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <div>
+                                                                <hr />
+                                                                <table style="width: 100%;" class="table table-striped table-bordered table-hover dataTables-example" id="myFiles">
+                                                                    <thead style="background-color:lightsteelblue">
+                                                                        <tr>
+                                                                            <td>Nome</td>
+                                                                            <td>Tipo</td>
+                                                                            <td>Ações</td>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody></tbody>
+                                                                </table>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-lg-12 col-md-12 col-xs-12 ibox float-e-margins" style="border-bottom: solid; border-bottom-color: darkblue; border-bottom-width: 2px; border-left: solid; border-left-color: darkblue; border-left-width: 1px; border-right: solid; border-right-color: darkblue; border-right-width: 1px; border-top: solid; border-top-color: darkblue; border-top-width: 1px; height: 179px">
+                                                    <div class="ibox-title">
+                                                        <h4>Agendamento</h4>
+                                                    </div>
+                                                    <div class="ibox-content">
+                                                        <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">                                                        
+                                                            <div class="col-lg-6 col-md-6 col-xs-12">
+                                                                Agendar para
+                                                                @Html.TextBoxFor(m => m.MENS_DT_AGENDAMENTO, new { @class = "form-control datetime-picker ", autofocus = true, @id = "da", @style = "font-weight:bold" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-lg-12 col-md-12 col-xs-12 ibox float-e-margins" style="border-bottom: solid; border-bottom-color: darkblue; border-bottom-width: 2px; border-left: solid; border-left-color: darkblue; border-left-width: 1px; border-right: solid; border-right-color: darkblue; border-right-width: 1px; border-top: solid; border-top-color: darkblue; border-top-width: 1px; height: 179px">
+                                                    <div class="ibox-title">
+                                                        <h4>Recursividade</h4>
+                                                    </div>
+                                                    <div class="ibox-content">
+                                                        <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">                                                        
+                                                            <div class="col-lg-6 col-md-6 col-xs-12">
+                                                                Periodicidade
+                                                                @Html.DropDownListFor(m => m.PETA_CD_ID, (SelectList)ViewBag.Periodicidade, "Selecionar", new { @class = "form-control", autofocus = true, @id = "temp" })
+                                                            </div>
+                                                            <div class="col-lg-6 col-md-6 col-xs-12">
+                                                                Repetições
+                                                                @Html.TextBoxFor(m => m.MENS_NR_REPETICOES, new { @class = "form-control", autofocus = true, @id = "repeticao" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-lg-7 col-md-7 col-xs-12" id="texto">
+                                                <div class="col-lg-12 col-md-12 col-xs-12 ibox float-e-margins" style="border-bottom: solid; border-bottom-color: darkblue; border-bottom-width: 2px; border-left: solid; border-left-color: darkblue; border-left-width: 1px; border-right: solid; border-right-color: darkblue; border-right-width: 1px; border-top: solid; border-top-color: darkblue; border-top-width: 1px; height: 960px; overflow-y: scroll">
+                                                    <div class="ibox-title">
+                                                        <h4>Texto da Mensagem</h4>
+                                                    </div>
+                                                    <div class="ibox-content">
+                                                        <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
+                                                            <div class="col-lg-12 col-md-12 col-xs-12" style="overflow-y: scroll">
+                                                                Corpo da Mensagem
+                                                                @Html.TextAreaFor(m => m.MENS_TX_TEXTO, new { @class = "form-control", style = "width: 100%; height: 800px;", autofocus = true,  @id = "texto" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-7 col-md-7 col-xs-12" id="html" display="none">
+                                                <div class="col-lg-12 col-md-12 col-xs-12 ibox float-e-margins" style="border-bottom: solid; border-bottom-color: darkblue; border-bottom-width: 2px; border-left: solid; border-left-color: darkblue; border-left-width: 1px; border-right: solid; border-right-color: darkblue; border-right-width: 1px; border-top: solid; border-top-color: darkblue; border-top-width: 1px; height: 230px">
+                                                    <div class="ibox-title">
+                                                        <h4>Arquivo HTML</h4>
+                                                    </div>
+                                                    <div class="ibox-content">
+                                                        <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
+                                                            <div class="col-lg-12 col-md-12 col-xs-12">
+                                                                Nome do Arquivo a ser enviado
+                                                                @Html.DropDownListFor(m => m.MENS_AQ_ARQUIVO, (SelectList)ViewBag.Modelos, "Selecionar", new { @class = "form-control", autofocus = true, @id = "temp" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <br />
+                                    <div class="col-lg-12 col-md-12 col-xs-12">
+                                        @Html.ButtonActionSubmit(text: "BtnSubmit", htmlAttributes: new { id = "submit", style = "display: none;" })
+                                        <button class="btnSubmit btn btn-sm btn-success" id="basictoast" type="button">Confirma Envio do E-Mail</button>
+                                        @Html.ButtonLinkIndex(text: "Voltar", action: "VoltarBaseMensagemEMail", controller: "Mensagem")
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <link href="~/Content/themes/base/jquery-ui.min.css" rel="stylesheet" />
+    <link href="~/Content/themes/base/all.css" rel="stylesheet" />
+    @*<link href="~/Content/jquery.datetimepicker.css" rel="stylesheet" />*@
+    @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
+    @Styles.Render("~/plugins/jasnyBootstrapStyles")
+    @Styles.Render("~/plugins/toastrStyles")
+    @Styles.Render("~/Content/plugins/summernote/summernote.css")
+    <link href="~/Content/jquery-ui-timepicker-addon.min.css" rel="stylesheet" />
+    <link href="~/Content/plugins/select2/select2.min.css" rel="stylesheet" />
+
+    <link href="~/Content/themes/base/all.css" rel="stylesheet" />
+    <link href="~/Content/themes/base/jquery-ui.min.css" rel="stylesheet" />
+    @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
+    @Styles.Render("~/plugins/jasnyBootstrapStyles")
+    @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
+    @Styles.Render("~/plugins/toastrStyles")
+    @Styles.Render("~/Content/plugins/summernote/summernote.css")
+    @Styles.Render("~/plugins/touchSpinStyles")
+    <link href="~/Content/plugins/select2/select2.min.css" rel="stylesheet" />
+    <link href="~/Content/jquery-ui-timepicker-addon.min.css" rel="stylesheet" />
+
+}
+@section Scripts {
+    @*<script src="~/Scripts/jquery.datetimepicker.full.min.js"></script>*@
+    <script type="text/javascript" src="~/Scripts/moment.min.js"></script>
+    <script type="text/javascript" src="~/Scripts/bootstrap.min.js"></script>
+    <script type="text/javascript" src="~/Scripts/jquery.datetimepicker"></script>
+    <script src="~/Scripts/jquery-ui-timepicker-addon.min.js"></script>
+    @Scripts.Render("~/plugins/toastr")
+    <script src="~/Scripts/jquery-ui-1.12.1.min.js"></script>
+    @Scripts.Render("~/plugins/dataTables")
+    @Scripts.Render("~/bundles/inputmask")
+    @Scripts.Render("~/plugins/jasnyBootstrap")
+    @Scripts.Render("~/plugins/sparkline")
+    @Scripts.Render("~/Scripts/plugins/summernote/summernote.min.js")
+    <script src="~/Scripts/plugins/select2/select2.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.maskedinput/1.4.1/jquery.maskedinput.js"></script>    
+    <script src="~/Scripts/uploadAnexo.js"></script>
+
+        <script src="~/Scripts/jquery-ui-1.12.1.min.js"></script>
+    @Scripts.Render("~/plugins/toastr")
+    @Scripts.Render("~/plugins/dataTables")
+    @Scripts.Render("~/bundles/inputmask")
+    @Scripts.Render("~/plugins/jasnyBootstrap")
+    @Scripts.Render("~/plugins/summernote")
+    @Scripts.Render("~/plugins/touchSpin")
+    <script src="~/Scripts/jquery-ui-timepicker-addon.min.js"></script>
+    <script src="~/Scripts/plugins/select2/select2.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.maskedinput/1.4.1/jquery.maskedinput.js"></script>
+    <script src="~/Scripts/uploadAnexo.js"></script>
+
+    <script type="text/javascript">
+        $(function () {
+            $("#dn").mask("99/99/9999");
+            $("#da").mask("99/99/9999");
+        });
+    </script>
+
+    <script>
+        $("#lstCliente").select2({
+            //data: filterSelect,
+            ajax: {
+                url: '../Cliente/BuscaNomeRazao',
+                type: 'POST',
+                data: function (params) {
+                    var query = {
+                        nome: params.term
+                    }
+                    return query
+                },
+                processResults: function (data) {
+                    console.log(data);
+                    return {
+                        results: data
+                    }
+                }
+            },
+            placeholder: 'Busque por NOME ou RAZÃO SOCIAL',
+            minimumInputLength: 1
+        });
+    </script>
+
+    <script type="text/javascript">  
+        // Initialize your tinyMCE Editor with your preferred options
+        iniciaTinymce('texto');
+
+        function iniciaTinymce(textArea) {
+            tinymce.init({
+                selector: 'textarea#' + textArea,
+                language: 'pt_BR',
+                forced_root_block: false,
+                height: 800,
+                plugins: [
+                    'advlist', 'autolink', 'advtable', 'lists', 'link', 'autocorrect', 'image', 'charmap', 'preview',
+                    'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
+                    'insertdatetime', 'media', 'table', 'help', 'wordcount', 'emoticons', 'export'
+                ],
+                toolbar: 'undo redo | fontfamily fontsize | ' +
+                    'bold italic underline backcolor forecolor | alignleft aligncenter ' +
+                    'alignright alignjustify | bullist numlist outdent indent | ' +
+                    'removeformat | help',
+                content_style: 'body { font-family:Tahoma,Arial,sans-serif; font-size:16px }'
+            });    
+        }
+    </script> 
+
+    <script type="text/javascript" language="javascript">
+        $(function () {
+            $('.date-picker').datepicker(
+                {
+                    dateFormat: 'dd/mm/yy',
+                    dayNames: ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'],
+                    dayNamesMin: ['D', 'S', 'T', 'Q', 'Q', 'S', 'S', 'D'],
+                    dayNamesShort: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'],
+                    monthNames: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'],
+                    monthNamesShort: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
+                    nextText: 'Proximo',
+                    prevText: 'Anterior',
+                    showOn: "focus"
+                }
+            )
+                .css("display", "normal")
+                .next("button").button({
+                    icons: { primary: "ui-icon-calendar" },
+                    label: "Selecione uma data",
+                    text: false
+                });
+        });
+    </script>
+    <script type="text/javascript" language="javascript">
+        $(function () {
+            $('.datetime-picker').datetimepicker(
+                {
+                    dateFormat: 'dd/mm/yy',
+                    dayNames: ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'],
+                    dayNamesMin: ['D', 'S', 'T', 'Q', 'Q', 'S', 'S', 'D'],
+                    dayNamesShort: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'],
+                    monthNames: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'],
+                    monthNamesShort: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
+                    nextText: 'Proximo',
+                    prevText: 'Anterior',
+                    controlType: 'select',
+                    showSecond: "false",
+                    timeFormat: 'HH:mm:ss',
+                    locale: 'pt-br',
+                    hourText: 'Hora',
+                    minuteText: 'Minuto',
+                    secondText: 'Segundo',
+                    currentText: 'Agora',
+                    closeText: 'Feito',
+                    showOn: "focus"
+                }
+            )
+                .css("display", "normal")
+                .next("button").button({
+                    icons: { primary: "ui-icon-calendar" },
+                    label: "Selecione uma data",
+                    text: false
+                });
+        });
+    </script>
+
+    <script>
+        function PesquisaTemplate(temp) {
+            data = {
+                temp: temp
+            }
+            $.ajax({
+                url: '../Mensagem/PesquisaTemplateEMail'
+                , type: 'POST'
+                , data: data
+                , success: function (r) {
+                    //$('#cor').val(r.TEEM_TX_CORPO);
+                    tinymce.get("texto").setContent(r.TEEM_TX_CORPO);
+                }
+            });
+        }
+        $(document).ready(function () {
+            PesquisaTemplate($('#temp').val());
+        });
+    </script>
+    <script type="text/javascript">
+        function ValidaTipo(tipo) {
+            if (tipo == '1') {
+                $("#html").hide();
+                $("#texto").show();
+                $("#link").show();
+            } else if (tipo == '2') { 
+                $("#texto").hide();
+                $("#html").show();
+                $("#link").hide();
+            } 
+        }
+        $(document).ready(function () {
+            ValidaTipo($('#tipo').val());
+        });
+    </script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            var i = -1;
+            var toastCount = 0;
+            var $toastlast;
+            var getMessage = function () {
+                var msg = 'Hi, welcome to Inspinia. This is example of Toastr notification box.';
+                return msg;
+            };
+
+            $('#basictoast').click(function () {
+                // Display a success toast, with a title
+                toastr.success('Envio de Mensagem em andamento!')
+            });
+            $('#showtoast').click(function () {
+                var shortCutFunction = $("#toastTypeGroup input:radio:checked").val();
+                var msg = $('#message').val();
+                var title = $('#title').val() || '';
+                var $showDuration = $('#showDuration');
+                var $hideDuration = $('#hideDuration');
+                var $timeOut = $('#timeOut');
+                var $extendedTimeOut = $('#extendedTimeOut');
+                var $showEasing = $('#showEasing');
+                var $hideEasing = $('#hideEasing');
+                var $showMethod = $('#showMethod');
+                var $hideMethod = $('#hideMethod');
+                var toastIndex = toastCount++;
+                toastr.options = {
+                    closeButton: $('#closeButton').prop('checked'),
+                    debug: $('#debugInfo').prop('checked'),
+                    progressBar: $('#progressBar').prop('checked'),
+                    positionClass: $('#positionGroup input:radio:checked').val() || 'toast-top-right',
+                    onclick: null
+                };
+                if ($('#addBehaviorOnToastClick').prop('checked')) {
+                    toastr.options.onclick = function () {
+                        alert('You can perform some custom action after a toast goes away');
+                    };
+                }
+                if ($showDuration.val().length) {
+                    toastr.options.showDuration = $showDuration.val();
+                }
+                if ($hideDuration.val().length) {
+                    toastr.options.hideDuration = $hideDuration.val();
+                }
+                if ($timeOut.val().length) {
+                    toastr.options.timeOut = $timeOut.val();
+                }
+                if ($extendedTimeOut.val().length) {
+                    toastr.options.extendedTimeOut = $extendedTimeOut.val();
+                }
+                if ($showEasing.val().length) {
+                    toastr.options.showEasing = $showEasing.val();
+                }
+                if ($hideEasing.val().length) {
+                    toastr.options.hideEasing = $hideEasing.val();
+                }
+                if ($showMethod.val().length) {
+                    toastr.options.showMethod = $showMethod.val();
+                }
+                if ($hideMethod.val().length) {
+                    toastr.options.hideMethod = $hideMethod.val();
+                }
+                if (!msg) {
+                    msg = getMessage();
+                }
+                $("#toastrOptions").text("Command: toastr["
+                    + shortCutFunction
+                    + "](\""
+                    + msg
+                    + (title ? "\", \"" + title : '')
+                    + "\")\n\ntoastr.options = "
+                    + JSON.stringify(toastr.options, null, 2)
+                );
+                var $toast = toastr[shortCutFunction](msg, title); // Wire up an event handler to a button in the toast, if it exists
+                $toastlast = $toast;
+                if ($toast.find('#okBtn').length) {
+                    $toast.delegate('#okBtn', 'click', function () {
+                        alert('you clicked me. i was toast #' + toastIndex + '. goodbye!');
+                        $toast.remove();
+                    });
+                }
+                if ($toast.find('#surpriseBtn').length) {
+                    $toast.delegate('#surpriseBtn', 'click', function () {
+                        alert('Surprise! you clicked me. i was toast #' + toastIndex + '. You could perform an action here.');
+                    });
+                }
+            });
+            function getLastToast() {
+                return $toastlast;
+            }
+            $('#clearlasttoast').click(function () {
+                toastr.clear(getLastToast());
+            });
+            $('#cleartoasts').click(function () {
+                toastr.clear();
+            });
+
+        });
+    </script>
+
+    <script>
+        SendFilesV2('imgCliente', 'Mensagem', 'UploadFileToSession');
+    </script>
+
+
+    @if (ViewBag.Message != null)
+    {
+        <script type="text/javascript">
+            window.onload = function () {
+                  alert("@ViewBag.Message");
+            };
+        </script>
+    }
+}

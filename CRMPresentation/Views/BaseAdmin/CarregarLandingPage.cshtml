@@ -1,0 +1,691 @@
+﻿@{
+    Layout = null;
+    ViewBag.Title = "Página Principal";
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>CRMSys | @ViewBag.Title</title>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700' rel='stylesheet' type='text/css'>
+
+    <!-- Add jQuery Style direct - used for jQGrid plugin -->
+    <link href="@Url.Content("~/Scripts/plugins/jquery-ui/jquery-ui.min.css")" rel="stylesheet" type="text/css" />
+    <link rel="shortcut icon" href="~/Images/CRM_Icon3.png">
+    <!-- Primary Inspinia style -->
+    @Styles.Render("~/Content/css")
+    @Styles.Render("~/font-awesome/css")
+</head>
+
+<body id="page-top" class="landing-page">
+    <div class="navbar-wrapper">
+        <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+            <div class="container">
+                <div class="navbar-header page-scroll">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                </div>
+                <div id="navbar" class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav navbar-right">
+                        <li><a class="page-scroll" href="#page-top">Início</a></li>
+                        <li><a class="page-scroll" href="#features">Funcionalidades</a></li>
+                        <li><a class="page-scroll" href="#testimonials">Depoimentos</a></li>
+                        <li><a class="page-scroll" href="#pricing">Planos & Preços</a></li>
+                        <li><a class="page-scroll" href="#contact">Contatos</a></li>
+                        <li><a class="page-scroll" style="color: darkkhaki" onclick="location.href='@Url.Action("Login", "ControleAcesso")'">Login</a></li>
+                        <li><a class="page-scroll" style="color: limegreen" onclick="location.href='@Url.Action("IncluirContato", "BaseAdmin")'">Contato</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </div>
+    <div id="inSlider" class="carousel carousel-fade" data-ride="carousel">
+        <ol class="carousel-indicators">
+            <li data-target="#inSlider" data-slide-to="0" class="active"></li>
+            <li data-target="#inSlider" data-slide-to="1"></li>
+            <li data-target="#inSlider" data-slide-to="2"></li>
+            <li data-target="#inSlider" data-slide-to="3"></li>
+        </ol>
+        <div class="carousel-inner" role="listbox">
+            <div class="item active">
+                <div class="container">
+                    <div class="carousel-caption">
+                        <h1>
+                            CRMSys<br />
+                            Mensageria, Marketing<br />
+                            e CRM<br />
+                            Integrados
+                        </h1>
+                        <p>A solução de Mensageria e CRM para sua Empresa</p>
+                        <p>
+                            <a class="btn btn-lg btn-primary" href="#features" role="button">Leia Mais</a>
+                        </p>
+                    </div>
+                    <div class="carousel-image wow zoomIn">
+                        <img src="~/Images/Dash_Inicio.png" style="width: 600px; height: 400px; max-height: 500px; max-width: 800px;" alt="prin" />
+                    </div>
+                </div>
+                <!-- Set background for slide in css -->
+                <div class="header-back one"></div>
+
+            </div>
+            <div class="item">
+                <div class="container">
+                    <div class="carousel-caption blank">
+                        <h1>CRMSys<br /> Mensageria integrada.<br/>Envio de mensagens em lote.</h1>
+                        <p>Mantenha sempre contato com seus clientes</p>
+                        <p><a class="btn btn-lg btn-primary" href="#features" role="button">Leia mais</a></p>
+                    </div>
+                    <div class="carousel-image wow zoomIn">
+                        <img src="~/Images/Dash_Mensagens.png" style="width: 600px; height: 400px; max-height: 500px; max-width: 800px;" alt="fin" />
+                    </div>
+                </div> 
+                <!-- Set background for slide in css -->
+                <div class="header-back two"></div>
+            </div>
+
+            <div class="item">
+                <div class="container">
+                    <div class="carousel-caption blank">
+                        <h1>CRMSys<br /> Marketing Eletrônico<br/>E-Mails ou SMS.</h1>
+                        <p>Crie campanhas e envie suas mensagens</p>
+                        <p>agendadas ou recursivas</p>
+                        <p><a class="btn btn-lg btn-primary" href="#features" role="button">Leia mais</a></p>
+                    </div>
+                    <div class="carousel-image wow zoomIn">
+                        <img src="~/Images/Central_Mails.png" style="width: 600px; height: 400px; max-height: 500px; max-width: 800px;" alt="fin" />
+                    </div>
+                </div>
+                <!-- Set background for slide in css -->
+                <div class="header-back four"></div>
+            </div>
+
+            <div class="item">
+                <div class="container">
+                    <div class="carousel-caption blank">
+                        <h1>CRMSys<br />Robô de envio de <br/>E-Mails ou SMS.</h1>
+                        <p>ativo 24 horas para mensagens</p>
+                        <p>agendadas ou recursivas</p>
+                        <p><a class="btn btn-lg btn-primary" href="#features" role="button">Leia mais</a></p>
+                    </div>
+                    <div class="carousel-image wow zoomIn">
+                        <img src="~/Images/Robo_Envio.png" style="width: 600px; height: 400px; max-height: 500px; max-width: 800px;" alt="fin" />
+                    </div>
+                </div>
+                <!-- Set background for slide in css -->
+                <div class="header-back four"></div>
+            </div>
+
+            <div class="item">
+                <div class="container">
+                    <div class="carousel-caption blank">
+                        <h1>CRMSys<br /> Crie processos de CRM<br/>de forma simples e intuitiva.</h1>
+                        <p>Acompanhe os processos, crie e acompanhe acões</p>
+                        <p>Crie e acompanhe propostas e orçamentos</p>
+                        <p><a class="btn btn-lg btn-primary" href="#features" role="button">Leia mais</a></p>
+                    </div>
+                    <div class="carousel-image wow zoomIn">
+                        <img src="~/Images/CRMSys_DashEMails.jpg" style="width: 600px; height: 400px; max-height: 500px; max-width: 800px;" alt="kan" />
+                    </div>
+                </div>
+                <!-- Set background for slide in css -->
+                <div class="header-back three"></div>
+            </div>
+
+            <div class="item">
+                <div class="container">
+                    <div class="carousel-caption blank">
+                        <h1>CRMSys<br /> Propostas e Orçamentos<br/> Crie de forma fácil</h1>
+                        <p>Usando modelos pré-definidos</p>
+                        <p><a class="btn btn-lg btn-primary" href="#features" role="button">Leia mais</a></p>
+                    </div>
+                    <div class="carousel-image wow zoomIn">
+                        <img src="~/Images/Dash_CRM_Grid.png" style="width: 600px; height: 400px; max-height: 500px; max-width: 800px;" alt="fin" />
+                    </div>
+                </div>
+                <!-- Set background for slide in css -->
+                <div class="header-back four"></div>
+            </div>
+        </div>
+
+        <a class="left carousel-control" href="#inSlider" role="button" data-slide="prev">
+            <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+            <span class="sr-only">Anterior</span>
+        </a>
+        <a class="right carousel-control" href="#inSlider" role="button" data-slide="next">
+            <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+            <span class="sr-only">Próximo</span>
+        </a>
+    </div>
+
+
+    <section id="features" class="container services">
+        <div class="row">
+            <div class="col-sm-3">
+                <h2>Mensageria</h2>
+                <p>Envie e programe mensagens de E-Mail e SMS agendadas e recursivas para seus clientes</p>
+                <p><a class="navy-link" href="#Mensageria" role="button">Detalhes &raquo;</a></p>
+            </div>
+            <div class="col-sm-3">
+                <h2>Mensageria</h2>
+                <p>Crie campanhas e envie mensagens em lotes para seus clientes</p>
+                <p><a class="navy-link" href="#Financeiro" role="button">Detalhes &raquo;</a></p>
+            </div>
+            <div class="col-sm-3">
+                <h2>CRM</h2>
+                <p>Crie e acompanhe processos e leads com visualização Kanban</p>
+                <p><a class="navy-link" href="#CRM" role="button">Detalhes &raquo;</a></p>
+            </div>
+            <div class="col-sm-3">
+                <h2>Ações</h2>
+                <p>Crie e acompanhe ações vinculadas aos processos de CRM</p>
+                <p><a class="navy-link" href="#Estoque" role="button">Detalhes &raquo;</a></p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-3">
+                <h2>Propostas</h2>
+                <p>Crie e acompanhe propostas vinculadas aos processos de CRM</p>
+                <p><a class="navy-link" href="#Estoque" role="button">Detalhes &raquo;</a></p>
+            </div>
+            <div class="col-sm-3">
+                <h2>Agenda</h2>
+                <p>CRM integrado com agenda</p>
+                <p><a class="navy-link" href="#Estoque" role="button">Detalhes &raquo;</a></p>
+            </div>
+            <div class="col-sm-3">
+                <h2>Tarefas</h2>
+                <p>Controle de tarefas por usuário, flexível, fácil de usar e integrado ao sistema</p>
+                <p><a class="navy-link" href="#Agenda" role="button">Detalhes &raquo;</a></p>
+            </div>
+            <div class="col-sm-3">
+                <h2>Administração</h2>
+                <p>Gerenciamento de usuários, emissão de notificações, auditorias e broadcast</p>
+                <p><a class="navy-link" href="#Adm" role="button">Detalhes &raquo;</a></p>
+            </div>
+        </div>
+    </section>
+
+    <section class="container features">
+        <div class="row">
+            <div class="col-lg-12 text-center">
+                <div class="navy-line"></div>
+                <h1>Todas as necessidades de sua empresa<br /> <span class="navy">Aumente sua eficiência e produtividade</span> </h1>
+                <p>Mensageria, Marketing e CRM simples e eficientes</p>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-3 text-center wow fadeInLeft">
+                <div>
+                    <i class="fa fa-calculator features-icon"></i>
+                    <h2>Propostas</h2>
+                    <p>Emissão de propostas por E-Mail</p>
+                    <p>Modelos pré-definidos</p>
+                    <p>Acompanhamento e Aprovação</p>
+                </div>
+            </div>
+            <div class="col-md-6 text-center  wow zoomIn">
+                <img src="~/Images/landing/perspective.png" alt="dashboard" class="img-responsive">
+            </div>
+            <div class="col-md-3 text-center wow fadeInRight">
+                <div>
+                    <i class="fa fa-dashboard features-icon"></i>
+                    <h2>Dashboards Gerencial e Administrativo</h2>
+                    <p>Informações relevantes e acesso às funcionalidades</p>
+                </div>
+                <div>
+                    <i class="fa fa-dashboard features-icon"></i>
+                    <h2>Dashboard para cada módulo</h2>
+                    <p>Gráficos, informações e acesso às funcionalidades</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-12 text-center">
+                <div class="navy-line"></div>
+                <h1>Descubra o poder do CRMSys na sua empresa</h1>
+                <p>Mais um texto aqui. </p>
+            </div>
+        </div>
+        <div class="row features-block">
+            <div class="col-lg-6 features-text wow fadeInLeft">
+                <small>CRMSys</small>
+                <h2>Projetado para sua empresa</h2>
+                <p>Processos alinhados que trazem resultados. Aumentar esse texto aqui.</p>
+                <a href="" class="btn btn-primary">Leia Mais</a>
+            </div>
+            <div class="col-lg-6 text-right wow fadeInRight">
+                <img src="~/Images/Tela_Kanban.jpg" alt="dashboard" class="img-responsive pull-right">
+            </div>
+        </div>
+    </section>
+
+    <section class="timeline gray-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <div class="navy-line"></div>
+                    <h1>Roadmap do CRMSys</h1>
+                    <p>Veja aqui a previsão de lançamento de novas versões e novas funcionalidades. </p>
+                </div>
+            </div>
+            <div class="row features-block">
+
+                <div class="col-lg-12">
+                    <div id="vertical-timeline" class="vertical-container light-timeline center-orientation">
+                        <div class="vertical-timeline-block">
+                            <div class="vertical-timeline-icon navy-bg">
+                                <i class="fa fa-briefcase"></i>
+                            </div>
+
+                            <div class="vertical-timeline-content">
+                                <h2>Versão Preliminar</h2>
+                                <p>
+                                    Lançamento e disponibilização da versão preliminar do CRMSys.
+                                </p>
+                                <a href="#" class="btn btn-xs btn-primary"> Mais...</a>
+                                <span class="vertical-date"> 2a Feira <br /> <small>17 de Julho, 2023</small> </span>
+                            </div>
+                        </div>
+
+                        <div class="vertical-timeline-block">
+                            <div class="vertical-timeline-icon navy-bg">
+                                <i class="fa fa-file-text"></i>
+                            </div>
+
+                            <div class="vertical-timeline-content">
+                                <h2>Mensagens WhatsApp</h2>
+                                <p>Emissão de mensagens WhatsApp com os mesmos recursos de envio, agendamento e recursividade</p>
+                                <a href="#" class="btn btn-xs btn-primary"> Mais...</a>
+                                <span class="vertical-date"> 6a Feira <br /> <small>1 de Setembro, 2023</small> </span>
+                            </div>
+                        </div>
+
+                        @*<div class="vertical-timeline-block">
+                            <div class="vertical-timeline-icon navy-bg">
+                                <i class="fa fa-cogs"></i>
+                            </div>
+
+                            <div class="vertical-timeline-content">
+                                <h2>Módulos YYYYYYYY</h2>
+                                <p>Texto descrevendo os módulos disponibilizados </p>
+                                <a href="#" class="btn btn-xs btn-primary"> Mais...</a>
+                                <span class="vertical-date"> 3a Feira <br /> <small>15 de Novembro, 2022</small> </span>
+                            </div>
+                        </div>*@
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </section>
+
+    <section id="testimonials" class="navy-section testimonials" style="margin-top: 0">
+
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 text-center wow zoomIn">
+                    <i class="fa fa-comment big-icon"></i>
+                    <h1>
+                        O que nossos clientes dizem...
+                    </h1>
+                    <div class="testimonials-text">
+                        <i>Depoimento de alguem que gostou muito</i>
+                    </div>
+                    <small>
+                        <strong>12.02.2022 - Patápio Megatério - Lojas ABC</strong>
+                    </small>
+                </div>
+            </div>
+        </div>
+
+    </section>
+
+    <section class="comments gray-section" style="margin-top: 0">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <div class="navy-line"></div>
+                    <h1>O que nossos clientes dizem...</h1>
+                    <p>Veja os depoimentos abaixo. </p>
+                </div>
+            </div>
+            <div class="row features-block">
+                <div class="col-lg-4">
+                    <div class="bubble">
+                        "Texto falando bem do sistema"
+                    </div>
+                    <div class="comments-avatar">
+                        <a href="" class="pull-left">
+                            <img alt="image" src="~/Images/landing/avatar3.jpg">
+                        </a>
+                        <div class="media-body">
+                            <div class="commens-name">
+                                Sinforosa Alucinada
+                            </div>
+                            <small class="text-muted">XXX Entreprises</small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4">
+                    <div class="bubble">
+                        "Mais texto falando bem do sistema"
+                    </div>
+                    <div class="comments-avatar">
+                        <a href="" class="pull-left">
+                            <img alt="image" src="~/Images/landing/avatar1.jpg">
+                        </a>
+                        <div class="media-body">
+                            <div class="commens-name">
+                                Capitão Cloroquina
+                            </div>
+                            <small class="text-muted">Planalto Inc.</small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4">
+                    <div class="bubble">
+                        "Texto falando melhor ainda"
+                    </div>
+                    <div class="comments-avatar">
+                        <a href="" class="pull-left">
+                            <img alt="image" src="~/Images/landing/avatar2.jpg">
+                        </a>
+                        <div class="media-body">
+                            <div class="commens-name">
+                                Celacanto Estroncio
+                            </div>
+                            <small class="text-muted">Fumacê Ltda</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <section id="pricing" class="pricing">
+        <div class="container">
+            <div class="row m-b-lg">
+                <div class="col-lg-12 text-center">
+                    <div class="navy-line"></div>
+                    <h1>Planos & Preços</h1>
+                    <p>Diversos planos de assinatura. Veja o que melhor adapta a você</p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-4 wow zoomIn">
+                    <ul class="pricing-plan list-unstyled">
+                        <li class="pricing-title">
+                            Mensageria
+                        </li>
+                        <li class="pricing-desc">
+                            Acesso apenas às funcoinalidades da mensageria.
+                        </li>
+                        <li class="pricing-price">
+                            <span>R$ 200,00</span> / Mês
+                        </li>
+                        <li>
+                            Sem limite de clientes/contatos
+                        </li>
+                        <li>
+                            Sem limite de envio de e-mails(*)
+                        </li>
+                        <li>
+                            Documentação on-line
+                        </li>
+                        @*<li>
+                            Solução eficiente de mensageria
+                        </li>
+                        <li>
+                            Definir
+                        </li>*@
+                        <li>
+                            <a class="btn btn-primary btn-xs" href="#">Contrate Agora</a>
+                        </li>
+                    </ul>
+                </div>
+
+                    <ul class="pricing-plan list-unstyled">
+                        <li class="pricing-title">
+                            Processos CRM
+                        </li>
+                        <li class="pricing-desc">
+                            Acesso apenas às funcionalidades de processos CRM.
+                        </li>
+                        <li class="pricing-price">
+                            <span>R$ 200,00</span> / Mês
+                        </li>
+                        <li>
+                            Sem limite de clientes/contatos
+                        </li>
+                        <li>
+                            Sem limite de processos
+                        </li>
+                        <li>
+                            Sem limite de propostas/orçamemtos
+                        </li>
+                        <li>
+                            Documentação on-line
+                        </li>
+                        <li>
+                            Definir
+                        </li>
+                        <li>
+                            <a class="btn btn-primary btn-xs" href="#">Contrate Agora</a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="col-lg-4 wow zoomIn">
+                    <ul class="pricing-plan list-unstyled selected">
+                        <li class="pricing-title">
+                            Padrão
+                        </li>
+                        <li class="pricing-desc">
+                            Acesso à todas funcionalidades.
+                        </li>
+                        <li class="pricing-price">
+                            <span>R$ 400,0</span> / Mês
+                        </li>
+                        <li>
+                            Limitado a 500 clientes/contatos
+                        </li>
+                        <li>
+                            Limitado a 500 e-mails/mês(*)
+                        </li>
+                        <li>
+                            Limitado a 30 processos ativos
+                        </li>
+                        <li>
+                            Limitado a 5 proposta/processo
+                        </li>
+                        <li>
+                            Documentção on-line
+                        </li>
+                        @*<li>
+                            <strong>Suporte On-Line</strong>
+                        </li>*@
+                        <li class="plan-action">
+                            <a class="btn btn-primary btn-xs" href="#">Contrate Agora</a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="col-lg-4 wow zoomIn">
+                    <ul class="pricing-plan list-unstyled">
+                        <li class="pricing-title">
+                            Premium
+                        </li>
+                        <li class="pricing-desc">
+                            Descrição do plano Premium.
+                        </li>
+                        <li class="pricing-price">
+                            <span>R$ 800,00</span> / month
+                        </li>
+                        <li>
+                            Sem limite de clientes/contatos
+                        </li>
+                        <li>
+                            Sem limite de envio de E-Mails(*)
+                        </li>
+                        <li>
+                            Limitado a 30 processos ativos
+                        </li>
+                        <li>
+                            Limitado a 5 proposta/processo
+                        </li>
+                        <li>
+                            Documentação on-line
+                        </li>
+                        @*<li>
+                            <strong>Suporte On-Line</strong>
+                        </li>*@
+                        <li class="plan-action">
+                            <a class="btn btn-primary btn-xs" href="#">Contrate Agora</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="row m-t-lg">
+                <div class="col-lg-8 col-lg-offset-2 text-center m-t-lg">
+                    <p>Texto sobre os planos... veja o texto em inglês abaixo para orientar</p>
+                </div>
+            </div>
+        </div>
+
+    </section>
+
+    <section id="contact" class="gray-section contact">
+        <div class="container">
+            <div class="row m-b-lg">
+                <div class="col-lg-12 text-center">
+                    <div class="navy-line"></div>
+                    <h1>Contate-nos</h1>
+                    <p>Entre em contato conosco para mais informações ou preencha o formulário abaixo e um especialista entrará em contato com você</p>
+                </div>
+            </div>
+            <div class="row m-b-lg">
+                <div class="col-lg-3 col-lg-offset-3">
+                    <address>
+                        <strong><span class="navy">RTi</span></strong><br />
+                        Endereço da Empresa<br />
+                        Cidade, UF e CEP<br />
+                        <abbr title="Phone">P:</abbr> (99) 9999-9999
+                    </address>
+                </div>
+                <div class="col-lg-4">
+                    <p class="text-color">
+                        Criar texto sobre contatos,
+                    </p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <a href="mailto:suporte@rtiltda.net" class="btn btn-primary">Envie um e-mail</a>
+                    <p class="m-t-sm">
+                        Ou nos siga nas redes sociais
+                    </p>
+                    <ul class="list-inline social-icon">
+                        <li>
+                            <a href="#"><i class="fa fa-twitter"></i></a>
+                        </li>
+                        <li>
+                            <a href="#"><i class="fa fa-facebook"></i></a>
+                        </li>
+                        <li>
+                            <a href="#"><i class="fa fa-linkedin"></i></a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 text-center m-t-lg m-b-lg">
+                    <p><strong>&copy; 2023 CRMSys</strong><br /> Texto legal.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section for main scripts render -->
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/plugins/slimScroll")
+    @Scripts.Render("~/plugins/wow")
+    @Scripts.Render("~/bundles/inspinia")
+   
+    @if ((Boolean)Session["Close"] == true) 
+    {
+        <script type="text/javascript">
+            window.close();
+        </script>  
+    }
+
+    <script>
+
+        $(document).ready(function () {
+
+            $('body').scrollspy({
+                target: '.navbar-fixed-top',
+                offset: 80
+            });
+
+            // Page scrolling feature
+            $('a.page-scroll').bind('click', function (event) {
+                var link = $(this);
+                $('html, body').stop().animate({
+                    scrollTop: $(link.attr('href')).offset().top - 50
+                }, 500);
+                event.preventDefault();
+                $('#navbar').collapse('hide');
+            });
+        });
+
+        var cbpAnimatedHeader = (function () {
+            var docElem = document.documentElement,
+                    header = document.querySelector('.navbar-default'),
+                    didScroll = false,
+                    changeHeaderOn = 200;
+            function init() {
+                window.addEventListener('scroll', function (event) {
+                    if (!didScroll) {
+                        didScroll = true;
+                        setTimeout(scrollPage, 250);
+                    }
+                }, false);
+            }
+            function scrollPage() {
+                var sy = scrollY();
+                if (sy >= changeHeaderOn) {
+                    $(header).addClass('navbar-scroll')
+                }
+                else {
+                    $(header).removeClass('navbar-scroll')
+                }
+                didScroll = false;
+            }
+            function scrollY() {
+                return window.pageYOffset || docElem.scrollTop;
+            }
+            init();
+
+        })();
+
+    </script>
+
+</body>
+</html>

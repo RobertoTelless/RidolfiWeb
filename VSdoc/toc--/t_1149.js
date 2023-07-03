@@ -1,0 +1,1 @@
+c['1149']=[['1150',"TipoAcaoAppService Constructor","topic_0000000000000CCA.html",0],['1151',"Methods","topic_0000000000000CC9_methods--.html",1]];

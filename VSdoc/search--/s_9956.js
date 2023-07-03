@@ -1,0 +1,1 @@
+search_result['9956']=["topic_0000000000001A96.html","Longitude2 Field","Longitude for the second geo point."];

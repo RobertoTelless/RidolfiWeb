@@ -1,0 +1,1 @@
+c['7012']=[['7013',"Create(MOTIVO_ENCERRAMENTO) Method","topic_0000000000001252.html",0],['7014',"Create(MOTIVO_ENCERRAMENTO, LOG) Method","topic_0000000000001251.html",0]];

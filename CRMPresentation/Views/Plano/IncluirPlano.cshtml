@@ -1,0 +1,459 @@
+﻿@using Presentation.Extensions
+@model ERP_Condominios_Solution.ViewModels.PlanoViewModel
+@{
+    Layout = "~/Views/Shared/_Layout_Admin.cshtml";
+}
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="page-title">
+        <h3 class="title">Planos de Assinatura</h3>
+        <br />
+        <ol class="breadcrumb">
+            <li>
+                <a href="@Url.Action("CarregarBase", "BaseAdmin")">Dashboard</a>
+            </li>
+            <li>
+                <a href="@Url.Action("MontarTelaDashboardAssinantes", "BaseAdmin")">Dashboard Assinantes</a>
+            </li>
+            <li>
+                <a href="@Url.Action("MontarTelaPlano", "Plano")">Planos de Assinatura</a>
+            </li>
+            <li class="active">
+                <strong>Planos de Assinatura - Inclusão</strong>
+            </li>
+        </ol>
+        <br />
+    </div>
+    <div class="row">
+        <div class="col-lg-12 col-md-12 col-xs-12">
+            <div class="col-lg-12 col-md-12 col-xs-12 ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>Planos de Assinatura - Inclusão</h5>
+                </div>
+                @using (Html.BeginForm("IncluirPlano", "Plano", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", @id="pwd-container1" }))
+                {
+                    <div class="ibox-content">
+                        @Html.AntiForgeryToken()
+                        @if (!ViewData.ModelState.IsValid)
+                        {
+                            <div class="alert alert-danger">
+                                <button type="button" class="close" data-dismiss="alert">Fechar</button>
+                                @Html.ValidationSummary(false, "Erros de Crítica Encontrados:", new { @class = "text-danger" })
+                            </div>
+                        }
+                        <div class="form-group">
+                            @Html.ButtonActionSubmit(text: "Confirma Inclusão de Plano de Assinatura", htmlAttributes: new { id = "basictoast" })
+                            @Html.ButtonLinkIndex(text: "Voltar", action: "MontarTelaPlano", controller: "Plano")
+                        </div>
+                        <div class="row">
+                            <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">                
+                                <div class="col-lg-2 col-md-2 col-xs-12">
+                                    @Html.HiddenFor(m => m.PLAN_DT_CRIACAO)
+                                    @Html.HiddenFor(m => m.PLAN_IN_ATIVO)
+                                    Data de Criação
+                                    @Html.TextBoxFor(m => m.PLAN_DT_CRIACAO, "{0:dd/MM/yyyy}", new { @class = "form-control", autofocus = true, @readonly="readonly" })
+                                </div>
+                                <div class="col-lg-2 col-md-2 col-xs-12">
+                                    Periodicidade Cobrança*
+                                    @Html.DropDownListFor(m => m.PLPE_CD_ID, (SelectList)ViewBag.Periodicidade, "Selecionar", new { @class = "form-control", autofocus = true })
+                                    @Html.ValidationMessageFor(m => m.PLPE_CD_ID, "", new { @style = "color:red" })
+                                </div>
+                                <div class="col-lg-2 col-md-2 col-xs-12">
+                                    Duração (Meses)*
+                                    @Html.TextBoxFor(m => m.PLAN_IN_DURACAO, new { @class = "form-control", autofocus = true })
+                                    @Html.ValidationMessageFor(m => m.PLAN_IN_DURACAO, "", new { @style = "color:red" })
+                                </div>
+                                <div class="col-lg-2 col-md-2 col-xs-12">
+                                    Preço Normal (R$)*
+                                    @Html.TextBoxFor(m => m.ValorNormal, "{0:n2}", new { @class = "form-control", autofocus = true })
+                                    @Html.ValidationMessageFor(m => m.ValorNormal, "", new { @style = "color:red" })
+                                </div>
+                                <div class="col-lg-2 col-md-2 col-xs-12">
+                                    Preço Promoção (R$)
+                                    @Html.TextBoxFor(m => m.ValorPromocao, "{0:n2}", new { @class = "form-control", autofocus = true, @style = "font-weight:bold; color:darkblue" })
+                                    @Html.ValidationMessageFor(m => m.ValorPromocao, "", new { @style = "color:red" })
+                                </div>
+                            </div>
+                            <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
+                                <div class="col-lg-10 col-md-10 col-xs-12">
+                                    Nome*
+                                    @Html.TextBoxFor(m => m.PLAN_NM_NOME, new { @class = "form-control", autofocus = true })
+                                    @Html.ValidationMessageFor(m => m.PLAN_NM_NOME, "", new { @style = "color:red" })
+                                </div>
+                                <div class="col-lg-2 col-md-2 col-xs-12">
+                                    Marca*
+                                    @Html.TextBoxFor(m => m.PLAN_NM_EXIBE, new { @class = "form-control", autofocus = true })
+                                    @Html.ValidationMessageFor(m => m.PLAN_NM_EXIBE, "", new { @style = "color:red" })
+                                </div>
+                            </div>
+                            <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
+                                <div class="col-lg-12 col-md-12 col-xs-12">
+                                    Descrição*
+                                    @Html.TextAreaFor(m => m.PLAN_DS_DESCRICAO, new { @class = "form-control", style = "width: 100%; height: 200px;", autofocus = true })
+                                    @Html.ValidationMessageFor(m => m.PLAN_DS_DESCRICAO, "", new { @style = "color:red" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">  
+                                <h5 style=" margin-left: 15px; color: green">Informar 0 para não ter limite</h5>
+                                <div class="col-lg-2 col-md-2 col-xs-12">
+                                    Máximo Clientes
+                                    @Html.TextBoxFor(m => m.PLAN_NR_CONTATOS, new { @class = "form-control", autofocus = true, @style = "font-weight:bold; color:darkblue" })
+                                    @Html.ValidationMessageFor(m => m.PLAN_NR_CONTATOS, "", new { @style = "color:red" })
+                                </div>
+                                <div class="col-lg-2 col-md-2 col-xs-12">
+                                    Máximo Usuários
+                                    @Html.TextBoxFor(m => m.PLAN_NR_USUARIOS, new { @class = "form-control", autofocus = true, @style = "font-weight:bold; color:darkblue" })
+                                    @Html.ValidationMessageFor(m => m.PLAN_NR_USUARIOS, "", new { @style = "color:red" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">  
+                                <div class="col-lg-2 col-md-2 col-xs-12" id="rec">
+                                    Acesso à Mensagens
+                                    <br />
+                                    @Html.CheckBoxFor(m => m.Mensagem, new { @class = "checkbox i-checks", autofocus = true })
+                                    @Html.ValidationMessageFor(m => m.Mensagem, "", new { @style = "color:red" })
+                                </div>
+                                <div class="col-lg-2 col-md-2 col-xs-12">
+                                    Máximo E-Mail Mensal
+                                    @Html.TextBoxFor(m => m.PLAN_NR_EMAIL, new { @class = "form-control", autofocus = true, @style = "font-weight:bold; color:darkblue" })
+                                    @Html.ValidationMessageFor(m => m.PLAN_NR_EMAIL, "", new { @style = "color:red" })
+                                </div>
+                                <div class="col-lg-2 col-md-2 col-xs-12">
+                                    Máximo SMS Mensal
+                                    @Html.TextBoxFor(m => m.PLAN_NR_SMS, new { @class = "form-control", autofocus = true, @style = "font-weight:bold; color:darkblue" })
+                                    @Html.ValidationMessageFor(m => m.PLAN_NR_SMS, "", new { @style = "color:red" })
+                                </div>
+                                <div class="col-lg-2 col-md-2 col-xs-12">
+                                    Máximo SMS Prioritário Mensal
+                                    @Html.TextBoxFor(m => m.PLAN_NR_SMS_PRIORITARIO, new { @class = "form-control", autofocus = true, @style = "font-weight:bold; color:darkblue" })
+                                    @Html.ValidationMessageFor(m => m.PLAN_NR_SMS_PRIORITARIO, "", new { @style = "color:red" })
+                                </div>
+                                <div class="col-lg-2 col-md-2 col-xs-12">
+                                    Máximo WhatsApp Mensal
+                                    @Html.TextBoxFor(m => m.PLAN_NR_WHATSAPP, new { @class = "form-control", autofocus = true, @style = "font-weight:bold; color:darkblue" })
+                                    @Html.ValidationMessageFor(m => m.PLAN_NR_WHATSAPP, "", new { @style = "color:red" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">  
+                                <div class="col-lg-2 col-md-2 col-xs-12" id="rec">
+                                    Acesso à CRM & Propostas
+                                    <br />
+                                    @Html.CheckBoxFor(m => m.CRM, new { @class = "checkbox i-checks", autofocus = true })
+                                    @Html.ValidationMessageFor(m => m.CRM, "", new { @style = "color:red" })
+                                </div>
+                                <div class="col-lg-2 col-md-2 col-xs-12">
+                                    Máximo Processos Ativos
+                                    @Html.TextBoxFor(m => m.PLAN_NR_PROCESSOS, new { @class = "form-control", autofocus = true, @style = "font-weight:bold; color:darkblue" })
+                                    @Html.ValidationMessageFor(m => m.PLAN_NR_PROCESSOS, "", new { @style = "color:red" })
+                                </div>
+                                <div class="col-lg-2 col-md-2 col-xs-12">
+                                    Máximo Ações Ativas
+                                    @Html.TextBoxFor(m => m.PLAN_NR_ACOES, new { @class = "form-control", autofocus = true, @style = "font-weight:bold; color:darkblue" })
+                                    @Html.ValidationMessageFor(m => m.PLAN_NR_ACOES, "", new { @style = "color:red" })
+                                </div>
+                            </div>
+                        </div>
+                        @*<div class="row">
+                            <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">  
+                                <div class="col-lg-2 col-md-2 col-xs-12" id="rec">
+                                    Acesso à Pesquisas
+                                    <br />
+                                    @Html.CheckBoxFor(m => m.Pesquisas, new { @class = "checkbox i-checks", autofocus = true })
+                                    @Html.ValidationMessageFor(m => m.Pesquisas, "", new { @style = "color:red" })
+                                </div>
+                                <div class="col-lg-2 col-md-2 col-xs-12">
+                                    Máximo Pesquisas Ativas
+                                    @Html.TextBoxFor(m => m.PLAN_NR_PESQUISAS, new { @class = "form-control", autofocus = true, @style = "font-weight:bold; color:darkblue" })
+                                    @Html.ValidationMessageFor(m => m.PLAN_NR_PESQUISAS, "", new { @style = "color:red" })
+                                </div>
+                            </div>
+                        </div>*@
+                        @*<div class="row">
+                            <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">  
+                                <div class="col-lg-2 col-md-2 col-xs-12" id="rec">
+                                    Acesso à Atendimentos
+                                    <br />
+                                    @Html.CheckBoxFor(m => m.Atendimentos, new { @class = "checkbox i-checks", autofocus = true })
+                                    @Html.ValidationMessageFor(m => m.Atendimentos, "", new { @style = "color:red" })
+                                </div>
+                                <div class="col-lg-2 col-md-2 col-xs-12">
+                                    Máximo Atendimentos Ativos
+                                    @Html.TextBoxFor(m => m.PLAN_NR_ATENDIMENTOS, new { @class = "form-control", autofocus = true, @style = "font-weight:bold; color:darkblue" })
+                                    @Html.ValidationMessageFor(m => m.PLAN_NR_ATENDIMENTOS, "", new { @style = "color:red" })
+                                </div>
+                                <div class="col-lg-2 col-md-2 col-xs-12">
+                                    Máximo Fornecedores Ativos
+                                    @Html.TextBoxFor(m => m.PLAN_NR_FORNECEDOR, new { @class = "form-control", autofocus = true, @style = "font-weight:bold; color:darkblue" })
+                                    @Html.ValidationMessageFor(m => m.PLAN_NR_FORNECEDOR, "", new { @style = "color:red" })
+                                </div>
+                                <div class="col-lg-2 col-md-2 col-xs-12">
+                                    Máximo Produtos Ativos
+                                    @Html.TextBoxFor(m => m.PLAN_NR_PRODUTO, new { @class = "form-control", autofocus = true, @style = "font-weight:bold; color:darkblue" })
+                                    @Html.ValidationMessageFor(m => m.PLAN_NR_PRODUTO, "", new { @style = "color:red" })
+                                </div>
+                            </div>
+                        </div>*@
+                    </div>
+                }
+            </div>
+         </div>
+    </div>
+</div>
+
+@section Styles {
+    <link href="~/Content/themes/base/jquery-ui.min.css" rel="stylesheet" />
+    <link href="~/Content/themes/base/all.css" rel="stylesheet" />
+    @*<link href="~/Content/jquery.datetimepicker.css" rel="stylesheet" />*@
+    @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
+    @Styles.Render("~/plugins/jasnyBootstrapStyles")
+    @Styles.Render("~/plugins/toastrStyles")
+    @Styles.Render("~/Content/plugins/summernote/summernote.css")
+    <link href="~/Content/jquery-ui-timepicker-addon.min.css" rel="stylesheet" />
+    <link href="~/Content/plugins/select2/select2.min.css" rel="stylesheet" />
+
+    <link href="~/Content/themes/base/all.css" rel="stylesheet" />
+    <link href="~/Content/themes/base/jquery-ui.min.css" rel="stylesheet" />
+    @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
+    @Styles.Render("~/plugins/jasnyBootstrapStyles")
+    @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
+    @Styles.Render("~/plugins/toastrStyles")
+    @Styles.Render("~/Content/plugins/summernote/summernote.css")
+    @Styles.Render("~/plugins/touchSpinStyles")
+    <link href="~/Content/plugins/select2/select2.min.css" rel="stylesheet" />
+    <link href="~/Content/jquery-ui-timepicker-addon.min.css" rel="stylesheet" />
+}
+@section Scripts {
+    @*<script src="~/Scripts/jquery.datetimepicker.full.min.js"></script>*@
+    <script type="text/javascript" src="~/Scripts/moment.min.js"></script>
+    <script type="text/javascript" src="~/Scripts/bootstrap.min.js"></script>
+    <script type="text/javascript" src="~/Scripts/jquery.datetimepicker"></script>
+    <script src="~/Scripts/jquery-ui-timepicker-addon.min.js"></script>
+    @Scripts.Render("~/plugins/toastr")
+    <script src="~/Scripts/jquery-ui-1.12.1.min.js"></script>
+    @Scripts.Render("~/plugins/dataTables")
+    @Scripts.Render("~/bundles/inputmask")
+    @Scripts.Render("~/plugins/jasnyBootstrap")
+    @Scripts.Render("~/plugins/sparkline")
+    @Scripts.Render("~/Scripts/plugins/summernote/summernote.min.js")
+    <script src="~/Scripts/plugins/select2/select2.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.maskedinput/1.4.1/jquery.maskedinput.js"></script>    
+    <script src="~/Scripts/uploadAnexo.js"></script>
+
+        <script src="~/Scripts/jquery-ui-1.12.1.min.js"></script>
+    @Scripts.Render("~/plugins/toastr")
+    @Scripts.Render("~/plugins/dataTables")
+    @Scripts.Render("~/bundles/inputmask")
+    @Scripts.Render("~/plugins/jasnyBootstrap")
+    @Scripts.Render("~/plugins/summernote")
+    @Scripts.Render("~/plugins/touchSpin")
+    <script src="~/Scripts/jquery-ui-timepicker-addon.min.js"></script>
+    <script src="~/Scripts/plugins/select2/select2.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.maskedinput/1.4.1/jquery.maskedinput.js"></script>
+    <script src="~/Scripts/uploadAnexo.js"></script>
+    <script>
+        function Fade() {
+            $('.dotContainer').fadeIn("fast");
+            $('#login').css("filter", "blur(4px)");
+        }
+    </script>
+    <script>
+        $(window).on("load", function () {
+            $('.dotContainer').fadeOut("slow");
+            $('#title').css("filter", "blur(0)");
+            $('#content').css("filter", "blur(0)");
+        });
+    </script>
+
+    <script type="text/javascript">
+        $(function () {
+            $("#tel").mask("(99)9999-9999");
+            $("#cel").mask("(99)99999-9999");
+            $("#dn").mask("99/99/9999");
+        });
+    </script>
+
+    <script type="text/javascript" language="javascript">
+        $(function () {
+            $('.date-picker').datepicker(
+                {
+                    dateFormat: 'dd/mm/yy',
+                    dayNames: ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'],
+                    dayNamesMin: ['D', 'S', 'T', 'Q', 'Q', 'S', 'S', 'D'],
+                    dayNamesShort: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'],
+                    monthNames: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'],
+                    monthNamesShort: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
+                    nextText: 'Proximo',
+                    prevText: 'Anterior',
+                    showOn: "focus"
+                }
+            )
+                .css("display", "normal")
+                .next("button").button({
+                    icons: { primary: "ui-icon-calendar" },
+                    label: "Selecione uma data",
+                    text: false
+                });
+        });
+    </script>
+    @Scripts.Render("~/plugins/iCheck")
+
+    <script type="text/javascript" language="javascript">
+        $(function () {
+            $('.datetime-picker').datetimepicker(
+                {
+                    dateFormat: 'dd/mm/yy',
+                    dayNames: ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'],
+                    dayNamesMin: ['D', 'S', 'T', 'Q', 'Q', 'S', 'S', 'D'],
+                    dayNamesShort: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'],
+                    monthNames: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'],
+                    monthNamesShort: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
+                    nextText: 'Proximo',
+                    prevText: 'Anterior',
+                    controlType: 'select',
+                    showSecond: "false",
+                    timeFormat: 'HH:mm',
+                    locale: 'pt-br',
+                    hourText: 'Hora',
+                    minuteText: 'Minuto',
+                    secondText: 'Segundo',
+                    currentText: 'Agora',
+                    closeText: 'Feito',
+                    showOn: "focus"
+                }
+            )
+                .css("display", "normal")
+                .next("button").button({
+                    icons: { primary: "ui-icon-calendar" },
+                    label: "Selecione uma data",
+                    text: false
+                });
+        });
+    </script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            $('.i-checks').iCheck({
+                checkboxClass: 'icheckbox_square-green',
+                radioClass: 'iradio_square-green',
+            });
+
+        });
+    </script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            var i = -1;
+            var toastCount = 0;
+            var $toastlast;
+            var getMessage = function () {
+                var msg = 'Hi, welcome to Inspinia. This is example of Toastr notification box.';
+                return msg;
+            };
+
+            $('#basictoast').click(function () {
+                // Display a success toast, with a title
+                toastr.success('Inclusão em andamento!')
+            });
+            $('#showtoast').click(function () {
+                var shortCutFunction = $("#toastTypeGroup input:radio:checked").val();
+                var msg = $('#message').val();
+                var title = $('#title').val() || '';
+                var $showDuration = $('#showDuration');
+                var $hideDuration = $('#hideDuration');
+                var $timeOut = $('#timeOut');
+                var $extendedTimeOut = $('#extendedTimeOut');
+                var $showEasing = $('#showEasing');
+                var $hideEasing = $('#hideEasing');
+                var $showMethod = $('#showMethod');
+                var $hideMethod = $('#hideMethod');
+                var toastIndex = toastCount++;
+                toastr.options = {
+                    closeButton: $('#closeButton').prop('checked'),
+                    debug: $('#debugInfo').prop('checked'),
+                    progressBar: $('#progressBar').prop('checked'),
+                    positionClass: $('#positionGroup input:radio:checked').val() || 'toast-top-right',
+                    onclick: null
+                };
+                if ($('#addBehaviorOnToastClick').prop('checked')) {
+                    toastr.options.onclick = function () {
+                        alert('You can perform some custom action after a toast goes away');
+                    };
+                }
+                if ($showDuration.val().length) {
+                    toastr.options.showDuration = $showDuration.val();
+                }
+                if ($hideDuration.val().length) {
+                    toastr.options.hideDuration = $hideDuration.val();
+                }
+                if ($timeOut.val().length) {
+                    toastr.options.timeOut = $timeOut.val();
+                }
+                if ($extendedTimeOut.val().length) {
+                    toastr.options.extendedTimeOut = $extendedTimeOut.val();
+                }
+                if ($showEasing.val().length) {
+                    toastr.options.showEasing = $showEasing.val();
+                }
+                if ($hideEasing.val().length) {
+                    toastr.options.hideEasing = $hideEasing.val();
+                }
+                if ($showMethod.val().length) {
+                    toastr.options.showMethod = $showMethod.val();
+                }
+                if ($hideMethod.val().length) {
+                    toastr.options.hideMethod = $hideMethod.val();
+                }
+                if (!msg) {
+                    msg = getMessage();
+                }
+                $("#toastrOptions").text("Command: toastr["
+                        + shortCutFunction
+                        + "](\""
+                        + msg
+                        + (title ? "\", \"" + title : '')
+                        + "\")\n\ntoastr.options = "
+                        + JSON.stringify(toastr.options, null, 2)
+                );
+                var $toast = toastr[shortCutFunction](msg, title); // Wire up an event handler to a button in the toast, if it exists
+                $toastlast = $toast;
+                if ($toast.find('#okBtn').length) {
+                    $toast.delegate('#okBtn', 'click', function () {
+                        alert('you clicked me. i was toast #' + toastIndex + '. goodbye!');
+                        $toast.remove();
+                    });
+                }
+                if ($toast.find('#surpriseBtn').length) {
+                    $toast.delegate('#surpriseBtn', 'click', function () {
+                        alert('Surprise! you clicked me. i was toast #' + toastIndex + '. You could perform an action here.');
+                    });
+                }
+            });
+            function getLastToast() {
+                return $toastlast;
+            }
+            $('#clearlasttoast').click(function () {
+                toastr.clear(getLastToast());
+            });
+            $('#cleartoasts').click(function () {
+                toastr.clear();
+            });
+
+        });
+    </script>
+
+    @if (ViewBag.Message != null)
+    {
+        <script type="text/javascript">
+            window.onload = function () {
+                  alert("@ViewBag.Message");
+            };
+        </script>
+    }
+}
+

@@ -1,0 +1,1 @@
+c['2745']=[['2746',"ASSI_CD_ID Property","topic_0000000000000917.html",0],['2747',"TIPE_CD_ID Property","topic_0000000000000916.html",0],['2748',"TIPE_IN_ATIVO Property","topic_0000000000000919.html",0],['2749',"TIPE_NM_NOME Property","topic_0000000000000918.html",0]];

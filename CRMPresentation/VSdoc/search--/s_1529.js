@@ -1,0 +1,1 @@
+search_result['1529']=["topic_0000000000000471.html","WebMvcExtensions.BasicCheckBoxFor\u0026lt;T\u0026gt; Method","/// Remover o input hidden para checkbox booleano na tela de pesquisa\r\n        /// http://stackoverflow.com/a/9666218\r\n        ///"];

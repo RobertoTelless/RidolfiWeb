@@ -1,0 +1,33 @@
+﻿@using Presentation.Extensions
+@model ERP_Condominios_Solution.ViewModels.PesquisaItemViewModel
+
+@if (Model.TIIT_CD_ID == 1 || Model.TIIT_CD_ID == 2)
+{
+    <div class="row">
+        <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
+            <div class="col-lg-12 col-md-12 col-xs-12">
+                @Html.HiddenFor(m => m.PESQ_CD_ID)
+                @Html.HiddenFor(m => m.PEIT_IN_ATIVO)
+                @Html.HiddenFor(m => m.PEIT_IN_ORDEM)
+                @Html.HiddenFor(m => m.PEIT_IN_OBRIGATORIA)
+                @Html.HiddenFor(m => m.PEIT_CD_ID)
+                @Html.HiddenFor(m => m.PEIT_DS_PERGUNTA)
+                @Html.HiddenFor(m => m.PEIT_NM_PERGUNTA)
+                Título da Pergunta
+                @Html.TextBoxFor(m => m.PEIT_NM_PERGUNTA, new { @class = "form-control", autofocus = true, @readonly = "readonly", @style="color:green; font-weight:bold" })
+            </div>
+        </div>
+        <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
+            <div class="col-lg-12 col-md-12 col-xs-12">
+                Pergunta
+                @Html.TextAreaFor(m => m.PEIT_NM_PERGUNTA, new { @class = "form-control", style = "width: 100%; height: 200px;", autofocus = true })
+            </div>
+        </div>
+        <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
+            <div class="col-lg-12 col-md-12 col-xs-12">
+                Resposta
+                @Html.TextAreaFor(m => m.PEIT_DS_RESPOSTA_TEXTO, new { @class = "form-control", style = "width: 100%; height: 200px;", autofocus = true })
+            </div>
+        </div>
+    </div>                              
+}

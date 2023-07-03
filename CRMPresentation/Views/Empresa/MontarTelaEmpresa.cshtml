@@ -1,0 +1,1573 @@
+﻿@using Presentation.Extensions
+@model ERP_Condominios_Solution.ViewModels.EmpresaViewModel
+@{
+    Layout = "~/Views/Shared/_Layout_Admin.cshtml";
+}
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="modalContainer">
+        <div id="modal" class="modal" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        @*titulo gerado dinamicamente*@
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        @*Gerado dinamicamente*@
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="page-title">
+        <h3 class="title">Configuração da Empresa</h3>
+        <br />
+        <ol class="breadcrumb">
+            <li>
+                <a href="@Url.Action("CarregarBase", "BaseAdmin")">Dashboard</a>
+            </li>
+            <li class="active">
+                <strong>Configuração da Empresa</strong>
+            </li>
+        </ol>
+        <br />
+    </div>
+
+    <div class="row">
+        <div class="col-lg-12 col-md-12 col-xs-12">
+            <div class="col-lg-12 col-md-12 col-xs-12 ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>Configuração da Empresa</h5>
+                </div>
+
+                <div class="ibox-content">
+                    @if (!ViewData.ModelState.IsValid)
+                    {
+                        <div class="alert alert-danger">
+                            <button type="button" class="close" data-dismiss="alert">Fechar</button>
+                            @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+                        </div>
+                    }
+                    <div class="form-group">
+                        @Html.ButtonLinkIndex(text: "Voltar", action: "VoltarDash", controller: "Empresa")
+                    </div>
+                    <div class="tabs-container">
+                        <ul class="nav nav-tabs">
+                            @if ((Int32)Session["NivelEmpresa"] == 1)
+                            {
+                                <li class="active"><a data-toggle="tab" href="#tab-1">Dados Gerais</a></li>
+                                <li class=""><a data-toggle="tab" href="#tab-2">Anexos</a></li>
+                                <li class=""><a data-toggle="tab" href="#tab-8">Logotipo</a></li>
+                            }
+                            @if ((Int32)Session["NivelEmpresa"] == 2)
+                            {
+                                <li class=""><a data-toggle="tab" href="#tab-1">Dados Gerais</a></li>
+                                <li class=""><a data-toggle="tab" href="#tab-2">Anexos</a></li>
+                                <li class=""><a data-toggle="tab" href="#tab-8">Logotipo</a></li>
+                            }
+                            @if ((Int32)Session["NivelEmpresa"] == 3)
+                            {
+                                <li class=""><a data-toggle="tab" href="#tab-1">Dados Gerais</a></li>
+                                <li class=""><a data-toggle="tab" href="#tab-2">Anexos</a></li>
+                                <li class=""><a data-toggle="tab" href="#tab-8">Logotipo</a></li>
+                            }
+                            @if ((Int32)Session["NivelEmpresa"] == 4)
+                            {
+                                <li class=""><a data-toggle="tab" href="#tab-1">Dados Gerais</a></li>
+                                <li class=""><a data-toggle="tab" href="#tab-2">Anexos</a></li>
+                                <li class=""><a data-toggle="tab" href="#tab-8">Logotipo</a></li>
+                            }
+                        </ul>
+                        <div class="tab-content">
+
+                            @*Dados Gerais*@
+                            @if ((Int32)Session["NivelEmpresa"] == 1)
+                            {
+                                <div id="tab-1" class="tab-pane active">
+                                    <div class="panel-body">
+                                        @using (Html.BeginForm("MontarTelaEmpresa", "Empresa", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", @id = "pwd-container1" }))
+                                        {
+                                            <div class="row" style="width: 100%;">
+                                                <div class="col-lg-12 col-md-12 col-xs-12">
+                                                    <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
+                                                        @if (ViewBag.Perfil == "ADM" || ViewBag.Perfil == "GER")
+                                                        {
+                                                            @Html.ButtonActionSubmit(text: "Confirma Alteração da Configuração da Empresa", htmlAttributes: new { id = "basictoast" })
+                                                        }
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row" style="width: 100%;">
+                                                <div class="col-lg-2 col-md-2 col-xs-12">
+                                                    <div style="text-align: center; margin-top: 20px; line-height: 10px;">
+                                                        @if (!String.IsNullOrEmpty(Model.EMPR_AQ_LOGO))
+                                                        {
+                                                            <img src="@Url.Content(Model.EMPR_AQ_LOGO)" style="width: auto; height: auto; max-height: 180px; max-width: 180px;">
+                                                        }
+                                                        else
+                                                        {
+                                                            <img src="~/Images/icone_imagem.jpg" style="width: auto; height: auto; max-height: 180px; max-width: 120px;">
+                                                        }
+                                                        <br />
+                                                        <br />
+                                                        <br />
+                                                        <br />
+                                                        <br />
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-10 col-md-10 col-xs-12">
+                                                    <div class="row">
+                                                        <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
+                                                            <div class="col-lg-6 col-md-6 col-xs-12">
+                                                                @Html.HiddenFor(m => m.ASSI_CD_ID)
+                                                                @Html.HiddenFor(m => m.EMPR_IN_ATIVO)
+                                                                @Html.HiddenFor(m => m.EMPR_DT_CADASTRO)
+                                                                @Html.HiddenFor(m => m.EMPR_CD_ID)
+                                                                @Html.HiddenFor(m => m.RETR_CD_ID)
+                                                                @Html.HiddenFor(m => m.EMPR_AQ_LOGO)
+                                                                Nome*
+                                                                @Html.TextBoxFor(m => m.EMPR_NM_NOME, new { @class = "form-control", autofocus = true, @style = "color: green; font-wheight: bold" })
+                                                                @Html.ValidationMessageFor(m => m.EMPR_NM_NOME, "", new { @style = "color:red" })
+                                                            </div>
+                                                            <div class="col-lg-6 col-md-6 col-xs-12">
+                                                                Razão Social
+                                                                @Html.TextBoxFor(m => m.EMPR_NM_RAZAO, new { @class = "form-control", autofocus = true })
+                                                                @Html.ValidationMessageFor(m => m.EMPR_NM_RAZAO, "", new { @style = "color:red" })
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
+                                                            <div class="col-lg-2 col-md-2 col-xs-12">
+                                                                CNPJ*
+                                                                @Html.TextBoxFor(m => m.EMPR_NR_CNPJ, new { @class = "form-control", @id = "cnpj", autofocus = true })
+                                                                @Html.ValidationMessageFor(m => m.EMPR_NR_CNPJ, "", new { @style = "color:red" })
+                                                            </div>
+                                                            <div class="col-lg-2 col-md-2 col-xs-12">
+                                                                Insc.Estadual
+                                                                @Html.TextBoxFor(m => m.EMPR_NR_INSCRICAO_ESTADUAL, new { @class = "form-control", autofocus = true })
+                                                                @Html.ValidationMessageFor(m => m.EMPR_NR_INSCRICAO_ESTADUAL, "", new { @style = "color:red" })
+                                                            </div>
+                                                            <div class="col-lg-2 col-md-2 col-xs-12">
+                                                                Insc.Municipal
+                                                                @Html.TextBoxFor(m => m.EMPR_NR_INSCRICAO_MUNICIPAL, new { @class = "form-control", autofocus = true })
+                                                                @Html.ValidationMessageFor(m => m.EMPR_NR_INSCRICAO_MUNICIPAL, "", new { @style = "color:red" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-lg-12 col-md-12 col-xs-12">
+                                                    <div class="row">
+                                                        @*<div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
+                                                            <div class="col-lg-2 col-md-2 col-xs-12">
+                                                                Regime Tributário*
+                                                                @Html.DropDownListFor(m => m.RETR_CD_ID, (SelectList)ViewBag.Regimes, "Selecionar", new { @class = "form-control", autofocus = true, onchange="GetRegime($(this).val())" })
+                                                                @Html.ValidationMessageFor(m => m.RETR_CD_ID, "", new { @style = "color:red" })
+                                                            </div>
+                                                            @if (Model.RETR_CD_ID == null || Model.RETR_CD_ID == 0)
+                                                            {
+                                                                <div class="col-lg-2 col-md-2 col-xs-12">
+                                                                    Alíquota Imposto (%)
+                                                                    @Html.TextBoxFor(m => m.EMPR_VL_IMPOSTO_MEI, new { @class = "form-control", @id="aliquota", autofocus = true })
+                                                                    @Html.ValidationMessageFor(m => m.EMPR_VL_IMPOSTO_MEI, "", new { @style = "color:red" })
+                                                                </div>
+                                                            }
+                                                            else
+                                                            {
+                                                                <div class="col-lg-2 col-md-2 col-xs-12">
+                                                                    Alíquota Imposto (%)
+                                                                    @Html.TextBoxFor(m => m.EMPR_VL_IMPOSTO_MEI, new { @class = "form-control", autofocus = true, @id= "aliquota", @style="background-color:beige; color: green; font-weight: bold", @readonly = "readonly" })
+                                                                    @Html.ValidationMessageFor(m => m.EMPR_VL_IMPOSTO_MEI, "", new { @style = "color:red" })
+                                                                </div>
+                                                            }
+                                                            <div class="col-lg-2 col-md-2 col-xs-12">
+                                                                Alíquota Outros Impostos (%)
+                                                                @Html.TextBoxFor(m => m.EMPR_VL_IMPOSTO_OUTROS, new { @class = "form-control", autofocus = true, @id= "outros" })
+                                                                @Html.ValidationMessageFor(m => m.EMPR_VL_IMPOSTO_OUTROS, "", new { @style = "color:red" })
+                                                            </div>
+                                                        </div>*@
+
+                                                        @*<div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
+                                                            <div class="col-lg-2 col-md-2 col-xs-12">
+                                                                Comissão Vendedor (%)
+                                                                @Html.TextBoxFor(m => m.EMPR_VL_COMISSAO_VENDEDOR, new { @class = "form-control", autofocus = true })
+                                                                @Html.ValidationMessageFor(m => m.EMPR_VL_COMISSAO_VENDEDOR, "", new { @style = "color:red" })
+                                                            </div>
+                                                            <div class="col-lg-2 col-md-2 col-xs-12">
+                                                                Comissão Gerente (%)
+                                                                @Html.TextBoxFor(m => m.EMPR_VL_COMISSAO_GERENTE, new { @class = "form-control", autofocus = true })
+                                                                @Html.ValidationMessageFor(m => m.EMPR_VL_COMISSAO_GERENTE, "", new { @style = "color:red" })
+                                                            </div>
+                                                            <div class="col-lg-2 col-md-2 col-xs-12">
+                                                                Comissão Outros (%)
+                                                                @Html.TextBoxFor(m => m.EMPR_VL_COMISSAO_OUTROS, new { @class = "form-control", autofocus = true })
+                                                                @Html.ValidationMessageFor(m => m.EMPR_VL_COMISSAO_OUTROS, "", new { @style = "color:red" })
+                                                            </div>
+                                                        </div>*@
+
+                                                        @*<div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
+                                                            <div class="col-lg-2 col-md-2 col-xs-12">
+                                                                Royalties (%)
+                                                                @Html.TextBoxFor(m => m.EMPR_VL_ROYALTIES, new { @class = "form-control", autofocus = true })
+                                                                @Html.ValidationMessageFor(m => m.EMPR_VL_ROYALTIES, "", new { @style = "color:red" })
+                                                            </div>
+                                                            <div class="col-lg-2 col-md-2 col-xs-12">
+                                                                Fundo de Propaganda (%)
+                                                                @Html.TextBoxFor(m => m.EMPR_VL_FUNDO_PROPAGANDA, new { @class = "form-control", autofocus = true })
+                                                                @Html.ValidationMessageFor(m => m.EMPR_VL_FUNDO_PROPAGANDA, "", new { @style = "color:red" })
+                                                            </div>
+                                                            <div class="col-lg-2 col-md-2 col-xs-12">
+                                                                Fundo de Segurança (%)
+                                                                @Html.TextBoxFor(m => m.EMPR_VL_FUNDO_SEGURANCA, new { @class = "form-control", autofocus = true })
+                                                                @Html.ValidationMessageFor(m => m.EMPR_VL_FUNDO_SEGURANCA, "", new { @style = "color:red" })
+                                                            </div>
+                                                        </div>*@
+
+                                                        <div class="form-group" style="margin: 0 -15px 0 -15px;" id="containerCep">
+                                                            <div class="col-lg-1 col-md-1 col-xs-12">
+                                                                CEP
+                                                                @Html.TextBoxFor(m => m.EMPR_NR_CEP, new { @class = "form-control", autofocus = true, @id = "cep" })
+                                                                @Html.ValidationMessageFor(m => m.EMPR_NR_CEP, "", new { @style = "color:red" })
+                                                            </div>
+                                                            <div class="col-lg-2 col-md-2 col-xs-12">
+                                                                <span class="btn btn-warning btn-sm" style="margin-bottom: -45px;" id="btnBuscaCep" onclick="PesquisaCep($('#cep').val(), $(this), 1)">Buscar CEP</span>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="form-group" style="margin: 30px -15px 0 -15px;" id="containerEnd">
+                                                            <div class="col-lg-3 col-md-3 col-xs-12">
+                                                                Endereço
+                                                                @Html.TextBoxFor(m => m.EMPR_NM_ENDERECO, new { @class = "form-control", autofocus = true, @id = "endereco" })
+                                                                @Html.ValidationMessageFor(m => m.EMPR_NM_ENDERECO, "", new { @style = "color:red" })
+                                                            </div>
+                                                            <div class="col-lg-2 col-md-2 col-xs-12">
+                                                                Número/Complemento
+                                                                @Html.TextBoxFor(m => m.EMPR_NM_NUMERO, new { @class = "form-control", autofocus = true, @id = "numero" })
+                                                                @Html.ValidationMessageFor(m => m.EMPR_NM_NUMERO, "", new { @style = "color:red" })
+                                                            </div>
+                                                            <div class="col-lg-2 col-md-2 col-xs-12">
+                                                                Bairro
+                                                                @Html.TextBoxFor(m => m.EMPR_NM_BAIRRO, new { @class = "form-control", autofocus = true, @id = "bairro" })
+                                                                @Html.ValidationMessageFor(m => m.EMPR_NM_BAIRRO, "", new { @style = "color:red" })
+                                                            </div>
+                                                            <div class="col-lg-3 col-md-3 col-xs-12">
+                                                                Cidade
+                                                                @Html.TextBoxFor(m => m.EMPR_NM_CIDADE, new { @class = "form-control", autofocus = true, @id = "cidade" })
+                                                                @Html.ValidationMessageFor(m => m.EMPR_NM_CIDADE, "", new { @style = "color:red" })
+                                                            </div>
+                                                            <div class="col-lg-2 col-md-2 col-xs-12">
+                                                                UF
+                                                                @Html.DropDownListFor(m => m.UF_CD_ID, (SelectList)ViewBag.UF, "Selecionar", new { @class = "form-control", autofocus = true, @id = "uf" })
+                                                                @Html.ValidationMessageFor(m => m.UF_CD_ID, "", new { @style = "color:red" })
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <br />
+
+                                            @*<div class="row" style="width: 100%;">
+                                                <div class="form-group" style=" margin-left: -15px; margin-right: -15px;" id="PJ">
+                                                    <div class="col-lg-2 col-md-2 col-xs-12">
+                                                        Patrimônio Líquido (R$)*
+                                                        @Html.TextBoxFor(m => m.PatrimonioText, "{0:n2}", new { @class = "form-control", autofocus = true })
+                                                        @Html.ValidationMessageFor(m => m.PatrimonioText, "", new { @style = "color:red" })
+                                                    </div>
+                                                    <div class="col-lg-2 col-md-2 col-xs-12">
+                                                        Taxa Crédito Média (%)
+                                                        @Html.TextBoxFor(m => m.EMPR_VL_TAXA_MEDIA, new { @class = "form-control", autofocus = true, @id = "taxa", @readonly = "readonly", @style="background-color:beige; color: green; font-weight: bold" })
+                                                    </div>
+                                                    <div class="col-lg-2 col-md-2 col-xs-12">
+                                                        Taxa Débito Média (%)
+                                                        @Html.TextBoxFor(m => m.EMPR_VL_TAXA_MEDIA_DEBITO, new { @class = "form-control", autofocus = true, @id = "taxaD", @readonly = "readonly", @style="background-color:beige; color: green; font-weight: bold" })
+                                                    </div>
+                                                    <div class="col-lg-2 col-md-2 col-xs-12">
+                                                        Custo Variável de Vendas (%)
+                                                        @Html.TextBoxFor(m => m.EMPR_PC_CUSTO_VARIAVEL_VENDA, "{0:n2}", new { @class = "form-control", autofocus = true, @readonly = "readonly", @style = "color:brown; font-weight:bold" })
+                                                    </div>
+                                                    <div class="col-lg-2 col-md-2 col-xs-12">
+                                                        Custo Variável Total (%)
+                                                        @Html.TextBoxFor(m => m.EMPR_PC_CUSTO_VARIAVEL_TOTAL, "{0:n2}", new { @class = "form-control", autofocus = true, @readonly = "readonly", @style = "color:green; font-weight:bold" })
+                                                    </div>
+                                                </div>
+                                            </div>*@
+                                        }
+                                    </div>
+                                </div>
+                            }
+                            else
+                            {
+                                <div id="tab-1" class="tab-pane">
+                                    <div class="panel-body">
+                                        @using (Html.BeginForm("MontarTelaEmpresa", "Empresa", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", @id = "pwd-container1" }))
+                                        {
+                                            <div class="row" style="width: 100%;">
+                                                <div class="col-lg-12 col-md-12 col-xs-12">
+                                                    <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
+                                                        @if (ViewBag.Perfil == "ADM" || ViewBag.Perfil == "GER")
+                                                        {
+                                                            @Html.ButtonActionSubmit(text: "Confirma Alteração da Configuração da Empresa", htmlAttributes: new { id = "basictoast" })
+                                                        }
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row" style="width: 100%;">
+                                                <div class="col-lg-2 col-md-2 col-xs-12">
+                                                    <div style="text-align: center; margin-top: 20px; line-height: 10px;">
+                                                        @if (!String.IsNullOrEmpty(Model.EMPR_AQ_LOGO))
+                                                        {
+                                                            <img src="@Url.Content(Model.EMPR_AQ_LOGO)" style="width: auto; height: auto; max-height: 180px; max-width: 180px;">
+                                                        }
+                                                        else
+                                                        {
+                                                            <img src="~/Images/icone_imagem.jpg" style="width: auto; height: auto; max-height: 180px; max-width: 120px;">
+                                                        }
+                                                        <br />
+                                                        <br />
+                                                        <br />
+                                                        <br />
+                                                        <br />
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-10 col-md-10 col-xs-12">
+                                                    <div class="row">
+                                                        <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
+                                                            <div class="col-lg-6 col-md-6 col-xs-12">
+                                                                @Html.HiddenFor(m => m.ASSI_CD_ID)
+                                                                @Html.HiddenFor(m => m.EMPR_IN_ATIVO)
+                                                                @Html.HiddenFor(m => m.EMPR_DT_CADASTRO)
+                                                                @Html.HiddenFor(m => m.EMPR_CD_ID)
+                                                                Nome*
+                                                                @Html.TextBoxFor(m => m.EMPR_NM_NOME, new { @class = "form-control", autofocus = true, @style = "color: green; font-wheight: bold" })
+                                                                @Html.ValidationMessageFor(m => m.EMPR_NM_NOME, "", new { @style = "color:red" })
+                                                            </div>
+                                                            <div class="col-lg-6 col-md-6 col-xs-12">
+                                                                Razão Social
+                                                                @Html.TextBoxFor(m => m.EMPR_NM_RAZAO, new { @class = "form-control", autofocus = true })
+                                                                @Html.ValidationMessageFor(m => m.EMPR_NM_RAZAO, "", new { @style = "color:red" })
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
+                                                            <div class="col-lg-2 col-md-2 col-xs-12">
+                                                                CNPJ*
+                                                                @Html.TextBoxFor(m => m.EMPR_NR_CNPJ, new { @class = "form-control", @id = "cnpj", autofocus = true })
+                                                                @Html.ValidationMessageFor(m => m.EMPR_NR_CNPJ, "", new { @style = "color:red" })
+                                                            </div>
+                                                            <div class="col-lg-2 col-md-2 col-xs-12">
+                                                                Insc.Estadual
+                                                                @Html.TextBoxFor(m => m.EMPR_NR_INSCRICAO_ESTADUAL, new { @class = "form-control", autofocus = true })
+                                                                @Html.ValidationMessageFor(m => m.EMPR_NR_INSCRICAO_ESTADUAL, "", new { @style = "color:red" })
+                                                            </div>
+                                                            <div class="col-lg-2 col-md-2 col-xs-12">
+                                                                Insc.Municipal
+                                                                @Html.TextBoxFor(m => m.EMPR_NR_INSCRICAO_MUNICIPAL, new { @class = "form-control", autofocus = true })
+                                                                @Html.ValidationMessageFor(m => m.EMPR_NR_INSCRICAO_MUNICIPAL, "", new { @style = "color:red" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-lg-12 col-md-12 col-xs-12">
+                                                    <div class="row">
+                                                        @*<div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
+                                                            <div class="col-lg-2 col-md-2 col-xs-12">
+                                                                Regime Tributário*
+                                                                @Html.DropDownListFor(m => m.RETR_CD_ID, (SelectList)ViewBag.Regimes, "Selecionar", new { @class = "form-control", autofocus = true, onchange="GetRegime($(this).val())" })
+                                                                @Html.ValidationMessageFor(m => m.RETR_CD_ID, "", new { @style = "color:red" })
+                                                            </div>
+                                                            @if (Model.RETR_CD_ID == null || Model.RETR_CD_ID == 0)
+                                                            {
+                                                                <div class="col-lg-2 col-md-2 col-xs-12">
+                                                                    Alíquota Imposto (%)
+                                                                    @Html.TextBoxFor(m => m.EMPR_VL_IMPOSTO_MEI, new { @class = "form-control", @id="aliquota", autofocus = true })
+                                                                    @Html.ValidationMessageFor(m => m.EMPR_VL_IMPOSTO_MEI, "", new { @style = "color:red" })
+                                                                </div>
+                                                            }
+                                                            else
+                                                            {
+                                                                <div class="col-lg-2 col-md-2 col-xs-12">
+                                                                    Alíquota Imposto (%)
+                                                                    @Html.TextBoxFor(m => m.EMPR_VL_IMPOSTO_MEI, new { @class = "form-control", autofocus = true, @id= "aliquota", @style="background-color:beige; color: green; font-weight: bold", @readonly = "readonly" })
+                                                                    @Html.ValidationMessageFor(m => m.EMPR_VL_IMPOSTO_MEI, "", new { @style = "color:red" })
+                                                                </div>
+                                                            }
+                                                            <div class="col-lg-2 col-md-2 col-xs-12">
+                                                                Alíquota Outros Impostos (%)
+                                                                @Html.TextBoxFor(m => m.EMPR_VL_IMPOSTO_OUTROS, new { @class = "form-control", autofocus = true, @id= "outros" })
+                                                                @Html.ValidationMessageFor(m => m.EMPR_VL_IMPOSTO_OUTROS, "", new { @style = "color:red" })
+                                                            </div>
+                                                        </div>*@
+
+                                                        @*<div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
+                                                            <div class="col-lg-2 col-md-2 col-xs-12">
+                                                                Comissão Vendedor (%)
+                                                                @Html.TextBoxFor(m => m.EMPR_VL_COMISSAO_VENDEDOR, new { @class = "form-control", autofocus = true })
+                                                                @Html.ValidationMessageFor(m => m.EMPR_VL_COMISSAO_VENDEDOR, "", new { @style = "color:red" })
+                                                            </div>
+                                                            <div class="col-lg-2 col-md-2 col-xs-12">
+                                                                Comissão Gerente (%)
+                                                                @Html.TextBoxFor(m => m.EMPR_VL_COMISSAO_GERENTE, new { @class = "form-control", autofocus = true })
+                                                                @Html.ValidationMessageFor(m => m.EMPR_VL_COMISSAO_GERENTE, "", new { @style = "color:red" })
+                                                            </div>
+                                                            <div class="col-lg-2 col-md-2 col-xs-12">
+                                                                Comissão Outros (%)
+                                                                @Html.TextBoxFor(m => m.EMPR_VL_COMISSAO_OUTROS, new { @class = "form-control", autofocus = true })
+                                                                @Html.ValidationMessageFor(m => m.EMPR_VL_COMISSAO_OUTROS, "", new { @style = "color:red" })
+                                                            </div>
+                                                        </div>*@
+
+                                                        @*<div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
+                                                            <div class="col-lg-2 col-md-2 col-xs-12">
+                                                                Royalties (%)
+                                                                @Html.TextBoxFor(m => m.EMPR_VL_ROYALTIES, new { @class = "form-control", autofocus = true })
+                                                                @Html.ValidationMessageFor(m => m.EMPR_VL_ROYALTIES, "", new { @style = "color:red" })
+                                                            </div>
+                                                            <div class="col-lg-2 col-md-2 col-xs-12">
+                                                                Fundo de Propaganda (%)
+                                                                @Html.TextBoxFor(m => m.EMPR_VL_FUNDO_PROPAGANDA, new { @class = "form-control", autofocus = true })
+                                                                @Html.ValidationMessageFor(m => m.EMPR_VL_FUNDO_PROPAGANDA, "", new { @style = "color:red" })
+                                                            </div>
+                                                            <div class="col-lg-2 col-md-2 col-xs-12">
+                                                                Fundo de Segurança (%)
+                                                                @Html.TextBoxFor(m => m.EMPR_VL_FUNDO_SEGURANCA, new { @class = "form-control", autofocus = true })
+                                                                @Html.ValidationMessageFor(m => m.EMPR_VL_FUNDO_SEGURANCA, "", new { @style = "color:red" })
+                                                            </div>
+                                                        </div>*@
+
+                                                        <div class="form-group" style="margin: 0 -15px 0 -15px;" id="containerCep">
+                                                            <div class="col-lg-1 col-md-1 col-xs-12">
+                                                                CEP
+                                                                @Html.TextBoxFor(m => m.EMPR_NR_CEP, new { @class = "form-control", autofocus = true, @id = "cep" })
+                                                                @Html.ValidationMessageFor(m => m.EMPR_NR_CEP, "", new { @style = "color:red" })
+                                                            </div>
+                                                            <div class="col-lg-2 col-md-2 col-xs-12">
+                                                                <span class="btn btn-warning btn-sm" style="margin-bottom: -45px;" id="btnBuscaCep" onclick="PesquisaCep($('#cep').val(), $(this), 1)">Buscar CEP</span>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="form-group" style="margin: 30px -15px 0 -15px;" id="containerEnd">
+                                                            <div class="col-lg-3 col-md-3 col-xs-12">
+                                                                Endereço
+                                                                @Html.TextBoxFor(m => m.EMPR_NM_ENDERECO, new { @class = "form-control", autofocus = true, @id = "endereco" })
+                                                                @Html.ValidationMessageFor(m => m.EMPR_NM_ENDERECO, "", new { @style = "color:red" })
+                                                            </div>
+                                                            <div class="col-lg-2 col-md-2 col-xs-12">
+                                                                Número/Complemento
+                                                                @Html.TextBoxFor(m => m.EMPR_NM_NUMERO, new { @class = "form-control", autofocus = true, @id = "numero" })
+                                                                @Html.ValidationMessageFor(m => m.EMPR_NM_NUMERO, "", new { @style = "color:red" })
+                                                            </div>
+                                                            <div class="col-lg-2 col-md-2 col-xs-12">
+                                                                Bairro
+                                                                @Html.TextBoxFor(m => m.EMPR_NM_BAIRRO, new { @class = "form-control", autofocus = true, @id = "bairro" })
+                                                                @Html.ValidationMessageFor(m => m.EMPR_NM_BAIRRO, "", new { @style = "color:red" })
+                                                            </div>
+                                                            <div class="col-lg-3 col-md-3 col-xs-12">
+                                                                Cidade
+                                                                @Html.TextBoxFor(m => m.EMPR_NM_CIDADE, new { @class = "form-control", autofocus = true, @id = "cidade" })
+                                                                @Html.ValidationMessageFor(m => m.EMPR_NM_CIDADE, "", new { @style = "color:red" })
+                                                            </div>
+                                                            <div class="col-lg-2 col-md-2 col-xs-12">
+                                                                UF
+                                                                @Html.DropDownListFor(m => m.UF_CD_ID, (SelectList)ViewBag.UF, "Selecionar", new { @class = "form-control", autofocus = true, @id = "uf" })
+                                                                @Html.ValidationMessageFor(m => m.UF_CD_ID, "", new { @style = "color:red" })
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <br />
+
+                                            @*<div class="row" style="width: 100%;">
+                                                <div class="form-group" style=" margin-left: -15px; margin-right: -15px;" id="PJ">
+                                                    <div class="col-lg-2 col-md-2 col-xs-12">
+                                                        Patrimônio Líquido (R$)*
+                                                        @Html.TextBoxFor(m => m.PatrimonioText, "{0:n2}", new { @class = "form-control", autofocus = true })
+                                                        @Html.ValidationMessageFor(m => m.PatrimonioText, "", new { @style = "color:red" })
+                                                    </div>
+                                                    <div class="col-lg-2 col-md-2 col-xs-12">
+                                                        Taxa Crédito Média (%)
+                                                        @Html.TextBoxFor(m => m.EMPR_VL_TAXA_MEDIA, new { @class = "form-control", autofocus = true, @id = "taxa", @readonly = "readonly", @style="background-color:beige; color: green; font-weight: bold" })
+                                                    </div>
+                                                    <div class="col-lg-2 col-md-2 col-xs-12">
+                                                        Taxa Débito Média (%)
+                                                        @Html.TextBoxFor(m => m.EMPR_VL_TAXA_MEDIA_DEBITO, new { @class = "form-control", autofocus = true, @id = "taxaD", @readonly = "readonly", @style="background-color:beige; color: green; font-weight: bold" })
+                                                    </div>
+                                                    <div class="col-lg-2 col-md-2 col-xs-12">
+                                                        Custo Variável de Vendas (%)
+                                                        @Html.TextBoxFor(m => m.EMPR_PC_CUSTO_VARIAVEL_VENDA, "{0:n2}", new { @class = "form-control", autofocus = true, @readonly = "readonly", @style = "color:brown; font-weight:bold" })
+                                                    </div>
+                                                    <div class="col-lg-2 col-md-2 col-xs-12">
+                                                        Custo Variável Total (%)
+                                                        @Html.TextBoxFor(m => m.EMPR_PC_CUSTO_VARIAVEL_TOTAL, "{0:n2}", new { @class = "form-control", autofocus = true, @readonly = "readonly", @style = "color:green; font-weight:bold" })
+                                                    </div>
+                                                </div>
+                                            </div>*@
+                                        }
+                                    </div>
+                                </div>
+                            }
+
+                            @*Máquinas*@
+                            @*@if ((Int32)Session["NivelEmpresa"] == 2)
+                            {
+                                <div id="tab-3" class="tab-pane active">
+                                    <div class="panel-body">
+                                        <div class="row" id="maquina">
+                                            <hr />
+                                            <div class="form-group" style=" margin-left: -15px; margin-right: -15px;" >
+                                                <div class="col-lg-12 col-md-12 col-xs-12">
+                                                    <h4>Máquinas de Cartões Associadas</h4>
+                                                    <br />
+                                                    @if (Model.EMPRESA_MAQUINA != null && Model.EMPRESA_MAQUINA.Where(p => p.EMMA_IN_ATIVO == 1).ToList().Count > 0)
+                                                    {
+                                                        <table class="table table-striped table-bordered table-hover dataTables-example">
+                                                            <thead style="background-color:lightsteelblue">
+                                                                <tr>
+                                                                    <th>Nome</th>
+                                                                    <th>Marca</th>
+                                                                    <th>Taxa Crédito (%)</th>
+                                                                    <th>Taxa Débito (%)</th>
+                                                                    <th>Taxa Antecipação (%)</th>
+                                                                    @if (ViewBag.Perfil == "ADM" || ViewBag.Perfil == "GER")
+                                                                    {
+                                                                        <th class="td-one-action">Ações</th>
+                                                                    }
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                @foreach (var cond in (Model.EMPRESA_MAQUINA.Where(p => p.EMMA_IN_ATIVO == 1)))
+                                                                {
+                                                                    <tr>
+                                                                        <td>@cond.MAQUINA.MAQN_NM_NOME</td>
+                                                                        <td>@cond.MAQUINA.MAQN_NM_PROVEDOR</td>
+                                                                        <td>@CrossCutting.Formatters.DecimalFormatter(cond.MAQUINA.MAQN_PC_CREDITO)</td>
+                                                                        <td>@CrossCutting.Formatters.DecimalFormatter(cond.MAQUINA.MAQN_PC_DEBITO)</td>
+                                                                        <td>@CrossCutting.Formatters.DecimalFormatter(cond.MAQUINA.MAQN_PC_ANTECIPACAO.Value)</td>
+                                                                        @if (ViewBag.Perfil == "ADM" || ViewBag.Perfil == "GER")
+                                                                        {
+                                                                            <td class="td-one-action">
+                                                                                @if (cond.EMMA_IN_ATIVO == 1)
+                                                                                {
+                                                                                    <span style="color: #337ab7; cursor:pointer;" alt="Desativar" class="tbl-link fa-lg fa fa-trash-o" onclick="ShowModalExcluir('/Empresa/ExcluirEmpresaMaquina/@cond.EMMA_CD_ID')" title="Excluir"></span>
+                                                                                }
+                                                                                else
+                                                                                {   
+                                                                                    <span style="color: #337ab7; cursor:pointer;" alt="Reativar" class="tbl-link fa-lg fa fa-refresh" onclick="ShowModalReativar('/Empresa/ReativarEmpresaMaquina/@cond.EMMA_CD_ID')" title="Reativar"></span>
+                                                                                }
+                                                                            </td>
+                                                                        }
+                                                                    </tr>
+                                                                }
+                                                            </tbody>
+                                                        </table>
+                                                    }
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            @if (ViewBag.Perfil == "ADM" || ViewBag.Perfil == "GER")
+                                            {
+                                                @Html.ButtonLinkIndex(text: "Associar nova Máquina de Cartão", action: "IncluirEmpresaMaquina", controller: "Empresa")
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                            else
+                            {
+                                <div id="tab-3" class="tab-pane">
+                                    <div class="panel-body">
+                                        <div class="row" id="maquina">
+                                            <hr />
+                                            <div class="form-group" style=" margin-left: -15px; margin-right: -15px;" >
+                                                <div class="col-lg-12 col-md-12 col-xs-12">
+                                                    <h4>Máquinas de Cartões Associadas</h4>
+                                                    <br />
+                                                    @if (Model.EMPRESA_MAQUINA != null && Model.EMPRESA_MAQUINA.Where(p => p.EMMA_IN_ATIVO == 1).ToList().Count > 0)
+                                                    {
+                                                        <table class="table table-striped table-bordered table-hover dataTables-example">
+                                                            <thead style="background-color:lightsteelblue">
+                                                                <tr>
+                                                                    <th>Nome</th>
+                                                                    <th>Marca</th>
+                                                                    <th>Taxa Crédito (%)</th>
+                                                                    <th>Taxa Débito (%)</th>
+                                                                    <th>Taxa Antecipação (%)</th>
+                                                                    @if (ViewBag.Perfil == "ADM" || ViewBag.Perfil == "GER")
+                                                                    {
+                                                                        <th class="td-one-action">Ações</th>
+                                                                    }
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                @foreach (var cond in (Model.EMPRESA_MAQUINA.Where(p => p.EMMA_IN_ATIVO == 1)))
+                                                                {
+                                                                    <tr>
+                                                                        <td>@cond.MAQUINA.MAQN_NM_NOME</td>
+                                                                        <td>@cond.MAQUINA.MAQN_NM_PROVEDOR</td>
+                                                                        <td>@CrossCutting.Formatters.DecimalFormatter(cond.MAQUINA.MAQN_PC_CREDITO)</td>
+                                                                        <td>@CrossCutting.Formatters.DecimalFormatter(cond.MAQUINA.MAQN_PC_DEBITO)</td>
+                                                                        <td>@CrossCutting.Formatters.DecimalFormatter(cond.MAQUINA.MAQN_PC_ANTECIPACAO.Value)</td>
+                                                                        @if (ViewBag.Perfil == "ADM" || ViewBag.Perfil == "GER")
+                                                                        {
+                                                                            <td class="td-one-action">
+                                                                                @if (cond.EMMA_IN_ATIVO == 1)
+                                                                                {
+                                                                                    <span style="color: #337ab7; cursor:pointer;" alt="Desativar" class="tbl-link fa-lg fa fa-trash-o" onclick="ShowModalExcluir('/Empresa/ExcluirEmpresaMaquina/@cond.EMMA_CD_ID')" title="Excluir"></span>
+                                                                                }
+                                                                                else
+                                                                                {   
+                                                                                    <span style="color: #337ab7; cursor:pointer;" alt="Reativar" class="tbl-link fa-lg fa fa-refresh" onclick="ShowModalReativar('/Empresa/ReativarEmpresaMaquina/@cond.EMMA_CD_ID')" title="Reativar"></span>
+                                                                                }
+                                                                            </td>
+                                                                        }
+                                                                    </tr>
+                                                                }
+                                                            </tbody>
+                                                        </table>
+                                                    }
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            @if (ViewBag.Perfil == "ADM" || ViewBag.Perfil == "GER")
+                                            {
+                                                @Html.ButtonLinkIndex(text: "Associar nova Máquina de Cartão", action: "IncluirEmpresaMaquina", controller: "Empresa")
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            }*@
+                            
+                            @*Imagens - Foto e Anexos*@
+                            <div id="tab-2" class="tab-pane">
+                                <div class="panel-body">
+                                    <div class="row">
+                                        <hr />
+                                        <div class="col-lg-12 col-md-12 col-xs-12">
+                                            <h4>Anexos</h4>
+                                            <br />
+                                            <div class="form-group">
+                                                @using (Html.BeginForm("UploadFileEmpresa", "Empresa", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { enctype = "multipart/form-data", @id = "pwd-container2" }))
+                                                {
+                                                    <div class="ibox-content">
+                                                        @if (Model.EMPRESA_ANEXO.Count > 0)
+                                                        {
+                                                            <table class="table table-striped table-bordered table-hover dataTables-example">
+                                                                <thead style="background-color:lightsteelblue">
+                                                                    <tr>
+                                                                        <th>Título</th>
+                                                                        <th>Data</th>
+                                                                        <th>Tipo</th>
+                                                                        <th class="td-one-action">Ações</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    @foreach (var cond in (Model.EMPRESA_ANEXO))
+                                                                    {
+                                                                        <tr>
+                                                                            <td>@cond.EMAN_NM_TITULO</td>
+                                                                            <td>@cond.EMAN_DT_ANEXO.ToShortDateString()</td>
+                                                                            @if (cond.EMAN_IN_TIPO == 1)
+                                                                            {
+                                                                                <td>Imagem</td>
+                                                                            }
+                                                                            else if (cond.EMAN_IN_TIPO == 2)
+                                                                            {
+                                                                                <td>Vídeo</td>
+                                                                            }
+                                                                            else if (cond.EMAN_IN_TIPO == 3)
+                                                                            {
+                                                                                <td>PDF</td>
+                                                                            }
+                                                                            else if (cond.EMAN_IN_TIPO == 4)
+                                                                            {
+                                                                                <td>Audio</td>
+                                                                            }
+                                                                            else if (cond.EMAN_IN_TIPO == 5)
+                                                                            {
+                                                                                <td>Documento/Word</td>
+                                                                            }
+                                                                            else if (cond.EMAN_IN_TIPO == 6)
+                                                                            {
+                                                                                <td>Planilha/Excel</td>
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                <td>Outros</td>
+                                                                            }
+                                                                            <td class="td-one-action">
+                                                                                @if (cond.EMAN_IN_TIPO == 1 || cond.EMAN_IN_TIPO == 2)
+                                                                                {
+                                                                                    @Html.TableLinkDetails(cond.EMAN_CD_ID, "VerAnexoEmpresa", "fa-camera", "Visualizar")
+                                                                                }
+                                                                                @if (cond.EMAN_IN_TIPO == 4)
+	                                                                            {
+                                                                                    @Html.TableLinkDetails(cond.EMAN_CD_ID, "VerAnexoEmpresaAudio","fa-volume-up", "Visualizar")
+	                                                                            }
+                                                                                @if (cond.EMAN_IN_TIPO == 3)
+                                                                                {
+                                                                                    <a title="Visualizar" class="fa fa-camera fa-lg" href="~/PdfViewer/web/viewer.html?file=@(cond.EMAN_AQ_ARQUIVO.Replace("~", ""))&ReturnUrl=@Request.Url.AbsolutePath" target="_blank" ></a>
+                                                                                }
+                                                                                @Html.TableLinkDetails(cond.EMAN_CD_ID, "DownloadEmpresa", "fa-download", "Download")
+                                                                            </td>
+                                                                        </tr>
+                                                                    }
+                                                                </tbody>
+                                                            </table>
+                                                        }
+                                                        <div class="form-group">
+                                                            <div class="col-lg-12 col-md-12 col-xs-12">
+                                                                <input style="float: left; margin-right: 5px;" type="file" name="file" id="file" class="btn btn-sm btn-warning" />
+                                                                <input style="float: left; margin-right: 5px;" type="submit" value="Incluir Anexo na Empresa" class="btn btn-sm btn-success" />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            @*Logotipo*@
+                            <div id="tab-8" class="tab-pane">
+                                <div class="panel-body">
+                                    <div class="ibox float-e-margins" style="border-bottom: solid; border-bottom-color: darkblue; border-bottom-width: 1px; border-left: solid; border-left-color: darkblue; border-left-width: 1px; border-right: solid; border-right-color: darkblue; border-right-width: 1px; border-top: solid; border-top-color: darkblue; border-top-width: 1px; height: 230px" >
+                                        <div class="ibox-title"  style="color: black">
+                                            <h5>Logotipo da Empresa</h5>
+                                        </div>
+                                        <div class="ibox-content" style="color: black">
+                                            <div class="row">
+                                                <div class="col-lg-2 col-md-2 col-xs-12">
+                                                    <div class="form-group">
+                                                        <div class="col-lg-12 col-md-12 col-sm-12">
+                                                            <br />
+                                                            @if (!String.IsNullOrEmpty(Model.EMPR_AQ_LOGO))
+                                                            {
+                                                                <img src="@Url.Content(Model.EMPR_AQ_LOGO)" style="width: auto; height: auto; max-height: 180px; max-width: 180px;">
+                                                            }
+                                                            else
+                                                            {
+                                                                <img src="~/Images/gallery/icone_imagem.jpg" style="width: auto; height: auto; max-height: 110px; max-width: 90px;">
+                                                            }
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-10 col-md-10 col-xs-12">
+                                                    <div class="form-group">
+                                                        @using (Html.BeginForm("UploadFotoEmpresa", "Empresa", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { enctype = "multipart/form-data", @id = "pwd-container3" }))
+                                                        {
+                                                            <div class="form-group">
+                                                                <div class="col-lg-12 col-md-12 col-xs-12">
+                                                                    <input style="float: left; margin-right: 5px;" type="file" accept=".jpg, .png, .jpeg, .gif|images/*" name="file" id="file" class="btn btn-sm btn-warning" />
+                                                                    <input style="float: left;" type="submit" value="Incluir Logotipo" class="btn btn-sm btn-success" />
+                                                                </div>
+                                                            </div>
+                                                        }
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+
+
+
+
+                            @*Plataformas*@
+                            <!--@if ((Int32)Session["NivelEmpresa"] == 3)
+                            {
+                                <div id="tab-4" class="tab-pane active">
+                                    <div class="panel-body">
+                                        <div class="row" id="maquina">
+                                            <hr />
+                                            <div class="form-group" style=" margin-left: -15px; margin-right: -15px;" >
+                                                <div class="col-lg-12 col-md-12 col-xs-12">
+                                                    <h4>Plataformas de Entrega Associadas</h4>
+                                                    <br />
+                                                    @if (Model.EMPRESA_PLATAFORMA != null && Model.EMPRESA_PLATAFORMA.Where(p => p.EMPL_IN_ATIVO == 1).ToList().Count > 0)
+                                                    {
+                                                        <table class="table table-striped table-bordered table-hover dataTables-example1">
+                                                            <thead style="background-color:lightsteelblue">
+                                                                <tr>
+                                                                    <th>Nome</th>
+                                                                    <th>Valor Fixo (R$)</th>
+                                                                    <th>Valor Limite Fixo (R$)</th>
+                                                                    <th>Taxa Cartão(%)</th>
+                                                                    <th>Taxa Venda (%)</th>
+                                                                    <th>Taxa Antecipação (%)</th>
+                                                                    @if (ViewBag.Perfil == "ADM" || ViewBag.Perfil == "GER")
+                                                                    {
+                                                                        <th class="td-one-action">Ações</th>
+                                                                    }
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                @foreach (var cond in (Model.EMPRESA_PLATAFORMA.Where(p => p.EMPL_IN_ATIVO == 1)))
+                                                                {
+                                                                    <tr>
+                                                                        <td>@cond.PLATAFORMA_ENTREGA.PLEN_NM_NOME</td>
+                                                                        <td>@CrossCutting.Formatters.DecimalFormatter(cond.PLATAFORMA_ENTREGA.PLEN_VL_FIXO.Value)</td>
+                                                                        <td>@CrossCutting.Formatters.DecimalFormatter(cond.PLATAFORMA_ENTREGA.PLEN_VL_LIMITE_FIXO.Value)</td>
+                                                                        <td>@CrossCutting.Formatters.DecimalFormatter(cond.PLATAFORMA_ENTREGA.PLEN_VL_TAXA_CARTAO.Value)</td>
+                                                                        <td>@CrossCutting.Formatters.DecimalFormatter(cond.PLATAFORMA_ENTREGA.PLEN_PC_VENDA.Value)</td>
+                                                                        <td>@CrossCutting.Formatters.DecimalFormatter(cond.PLATAFORMA_ENTREGA.PLEN_PC_ANTECIPACAO.Value)</td>
+                                                                        @if (ViewBag.Perfil == "ADM" || ViewBag.Perfil == "GER")
+                                                                        {
+                                                                            <td class="td-one-action">
+                                                                                @if (cond.EMPL_IN_ATIVO == 1)
+                                                                                {
+                                                                                    <span style="color: #337ab7; cursor:pointer;" alt="Desativar" class="tbl-link fa-lg fa fa-trash-o" onclick="ShowModalExcluir('/Empresa/ExcluirEmpresaPlataforma/@cond.EMPL_CD_ID')" title="Excluir"></span>
+                                                                                }
+                                                                                else
+                                                                                {   
+                                                                                    <span style="color: #337ab7; cursor:pointer;" alt="Reativar" class="tbl-link fa-lg fa fa-refresh" onclick="ShowModalReativar('/Empresa/ReativarEmpresaPlataforma/@cond.EMPL_CD_ID')" title="Reativar"></span>
+                                                                                }
+                                                                            </td>
+                                                                        }
+                                                                    </tr>
+                                                                }
+                                                            </tbody>
+                                                        </table>
+                                                    }
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            @if (ViewBag.Perfil == "ADM" || ViewBag.Perfil == "GER")
+                                            {
+                                                @Html.ButtonLinkIndex(text: "Associar nova Plataforma de Entrega", action: "IncluirEmpresaPlataforma", controller: "Empresa")
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                            else
+                            {
+                                <div id="tab-4" class="tab-pane">
+                                    <div class="panel-body">
+                                        <div class="row" id="maquina">
+                                            <hr />
+                                            <div class="form-group" style=" margin-left: -15px; margin-right: -15px;" >
+                                                <div class="col-lg-12 col-md-12 col-xs-12">
+                                                    <h4>Plataformas de Entrega Associadas</h4>
+                                                    <br />
+                                                    @if (Model.EMPRESA_PLATAFORMA != null && Model.EMPRESA_PLATAFORMA.Where(p => p.EMPL_IN_ATIVO == 1).ToList().Count > 0)
+                                                    {
+                                                        <table class="table table-striped table-bordered table-hover dataTables-example1">
+                                                            <thead style="background-color:lightsteelblue">
+                                                                <tr>
+                                                                    <th>Nome</th>
+                                                                    <th>Valor Fixo (R$)</th>
+                                                                    <th>Valor Limite Fixo (R$)</th>
+                                                                    <th>Taxa Cartão(%)</th>
+                                                                    <th>Taxa Venda (%)</th>
+                                                                    <th>Taxa Antecipação (%)</th>
+                                                                    @if (ViewBag.Perfil == "ADM" || ViewBag.Perfil == "GER")
+                                                                    {
+                                                                        <th class="td-one-action">Ações</th>
+                                                                    }
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                @foreach (var cond in (Model.EMPRESA_PLATAFORMA.Where(p => p.EMPL_IN_ATIVO == 1)))
+                                                                {
+                                                                    <tr>
+                                                                        <td>@cond.PLATAFORMA_ENTREGA.PLEN_NM_NOME</td>
+                                                                        <td>@CrossCutting.Formatters.DecimalFormatter(cond.PLATAFORMA_ENTREGA.PLEN_VL_FIXO.Value)</td>
+                                                                        <td>@CrossCutting.Formatters.DecimalFormatter(cond.PLATAFORMA_ENTREGA.PLEN_VL_LIMITE_FIXO.Value)</td>
+                                                                        <td>@CrossCutting.Formatters.DecimalFormatter(cond.PLATAFORMA_ENTREGA.PLEN_VL_TAXA_CARTAO.Value)</td>
+                                                                        <td>@CrossCutting.Formatters.DecimalFormatter(cond.PLATAFORMA_ENTREGA.PLEN_PC_VENDA.Value)</td>
+                                                                        <td>@CrossCutting.Formatters.DecimalFormatter(cond.PLATAFORMA_ENTREGA.PLEN_PC_ANTECIPACAO.Value)</td>
+                                                                        @if (ViewBag.Perfil == "ADM" || ViewBag.Perfil == "GER")
+                                                                        {
+                                                                            <td class="td-one-action">
+                                                                                @if (cond.EMPL_IN_ATIVO == 1)
+                                                                                {
+                                                                                    <span style="color: #337ab7; cursor:pointer;" alt="Desativar" class="tbl-link fa-lg fa fa-trash-o" onclick="ShowModalExcluir('/Empresa/ExcluirEmpresaPlataforma/@cond.EMPL_CD_ID')" title="Excluir"></span>
+                                                                                }
+                                                                                else
+                                                                                {   
+                                                                                    <span style="color: #337ab7; cursor:pointer;" alt="Reativar" class="tbl-link fa-lg fa fa-refresh" onclick="ShowModalReativar('/Empresa/ReativarEmpresaPlataforma/@cond.EMPL_CD_ID')" title="Reativar"></span>
+                                                                                }
+                                                                            </td>
+                                                                        }
+                                                                    </tr>
+                                                                }
+                                                            </tbody>
+                                                        </table>
+                                                    }
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            @if (ViewBag.Perfil == "ADM" || ViewBag.Perfil == "GER")
+                                            {
+                                                @Html.ButtonLinkIndex(text: "Associar nova Plataforma de Entrega", action: "IncluirEmpresaPlataforma", controller: "Empresa")
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            }-->
+
+                            @*Tickets*@
+                            @*@if ((Int32)Session["NivelEmpresa"] == 4)
+                            {
+                                <div id="tab-5" class="tab-pane active">
+                                    <div class="panel-body">
+                                        <div class="row" id="ticket">
+                                            <hr />
+                                            <div class="form-group" style=" margin-left: -15px; margin-right: -15px;" >
+                                                <div class="col-lg-12 col-md-12 col-xs-12">
+                                                    <h4>Tickets Alimentação Associados</h4>
+                                                    <br />
+                                                    @if (Model.EMPRESA_TICKET != null && Model.EMPRESA_TICKET.Where(p => p.EMTI_IN_ATIVO == 1).ToList().Count > 0)
+                                                    {
+                                                        <table class="table table-striped table-bordered table-hover dataTables-example2">
+                                                            <thead style="background-color:lightsteelblue">
+                                                                <tr>
+                                                                    <th>Nome</th>
+                                                                    <th>Taxa (%)</th>
+                                                                    @if (ViewBag.Perfil == "ADM" || ViewBag.Perfil == "GER")
+                                                                    {
+                                                                        <th class="td-one-action">Ações</th>
+                                                                    }
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                @foreach (var cond in (Model.EMPRESA_TICKET.Where(p => p.EMTI_IN_ATIVO == 1)))
+                                                                {
+                                                                    <tr>
+                                                                        <td>@cond.TICKET_ALIMENTACAO.TICK_NM_NOME</td>
+                                                                        <td>@CrossCutting.Formatters.DecimalFormatter(cond.TICKET_ALIMENTACAO.TICK_PC_TAXA)</td>
+                                                                        @if (ViewBag.Perfil == "ADM" || ViewBag.Perfil == "GER")
+                                                                        {
+                                                                            <td class="td-one-action">
+                                                                                @if (cond.EMTI_IN_ATIVO == 1)
+                                                                                {
+                                                                                    <span style="color: #337ab7; cursor:pointer;" alt="Desativar" class="tbl-link fa-lg fa fa-trash-o" onclick="ShowModalExcluirTicket('/Empresa/ExcluirEmpresaTicket/@cond.EMTI_CD_ID')" title="Excluir"></span>
+                                                                                }
+                                                                                else
+                                                                                {   
+                                                                                    <span style="color: #337ab7; cursor:pointer;" alt="Reativar" class="tbl-link fa-lg fa fa-refresh" onclick="ShowModalReativarTicket('/Empresa/ReativarEmpresaTicket/@cond.EMTI_CD_ID')" title="Reativar"></span>
+                                                                                }
+                                                                            </td>
+                                                                        }
+                                                                    </tr>
+                                                                }
+                                                            </tbody>
+                                                        </table>
+                                                    }
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            @if (ViewBag.Perfil == "ADM" || ViewBag.Perfil == "GER")
+                                            {
+                                                @Html.ButtonLinkIndex(text: "Associar novo Ticket Alimentação", action: "IncluirEmpresaTicket", controller: "Empresa")
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                            else
+                            {
+                                <div id="tab-5" class="tab-pane">
+                                    <div class="panel-body">
+                                        <div class="row" id="ticket">
+                                            <hr />
+                                            <div class="form-group" style=" margin-left: -15px; margin-right: -15px;" >
+                                                <div class="col-lg-12 col-md-12 col-xs-12">
+                                                    <h4>Tickets Alimentação Associados</h4>
+                                                    <br />
+                                                    @if (Model.EMPRESA_TICKET != null && Model.EMPRESA_TICKET.Where(p => p.EMTI_IN_ATIVO == 1).ToList().Count > 0)
+                                                    {
+                                                        <table class="table table-striped table-bordered table-hover dataTables-example2">
+                                                            <thead style="background-color:lightsteelblue">
+                                                                <tr>
+                                                                    <th>Nome</th>
+                                                                    <th>Taxa (%)</th>
+                                                                    @if (ViewBag.Perfil == "ADM" || ViewBag.Perfil == "GER")
+                                                                    {
+                                                                        <th class="td-one-action">Ações</th>
+                                                                    }
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                @foreach (var cond in (Model.EMPRESA_TICKET.Where(p => p.EMTI_IN_ATIVO == 1)))
+                                                                {
+                                                                    <tr>
+                                                                        <td>@cond.TICKET_ALIMENTACAO.TICK_NM_NOME</td>
+                                                                        <td>@CrossCutting.Formatters.DecimalFormatter(cond.TICKET_ALIMENTACAO.TICK_PC_TAXA)</td>
+                                                                        @if (ViewBag.Perfil == "ADM" || ViewBag.Perfil == "GER")
+                                                                        {
+                                                                            <td class="td-one-action">
+                                                                                @if (cond.EMTI_IN_ATIVO == 1)
+                                                                                {
+                                                                                    <span style="color: #337ab7; cursor:pointer;" alt="Desativar" class="tbl-link fa-lg fa fa-trash-o" onclick="ShowModalExcluirTicket('/Empresa/ExcluirEmpresaTicket/@cond.EMTI_CD_ID')" title="Excluir"></span>
+                                                                                }
+                                                                                else
+                                                                                {   
+                                                                                    <span style="color: #337ab7; cursor:pointer;" alt="Reativar" class="tbl-link fa-lg fa fa-refresh" onclick="ShowModalReativarTicket('/Empresa/ReativarEmpresaTicket/@cond.EMTI_CD_ID')" title="Reativar"></span>
+                                                                                }
+                                                                            </td>
+                                                                        }
+                                                                    </tr>
+                                                                }
+                                                            </tbody>
+                                                        </table>
+                                                    }
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            @if (ViewBag.Perfil == "ADM" || ViewBag.Perfil == "GER")
+                                            {
+                                                @Html.ButtonLinkIndex(text: "Associar novo Ticket Alimentação", action: "IncluirEmpresaTicket", controller: "Empresa")
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            }*@
+
+
+                            @*Custos Variaveis*@
+                            @*<div id="tab-6" class="tab-pane">
+                                <div class="panel-body">
+                                    <div class="row" id="ticket">
+                                        <hr />
+                                        <div class="form-group" style=" margin-left: -15px; margin-right: -15px;" >
+                                            <div class="col-lg-12 col-md-12 col-xs-12">
+                                                <h4>Custos Variáveis de Vendas</h4>
+                                                <br />
+                                                @if (Model.EMPRESA_CUSTO_VARIAVEL.Where(p => p.EMCV_IN_ATIVO == 1 & p.EMCV_IN_VENDA == 0) != null && Model.EMPRESA_CUSTO_VARIAVEL.Where(p => p.EMCV_IN_ATIVO == 1).ToList().Count > 0)
+                                                {
+                                                    <table class="table table-striped table-bordered table-hover dataTables-example4">
+                                                        <thead style="background-color:lightsteelblue">
+                                                            <tr>
+                                                                <th>Nome</th>
+                                                                <th>Plataforma de Entrega</th>
+                                                                <th>Máquina</th>
+                                                                <th>Ticket Alimentação</th>
+                                                                <th>Percentual de Vendas (%)</th>
+                                                                <th>Taxa (%)</th>
+                                                                <th>Custo (%)</th>
+                                                                @if (ViewBag.Perfil == "ADM" || ViewBag.Perfil == "GER")
+                                                                {
+                                                                    <th class="td-one-action">Ações</th>
+                                                                }
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            @foreach (var cond in (Model.EMPRESA_CUSTO_VARIAVEL.Where(p => p.EMCV_IN_ATIVO == 1)))
+                                                            {
+                                                                <tr>
+                                                                    <td>@cond.EMCV_NM_NOME</td>
+                                                                    @if (cond.PLEN_CD_ID != null)
+                                                                    {
+                                                                        <td>@cond.PLATAFORMA_ENTREGA.PLEN_NM_NOME</td>
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        <td>-</td>
+                                                                    }
+                                                                    @if (cond.MAQN_CD_ID != null)
+                                                                    {
+                                                                        <td>@cond.MAQUINA.MAQN_NM_EXIBE</td>
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        <td>-</td>
+                                                                    }
+                                                                    @if (cond.TICK_CD_ID != null)
+                                                                    {
+                                                                        <td>@cond.TICKET_ALIMENTACAO.TICK_NM_NOME</td>
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        <td>-</td>
+                                                                    }
+                                                                    @if (cond.EMCV_PC_PERCENTUAL_VENDA != null)
+                                                                    {
+                                                                        <td>@CrossCutting.Formatters.DecimalFormatter(cond.EMCV_PC_PERCENTUAL_VENDA.Value)</td>
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        <td>-</td>
+                                                                    }
+                                                                    <td>@CrossCutting.Formatters.DecimalFormatter(cond.EMCV_PC_TAXA.Value)</td>
+                                                                    <td>@CrossCutting.Formatters.DecimalFormatter(cond.EMCV_VL_VALOR.Value)</td>
+                                                                    @if (ViewBag.Perfil == "ADM" || ViewBag.Perfil == "GER")
+                                                                    {
+                                                                        <td class="td-one-action">
+                                                                            @if (cond.EMCV_IN_VENDA == 0)
+                                                                            {
+                                                                                @Html.TableLinkDetails(cond.EMCV_CD_ID, "EditarEmpresaCustoVariavel", "fa-edit", "Editar/Consultar")
+                                                                                if (cond.EMCV_IN_ATIVO == 1)
+                                                                                {
+                                                                                    <span style="color: #337ab7; cursor:pointer;" alt="Desativar" class="tbl-link fa-lg fa fa-trash-o" onclick="ShowModalExcluirCV('/Empresa/ExcluirEmpresaCustoVariavel/@cond.EMCV_CD_ID')" title="Excluir"></span>
+                                                                                }
+                                                                                else
+                                                                                {   
+                                                                                    <span style="color: #337ab7; cursor:pointer;" alt="Reativar" class="tbl-link fa-lg fa fa-refresh" onclick="ShowModalReativarCV('/Empresa/ReativarEmpresaCustoVariavel/@cond.EMCV_CD_ID')" title="Reativar"></span>
+                                                                                }
+                                                                            }
+                                                                        </td>
+                                                                    }
+                                                                </tr>
+                                                            }
+                                                        </tbody>
+                                                    </table>
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        @if (ViewBag.Perfil == "ADM" || ViewBag.Perfil == "GER")
+                                        {
+                                            @Html.ButtonLinkIndex(text: "Incluir novo Custo Variável", action: "IncluirEmpresaCustoVariavel", controller: "Empresa")
+                                        }
+                                    </div>
+                                </div>
+                            </div>*@
+                        
+                            @*Antecipações*@
+                            @*<div id="tab-7" class="tab-pane">
+                                <div class="panel-body">
+                                    <div class="row" id="ticket">
+                                        <hr />
+                                        <div class="form-group" style=" margin-left: -15px; margin-right: -15px;" >
+                                            <div class="col-lg-12 col-md-12 col-xs-12">
+                                                <h4>Antecipações</h4>
+                                                <br />
+                                                @if (Model.ANTECIPACAO != null && Model.ANTECIPACAO.Where(p => p.ANTE_IN_ATIVO == 1).ToList().Count > 0)
+                                                {
+                                                    <table class="table table-striped table-bordered table-hover dataTables-example5">
+                                                        <thead style="background-color:lightsteelblue">
+                                                            <tr>
+                                                                <th>Máquina</th>
+                                                                <th>Taxa (%)</th>
+                                                                <th>Referência</th>
+                                                                <th>Valor (R$)</th>
+                                                                <th class="td-one-action">Ações</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            @foreach (var cond in (Model.ANTECIPACAO.Where(p => p.ANTE_IN_ATIVO == 1)))
+                                                            {
+                                                                <tr>
+                                                                    <td>@cond.MAQUINA.MAQN_NM_EXIBE</td>
+                                                                    @if (cond.MAQUINA.MAQN_PC_ANTECIPACAO != null)
+                                                                    {
+                                                                        <td>@CrossCutting.Formatters.DecimalFormatter(cond.MAQUINA.MAQN_PC_ANTECIPACAO.Value)</td>
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        <td>-</td>
+                                                                    }
+                                                                    <td>@cond.ANTE_DT_INICIO.Value.ToShortDateString()</td>
+                                                                    <td>@CrossCutting.Formatters.DecimalFormatter(cond.ANTE_VL_VALOR.Value)</td>
+                                                                    <td class="td-one-action">
+                                                                        @if (ViewBag.Perfil == "ADM" || ViewBag.Perfil == "GER")
+                                                                        {
+                                                                            @Html.TableLinkDetails(cond.ANTE_CD_ID, "EditarAntecipacao", "fa-edit", "Editar")
+                                                                            if (cond.ANTE_IN_ATIVO == 1)
+                                                                            {
+                                                                                <span style="color: #337ab7; cursor:pointer;" alt="Desativar" class="tbl-link fa-lg fa fa-trash-o" onclick="ShowModalExcluirAntecipacao('/Empresa/ExcluirEmpresaAntecipacao/@cond.ANTE_CD_ID')" title="Excluir"></span>
+                                                                            }
+                                                                            else
+                                                                            {   
+                                                                                <span style="color: #337ab7; cursor:pointer;" alt="Reativar" class="tbl-link fa-lg fa fa-refresh" onclick="ShowModalReativarAntecipacao('/Empresa/ReativarEmpresaAntecipacao/@cond.ANTE_CD_ID')" title="Reativar"></span>
+                                                                            }
+                                                                        }
+                                                                    </td>
+                                                                </tr>
+                                                            }
+                                                        </tbody>
+                                                    </table>
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        @if (ViewBag.Perfil == "ADM" || ViewBag.Perfil == "GER")
+                                        {
+                                            @Html.ButtonLinkIndex(text: "Incluir nova Antecipação ", action: "IncluirAntecipacao", controller: "Empresa")
+                                        }
+                                    </div>
+                                </div>
+                            </div>*@
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Styles {
+    <link href="~/Content/themes/base/all.css" rel="stylesheet" />
+    @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
+    @Styles.Render("~/plugins/jasnyBootstrapStyles")
+    @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
+    @Styles.Render("~/plugins/toastrStyles")
+ <link href="~/Content/plugins/select2/select2.min.css" rel="stylesheet" />
+}
+@section Scripts {
+    @Scripts.Render("~/plugins/toastr")
+    @Scripts.Render("~/plugins/dataTables")
+    @Scripts.Render("~/bundles/inputmask")
+    @Scripts.Render("~/plugins/jasnyBootstrap")
+<script src="~/Scripts/plugins/select2/select2.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.maskedinput/1.4.1/jquery.maskedinput.js"></script>
+
+    <script>
+        function GetRegime(id) {
+            var data = {
+                id: id
+            }
+
+            $.ajax({
+                url: '../Empresa/GetRegime'
+                , type: 'POST'
+                , data: data
+                , success: function (r) {
+                    $('#aliquota').val(r.aliquota);
+
+                    $('#aliquota').show();
+                }
+            });
+        }
+    </script>
+
+    <script>
+        $(function () {
+            limpaModal();
+        });
+
+        function limpaModal() {
+            $('#btnModal').remove();
+            $('#modalTitle').remove();
+        }
+
+        function ShowModalExcluir(url) {
+            $('#modal').find('.modal-footer').prepend('<a id="btnModal" alt="Desativar" class="btn btn-primary" href="' + url + '" target="_self" title="Desativar">Confirmar</a>');
+            $('#modal').find('.modal-body').html('Confirma exclusão de plataforma de entrega?');
+            $('#modal').find('.modal-header').prepend('<h5 id="modalTitle" class="modal-title">Confimar Exclusão</h5>');
+            $('#modal').modal('show');
+        }
+
+        function ShowModalReativar(url) {
+            $('#modal').find('.modal-footer').prepend('<a id="btnModal" alt="Reativar" class="btn btn-primary" href="' + url + '" target="_self" title="Reativar">Confirmar</a>');
+            $('#modal').find('.modal-body').html('Confirma reativação de plataforma de entrega?');
+            $('#modal').find('.modal-header').prepend('<h5 id="modalTitle" class="modal-title">Confimar Reativação</h5>');
+            $('#modal').modal('show');
+        }
+
+        function ShowModalExcluirTicket(url) {
+            $('#modal').find('.modal-footer').prepend('<a id="btnModal" alt="Desativar" class="btn btn-primary" href="' + url + '" target="_self" title="Desativar">Confirmar</a>');
+            $('#modal').find('.modal-body').html('Confirma exclusão de ticket alimentação?');
+            $('#modal').find('.modal-header').prepend('<h5 id="modalTitle" class="modal-title">Confimar Exclusão</h5>');
+            $('#modal').modal('show');
+        }
+
+        function ShowModalReativarTicket(url) {
+            $('#modal').find('.modal-footer').prepend('<a id="btnModal" alt="Reativar" class="btn btn-primary" href="' + url + '" target="_self" title="Reativar">Confirmar</a>');
+            $('#modal').find('.modal-body').html('Confirma reativação de ticket alimentação?');
+            $('#modal').find('.modal-header').prepend('<h5 id="modalTitle" class="modal-title">Confimar Reativação</h5>');
+            $('#modal').modal('show');
+        }
+
+        function ShowModalExcluirCV(url) {
+            $('#modal').find('.modal-footer').prepend('<a id="btnModal" alt="Desativar" class="btn btn-primary" href="' + url + '" target="_self" title="Desativar">Confirmar</a>');
+            $('#modal').find('.modal-body').html('Confirma exclusão de custo variável?');
+            $('#modal').find('.modal-header').prepend('<h5 id="modalTitle" class="modal-title">Confimar Exclusão</h5>');
+            $('#modal').modal('show');
+        }
+
+        function ShowModalReativarCV(url) {
+            $('#modal').find('.modal-footer').prepend('<a id="btnModal" alt="Reativar" class="btn btn-primary" href="' + url + '" target="_self" title="Reativar">Confirmar</a>');
+            $('#modal').find('.modal-body').html('Confirma reativação de custo variável?');
+            $('#modal').find('.modal-header').prepend('<h5 id="modalTitle" class="modal-title">Confimar Reativação</h5>');
+            $('#modal').modal('show');
+        }
+
+        function ShowModalExcluirAntecipacao(url) {
+            $('#modal').find('.modal-footer').prepend('<a id="btnModal" alt="Desativar" class="btn btn-primary" href="' + url + '" target="_self" title="Desativar">Confirmar</a>');
+            $('#modal').find('.modal-body').html('Confirma exclusão de antecipação?');
+            $('#modal').find('.modal-header').prepend('<h5 id="modalTitle" class="modal-title">Confimar Exclusão</h5>');
+            $('#modal').modal('show');
+        }
+
+        function ShowModalReativarAntecipacao(url) {
+            $('#modal').find('.modal-footer').prepend('<a id="btnModal" alt="Reativar" class="btn btn-primary" href="' + url + '" target="_self" title="Reativar">Confirmar</a>');
+            $('#modal').find('.modal-body').html('Confirma reativação de antecipação?');
+            $('#modal').find('.modal-header').prepend('<h5 id="modalTitle" class="modal-title">Confimar Reativação</h5>');
+            $('#modal').modal('show');
+        }
+    </script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            $('.dataTables-example').DataTable({
+                pageLength: 25,
+                dom: '<"html5buttons"B>lTfgitp',
+                buttons: [
+                    { extend: 'excel', title: 'Maquina_Planilha' },
+                    { extend: 'pdf', title: 'Maquina_PDF' },
+
+                    {
+                        extend: 'print',
+                        customize: function (win) {
+                            $(win.document.body).addClass('white-bg');
+                            $(win.document.body).css('font-size', '10px');
+
+                            $(win.document.body).find('table')
+                                .addClass('compact')
+                                .css('font-size', 'inherit');
+                        }
+                    }
+                ]
+
+            });
+
+        });
+
+    </script>
+    
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            $('.dataTables-example1').DataTable({
+                pageLength: 25,
+                dom: '<"html5buttons"B>lTfgitp',
+                buttons: [
+                    { extend: 'excel', title: 'Plataforma_Planilha' },
+                    { extend: 'pdf', title: 'Plataforma_PDF' },
+
+                    {
+                        extend: 'print',
+                        customize: function (win) {
+                            $(win.document.body).addClass('white-bg');
+                            $(win.document.body).css('font-size', '10px');
+
+                            $(win.document.body).find('table')
+                                .addClass('compact')
+                                .css('font-size', 'inherit');
+                        }
+                    }
+                ]
+
+            });
+
+        });
+
+    </script>
+    
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            $('.dataTables-example2').DataTable({
+                pageLength: 25,
+                dom: '<"html5buttons"B>lTfgitp',
+                buttons: [
+                    { extend: 'excel', title: 'Ticket_Planilha' },
+                    { extend: 'pdf', title: 'Ticket_PDF' },
+
+                    {
+                        extend: 'print',
+                        customize: function (win) {
+                            $(win.document.body).addClass('white-bg');
+                            $(win.document.body).css('font-size', '10px');
+
+                            $(win.document.body).find('table')
+                                .addClass('compact')
+                                .css('font-size', 'inherit');
+                        }
+                    }
+                ]
+
+            });
+
+        });
+
+    </script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            $('.dataTables-example4').DataTable({
+                pageLength: 25,
+                dom: '<"html5buttons"B>lTfgitp',
+                buttons: [
+                    { extend: 'excel', title: 'CustoVariavel_Planilha' },
+                    { extend: 'pdf', title: 'CustoVariavel_PDF' },
+
+                    {
+                        extend: 'print',
+                        customize: function (win) {
+                            $(win.document.body).addClass('white-bg');
+                            $(win.document.body).css('font-size', '10px');
+
+                            $(win.document.body).find('table')
+                                .addClass('compact')
+                                .css('font-size', 'inherit');
+                        }
+                    }
+                ]
+            });
+        });
+    </script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            $('.dataTables-example5').DataTable({
+                pageLength: 25,
+                dom: '<"html5buttons"B>lTfgitp',
+                buttons: [
+                    { extend: 'excel', title: 'Antecipacao_Planilha' },
+                    { extend: 'pdf', title: 'Antecipacao_PDF' },
+
+                    {
+                        extend: 'print',
+                        customize: function (win) {
+                            $(win.document.body).addClass('white-bg');
+                            $(win.document.body).css('font-size', '10px');
+
+                            $(win.document.body).find('table')
+                                .addClass('compact')
+                                .css('font-size', 'inherit');
+                        }
+                    }
+                ]
+            });
+        });
+    </script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            var i = -1;
+            var toastCount = 0;
+            var $toastlast;
+            var getMessage = function () {
+                var msg = 'Hi, welcome to Inspinia. This is example of Toastr notification box.';
+                return msg;
+            };
+
+            $('#basictoast').click(function () {
+                // Display a success toast, with a title
+                toastr.success('Edição em andamento!')
+            });
+            $('#showtoast').click(function () {
+                var shortCutFunction = $("#toastTypeGroup input:radio:checked").val();
+                var msg = $('#message').val();
+                var title = $('#title').val() || '';
+                var $showDuration = $('#showDuration');
+                var $hideDuration = $('#hideDuration');
+                var $timeOut = $('#timeOut');
+                var $extendedTimeOut = $('#extendedTimeOut');
+                var $showEasing = $('#showEasing');
+                var $hideEasing = $('#hideEasing');
+                var $showMethod = $('#showMethod');
+                var $hideMethod = $('#hideMethod');
+                var toastIndex = toastCount++;
+                toastr.options = {
+                    closeButton: $('#closeButton').prop('checked'),
+                    debug: $('#debugInfo').prop('checked'),
+                    progressBar: $('#progressBar').prop('checked'),
+                    positionClass: $('#positionGroup input:radio:checked').val() || 'toast-top-right',
+                    onclick: null
+                };
+                if ($('#addBehaviorOnToastClick').prop('checked')) {
+                    toastr.options.onclick = function () {
+                        alert('You can perform some custom action after a toast goes away');
+                    };
+                }
+                if ($showDuration.val().length) {
+                    toastr.options.showDuration = $showDuration.val();
+                }
+                if ($hideDuration.val().length) {
+                    toastr.options.hideDuration = $hideDuration.val();
+                }
+                if ($timeOut.val().length) {
+                    toastr.options.timeOut = $timeOut.val();
+                }
+                if ($extendedTimeOut.val().length) {
+                    toastr.options.extendedTimeOut = $extendedTimeOut.val();
+                }
+                if ($showEasing.val().length) {
+                    toastr.options.showEasing = $showEasing.val();
+                }
+                if ($hideEasing.val().length) {
+                    toastr.options.hideEasing = $hideEasing.val();
+                }
+                if ($showMethod.val().length) {
+                    toastr.options.showMethod = $showMethod.val();
+                }
+                if ($hideMethod.val().length) {
+                    toastr.options.hideMethod = $hideMethod.val();
+                }
+                if (!msg) {
+                    msg = getMessage();
+                }
+                $("#toastrOptions").text("Command: toastr["
+                    + shortCutFunction
+                    + "](\""
+                    + msg
+                    + (title ? "\", \"" + title : '')
+                    + "\")\n\ntoastr.options = "
+                    + JSON.stringify(toastr.options, null, 2)
+                );
+                var $toast = toastr[shortCutFunction](msg, title); // Wire up an event handler to a button in the toast, if it exists
+                $toastlast = $toast;
+                if ($toast.find('#okBtn').length) {
+                    $toast.delegate('#okBtn', 'click', function () {
+                        alert('you clicked me. i was toast #' + toastIndex + '. goodbye!');
+                        $toast.remove();
+                    });
+                }
+                if ($toast.find('#surpriseBtn').length) {
+                    $toast.delegate('#surpriseBtn', 'click', function () {
+                        alert('Surprise! you clicked me. i was toast #' + toastIndex + '. You could perform an action here.');
+                    });
+                }
+            });
+            function getLastToast() {
+                return $toastlast;
+            }
+            $('#clearlasttoast').click(function () {
+                toastr.clear(getLastToast());
+            });
+            $('#cleartoasts').click(function () {
+                toastr.clear();
+            });
+
+        });
+    </script>
+
+    @if (ViewBag.Message != null)
+    {
+        <script type="text/javascript">
+            window.onload = function () {
+                  alert("@ViewBag.Message");
+            };
+        </script>
+    }
+}

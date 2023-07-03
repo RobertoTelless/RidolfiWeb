@@ -1,0 +1,1 @@
+search_result['10015']=["topic_0000000000001AC8_overloads--.html","CommonHelpers.GetLinearDistance Method","This function uses the Haversine formula to calculate linear distance between two sets of\r\nlatitude and longitude, with an adjustment for the earth\u0027s radius based on the latitude.\r\nHaversine is used i..."];

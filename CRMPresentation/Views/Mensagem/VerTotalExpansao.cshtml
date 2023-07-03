@@ -1,0 +1,317 @@
+﻿@using Presentation.Extensions
+@using CrossCutting;
+@model ERP_Condominios_Solution.ViewModels.ModeloViewModel
+@{
+    Layout = "~/Views/Shared/_Layout_Admin.cshtml";
+}
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="page-title"> 
+        <h3 class="title">Plataforma de Mensagens</h3> 
+        <br />
+        <ol class="breadcrumb">
+            <li>
+                <a href="@Url.Action("CarregarBase", "DaseAdmin")">Dashboards</a>
+            </li>
+            <li class="active">
+                <strong>Estatísticas de Envio de Mensagens</strong>
+            </li>
+        </ol>
+        <br />
+    </div>
+    <div class="row">
+        <div class="col-lg-12 col-md-12 col-xs-12">
+            <div class="col-lg-12 col-md-12 col-xs-12 ibox float-e-margins">
+                <div class="ibox-title">
+                </div>
+                <div class="ibox-content">
+                    <div class="row">
+                        <div class="form-group">
+                            @Html.ButtonLinkIndex(text: "Voltar", action: "CarregarBase", controller: "BaseAdmin")
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-4 col-md-4 col-xs-12">
+                            <div class="col-lg-12 col-md-12 col-xs-12 ibox float-e-margins" style="border-bottom: solid; border-bottom-color: darkblue; border-bottom-width: 2px; border-left: solid; border-left-color: darkblue; border-left-width: 1px; border-right: solid; border-right-color: darkblue; border-right-width: 1px; border-top: solid; border-top-color: darkblue; border-top-width: 1px; height: 530px">
+                                <div class="ibox-title">
+                                    <h4>Estatística de Envio de Mensagens/dia</h4>
+                                    <h4 style="color: brown">(Exibindo apenas o mês corrente)</h4>
+                                </div>
+                                <div class="ibox-content">
+                                    <div class="row">
+                                        @if ((ViewBag.Lista as List<ERP_Condominios_Solution.ViewModels.ModeloViewModel>).Count > 0)
+                                        {
+                                            <table class="table table-striped table-bordered table-hover">
+                                                <thead style="background-color:lightsteelblue">
+                                                    <tr>
+                                                        <th>Data de Emissão</th>
+                                                        <th>Total</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach (var cond in (ViewBag.Lista as List<ERP_Condominios_Solution.ViewModels.ModeloViewModel>))
+                                                    {
+                                                        <tr>
+                                                            <td>@cond.DataEmissao.ToShortDateString()</td>
+                                                            <td>@cond.Valor</td>
+                                                       </tr>
+                                                    }
+                                                </tbody>
+                                            </table>
+                                        }
+                                        <div class="form-group">
+                                            @Html.ButtonLinkIndex(text: "Ver Todos os Meses", action: "VerTotalExpansaoTodos", controller: "BaseAdmin")
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-8 col-md-8 col-xs-12">
+                            <div class="col-lg-12 col-md-12 col-xs-12 ibox float-e-margins" style="border-bottom: solid; border-bottom-color: darkblue; border-bottom-width: 2px; border-left: solid; border-left-color: darkblue; border-left-width: 1px; border-right: solid; border-right-color: darkblue; border-right-width: 1px; border-top: solid; border-top-color: darkblue; border-top-width: 1px; height: 530px">
+                                <div class="ibox-title">
+                                    <h4>Gráfico do Envio de Mensagens/Dia (Mês Corrente)</h4>
+                                </div>
+                                <div class="ibox-content">
+                                    <div class="row">
+                                        <canvas id="barChart" height="150"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <link href="~/Content/themes/base/jquery-ui.min.css" rel="stylesheet" />
+    <link href="~/Content/themes/base/all.css" rel="stylesheet" />  
+    @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
+    @Styles.Render("~/plugins/jasnyBootstrapStyles")
+    @Styles.Render("~/plugins/toastrStyles")
+    @Styles.Render("~/plugins/touchSpinStyles")
+    @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
+}
+
+@section Scripts {
+
+    @Scripts.Render("~/plugins/toastr")
+    <script src="~/Scripts/jquery-ui-1.12.1.min.js"></script>
+    @Scripts.Render("~/plugins/dataTables")
+    @Scripts.Render("~/bundles/inputmask")
+    @Scripts.Render("~/plugins/jasnyBootstrap")
+    @Scripts.Render("~/plugins/touchSpin")
+    @Scripts.Render("~/plugins/iCheck")
+    @Scripts.Render("~/plugins/sparkline")
+    @Scripts.Render("~/plugins/switchery")
+    @Scripts.Render("~/plugins/chartjs")
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.maskedinput/1.4.1/jquery.maskedinput.js"></script>
+    
+    
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            $('.dataTables-example').DataTable({
+                pageLength: 25,
+                dom: '<"html5buttons"B>lTfgitp',
+                buttons: [
+                    { extend: 'excel', title: 'ExampleFile' },
+                    { extend: 'pdf', title: 'ExampleFile' },
+
+                    {
+                        extend: 'print',
+                        customize: function (win) {
+                            $(win.document.body).addClass('white-bg');
+                            $(win.document.body).css('font-size', '10px');
+
+                            $(win.document.body).find('table')
+                                    .addClass('compact')
+                                    .css('font-size', 'inherit');
+                        }
+                    }
+                ]
+
+            });
+
+           
+
+        });
+
+    </script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            $('.dataTables-example').DataTable({
+                pageLength: 10,
+                dom: '<"html5buttons"B>lTfgitp',
+                buttons: [
+                    //{ extend: 'copy' },
+                    //{ extend: 'csv' },
+                    //{ extend: 'excel', title: 'ExampleFile' },
+                    //{ extend: 'pdf', title: 'ExampleFile' },
+
+                    {
+                        //extend: 'print',
+                        customize: function (win) {
+                            $(win.document.body).addClass('white-bg');
+                            $(win.document.body).css('font-size', '10px');
+
+                            $(win.document.body).find('table')
+                                .addClass('compact')
+                                .css('font-size', 'inherit');
+                        }
+                    }
+                ]
+
+            });
+
+        });
+
+    </script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            $("#sparkline1").sparkline([34, 52, 25], {
+                type: 'line',
+                lineColor: '#17997f',
+                fillColor: '#1ab394',
+            });
+            $("#sparklineX").sparkline([5, 6, 7, 2, 0, -4, -2, 4], {
+                type: 'bar',
+                barColor: '#1ab394',
+                negBarColor: '#c6c6c6'
+            });
+
+            $("#sparkline3").sparkline([1, 1, 2], {
+                type: 'pie',
+                sliceColors: ['#1ab394', '#b3b3b3', '#e4f0fb']
+            });
+
+            $("#sparkline2").sparkline([34, 43, 43, 35, 44, 32, 15, 22, 46, 33, 86, 54, 73, 53, 12, 53, 23, 65, 23, 63, 53, 42, 34, 56, 76, 15, 54, 23, 44], {
+                type: 'line',
+                width: '100%',
+                height: '380',
+                lineColor: '#17997f',
+                fillColor: "#ffffff"
+            });
+
+            $("#sparkline5").sparkline([1, 1, 0, 1, -1, -1, 1, -1, 0, 0, 1, 1], {
+                type: 'tristate',
+                posBarColor: '#1ab394',
+                negBarColor: '#bfbfbf'
+            });
+
+
+            $("#sparkline6").sparkline([4, 6, 7, 7, 4, 3, 2, 1, 4, 4, 5, 6, 3, 4, 5, 8, 7, 6, 9, 3, 2, 4, 1, 5, 6, 4, 3, 7, ], {
+                type: 'discrete',
+                lineColor: '#1ab394'
+            });
+
+            $("#sparkline7").sparkline([52, 12, 44], {
+                type: 'pie',
+                height: '150px',
+                sliceColors: ['#1ab394', '#b3b3b3', '#e4f0fb']
+            });
+
+            $("#sparkline8").sparkline([5, 6, 7, 2, 0, 4, 2, 4, 5, 7, 2, 4, 12, 14, 4, 2, 14, 12, 7], {
+                type: 'bar',
+                barWidth: 8,
+                height: '150px',
+                barColor: '#1ab394',
+                negBarColor: '#c6c6c6'
+            });
+
+            $("#sparkline9").sparkline([34, 43, 43, 35, 44, 32, 15, 22, 46, 33, 86, 54, 73, 53, 12, 53, 23, 65, 23, 63, 53, 42, 34, 56, 76, 15, 54, 23, 44], {
+                type: 'line',
+                lineWidth: 1,
+                height: '150px',
+                lineColor: '#17997f',
+                fillColor: '#ffffff',
+            });
+        });
+    </script>
+
+
+    <script type="text/javascript">
+        $(function () {
+            $("#cpf").mask("999.999.999-99");
+            $("#cnpj").mask("99.999.999/9999-99");
+        });
+    </script>
+
+    @*<script type="text/javascript">
+        $(document).ready(function () {
+
+            $.ajax({
+                url: '../BaseAdmin/GetDadosGraficoTotal'
+                , type: 'POST'
+                , success: function (result) {
+            var lineData = {
+                labels: result.dias,
+                datasets: [
+
+                    {
+                        label: "Total por Dia",
+                        backgroundColor: 'rgba(26,179,148,0.5)',
+                        borderColor: "rgba(26,179,148,0.7)",
+                        pointBackgroundColor: "rgba(26,179,148,1)",
+                        pointBorderColor: "#fff",
+                        data: result.valores
+                    }
+                ]
+            };
+
+            var lineOptions = {
+                responsive: true
+            };
+
+
+            var ctx = document.getElementById("lineChart").getContext("2d");
+            new Chart(ctx, { type: 'line', data: lineData, options: lineOptions });
+
+              }
+            });
+        });
+    </script>*@
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            $.ajax({
+                url: '../BaseAdmin/GetDadosGraficoTotal'
+                , type: 'POST'
+                , success: function (result) {
+                var barData = {
+                    labels: result.dias,
+                    datasets: [
+                        {
+                            label: "Total por Dia",
+                            backgroundColor: 'rgba(26,179,148,0.5)',
+                            pointBorderColor: "#fff",
+                            data: result.valores
+                        }
+                    ]
+                };
+
+                var barOptions = {
+                    responsive: true
+                };
+
+                var ctx2 = document.getElementById("barChart").getContext("2d");
+                new Chart(ctx2, { type: 'bar', data: barData, options: barOptions });
+              }
+            });
+        });
+    </script>
+}
+
+@if (ViewBag.Message != null)
+{
+    <script type="text/javascript">
+            window.onload = function () {
+                alert("@ViewBag.Message");
+            };
+    </script>
+}
+

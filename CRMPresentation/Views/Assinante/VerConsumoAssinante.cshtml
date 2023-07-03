@@ -1,0 +1,435 @@
+﻿@using Presentation.Extensions
+@using CrossCutting
+@model ERP_Condominios_Solution.ViewModels.AssinanteViewModel
+@{
+    Layout = "~/Views/Shared/_Layout_Admin.cshtml";
+}
+<div id="content" class="wraper container-fluid">
+    <div class="col-lg-12 col-md-12 col-sm-12">
+        <div class="col-lg-12 col-md-12 col-sm-12">
+            @*Atalhos*@
+            <div class="row">
+                <h3 style="color:olivedrab; font-weight:bold">Dashboard de Consumo - Assinantes</h3>
+                <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
+                    <br />
+                    <div class="col-lg-12 col-md-12 col-xs-12">
+                        @Html.ButtonLinkIndex(text: "Voltar", controller: "Assinante", action: "VoltarAnexoAssinante")
+                    </div>
+                    <br /><br />
+                </div>
+            </div>
+
+            @*Estatísticas*@
+            <div class="row">
+                <div class="col-lg-2 col-md-2 col-sm-12">
+                    <div class="ibox-content text-center">
+                        <h1>@Model.ASSI_NM_NOME.Substring(0, Model.ASSI_NM_NOME.IndexOf(" "))</h1>
+                        <div class="m-b-sm">
+                            <img alt="image" class="img-circle" src="@Url.Content(Model.ASSI_AQ_FOTO)" style="width: auto; height: auto; max-height: 140px; max-width: 140px;">
+                        </div>
+                        <p class="font-bold">@((String)Session["NomeGreeting"])</p>
+
+                        <div class="text-center">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4 col-sm-12">
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-title">
+                            <span class="label label-warning pull-right">Hoje</span>
+                            <h5>Resumo De Consumo</h5>
+                        </div>
+                        <div class="ibox-content">
+                            <div class="row">
+                                <div class="col-xs-4">
+                                    <small class="stats-label">Usuários</small>
+                                    <h4>@ViewBag.NumUsu</h4>
+                                </div>
+                                <div class="col-xs-4">
+                                    <small class="stats-label">Clientes</small>
+                                    <h4>@ViewBag.NumCli</h4>
+                                </div>
+                                <div class="col-xs-4">
+                                    <small class="stats-label">Processos</small>
+                                    <h4>@ViewBag.NumProc</h4>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-4">
+                                    <small class="stats-label">Ações de Processos</small>
+                                    <h4>@ViewBag.NumAcoes</h4>
+                                </div>
+                                <div class="col-xs-4">
+                                    <small class="stats-label">E-Mails</small>
+                                    <h4>@ViewBag.NumEmail</h4>
+                                </div>
+                                <div class="col-xs-4">
+                                    <small class="stats-label">SMS</small>
+                                    <h4>@ViewBag.NumSMS</h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            @*Indicadores*@
+            <br />
+            <div class="row">
+
+                <div class="col-lg-12">
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-title">
+                            <h5>Indicadores</h5>
+                        </div>
+                        <div class="ibox-content ibox-heading">
+                            <h3><i class="fa fa-line-chart"></i> Indicadores</h3>
+                            <small><i class="fa fa-tim"></i> Valores acumulados/atualizados até hoje</small>
+                        </div>
+                        <div class="ibox-content" style="height: 1800px">
+                            <div class="row">
+                                <div class="col-lg-2">
+                                    <div class="ibox float-e-margins">
+                                        <div class="ibox-title"  style="background-color: darkseagreen; color: darkgreen">
+                                            <span class="label label-success pull-right">Hoje</span>
+                                            <h5>Usuários</h5>
+                                        </div>
+                                        <div class="ibox-content">
+                                            <h1 class="no-margins">@ViewBag.NumUsu</h1>
+                                            <h5 class="no-margins" style="color: goldenrod">Limite: @((Int32)Session["NumUsuarios"])</h5>
+                                            <small>Usuários Ativos</small>
+                                            <br />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-2">
+                                    <div class="ibox float-e-margins">
+                                        <div class="ibox-title"  style="background-color: darkseagreen; color: darkgreen">
+                                            <span class="label label-success pull-right">Hoje</span>
+                                            <h5>Clientes</h5>
+                                        </div>
+                                        <div class="ibox-content">
+                                            <h1 class="no-margins">@ViewBag.NumCli</h1>
+                                            <h5 class="no-margins" style="color: goldenrod">Limite: @((Int32)Session["NumClientes"])</h5>
+                                            <small>Clientes Ativos</small>
+                                            <br />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-2">
+                                    <div class="ibox float-e-margins">
+                                        <div class="ibox-title"  style="background-color: darkseagreen; color: darkgreen">
+                                            <span class="label label-success pull-right">Hoje</span>
+                                            <h5>Processos</h5>
+                                        </div>
+                                        <div class="ibox-content">
+                                            <h1 class="no-margins">@ViewBag.NumProc</h1>
+                                            <h5 class="no-margins" style="color: goldenrod">Limite: @((Int32)Session["NumProcessosBase"])</h5>
+                                            <small>Processos Ativos</small>
+                                            <br />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-2">
+                                    <div class="ibox float-e-margins">
+                                        <div class="ibox-title"  style="background-color: darkseagreen; color: darkgreen">
+                                            <span class="label label-success pull-right">Hoje</span>
+                                            <h5>Ações de Processos</h5>
+                                        </div>
+                                        <div class="ibox-content">
+                                            <h1 class="no-margins">@ViewBag.NumAcoes</h1>
+                                            <h5 class="no-margins" style="color: goldenrod">Limite: @((Int32)Session["NumAcoes"])</h5>
+                                            <small>Ações Ativos</small>
+                                            <br />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-2">
+                                    <div class="ibox float-e-margins">
+                                        <div class="ibox-title"  style="background-color: darkseagreen; color: darkgreen">
+                                            <span class="label label-success pull-right">Hoje</span>
+                                            <h5>E-Mails</h5>
+                                        </div>
+                                        <div class="ibox-content">
+                                            <h1 class="no-margins">@ViewBag.NumEmail</h1>
+                                            <h5 class="no-margins" style="color: goldenrod">Limite: @((Int32)Session["NumEMail"])</h5>
+                                            <small>E-Mails Enviados</small>
+                                            <br />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-2">
+                                    <div class="ibox float-e-margins">
+                                        <div class="ibox-title"  style="background-color: darkseagreen; color: darkgreen">
+                                            <span class="label label-success pull-right">Hoje</span>
+                                            <h5>SMS</h5>
+                                        </div>
+                                        <div class="ibox-content">
+                                            <h1 class="no-margins">@ViewBag.NumSMS</h1>
+                                            <h5 class="no-margins" style="color: goldenrod">Limite: @((Int32)Session["NumSMS"])</h5>
+                                            <small>SMS Enviados</small>
+                                            <br />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-lg-3 col-md-3 col-xs-12">
+                                    <div class="col-lg-12 col-md-12 col-xs-12 ibox float-e-margins" style="border-bottom: solid; border-bottom-color: darkgreen; border-bottom-width: 2px; border-left: solid; border-left-color: darkgreen; border-left-width: 1px; border-right: solid; border-right-color: darkgreen; border-right-width: 1px; border-top: solid; border-top-color: darkgreen; border-top-width: 1px">
+                                        <div class="ibox-title">
+                                            <h4>Usuários</h4>
+                                        </div>
+                                        <div class="ibox-content">
+                                            <div class="row">
+                                                <canvas id="doughnutChartUsuario" height="300"></canvas>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-3 col-md-3 col-xs-12">
+                                    <div class="col-lg-12 col-md-12 col-xs-12 ibox float-e-margins" style="border-bottom: solid; border-bottom-color: darkgreen; border-bottom-width: 2px; border-left: solid; border-left-color: darkgreen; border-left-width: 1px; border-right: solid; border-right-color: darkgreen; border-right-width: 1px; border-top: solid; border-top-color: darkgreen; border-top-width: 1px">
+                                        <div class="ibox-title">
+                                            <h4>Clientes</h4>
+                                        </div>
+                                        <div class="ibox-content">
+                                            <div class="row">
+                                                <canvas id="doughnutChartCliente" height="300"></canvas>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-3 col-md-3 col-xs-12">
+                                    <div class="col-lg-12 col-md-12 col-xs-12 ibox float-e-margins" style="border-bottom: solid; border-bottom-color: darkgreen; border-bottom-width: 2px; border-left: solid; border-left-color: darkgreen; border-left-width: 1px; border-right: solid; border-right-color: darkgreen; border-right-width: 1px; border-top: solid; border-top-color: darkgreen; border-top-width: 1px">
+                                        <div class="ibox-title">
+                                            <h4>Processos</h4>
+                                        </div>
+                                        <div class="ibox-content">
+                                            <div class="row">
+                                                <canvas id="doughnutChartProcesso" height="300"></canvas>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-3 col-md-3 col-xs-12">
+                                    <div class="col-lg-12 col-md-12 col-xs-12 ibox float-e-margins" style="border-bottom: solid; border-bottom-color: darkgreen; border-bottom-width: 2px; border-left: solid; border-left-color: darkgreen; border-left-width: 1px; border-right: solid; border-right-color: darkgreen; border-right-width: 1px; border-top: solid; border-top-color: darkgreen; border-top-width: 1px">
+                                        <div class="ibox-title">
+                                            <h4>Ações de Processos</h4>
+                                        </div>
+                                        <div class="ibox-content">
+                                            <div class="row">
+                                                <canvas id="doughnutChartAcao" height="300"></canvas>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-3 col-md-3 col-xs-12">
+                                    <div class="col-lg-12 col-md-12 col-xs-12 ibox float-e-margins" style="border-bottom: solid; border-bottom-color: darkgreen; border-bottom-width: 2px; border-left: solid; border-left-color: darkgreen; border-left-width: 1px; border-right: solid; border-right-color: darkgreen; border-right-width: 1px; border-top: solid; border-top-color: darkgreen; border-top-width: 1px">
+                                        <div class="ibox-title">
+                                            <h4>E-Mails Enviados</h4>
+                                        </div>
+                                        <div class="ibox-content">
+                                            <div class="row">
+                                                <canvas id="doughnutChartEMail" height="300"></canvas>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-3 col-md-3 col-xs-12">
+                                    <div class="col-lg-12 col-md-12 col-xs-12 ibox float-e-margins" style="border-bottom: solid; border-bottom-color: darkgreen; border-bottom-width: 2px; border-left: solid; border-left-color: darkgreen; border-left-width: 1px; border-right: solid; border-right-color: darkgreen; border-right-width: 1px; border-top: solid; border-top-color: darkgreen; border-top-width: 1px">
+                                        <div class="ibox-title">
+                                            <h4>SMS Enviados</h4>
+                                        </div>
+                                        <div class="ibox-content">
+                                            <div class="row">
+                                                <canvas id="doughnutChartSMS" height="300"></canvas>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <link href="~/Content/themes/base/jquery-ui.min.css" rel="stylesheet" />
+    <link href="~/Content/themes/base/all.css" rel="stylesheet" />
+    @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
+    @Styles.Render("~/plugins/jasnyBootstrapStyles")
+    @Styles.Render("~/plugins/toastrStyles")
+    @Styles.Render("~/plugins/touchSpinStyles")
+    @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
+}
+
+@section Scripts {
+
+    @Scripts.Render("~/plugins/toastr")
+    <script src="~/Scripts/jquery-ui-1.12.1.min.js"></script>
+    @Scripts.Render("~/plugins/dataTables")
+    @Scripts.Render("~/bundles/inputmask")
+    @Scripts.Render("~/plugins/jasnyBootstrap")
+    @Scripts.Render("~/plugins/touchSpin")
+    @Scripts.Render("~/plugins/iCheck")
+    @Scripts.Render("~/plugins/sparkline")
+    @Scripts.Render("~/plugins/switchery")
+    @Scripts.Render("~/plugins/chartjs")
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.maskedinput/1.4.1/jquery.maskedinput.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            $.ajax({
+                url: '../Assinante/GetDadosUsuario'
+                , type: 'POST'
+                , success: function (result) {
+                var doughnutData = {
+                   labels: result.labels,
+                   datasets: [{
+                     data: result.valores,
+                     backgroundColor: result.cores
+                   }]
+                };
+                var doughnutOptions = {
+                   responsive: true
+                };
+                var ctx4 = document.getElementById("doughnutChartUsuario").getContext("2d");
+                new Chart(ctx4, { type: 'doughnut', data: doughnutData, options: doughnutOptions });
+              }
+            });
+        });
+    </script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            $.ajax({
+                url: '../Assinante/GetDadosCliente'
+                , type: 'POST'
+                , success: function (result) {
+                var doughnutData = {
+                   labels: result.labels,
+                   datasets: [{
+                     data: result.valores,
+                     backgroundColor: result.cores
+                   }]
+                };
+                var doughnutOptions = {
+                   responsive: true
+                };
+                var ctx4 = document.getElementById("doughnutChartCliente").getContext("2d");
+                new Chart(ctx4, { type: 'doughnut', data: doughnutData, options: doughnutOptions });
+              }
+            });
+        });
+    </script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            $.ajax({
+                url: '../Assinante/GetDadosProcesso'
+                , type: 'POST'
+                , success: function (result) {
+                var doughnutData = {
+                   labels: result.labels,
+                   datasets: [{
+                     data: result.valores,
+                     backgroundColor: result.cores
+                   }]
+                };
+                var doughnutOptions = {
+                   responsive: true
+                };
+                var ctx4 = document.getElementById("doughnutChartProcesso").getContext("2d");
+                new Chart(ctx4, { type: 'doughnut', data: doughnutData, options: doughnutOptions });
+              }
+            });
+        });
+    </script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            $.ajax({
+                url: '../Assinante/GetDadosAcao'
+                , type: 'POST'
+                , success: function (result) {
+                var doughnutData = {
+                   labels: result.labels,
+                   datasets: [{
+                     data: result.valores,
+                     backgroundColor: result.cores
+                   }]
+                };
+                var doughnutOptions = {
+                   responsive: true
+                };
+                var ctx4 = document.getElementById("doughnutChartAcao").getContext("2d");
+                new Chart(ctx4, { type: 'doughnut', data: doughnutData, options: doughnutOptions });
+              }
+            });
+        });
+    </script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            $.ajax({
+                url: '../Assinante/GetDadosEMail'
+                , type: 'POST'
+                , success: function (result) {
+                var doughnutData = {
+                   labels: result.labels,
+                   datasets: [{
+                     data: result.valores,
+                     backgroundColor: result.cores
+                   }]
+                };
+                var doughnutOptions = {
+                   responsive: true
+                };
+                var ctx4 = document.getElementById("doughnutChartEMail").getContext("2d");
+                new Chart(ctx4, { type: 'doughnut', data: doughnutData, options: doughnutOptions });
+              }
+            });
+        });
+    </script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            $.ajax({
+                url: '../Assinante/GetDadosSMS'
+                , type: 'POST'
+                , success: function (result) {
+                var doughnutData = {
+                   labels: result.labels,
+                   datasets: [{
+                     data: result.valores,
+                     backgroundColor: result.cores
+                   }]
+                };
+                var doughnutOptions = {
+                   responsive: true
+                };
+                var ctx4 = document.getElementById("doughnutChartSMS").getContext("2d");
+                new Chart(ctx4, { type: 'doughnut', data: doughnutData, options: doughnutOptions });
+              }
+            });
+        });
+    </script>
+
+
+
+
+    @if (ViewBag.Message != null)
+    {
+        <script type="text/javascript">
+            window.onload = function () {
+                  alert("@ViewBag.Message");
+            };
+        </script>
+    }
+}
+

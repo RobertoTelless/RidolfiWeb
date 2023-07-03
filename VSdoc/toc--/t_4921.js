@@ -1,0 +1,1 @@
+c['4921']=[['4922',"ERP_CRMEntities Constructor","topic_0000000000001337.html",0],['4923',"Properties","topic_0000000000001336_props--.html",1],['5010',"Methods","topic_0000000000001336_methods--.html",1]];

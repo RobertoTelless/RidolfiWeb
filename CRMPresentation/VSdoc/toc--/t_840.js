@@ -1,0 +1,1 @@
+c['840']=[['841',"NoticiaController Constructor","topic_00000000000002F1.html",0],['842',"Methods","topic_00000000000002F0_methods--.html",1]];

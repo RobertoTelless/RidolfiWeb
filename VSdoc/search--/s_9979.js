@@ -1,0 +1,1 @@
+search_result['9979']=["topic_0000000000001AA8.html","CommonHelpers.IsOnlyLettersAndOrDigits Method","This extension method checks for all characters being only letters and numbers."];

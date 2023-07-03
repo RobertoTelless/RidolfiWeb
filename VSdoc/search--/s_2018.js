@@ -1,0 +1,1 @@
+search_result['2018']=["topic_00000000000005EF.html","CRMViewModel.ValorTotal Property",""];

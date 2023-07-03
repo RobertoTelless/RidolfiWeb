@@ -1,0 +1,1 @@
+c['7039']=[['7040',"Create(NOTIFICACAO) Method","topic_0000000000001268.html",0],['7041',"Create(NOTIFICACAO, LOG) Method","topic_0000000000001267.html",0]];

@@ -1,0 +1,1 @@
+search_result['9977']=["topic_0000000000001AA6.html","CommonHelpers.GetOnlyLettersAndDigits Method","This process gets all letters and digits in a string,\r\nand ignores all else, with the exception of periods and spaces\r\nwhen includePeriodAndSpace is true."];

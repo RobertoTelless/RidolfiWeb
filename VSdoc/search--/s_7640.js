@@ -1,0 +1,1 @@
+search_result['7640']=["topic_000000000000148A.html","CLIENTE.CLIE_NR_INSCRICAO_ESTADUAL Property",""];

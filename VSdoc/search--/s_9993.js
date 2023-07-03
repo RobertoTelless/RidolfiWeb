@@ -1,0 +1,1 @@
+search_result['9993']=["topic_0000000000001AB6.html","CommonHelpers.AmIRunningInTheIDE Property","This method will return true if this project, or any project that\r\ncalls this component as compiled code, is running under the IDE"];

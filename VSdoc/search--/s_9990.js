@@ -1,0 +1,1 @@
+search_result['9990']=["topic_0000000000001AB3.html","CommonHelpers.GetDNSName Method","Gets the DNS host entry table name for a given computer name.\r\nIf pComputerName is not provided, then it returns the name of the host computer."];

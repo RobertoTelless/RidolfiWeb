@@ -1,0 +1,103 @@
+﻿@using Presentation.Extensions
+@model EntitiesServices.Model.PESQUISA_ANEXO
+@{
+    Layout = "~/Views/Shared/_Layout_Admin.cshtml";
+}
+<div style="z-index: 999;" class="dotContainer">
+    <div style="top: 500px" class="dotWrapper">
+        <div class="circle"></div>
+        <div class="circle"></div>
+        <div class="circle"></div>
+        <div class="shadow"></div>
+        <div class="shadow"></div>
+        <div class="shadow"></div>
+    </div>
+</div>
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="page-title">
+        <h3 class="title">Pesquisas</h3>
+        <br />
+        <ol class="breadcrumb">
+            <li>
+                <a href="@Url.Action("CarregarBase", "BaseAdmin")">Dashboard</a>
+            </li>
+            <li>
+                <a href="@Url.Action("MontarTelaDashboardPesquisa", "Pesquisa")">Dashboard - Pesquisas</a>
+            </li>
+            <li>
+                <a href="@Url.Action("MontarTelaPesquisa", "Pesquisa")">Pesquisas</a>
+            </li>
+            <li>
+                <a href="@Url.Action("EditarPesquisa", "Pesquisa")">Pesquisas - Edição</a>
+            </li>
+            <li class="active">
+                <strong>Pesquisas - Anexo</strong>
+            </li>
+        </ol>
+        <br />
+    </div>
+
+    <div class="row">
+        <div class="col-lg-12 col-md-12 col-xs-12">
+            <div class="col-lg-12 col-md-12 col-xs-12 ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>Pesquisa - Ver Anexo</h5>
+                </div>
+                @using (Html.BeginForm("VerAnexoPesquisaAudio", "Pesquisa", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", @id = "pwd-container1" }))
+                {
+                    <div class="ibox-content">
+                        <div class="row">
+                            <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
+                                <div class="col-lg-3 col-md-3 col-xs-12">
+                                    Titulo
+                                    @Html.TextBoxFor(m => m.PEAN_NM_TITULO, new { @class = "form-control", @readonly = "readonly", autofocus = true })
+                                </div>
+                                <div class="col-lg-4 col-md-4 col-xs-12">
+                                    Data
+                                    @Html.TextBoxFor(m => m.PEAN_DT_ANEXO, "{0:dd/MM/yyyy}", new { @class = "form-control", @readonly = "readonly", autofocus = true })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            @Html.ButtonLinkIndex(text: "Voltar", action: "VoltarAnexoPesquisa", controller: "Pesquisa")
+                        </div>
+                        <div class="form-group">
+                            <div class="col-lg-12 col-md-12 col-sm-12">
+                                <audio controls>
+                                    <source src="@Url.Content(Model.PEAN_AQ_ARQUIVO)" type="audio/mp3" />
+                                </audio>                                
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <link href="~/Content/themes/base/all.css" rel="stylesheet" />
+    @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
+    @Styles.Render("~/plugins/jasnyBootstrapStyles")
+}
+@section Scripts {
+
+    @Scripts.Render("~/plugins/dataTables")
+    @Scripts.Render("~/bundles/inputmask")
+    @Scripts.Render("~/plugins/jasnyBootstrap")
+    @Scripts.Render("~/plugins/videoResponsible")
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.maskedinput/1.4.1/jquery.maskedinput.js"></script>
+    <script type="text/javascript">
+        $(document).on('webkitfullscreenchange mozfullscreenchange fullscreenchange', function (e) {
+            $('body').hasClass('fullscreen-video') ? $('body').removeClass('fullscreen-video') : $('body').addClass('fullscreen-video')
+        });
+    </script>
+    @if (ViewBag.Message != null)
+    {
+        <script type="text/javascript">
+            window.onload = function () {
+                  alert("@ViewBag.Message");
+            };
+        </script>
+    }
+}

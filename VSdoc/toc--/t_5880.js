@@ -1,0 +1,1 @@
+c['5880']=[['5881',"AssinanteService Constructor","topic_0000000000000D4A.html",0],['5882',"Methods","topic_0000000000000D48_methods--.html",1],['5914',"Fields","topic_0000000000000D48_vars--.html",1]];

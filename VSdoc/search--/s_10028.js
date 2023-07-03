@@ -1,0 +1,1 @@
+search_result['10028']=["topic_0000000000001AD4.html","CommonHelpers.GetIntBitValue Method","Helper method to get the state of a bit value of an Int."];

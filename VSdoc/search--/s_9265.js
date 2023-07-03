@@ -1,0 +1,1 @@
+search_result['9265']=["topic_0000000000001938.html","AssinantePlanoRepository.GetByAssPlan Method",""];

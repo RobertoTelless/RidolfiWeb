@@ -1,0 +1,1 @@
+search_result['9962']=["topic_0000000000001A9C.html","AddressGeoData.SetLinearDistance Method","Sets the linear distance between points, as calculated outside this class."];

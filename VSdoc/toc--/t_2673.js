@@ -1,0 +1,1 @@
+c['2673']=[['2674',"EditarTipoAcao(int) Method","topic_00000000000002F8.html",0],['2675',"EditarTipoAcao(TipoAcaoViewModel) Method","topic_00000000000002F9.html",0]];

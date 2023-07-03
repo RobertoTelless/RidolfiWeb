@@ -1,0 +1,1064 @@
+﻿@using Presentation.Extensions
+@model ERP_Condominios_Solution.ViewModels.AssinanteViewModel
+@{
+    Layout = "~/Views/Shared/_Layout_Admin.cshtml";
+}
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="modalContainer">
+        <div id="modal" class="modal" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        @*Titulo gerado dinamicamente*@
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        @*Gerado dinamicamente*@
+                    </div>
+                    <div class="modal-footer">
+                        <button onclick="limpaModal()" type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="containerModalDesc">
+        <div class="modal fade" id="modalDesc" tabindex="-1" role="dialog" aria-labelledby="modalDesc" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalDesc">Descrição do Plano</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div id="modalDescBody" class="modal-body">
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="page-title">
+        <h3 class="title">Central do Assinante</h3>
+        <br />
+        <ol class="breadcrumb">
+            <li>
+                <a href="@Url.Action("CarregarBase", "BaseAdmin")">Dashboard</a>
+            </li>
+            <li class="active">
+                <strong>Central do Assinante</strong>
+            </li>
+        </ol>
+        <br />
+    </div>
+
+    <div class="row">
+        <div class="col-lg-2">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title"  style="background-color: darkseagreen; color: darkgreen">
+                    <span class="label label-primary pull-right">Hoje</span>
+                    <h5>Planos</h5>
+                </div>
+                <div class="ibox-content">
+                    <h1 class="no-margins">@ViewBag.Planos</h1>
+                    <small>Planos Ativos</small>
+                    <br />
+                    <br />
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-2">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title"  style="background-color: indianred; color: darkgreen">
+                    <span class="label label-primary pull-right">Hoje</span>
+                    <h5>Planos</h5>
+                </div>
+                <div class="ibox-content">
+                    <h1 class="no-margins">@ViewBag.Vencidos</h1>
+                    <small>Planos Vencidos</small>
+                    <br />
+                    <br />
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-2">
+            <div class="ibox float-e-margins">
+            <div class="ibox-title"  style="background-color: goldenrod; color: darkgreen">
+                    <span class="label label-primary pull-right">Hoje</span>
+                    <h5>Planos</h5>
+                </div>
+                <div class="ibox-content">
+                    <h1 class="no-margins">@ViewBag.Vencer30</h1>
+                    <small>Vencendo em 30 dias</small>
+                    <br />
+                    <br />
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-2">
+            <div class="ibox float-e-margins">
+            <div class="ibox-title"  style="background-color: indianred; color: darkgreen">
+                    <span class="label label-primary pull-right">Hoje</span>
+                    <h5>Pagamentos</h5>
+                </div>
+                <div class="ibox-content">
+                    <h1 class="no-margins">@ViewBag.Atrasos</h1>
+                    <small>Parcelas em Atraso</small>
+                    <br />
+                    <br />
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-2">
+            <div class="ibox float-e-margins">
+            <div class="ibox-title"  style="background-color: goldenrod; color: darkgreen">
+                    <span class="label label-primary pull-right">Hoje</span>
+                    <h5>Usuários</h5>
+                </div>
+                <div class="ibox-content">
+                    <h1 class="no-margins">@ViewBag.Usuarios</h1>
+                    <small>Usuários Ativos</small>
+                    <br />
+                    <br />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-12 col-md-12 col-xs-12">
+            <div class="col-lg-12 col-md-12 col-xs-12 ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>Central do Assinante</h5>
+                </div>
+                <div class="ibox-content">
+                    @Html.AntiForgeryToken()
+                    @if (!ViewData.ModelState.IsValid)
+                    {
+                        <div class="alert alert-danger">
+                            <button type="button" class="close" data-dismiss="alert">Fechar</button>
+                            @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+                        </div>
+                    }
+                    <div class="form-group">
+                        @Html.ButtonLinkIndex(text: "Ver Consumo", action: "VerConsumoAssinanteForm", controller: "Assinante")
+                        @Html.ButtonLinkIndex(text: "Gerar Relatório Detalhe", action: "GerarRelatorioDetalhe", controller: "Assinante")
+                        @Html.ButtonLinkIndex(text: "Voltar", action: "CarregarBase", controller: "BaseAdmin")
+                    </div>
+                    <div class="tabs-container">
+                        <ul class="nav nav-tabs">
+                            <li class="active"><a data-toggle="tab" href="#tab-1">Dados Gerais</a></li>
+                            <li class=""><a data-toggle="tab" href="#tab-2">Imagens & Anexos</a></li>
+                            <li class=""><a data-toggle="tab" href="#tab-3">Endereço</a></li>
+                            <li class=""><a data-toggle="tab" href="#tab-6">Contatos</a></li>
+                            <li class=""><a data-toggle="tab" href="#tab-4">Planos de Assinatura</a></li>
+                            <li class=""><a data-toggle="tab" href="#tab-9">Pagamentos</a></li>
+                            <li class=""><a data-toggle="tab" href="#tab-11">Anotações</a></li>
+                            <li class=""><a data-toggle="tab" href="#tab-7">Observações</a></li>
+                        </ul>
+
+                        <div class="tab-content">
+                            @*Dados Gerais*@
+                            <div id="tab-1" class="tab-pane active">
+                                <div class="panel-body">
+                                    @using (Html.BeginForm("MontarTelaCentralAssinante", "BaseAdmin", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", @id = "pwd-container1" }))
+                                    {
+                                        <div class="row" style="width: 100%;">
+                                            <div class="col-lg-2 col-md-2 col-xs-12">
+                                                <div style="text-align: center; margin-top: 20px; line-height: 10px;">
+                                                    @Html.HiddenFor(m => m.ASSI_CD_ID)
+                                                    @Html.HiddenFor(m => m.ASSI_AQ_FOTO)
+                                                    @Html.HiddenFor(m => m.ASSI_IN_ATIVO)
+                                                    @Html.HiddenFor(m => m.ASSI_IN_BLOQUEADO)
+                                                    @Html.HiddenFor(m => m.ASSI_IN_TIPO)
+                                                    @Html.HiddenFor(m => m.ASSI_NM_BAIRRO)
+                                                    @Html.HiddenFor(m => m.ASSI_NM_CIDADE)
+                                                    @Html.HiddenFor(m => m.ASSI_NM_COMPLEMENTO)
+                                                    @Html.HiddenFor(m => m.ASSI_NM_EMAIL)
+                                                    @Html.HiddenFor(m => m.ASSI_NM_ENDERECO)
+                                                    @Html.HiddenFor(m => m.ASSI_NR_CEP)
+                                                    @Html.HiddenFor(m => m.ASSI_NR_NUMERO)
+                                                    @Html.HiddenFor(m => m.ASSI_NR_TELEFONE)
+                                                    @Html.HiddenFor(m => m.ASSI_TX_OBSERVACOES)
+                                                    @Html.HiddenFor(m => m.ASSI_NR_CELULAR)
+                                                    @Html.HiddenFor(m => m.UF_CD_ID)
+                                                    @Html.HiddenFor(m => m.PLAN_CD_ID)
+                                                    @if (!String.IsNullOrEmpty(Model.ASSI_AQ_FOTO))
+                                                    {
+                                                        <img src="@Url.Content(Model.ASSI_AQ_FOTO)" style="width: auto; height: auto; max-height: 180px; max-width: 120px;">
+                                                    }
+                                                    else
+                                                    {
+                                                        <img src="~/Images/a8.jpg" style="width: auto; height: auto; max-height: 180px; max-width: 120px;">
+                                                    }
+                                                    <br />
+                                                    <br />
+                                                    <br />
+                                                    <br />
+                                                    <br />
+                                                </div>
+                                            </div>
+                                            <div class="col-md-10">
+                                                <div class="row">
+                                                    <div class="col-lg-2 col-md-2 col-xs-12">
+                                                        Tipo de Pessoa
+                                                        @Html.TextBoxFor(m => m.TIPO_PESSOA.TIPE_NM_NOME, new { @class = "form-control", autofocus = true, @readonly = "readonly" })
+                                                    </div>
+                                                    <div class="col-lg-2 col-md-2 col-xs-12">
+                                                        Data Inicial
+                                                        @Html.TextBoxFor(m => m.ASSI_DT_INICIO, "{0:dd/MM/yyyy}", new { @class = "form-control", autofocus = true, @id = "dn", @readonly="readonly" })
+                                                    </div>
+                                                </div>
+                                                <br />
+                                                <div class="row">
+                                                    <div class="col-lg-4 col-md-4 col-xs-12">
+                                                        Nome
+                                                        @Html.TextBoxFor(m => m.ASSI_NM_NOME, new { @class = "form-control", autofocus = true, @readonly="readonly", @style = "color:green; font-weight:bold" })
+                                                    </div>
+                                                    @if (Model.TIPE_CD_ID == 2)
+                                                    {
+                                                        <div class="col-lg-2 col-md-2 col-xs-12">
+                                                            CNPJ
+                                                            @Html.TextBoxFor(m => m.ASSI_NR_CNPJ, new { @class = "form-control", @id = "cnpj", autofocus = true, @readonly = "readonly" })
+                                                            @Html.ValidationMessageFor(m => m.ASSI_NR_CNPJ, "", new { @style = "color:red" })
+                                                        </div>
+                                                        <div class="col-lg-5 col-md-5 col-xs-12" id="RS">
+                                                            Razão Social
+                                                            @Html.TextBoxFor(m => m.ASSI_NM_RAZAO_SOCIAL, new { @class = "form-control", autofocus = true, @readonly = "readonly" })
+                                                            @Html.ValidationMessageFor(m => m.ASSI_NM_RAZAO_SOCIAL, "", new { @style = "color:red" })
+                                                        </div>
+                                                    }
+                                                    @if (Model.TIPE_CD_ID == 1)
+                                                    {
+                                                        <div class="col-lg-2 col-md-2 col-xs-12">
+                                                            CPF
+                                                            @Html.TextBoxFor(m => m.ASSI_NR_CPF, new { @class = "form-control", @id = "cpf", autofocus = true, @readonly = "readonly" })
+                                                            @Html.ValidationMessageFor(m => m.ASSI_NR_CPF, "", new { @style = "color:red" })
+                                                        </div>
+                                                    }
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+
+                            @*Imagens - Foto e Anexos*@
+                            <div id="tab-2" class="tab-pane">
+                                <div class="panel-body">
+                                    <div class="row">
+                                        <div class="col-lg-10 col-md-10 col-xs-12">
+                                            <div class="form-group">
+                                                <h4>Logotipo/Foto</h4>
+                                                @using (Html.BeginForm("UploadFotoAssinante", "Assinante", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { enctype = "multipart/form-data", @id = "pwd-container3" }))
+                                                {
+                                                    <div class="form-group">
+                                                        <div class="col-lg-12 col-md-12 col-xs-12">
+                                                            <input style="float: left; margin-right: 5px;" type="file" accept=".jpg, .png, .jpeg, .gif|images/*" name="file" id="file" class="btn btn-sm btn-warning" />
+                                                            <input style="float: left;" type="submit" value="Incluir Logotipo/Foto" class="btn btn-sm btn-success" />
+                                                        </div>
+                                                    </div>
+                                                }
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-2 col-md-2 col-xs-12">
+                                            <div class="form-group">
+                                                <div class="col-lg-12 col-md-12 col-sm-12">
+                                                    <br />
+                                                    @if (!String.IsNullOrEmpty(Model.ASSI_AQ_FOTO))
+                                                    {
+                                                        <img src="@Url.Content(Model.ASSI_AQ_FOTO)" style="width: auto; height: auto; max-height: 110px; max-width: 90px;">
+                                                    }
+                                                    else
+                                                    {
+                                                        <img src="~/Images/gallery/10s.jpg" style="width: auto; height: auto; max-height: 110px; max-width: 90px;">
+                                                    }
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <hr />
+                                        <div class="col-lg-12 col-md-12 col-xs-12">
+                                            <h4>Anexos</h4>
+                                            <br />
+                                            <div class="form-group">
+                                                @using (Html.BeginForm("UploadFileAssinante", "Assinante", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { enctype = "multipart/form-data", @id = "pwd-container2" }))
+                                                {
+                                                    <div class="ibox-content">
+                                                        @if (Model.ASSINANTE_ANEXO.Count > 0)
+                                                        {
+                                                            <table class="table table-striped table-bordered table-hover dataTables-example">
+                                                                <thead style="background-color:lightsteelblue">
+                                                                    <tr>
+                                                                        <th>Título</th>
+                                                                        <th>Data</th>
+                                                                        <th>Tipo</th>
+                                                                        <th class="td-one-action">Ações</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    @foreach (var cond in (Model.ASSINANTE_ANEXO))
+                                                                    {
+                                                                        <tr>
+                                                                            <td style="width: auto"><a href="@Url.Action("VerAnexoAssinante", "Assinante", new { id = cond.ASAN_CD_ID })" />@cond.ASAN_NM_TITULO</td>
+                                                                            <td>@cond.ASAN_DT_ANEXO.ToShortDateString()</td>
+                                                                            @if (cond.ASAN_IN_TIPO == 1)
+                                                                            {
+                                                                                <td>Imagem</td>
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                <td>Arquivo</td>
+                                                                            }
+                                                                            <td class="td-one-action">
+                                                                                @if (cond.ASAN_IN_TIPO == 1 || cond.ASAN_IN_TIPO == 2)
+                                                                                {
+                                                                                    @Html.TableLinkDetails(cond.ASAN_CD_ID, "VerAnexoAssinante", "fa-camera", "Visualizar")
+                                                                                }
+                                                                                @if (cond.ASAN_IN_TIPO == 3)
+                                                                                {
+                                                                                    <a title="Visualizar" class="fa fa-camera fa-lg" href="~/PdfViewer/web/viewer.html?file=@(cond.ASAN_AQ_ARQUIVO.Replace("~", ""))&ReturnUrl=@Request.Url.AbsolutePath" target="_blank"></a>
+                                                                                }
+                                                                                @Html.TableLinkDetails(cond.ASAN_CD_ID, "DownloadCliente", "fa-download", "Download")
+                                                                            </td>
+                                                                        </tr>
+                                                                    }
+                                                                </tbody>
+                                                            </table>
+                                                        }
+                                                        <div class="form-group">
+                                                            <div class="col-lg-12 col-md-12 col-xs-12">
+                                                                <input style="float: left; margin-right: 5px;" type="file" name="file" id="file" class="btn btn-sm btn-warning" />
+                                                                <input style="float: left; margin-right: 5px;" type="submit" value="Incluir Anexo" class="btn btn-sm btn-success" />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            @*Endereços*@
+                            <div id="tab-3" class="tab-pane">
+                                <div class="panel-body">
+                                    @using (Html.BeginForm("MontarTelaCentralAssinante", "BaseAdmin", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", @id = "pwd-container1" }))
+                                    {
+                                        <div class="row">
+                                            <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
+                                                <div class="col-lg-2 col-md-2 col-xs-12">
+                                                    CEP
+                                                    <div class="input-group">
+                                                        @Html.HiddenFor(m => m.ASSI_CD_ID)
+                                                        @Html.HiddenFor(m => m.ASSI_NR_CELULAR)
+                                                        @Html.HiddenFor(m => m.ASSI_AQ_FOTO)
+                                                        @Html.HiddenFor(m => m.ASSI_DT_INICIO)
+                                                        @Html.HiddenFor(m => m.ASSI_IN_ATIVO)
+                                                        @Html.HiddenFor(m => m.ASSI_IN_BLOQUEADO)
+                                                        @Html.HiddenFor(m => m.ASSI_IN_STATUS)
+                                                        @Html.HiddenFor(m => m.ASSI_IN_TIPO)
+                                                        @Html.HiddenFor(m => m.ASSI_NM_EMAIL)
+                                                        @Html.HiddenFor(m => m.ASSI_NM_NOME)
+                                                        @Html.HiddenFor(m => m.ASSI_NM_RAZAO_SOCIAL)
+                                                        @Html.HiddenFor(m => m.ASSI_NR_CNPJ)
+                                                        @Html.HiddenFor(m => m.ASSI_NR_CPF)
+                                                        @Html.HiddenFor(m => m.ASSI_NR_TELEFONE)
+                                                        @Html.HiddenFor(m => m.ASSI_TX_OBSERVACOES)
+                                                        @Html.HiddenFor(m => m.PLAN_CD_ID)
+                                                        @Html.HiddenFor(m => m.TIPE_CD_ID)
+                                                        @Html.TextBoxFor(m => m.ASSI_NR_CEP, new { @class = "form-control", @id = "cep", autofocus = true })
+                                                        @Html.ValidationMessageFor(m => m.ASSI_NR_CEP, "", new { @style = "color:red" })
+                                                        <span class="input-group-btn">
+                                                            <span class="btn btn-warning btn-sm" id="btnBuscaCep" onclick="PesquisaCep($('#cep').val(), $(this), 1)">Buscar CEP</span>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
+                                                <div class="col-lg-3 col-md-3 col-xs-12">
+                                                    Endereço
+                                                    @Html.TextBoxFor(m => m.ASSI_NM_ENDERECO, new { @class = "form-control", @id = "endereco", autofocus = true })
+                                                    @Html.ValidationMessageFor(m => m.ASSI_NM_ENDERECO, "", new { @style = "color:red" })
+                                                </div>
+                                                <div class="col-lg-1 col-md-1 col-xs-12">
+                                                    Número
+                                                    @Html.TextBoxFor(m => m.ASSI_NR_NUMERO, new { @class = "form-control", @id = "nmr", autofocus = true })
+                                                    @Html.ValidationMessageFor(m => m.ASSI_NR_NUMERO, "", new { @style = "color:red" })
+                                                </div>
+                                                <div class="col-lg-2 col-md-2 col-xs-12">
+                                                    Complemento
+                                                    @Html.TextBoxFor(m => m.ASSI_NM_COMPLEMENTO, new { @class = "form-control", autofocus = true, @id = "endereco" })
+                                                    @Html.ValidationMessageFor(m => m.ASSI_NM_COMPLEMENTO, "", new { @style = "color:red" })
+                                                </div>
+                                                <div class="col-lg-2 col-md-2 col-xs-12">
+                                                    Bairro
+                                                    @Html.TextBoxFor(m => m.ASSI_NM_BAIRRO, new { @class = "form-control", @id = "bairro", autofocus = true })
+                                                    @Html.ValidationMessageFor(m => m.ASSI_NM_BAIRRO, "", new { @style = "color:red" })
+                                                </div>
+                                                <div class="col-lg-3 col-md-3 col-xs-12">
+                                                    Cidade
+                                                    @Html.TextBoxFor(m => m.ASSI_NM_CIDADE, new { @class = "form-control", @id = "cidade", autofocus = true })
+                                                    @Html.ValidationMessageFor(m => m.ASSI_NM_CIDADE, "", new { @style = "color:red" })
+                                                </div>
+                                                <div class="col-lg-1 col-md-1 col-xs-12">
+                                                    UF
+                                                    @Html.DropDownListFor(m => m.UF_CD_ID, (SelectList)ViewBag.UF, "Selecionar", new { @class = "form-control", @id = "uf", autofocus = true })
+                                                    @Html.ValidationMessageFor(m => m.UF_CD_ID, "", new { @style = "color:red" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            @Html.ButtonActionSubmit(text: "Confirma edição de Endereço", htmlAttributes: new { id = "basictoast" })
+                                        </div>
+                                    }
+
+                                </div>
+                            </div>
+
+                            @*Anotações*@
+                            <div id="tab-11" class="tab-pane">
+                                <div class="panel-body">
+                                    <div class="row">
+                                        <div class="col-lg-12">
+                                            <h4>Anotações:</h4>
+                                            @if (Model.ASSINANTE_ANOTACAO.Count > 0)
+                                            {
+                                                foreach (var item in (Model.ASSINANTE_ANOTACAO).OrderByDescending(a => a.ASAT_DT_ANOTACAO))
+                                                {
+                                <div class="social-feed-box">
+                                    <div class="social-avatar">
+                                        <a href="" class="pull-left">
+                                            <img src="@Url.Content(item.USUARIO.USUA_AQ_FOTO)" style="width: auto; height: auto; max-height: 110px; max-width: 90px;">
+                                        </a>
+                                        <div class="media-body">
+                                            <a href="#">
+                                                @item.USUARIO.USUA_NM_NOME
+                                            </a>
+                                            <small class="text-muted">@item.ASAT_DT_ANOTACAO.ToString("dd/MM/yyyy HH:mm")</small>
+                                        </div>
+                                    </div>
+                                    <div class="social-body">
+                                        <p>
+                                            @item.ASAT_TX_ANOTACAO
+                                        </p>
+                                    </div>
+                                </div>}
+                        }
+                                        </div>
+                                    </div>
+                                    <br />
+                                    <div class="form-group">
+                                        @Html.ButtonLinkIndex(text: "Incluir Nova Anotação", action: "IncluirAnotacaoAssinante", controller: "Assinante")
+                                    </div>
+                                </div>
+                            </div>
+                                
+                            @*Contatos*@
+                            <div id="tab-6" class="tab-pane">
+                                <div class="panel-body">
+                                    @using (Html.BeginForm("MontarTelaCentralAssinante", "BaseAdmin", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", @id = "pwd-container1" }))
+                                    {
+                                        <div class="row">
+                                            <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
+                                                <div class="col-lg-3 col-md-3 col-xs-12">
+                                                    @Html.HiddenFor(m => m.ASSI_CD_ID)
+                                                    @Html.HiddenFor(m => m.ASSI_AQ_FOTO)
+                                                    @Html.HiddenFor(m => m.ASSI_DT_INICIO)
+                                                    @Html.HiddenFor(m => m.ASSI_IN_ATIVO)
+                                                    @Html.HiddenFor(m => m.ASSI_IN_BLOQUEADO)
+                                                    @Html.HiddenFor(m => m.ASSI_IN_STATUS)
+                                                    @Html.HiddenFor(m => m.ASSI_IN_TIPO)
+                                                    @Html.HiddenFor(m => m.ASSI_NM_BAIRRO)
+                                                    @Html.HiddenFor(m => m.ASSI_NM_CIDADE)
+                                                    @Html.HiddenFor(m => m.ASSI_NM_COMPLEMENTO)
+                                                    @Html.HiddenFor(m => m.ASSI_NM_ENDERECO)
+                                                    @Html.HiddenFor(m => m.ASSI_NM_NOME)
+                                                    @Html.HiddenFor(m => m.ASSI_NM_RAZAO_SOCIAL)
+                                                    @Html.HiddenFor(m => m.ASSI_NR_CEP)
+                                                    @Html.HiddenFor(m => m.ASSI_NR_CNPJ)
+                                                    @Html.HiddenFor(m => m.ASSI_NR_CNPJ)
+                                                    @Html.HiddenFor(m => m.ASSI_NR_NUMERO)
+                                                    @Html.HiddenFor(m => m.ASSI_TX_OBSERVACOES)
+                                                    @Html.HiddenFor(m => m.PLAN_CD_ID)
+                                                    @Html.HiddenFor(m => m.UF_CD_ID)
+                                                    @Html.HiddenFor(m => m.TIPE_CD_ID)
+                                                    E-Mail*
+                                                    @Html.TextBoxFor(m => m.ASSI_NM_EMAIL, new { @class = "form-control", autofocus = true })
+                                                    @Html.ValidationMessageFor(m => m.ASSI_NM_EMAIL, "", new { @style = "color:red" })
+                                                </div>
+                                                <div class="col-lg-2 col-md-2 col-xs-12">
+                                                    Telefone
+                                                    @Html.TextBoxFor(m => m.ASSI_NR_TELEFONE, new { @class = "form-control", autofocus = true, @id = "tel" })
+                                                    @Html.ValidationMessageFor(m => m.ASSI_NR_TELEFONE, "", new { @style = "color:red" })
+                                                </div>
+                                                <div class="col-lg-2 col-md-2 col-xs-12">
+                                                    Celular
+                                                    @Html.TextBoxFor(m => m.ASSI_NR_CELULAR, new { @class = "form-control", autofocus = true, @id = "cel" })
+                                                    @Html.ValidationMessageFor(m => m.ASSI_NR_CELULAR, "", new { @style = "color:red" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
+                                            @Html.ButtonActionSubmit(text: "Confirma edição de Contatos", htmlAttributes: new { id = "basictoast" })
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+
+                            @*Observações*@
+                            <div id="tab-7" class="tab-pane">
+                                <div class="panel-body">
+                                    @using (Html.BeginForm("MontarTelaCentralAssinante", "Assinante", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", @id = "pwd-container1" }))
+                                    {
+                                        <div class="row">
+                                            <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
+                                                <div class="col-lg-12 col-md-12 col-xs-12">
+                                                    @Html.HiddenFor(m => m.ASSI_CD_ID)
+                                                    @Html.HiddenFor(m => m.ASSI_AQ_FOTO)
+                                                    @Html.HiddenFor(m => m.ASSI_DT_INICIO)
+                                                    @Html.HiddenFor(m => m.ASSI_IN_ATIVO)
+                                                    @Html.HiddenFor(m => m.ASSI_IN_BLOQUEADO)
+                                                    @Html.HiddenFor(m => m.ASSI_IN_STATUS)
+                                                    @Html.HiddenFor(m => m.ASSI_IN_TIPO)
+                                                    @Html.HiddenFor(m => m.ASSI_NM_BAIRRO)
+                                                    @Html.HiddenFor(m => m.ASSI_NM_CIDADE)
+                                                    @Html.HiddenFor(m => m.ASSI_NM_COMPLEMENTO)
+                                                    @Html.HiddenFor(m => m.ASSI_NM_EMAIL)
+                                                    @Html.HiddenFor(m => m.ASSI_NM_ENDERECO)
+                                                    @Html.HiddenFor(m => m.ASSI_NM_NOME)
+                                                    @Html.HiddenFor(m => m.ASSI_NM_RAZAO_SOCIAL)
+                                                    @Html.HiddenFor(m => m.ASSI_NR_CELULAR)
+                                                    @Html.HiddenFor(m => m.ASSI_NR_CEP)
+                                                    @Html.HiddenFor(m => m.ASSI_NR_CNPJ)
+                                                    @Html.HiddenFor(m => m.ASSI_NR_CPF)
+                                                    @Html.HiddenFor(m => m.ASSI_NR_NUMERO)
+                                                    @Html.HiddenFor(m => m.ASSI_NR_TELEFONE)
+                                                    @Html.HiddenFor(m => m.PLAN_CD_ID)
+                                                    @Html.HiddenFor(m => m.TIPE_CD_ID)
+                                                    @Html.HiddenFor(m => m.UF_CD_ID)
+                                                    Observações
+                                                    @Html.TextAreaFor(m => m.ASSI_TX_OBSERVACOES, new { @class = "form-control", style = "width: 100%; height: 400px;", autofocus = true })
+                                                    @Html.ValidationMessageFor(m => m.ASSI_TX_OBSERVACOES, "", new { @style = "color:red" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            @Html.ButtonActionSubmit(text: "Confirma edição de Observações", htmlAttributes: new { id = "basictoast" })
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        
+                            @*Planos*@
+                            <div id="tab-4" class="tab-pane">
+                                <div class="panel-body">
+                                    <div class="row">
+                                        <hr />
+                                        <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
+                                            <div class="col-lg-12 col-md-12 col-xs-12">
+                                                <h4>Planos de Assinatura</h4>
+                                                <br />
+                                                @if (Model.ASSINANTE_PLANO != null && Model.ASSINANTE_PLANO.Count > 0)
+                                                {
+                                                    <table class="table table-striped table-bordered table-hover dataTables-example">
+                                                        <thead style="background-color:lightsteelblue">
+                                                            <tr>
+                                                                <th style="width: auto">Marca</th>
+                                                                <th style="width: auto">Nome</th>
+                                                                <th style="width: auto">Periodicidade</th>
+                                                                <th style="width: auto">Preço (R$)</th>
+                                                                <th style="width: auto">Início</th>
+                                                                <th style="width: auto">Término</th>
+                                                                <th style="width: auto">Validade</th>
+                                                                <th style="width: auto">Situação</th>
+                                                                <th class="td-one-action">Ações</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            @foreach (var cond in (Model.ASSINANTE_PLANO))
+                                                            {
+                                                                <tr>
+                                                                    <td style="cursor: pointer; text-decoration: underline; color: green;" onclick="mostrarDesc('@cond.PLANO.PLAN_DS_DESCRICAO')">@cond.PLANO.PLAN_NM_EXIBE</td>
+                                                                    <td style="width: auto">@cond.PLANO.PLAN_NM_NOME</td>
+                                                                    <td style="width: auto">@cond.PLANO.PLANO_PERIODICIDADE.PLPE_NM_NOME</td>
+                                                                    @if (cond.ASPL_IN_PRECO == 1)
+                                                                    {
+                                                                        <td style="width: auto">@CrossCutting.Formatters.DecimalFormatter(cond.PLANO.PLAN_VL_PRECO.Value)</td>
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        <td style="width: auto">@CrossCutting.Formatters.DecimalFormatter(cond.PLANO.PLAN_VL_PROMOCAO.Value)</td>
+                                                                    }
+                                                                    <td style="width: auto">@cond.ASPL_DT_INICIO.Value.ToShortDateString()</td>
+                                                                    <td style="width: auto">@cond.ASPL_DT_VALIDADE.Value.ToShortDateString()</td>
+                                                                    @if (cond.ASPL_DT_VALIDADE > DateTime.Today.Date)
+                                                                    {
+                                                                        <td style="width: auto"><span class="badge badge-success">Na Validade</span></td>
+                                                                    }
+                                                                    else if (DateTime.Today.Date.AddDays(30) > cond.ASPL_DT_VALIDADE)
+                                                                    {
+                                                                        <td style="width: auto"><span class="badge badge-danger">Menos de 30 dias</span></td>
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        <td style="width: auto"><span class="badge badge-warning">Encerrado</span></td>
+                                                                    }
+                                                                    @if (cond.ASPL_IN_ATIVO == 1)
+                                                                    {
+                                                                        <td style="width: auto"><span class="badge badge-primary">Ativo</span></td>
+                                                                    }
+                                                                    else if (cond.ASPL_IN_ATIVO == 0)
+                                                                    {
+                                                                        <td style="width: auto"><span class="badge badge-danger">Inativo</span></td>
+                                                                    }
+                                                                    else if (cond.ASPL_IN_ATIVO == 2)
+                                                                    {
+                                                                        <td style="width: auto"><span class="badge badge-warning">Solicitado</span></td>
+                                                                    }
+                                                                    <td class="td-one-action">
+                                                                        @if (cond.ASPL_IN_ATIVO == 1)
+                                                                        {
+                                                                            <span style="color: #337ab7; cursor:pointer;" alt="Desativar" class="tbl-link fa-lg fa fa-trash-o" onclick="ShowModalExcluirPlano('/BaseAdmin/ExcluirAssinantePlanoProprio/@cond.ASPL_CD_ID')" title="Cancelar"></span>
+                                                                        }
+                                                                    </td>
+                                                                </tr>
+                                                            }
+                                                        </tbody>
+                                                    </table>
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        @Html.ButtonLinkIndex(text: "Solicitar Inclusão de Novo Plano", action: "SolicitarIncluirAssinantePlano", controller: "BaseAdmin")
+                                        @Html.ButtonLinkIndex(text: "Ver Comparativo de Planos", action: "VerComparativoPlanos", controller: "BaseAdmin")
+                                    </div>
+                                </div>
+                            </div>                    
+                        
+                            @*Pagamentos*@
+                            <div id="tab-9" class="tab-pane">
+                                <div class="panel-body">
+                                    <div class="row">
+                                        <hr />
+                                        <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
+                                            <div class="col-lg-12 col-md-12 col-xs-12">
+                                                <h4>Pagamentos</h4>
+                                                <br />
+                                                @if (Model.ASSINANTE_PAGAMENTO != null && Model.ASSINANTE_PAGAMENTO.Count > 0)
+                                                {
+                                                    <table class="table table-striped table-bordered table-hover dataTables-example">
+                                                        <thead style="background-color:lightsteelblue">
+                                                            <tr>
+                                                                <th style="width: auto">Plano</th>
+                                                                <th style="width: auto">Vencimento</th>
+                                                                <th style="width: auto">Valor (R$)</th>
+                                                                <th style="width: auto">Pagamento</th>
+                                                                <th style="width: auto">Valor Pago (R$)</th>
+                                                                <th style="width: auto">Atraso</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            @foreach (var cond in (Model.ASSINANTE_PAGAMENTO))
+                                                            {
+                                                                <tr>
+                                                                    <td style="width: auto">@cond.PLANO.PLAN_NM_NOME</td>
+                                                                    <td style="width: auto">@cond.ASPA_DT_VENCIMENTO.Value.ToShortDateString()</td>
+                                                                    <td style="width: auto">@CrossCutting.Formatters.DecimalFormatter(cond.ASPA_VL_VALOR.Value)</td>
+                                                                    @if (cond.ASPA_DT_PAGAMENTO != null)
+                                                                    {
+                                                                        <td style="width: auto">@cond.ASPA_DT_PAGAMENTO.Value.ToShortDateString()</td>
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        <td style="width: auto">-</td>
+                                                                    }
+                                                                    @if (cond.ASPA_VL_VALOR_PAGO != null)
+                                                                    {
+                                                                        <td style="width: auto">@CrossCutting.Formatters.DecimalFormatter(cond.ASPA_VL_VALOR_PAGO.Value)</td>
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        <td style="width: auto">-</td>
+                                                                    }
+                                                                    @if (cond.ASPA_NR_ATRASO > 0)
+                                                                    {
+                                                                        <td style="width: auto; color: brown; font-weight: bold; background-color: burlywood">@cond.ASPA_NR_ATRASO</td>
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        if (cond.ASPA_DT_PAGAMENTO != null)
+                                                                        {
+                                                                            <td style="width: auto; color: green; font-weight: bold"><span class="badge badge-primary">Pago</span></td>
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            <td style="width: auto; color: green; font-weight: bold"><span class="badge badge-success">Em Aberto</span></td>
+                                                                        }
+                                                                    }
+                                                                </tr>
+                                                            }
+                                                        </tbody>
+                                                    </table>
+                                                }
+                                            </div>
+                                        </div>
+                                        </div>
+                                </div>
+                            </div>                
+                        
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <link href="~/Content/themes/base/jquery-ui.min.css" rel="stylesheet" />
+    <link href="~/Content/themes/base/all.css" rel="stylesheet" />
+    @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
+    @Styles.Render("~/plugins/jasnyBootstrapStyles")
+    @Styles.Render("~/plugins/toastrStyles")
+    @Styles.Render("~/plugins/touchSpinStyles")
+    @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
+}
+
+@section Scripts {
+
+    @Scripts.Render("~/plugins/toastr")
+    <script src="~/Scripts/jquery-ui-1.12.1.min.js"></script>
+    @Scripts.Render("~/plugins/dataTables")
+    @Scripts.Render("~/bundles/inputmask")
+    @Scripts.Render("~/plugins/jasnyBootstrap")
+    @Scripts.Render("~/plugins/touchSpin")
+    @Scripts.Render("~/plugins/iCheck")
+    @Scripts.Render("~/plugins/sparkline")
+    @Scripts.Render("~/plugins/switchery")
+    @Scripts.Render("~/plugins/chartjs")
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.maskedinput/1.4.1/jquery.maskedinput.js"></script>
+    <script>
+        function Fade() {
+            $('.dotContainer').fadeIn("fast");
+            $('#login').css("filter", "blur(4px)");
+        }
+    </script>
+    <script>
+        $(window).on("load", function () {
+            $('.dotContainer').fadeOut("slow");
+            $('#title').css("filter", "blur(0)");
+            $('#content').css("filter", "blur(0)");
+        });
+    </script>
+    <script>
+        $(function () {
+            limpaModal();
+        });
+
+        function limpaModal() {
+            $('#btnModal').remove();
+            $('#modalTitle').remove();
+        }
+
+        function ShowModalExcluirPlano(url) {
+            $('#modal').find('.modal-footer').prepend('<a id="btnModal" alt="Desativar" class="btn btn-primary" href="' + url + '" target="_self" title="Desativar">Confirmar</a>');
+            $('#modal').find('.modal-body').html('Confirma cancelamento de Plano?');
+            $('#modal').find('.modal-header').prepend('<h5 id="modalTitle" class="modal-title">Confimar Cancelamento</h5>');
+            $('#modal').modal('show');
+        }
+
+        function ShowModalReativarPlano(url) {
+            $('#modal').find('.modal-footer').prepend('<a id="btnModal" alt="Reativar" class="btn btn-primary" href="' + url + '" target="_self" title="Reativar">Confirmar</a>');
+            $('#modal').find('.modal-body').html('Confirma reativação de Plano?');
+            $('#modal').find('.modal-header').prepend('<h5 id="modalTitle" class="modal-title">Confimar Reativação</h5>');
+            $('#modal').modal('show');
+        }
+    </script>
+    <script>
+        function mostrarDesc(desc) {
+            $('#modalDescBody').html(desc);
+            $('#modalDesc').modal('show');
+        }
+    </script>
+
+    @*<script type="text/javascript">
+        $(document).ready(function () {
+
+            $('.dataTables-example').DataTable({
+                pageLength: 25,
+                dom: '<"html5buttons"B>lTfgitp',
+                buttons: [
+                    { extend: 'copy' },
+                    { extend: 'csv' },
+                    { extend: 'excel', title: 'Excel' },
+                    { extend: 'pdf', title: 'PDF' },
+
+                    {
+                        extend: 'print',
+                        customize: function (win) {
+                            $(win.document.body).addClass('white-bg');
+                            $(win.document.body).css('font-size', '10px');
+
+                            $(win.document.body).find('table')
+                                .addClass('compact')
+                                .css('font-size', 'inherit');
+                        }
+                    }
+                ]
+
+            });
+
+
+
+        });
+    </script>*@
+
+    <script type="text/javascript" language="javascript">
+        $(function () {
+            $('.date-picker').datepicker(
+                {
+                    dateFormat: 'dd/mm/yy',
+                    dayNames: ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'],
+                    dayNamesMin: ['D', 'S', 'T', 'Q', 'Q', 'S', 'S', 'D'],
+                    dayNamesShort: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'],
+                    monthNames: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'],
+                    monthNamesShort: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
+                    nextText: 'Proximo',
+                    prevText: 'Anterior',
+                    showOn: "focus"
+                }
+            )
+                .css("display", "normal")
+                .next("button").button({
+                    icons: { primary: "ui-icon-calendar" },
+                    label: "Selecione uma data",
+                    text: false
+                });
+        });
+    </script>
+
+    <script type="text/javascript">
+        $(function () {
+            $("#cpf").mask("999.999.999-99");
+            $("#cnpj").mask("99.999.999/9999-99");
+            $("#cep").mask("99999-999");
+            $("#cep1").mask("99999-999");
+            $("#dn").mask("99/99/9999");
+
+            $("#tel").mask("(99)9999-9999");
+            $("#telAdicional").mask("(99)9999-9999");
+            $("#cel").mask("(99)99999-9999");
+            
+            
+        });
+    </script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            //Chama o evento após selecionar um valor
+            $('#pessoa').on('change', function () {
+                //Verifica se o valor é igual a 1 e mostra a divCnpj
+                if (this.value == '2') {
+                    $("#PF").hide();
+                    $("#PJ").show();
+                    $("#RS").show();
+                    $("#DS").show();
+                }
+                //Se o tempo for mé igual a 2 mostra a divCpf
+                else if (this.value == '1') {
+    CLIE_CD_ID               $("#PJ").hide();
+                    $("#PF").show();
+                    $("#RS").hide();
+                    $("#DS").hide();
+                }
+                else if (this.value == '4') {
+                    $("#PF").show();
+                    $("#PJ").hide();
+                    $("#RS").hide();
+                    $("#DS").hide();
+                }
+
+                //Se não for nem 1 nem 2 esconde as duas
+                else {
+                    $("#PJ").hide();
+                    $("#PF").hide();
+                }
+            });
+        });
+    </script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            var i = -1;
+            var toastCount = 0;
+            var $toastlast;
+            var getMessage = function () {
+                var msg = 'Hi, welcome to Inspinia. This is example of Toastr notification box.';
+                return msg;
+            };
+
+            $('#basictoast').click(function () {
+                // Display a success toast, with a title
+                toastr.success('Edição am andamento!')
+            });
+            $('#showtoast').click(function () {
+                var shortCutFunction = $("#toastTypeGroup input:radio:checked").val();
+                var msg = $('#message').val();
+                var title = $('#title').val() || '';
+                var $showDuration = $('#showDuration');
+                var $hideDuration = $('#hideDuration');
+                var $timeOut = $('#timeOut');
+                var $extendedTimeOut = $('#extendedTimeOut');
+                var $showEasing = $('#showEasing');
+                var $hideEasing = $('#hideEasing');
+                var $showMethod = $('#showMethod');
+                var $hideMethod = $('#hideMethod');
+                var toastIndex = toastCount++;
+                toastr.options = {
+                    closeButton: $('#closeButton').prop('checked'),
+                    debug: $('#debugInfo').prop('checked'),
+                    progressBar: $('#progressBar').prop('checked'),
+                    positionClass: $('#positionGroup input:radio:checked').val() || 'toast-top-right',
+                    onclick: null
+                };
+                if ($('#addBehaviorOnToastClick').prop('checked')) {
+                    toastr.options.onclick = function () {
+                        alert('You can perform some custom action after a toast goes away');
+                    };
+                }
+                if ($showDuration.val().length) {
+                    toastr.options.showDuration = $showDuration.val();
+                }
+                if ($hideDuration.val().length) {
+                    toastr.options.hideDuration = $hideDuration.val();
+                }
+                if ($timeOut.val().length) {
+                    toastr.options.timeOut = $timeOut.val();
+                }
+                if ($extendedTimeOut.val().length) {
+                    toastr.options.extendedTimeOut = $extendedTimeOut.val();
+                }
+                if ($showEasing.val().length) {
+                    toastr.options.showEasing = $showEasing.val();
+                }
+                if ($hideEasing.val().length) {
+                    toastr.options.hideEasing = $hideEasing.val();
+                }
+                if ($showMethod.val().length) {
+                    toastr.options.showMethod = $showMethod.val();
+                }
+                if ($hideMethod.val().length) {
+                    toastr.options.hideMethod = $hideMethod.val();
+                }
+                if (!msg) {
+                    msg = getMessage();
+                }
+                $("#toastrOptions").text("Command: toastr["
+                    + shortCutFunction
+                    + "](\""
+                    + msg
+                    + (title ? "\", \"" + title : '')
+                    + "\")\n\ntoastr.options = "
+                    + JSON.stringify(toastr.options, null, 2)
+                );
+                var $toast = toastr[shortCutFunction](msg, title); // Wire up an event handler to a button in the toast, if it exists
+                $toastlast = $toast;
+                if ($toast.find('#okBtn').length) {
+                    $toast.delegate('#okBtn', 'click', function () {
+                        alert('you clicked me. i was toast #' + toastIndex + '. goodbye!');
+                        $toast.remove();
+                    });
+                }
+                if ($toast.find('#surpriseBtn').length) {
+                    $toast.delegate('#surpriseBtn', 'click', function () {
+                        alert('Surprise! you clicked me. i was toast #' + toastIndex + '. You could perform an action here.');
+                    });
+                }
+            });
+            function getLastToast() {
+                return $toastlast;
+            }
+            $('#clearlasttoast').click(function () {
+                toastr.clear(getLastToast());
+            });
+            $('#cleartoasts').click(function () {
+                toastr.clear();
+            });
+
+        });
+    </script>
+    <script>
+
+        function SubmitCEP() {
+
+            var usr= document.getElementById('cep1').value;
+
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("BuscarCEPCliente")',
+                data: "CEP:" + usr
+            });
+
+            return true;
+        }
+    </script>
+
+    <script>
+        function PesquisaCep(cep, btn, tipoEnd) {
+            data = {
+                cep: cep
+                , tipoEnd: tipoEnd
+            }
+
+            $(btn).attr("disabled", "disabled");
+
+            $.ajax({
+                url: '../PesquisaCEP_Javascript'
+                , type: 'POST'
+                , data: data
+                , success: function (r) {
+                    if (tipoEnd == 1) {
+                        $('#endereco').val(r.CLIE_NM_ENDERECO);
+                        $('#bairro').val(r.CLIE_NM_BAIRRO);
+                        $('#cidade').val(r.CLIE_NM_CIDADE);
+
+                        $('#uf option[value="' + r.UF_CD_ID + '"]').attr("selected", "selected");
+                        $('#btnBuscaCep').removeAttr("disabled");
+                    } else if (tipoEnd == 2) {
+                        $('#endEntrega').val(r.CLIE_NM_ENDERECO_ENTREGA);
+                        $('#bairroEntrega').val(r.CLIE_NM_BAIRRO_ENTREGA);
+                        $('#cidEntrega').val(r.CLIE_NM_CIDADE_ENTREGA);
+
+                        $('#ufEntrega').val(r.CLIE_SG_UF_ENTREGA);
+                        $('#btnBuscaCepEntrega').removeAttr("disabled");
+                    }
+                }
+            });
+        }
+    </script>
+
+     <script>
+        function MudaIdCliente(id) {
+            $('#idClie').val(id);
+        }
+    </script>
+    @if (ViewBag.Message != null)
+    {
+        <script type="text/javascript">
+            window.onload = function () {
+                  alert("@ViewBag.Message");
+            };
+        </script>
+    }
+}
+

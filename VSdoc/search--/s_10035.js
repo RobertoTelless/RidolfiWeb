@@ -1,0 +1,1 @@
+search_result['10035']=["topic_0000000000001ADB.html","CommonHelpers.AssemblyVersion Property","Checks the .NET assembly for the version."];

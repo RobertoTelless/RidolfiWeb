@@ -1,0 +1,1 @@
+search_result['9957']=["topic_0000000000001A97.html","Altitude2 Field","Altitude for the second geo point.  If you do not have this value, use 0."];

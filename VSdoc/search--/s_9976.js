@@ -1,0 +1,1 @@
+search_result['9976']=["topic_0000000000001AA5.html","CommonHelpers.GetOnlyLetters Method","This string extension process gets all letters in a string\r\nand ignores any non-letters, unless spaces are requested."];

@@ -1,0 +1,1 @@
+search_result['10006']=["topic_0000000000001AC1.html","CommonHelpers.Asc Method","Same functionality as the VB6 ASC function - give it a character, get back the ASCII\r\ndecimal number.  If you provide more than one character, only the first one is used."];

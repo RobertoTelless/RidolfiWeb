@@ -1,0 +1,1 @@
+var breadcrumbs=[['-1',"",""],['2',"SOLUTION-WIDE PROPERTIES Reference","topic_0000000000001B27.html"],['595',"ApplicationServices.Services Namespace","topic_0000000000000AD4.html"],['968',"MotivoCancelamentoAppService Class","topic_0000000000000C27.html"],['970',"Methods","topic_0000000000000C27_methods--.html"],['975',"ValidateCreate Method","topic_0000000000000C2D.html"]];

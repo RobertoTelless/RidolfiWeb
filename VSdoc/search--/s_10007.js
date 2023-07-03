@@ -1,0 +1,1 @@
+search_result['10007']=["topic_0000000000001AC2.html","CommonHelpers.Hex Method","Same as the VB6 function.  Converts a 32 bit integer to a String hex value."];

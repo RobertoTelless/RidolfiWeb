@@ -1,0 +1,261 @@
+@using Inspinia_MVC5;
+@using Presentation.Extensions
+@using CrossCutting
+@using EntitiesServices.Model;
+<div class="row border-bottom">
+    <nav class="navbar navbar-static-top" role="navigation" style="margin-bottom: 0">
+        <div class="navbar-header">
+            <a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"><i class="fa fa-bars"></i> </a>
+        </div>
+        <ul class="nav navbar-top-links navbar-right">
+            <li>
+                <span class="m-r-sm text-muted welcome-message" data-i18n="topnav.welcometext" style="color: green; font-weight: bold; margin-right: 10px">@((String)Session["NomeEmpresa"])</span>
+            </li>
+            <li>
+                <span class="m-r-sm text-muted welcome-message" data-i18n="topnav.welcometext">@((String)Session["Greeting"])</span>
+            </li>
+            <li class="dropdown">
+                <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
+                    <i class="fa fa-envelope"></i>  <span class="label label-warning">@((Int32)Session["NovasNotificacoes"])</span>
+                </a>
+                <ul class="dropdown-menu dropdown-messages">
+                    @foreach (var cond in (((List<NOTIFICACAO>)Session["ListaNovas"]) as List<EntitiesServices.Model.NOTIFICACAO>))
+                    {
+                        <li>
+                            <div class="dropdown-messages-box">
+                                <a href="@Url.Action("VerNotificacao", "Notificacao", new { id = cond.NOTI_CD_ID })" class="pull-left btn-link">
+                                    <img alt="image" class="img-circle" src="@Url.Content((String)Session["Foto"])">
+                                </a>
+                                <div class="media-body">
+                                    <small class="pull-right">@cond.NOTI_DT_EMISSAO.Value.ToShortDateString()</small>
+                                    <a href="@Url.Action("VerNotificacao", "Notificacao", new { id = cond.NOTI_CD_ID })" class="pull-left btn-link">
+                                        @if (cond.NOTI_NM_TITULO.Length < 20)
+                                        {
+                                            <strong>@cond.NOTI_NM_TITULO</strong>
+                                        }
+                                        else
+                                        {
+                                            <strong>@cond.NOTI_NM_TITULO.Substring(0, 19)</strong>
+                                        }
+                                    </a>
+                                    @if (cond.NOTI_TX_TEXTO != null)
+                                    {
+                                        if (cond.NOTI_TX_TEXTO.Length < 50)
+                                        {
+                                            @cond.NOTI_TX_TEXTO
+                                        }
+                                        else
+                                        {
+                                            @cond.NOTI_TX_TEXTO.Substring(0, 49)
+                                        }
+                                    }
+                                    <br>
+                                    <small class="text-muted">@CrossCutting.Formatters.DiffTimeFormatter(cond.NOTI_DT_EMISSAO.Value)</small>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="divider"></li>
+                    }
+                    <li>
+                        <div class="text-center link-block">
+                            <a href="@Url.Action("MontarTelaNotificacao", "Notificacao")" class="pull-left btn-link">
+                                <i class="fa fa-envelope"></i> <strong>Veja outras notificações...</strong>
+                            </a>
+                        </div>
+                    </li>
+                </ul>
+            </li>
+
+            <li class="dropdown">
+                <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
+                    <i class="fa fa-tasks"></i>  <span class="label label-warning">@((Int32)Session["TarefasPendentes"])</span>
+                </a>
+                <ul class="dropdown-menu dropdown-messages">
+                    @foreach (var cond in (((List<TAREFA>)Session["ListaPendentes"]) as List<EntitiesServices.Model.TAREFA>).Take(5))
+                    {
+                        <li>
+                            <div class="dropdown-messages-box">
+                                <a href="@Url.Action("EditarTarefa", "Tarefa", new { id = cond.TARE_CD_ID })" class="pull-left btn-link">
+                                    <img alt="image" class="img-circle" src="@Url.Content(((String)Session["Foto"]))">
+                                </a>
+                                <div class="media-body">
+                                    <small class="pull-right">@cond.TARE_DT_CADASTRO.ToShortDateString()</small>
+                                    <a href="@Url.Action("EditarTarefa", "Tarefa", new { id = cond.TARE_CD_ID })" class="pull-left btn-link">
+                                        @if (cond.TARE_NM_TITULO.Length < 20)
+                                        {
+                                            <strong>@cond.TARE_NM_TITULO</strong>
+                                        }
+                                        else
+                                        {
+                                            <strong>@cond.TARE_NM_TITULO.Substring(0,19)</strong>
+                                        }
+                                    </a>
+                                    @if (cond.TARE_DS_DESCRICAO.Length < 50)
+	                                {
+                                        @cond.TARE_DS_DESCRICAO
+                                    }
+                                    else
+                                    {
+                                        @cond.TARE_DS_DESCRICAO.Substring(0, 49) 
+                                    }
+                                    <br>
+                                    <small class="text-muted">@CrossCutting.Formatters.DiffTimeFormatter(cond.TARE_DT_CADASTRO)</small>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="divider"></li>
+                    }
+                    <li>
+                        <div class="text-center link-block">
+                            <a href="@Url.Action("MontarTelaTarefa", "Tarefa")" class="pull-left btn-link">
+                                <i class="fa fa-tasks"></i> <strong>Veja outras tarefas...</strong>
+                            </a>
+                        </div>
+                    </li>
+                </ul>
+            </li>
+
+            <li class="dropdown">
+                <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
+                    <i class="fa fa-newspaper-o"></i>  <span class="label label-warning">@((Int32)Session["NoticiasNumero"])</span>
+                </a>
+                <ul class="dropdown-menu dropdown-messages">
+                    @foreach (var cond in (((List<NOTICIA>)Session["Noticias"]) as List<EntitiesServices.Model.NOTICIA>).Take(5))
+                    {
+                        <li>
+                            <div class="dropdown-messages-box">
+                                <a href="@Url.Action("VerNoticia", "Noticia", new { id = cond.NOTC_CD_ID })" class="pull-left btn-link">
+                                    @if (cond.NOTC_NM_TITULO.Length > 30)
+                                    {
+                                        @cond.NOTC_NM_TITULO.Substring(0, 29)
+                                    }
+                                    else
+                                    {
+                                        @cond.NOTC_NM_TITULO
+                                    }
+
+                                </a>
+                            </div>
+                        </li>
+                    }
+                    <li>
+                        <div class="text-center link-block">
+                            <a href="@Url.Action("MontarTelaUsuario", "Noticia")" class="pull-left btn-link">
+                                <i class="fa fa-newspaper-o"></i> <strong>Veja outras notícias...</strong>
+                            </a>
+                        </div>
+                    </li>
+                </ul>
+            </li>
+
+            <li class="dropdown">
+                <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
+                    <i class="fa fa-video-camera"></i>  <span class="label label-warning">@((Int32)Session["VideosNumero"])</span>
+                </a>
+                <ul class="dropdown-menu dropdown-messages">
+                    @foreach (var cond in (((List<VIDEO>)Session["Videos"]) as List<EntitiesServices.Model.VIDEO>).Take(5))
+                    {
+                        <li>
+                            <div class="dropdown-messages-box">
+                                <a href="@Url.Action("VerVideo", "Video", new { id = cond.VIDE_CD_ID })" class="pull-left btn-link">
+                                    @if (cond.VIDE_NM_TITULO.Length > 30)
+                                    {
+                                        @cond.VIDE_NM_TITULO.Substring(0, 29)
+                                    }
+                                    else
+                                    {
+                                        @cond.VIDE_NM_TITULO
+                                    }
+
+                                </a>
+                            </div>
+                        </li>
+                    }
+                    <li>
+                        <div class="text-center link-block">
+                            <a href="@Url.Action("MontarTelaUsuario", "Video")" class="pull-left btn-link">
+                                <i class="fa fa-newspaper-o"></i> <strong>Veja outros vídeos...</strong>
+                            </a>
+                        </div>
+                    </li>
+                </ul>
+            </li>
+
+            <li class="dropdown">
+                <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
+                    <i class="fa fa-calendar-o"></i>  <span class="label label-warning">@((Int32)Session["NumAgendasHoje"])</span>
+                </a>
+                <ul class="dropdown-menu dropdown-messages">
+                    @foreach (var cond in (((List<AGENDA>)Session["AgendasHoje"]) as List<EntitiesServices.Model.AGENDA>).Take(5))
+                    {
+                        <li>
+                            <div class="dropdown-messages-box">
+                                <a href="@Url.Action("EditarAgenda", "Agenda", new { id = cond.AGEN_CD_ID })" class="pull-left btn-link">
+                                    @if (cond.AGEN_NM_TITULO.Length > 30)
+                                    {
+                                        @cond.AGEN_NM_TITULO.Substring(0, 29)
+                                    }
+                                    else
+                                    {
+                                        @cond.AGEN_NM_TITULO
+                                    }
+
+                                </a>
+                            </div>
+                        </li>
+                    }
+                    <li>
+                        <div class="text-center link-block">
+                            <a href="@Url.Action("MontarTelaAgendaCalendario", "Agenda")" class="pull-left btn-link">
+                                <i class="fa fa-calendar-o"></i> <strong>Veja a Agenda...</strong>
+                            </a>
+                        </div>
+                    </li>
+                </ul>
+            </li>
+
+            <li>
+                <a href="@Url.Action("PesquisarTudo", "BaseAdmin")">
+                    <i class="fa fa-search"></i> Procurar...
+                </a>
+            </li>
+            <li>
+                <a href="@Url.Action("MontarCentralMensagens", "BaseAdmin")">
+                    <i class="fa fa-stack-exchange"></i> Central de Notificações
+                </a>
+            </li>
+            <li>
+                @if ((USUARIO)Session["UserCredentials"] == null)
+	            {
+                    <a href="@Url.Action("Login", "ControleAcesso")">
+                        <i class="fa fa-sign-in"></i> Login
+                    </a>
+                }
+                else
+                {
+                    <a href="@Url.Action("Logout", "ControleAcesso")">
+                        <i class="fa fa-sign-out"></i> Logout
+                    </a>
+                }
+
+            </li>
+        </ul>
+    </nav>
+</div>
+<script type="text/javascript">
+    function PesquisaTudo(parm)
+    {
+        $.ajax({
+            url: '../BaseAdmin/PesquisarTudo'
+            , type: 'POST'
+            , success: function (result)
+            {
+            }
+        });
+    }
+
+    $(document).ready(function ()
+    {
+        PesquisaTudo($('#top-search').val());
+    });
+</script>

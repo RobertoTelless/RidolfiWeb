@@ -1,0 +1,1 @@
+var breadcrumbs=[['-1',"",""],['2',"CRMPresentation Reference","topic_00000000000009F2.html"],['2730',"Presentation.Start Namespace","topic_0000000000000006.html"],['2731',"NinjectWebCommons Class","topic_0000000000000007.html"],['2732',"Methods","topic_0000000000000007_methods--.html"],['2734',"Stop Method","topic_0000000000000009.html"]];

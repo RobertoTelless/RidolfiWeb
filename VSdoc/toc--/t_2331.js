@@ -1,0 +1,1 @@
+c['2331']=[['2332',"IncluirClienteRapido() Method","topic_00000000000000FC.html",0],['2333',"IncluirClienteRapido(ClienteViewModel) Method","topic_00000000000000FD.html",0]];

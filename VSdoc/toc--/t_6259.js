@@ -1,0 +1,1 @@
+c['6259']=[['6260',"Create(MENSAGENS) Method","topic_0000000000000E8A.html",0],['6261',"Create(MENSAGENS, LOG) Method","topic_0000000000000E89.html",0]];

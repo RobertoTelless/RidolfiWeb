@@ -1,0 +1,1 @@
+search_result['9992']=["topic_0000000000001AB5.html","CommonHelpers.AddCheck Method","IDictionary extension method that is an enhanced Add to check to see if a key exists, and if so,\r\nadds the key with an ordinal appended to the key name to prevent overwrite.\r\nThis is useful with the E..."];

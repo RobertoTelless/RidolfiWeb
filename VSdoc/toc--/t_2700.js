@@ -1,0 +1,1 @@
+c['2700']=[['2701',"IncluirTipoTarefa() Method","topic_0000000000000315.html",0],['2702',"IncluirTipoTarefa(TipoTarefaViewModel) Method","topic_0000000000000316.html",0]];

@@ -1,0 +1,1 @@
+search_result['10143']=["topic_0000000000001B18.html","Serialization.SerializeXML\u0026lt;T\u0026gt; Method","/// Serializes the specified to serialize.\r\n        ///"];

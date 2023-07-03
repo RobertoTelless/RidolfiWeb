@@ -1,0 +1,1 @@
+c['1001']=[['1002',"ValidateEdit(NOTICIA, NOTICIA) Method","topic_0000000000000C45.html",0],['1003',"ValidateEdit(NOTICIA, NOTICIA, USUARIO) Method","topic_0000000000000C44.html",0]];

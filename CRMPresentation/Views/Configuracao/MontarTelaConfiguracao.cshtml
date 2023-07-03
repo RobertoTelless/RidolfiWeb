@@ -1,0 +1,475 @@
+﻿@using Presentation.Extensions
+@model ERP_Condominios_Solution.ViewModels.ConfiguracaoViewModel
+@{
+    Layout = "~/Views/Shared/_Layout_Admin.cshtml";
+}
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="page-title">
+        <h3 class="title">Configuração</h3>
+        <br />
+        <ol class="breadcrumb">
+            <li>
+                <a href="@Url.Action("CarregarBase", "BaseAdmin")">Dashboard</a>
+            </li>
+            <li class="active">
+                <strong>Configuração - Edição</strong>
+            </li>
+        </ol>
+        <br />
+    </div>
+    <div class="row">
+        <div class="col-lg-12 col-md-12 col-xs-12">
+            <div class="col-lg-12 col-md-12 col-xs-12 ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>Configuração - Edição</h5>
+                </div>
+
+                <div class="ibox-content">
+                    @if (!ViewData.ModelState.IsValid)
+                    {
+                        <div class="alert alert-danger">
+                            <button type="button" class="close" data-dismiss="alert">Fechar</button>
+                            @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+                        </div>
+                    }
+                    <div class="tabs-container">
+                        @using (Html.BeginForm("MontarTelaConfiguracao", "Configuracao", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", @id = "pwd-container1" }))
+                        {
+
+                            <ul class="nav nav-tabs">
+                                <li class="active"><a data-toggle="tab" href="#tab-1">Dados Gerais</a></li>
+                            </ul>
+
+                            <div class="tab-content">
+                                @*Dados Gerais*@
+                                <div id="tab-1" class="tab-pane active">
+                                    <div class="panel-body">
+                                        @using (Html.BeginForm("MontarTelaConfiguracao", "Configuracao", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", @id = "pwd-container1" }))
+                                        {
+                                            <div class="form-group">
+                                                <br />
+                                                @Html.ButtonActionSubmit(text: "Confirma Edição da Configuração", htmlAttributes: new { id = "basictoast" })
+                                                @Html.ButtonLinkIndex(text: "Voltar", action: "VoltarDash", controller: "Configuracao")
+                                                @Html.ButtonLinkIndex(text: "Criptografar Chaves", action: "CriptoChave", controller: "Configuracao", buttonClass: "warning")
+                                            </div>
+                                            <div class="row">
+                                                <div class="form-group">
+                                                    <h4 style="margin-left: 15px; color:saddlebrown; font-weight:bold">E-mail</h4>
+                                                    @Html.HiddenFor(m => m.CONF_CD_ID)
+                                                    @Html.HiddenFor(m => m.ASSI_CD_ID)
+                                                    <div class="col-lg-4 col-md-4 col-xs-12">
+                                                        Endpoint E-Mail
+                                                        @Html.TextBoxFor(m => m.CONF_NM_ENDPOINT_AZURE, new { @class = "form-control", autofocus = true, @readonly = "readonly" })
+                                                    </div>
+                                                    <div class="col-lg-1 col-md-1 col-xs-12">
+                                                        Porta SMTP
+                                                        @Html.TextBoxFor(m => m.CONF_NM_PORTA_SMTP, new { @class = "form-control", autofocus = true, @readonly = "readonly" })
+                                                    </div>
+                                                    <div class="col-lg-5 col-md-5 col-xs-12">
+                                                        E-Mail Emissor
+                                                        @Html.TextBoxFor(m => m.CONF_NM_EMISSOR_AZURE, new { @class = "form-control", autofocus = true, @readonly = "readonly" })
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <h4 style="margin-left: 15px; color:saddlebrown; font-weight:bold">Configuração do Sistema</h4>
+                                                    <div class="col-lg-2 col-md-2 col-xs-12">
+                                                        Máximo Falhas/Dia*
+                                                        @Html.TextBoxFor(m => m.CONF_NR_FALHAS_DIA, new { @class = "form-control touchspin1", autofocus = true })
+                                                        @Html.ValidationMessageFor(m => m.CONF_NR_FALHAS_DIA, "", new { @style = "color:red" })
+                                                    </div>
+                                                    <div class="col-lg-2 col-md-2 col-xs-12">
+                                                        Refresh Tela Inicial (Min.)*
+                                                        @Html.TextBoxFor(m => m.CONF_NR_REFRESH_DASH, new { @class = "form-control touchspin2", autofocus = true })
+                                                        @Html.ValidationMessageFor(m => m.CONF_NR_REFRESH_DASH, "", new { @style = "color:red" })
+                                                    </div>
+                                                    <div class="col-lg-2 col-md-2 col-xs-12">
+                                                        Arquivo de Alarme Dashboard
+                                                        @Html.TextBoxFor(m => m.CONF_NM_ARQUIVO_ALARME, new { @class = "form-control", autofocus = true, @readonly = "readonly" })
+                                                    </div>
+                                                    <div class="col-lg-2 col-md-2 col-xs-12">
+                                                        Refresh Notificação (Min.)*
+                                                        @Html.TextBoxFor(m => m.CONF_NR_REFRESH_NOTIFICACAO, new { @class = "form-control touchspin3", autofocus = true })
+                                                        @Html.ValidationMessageFor(m => m.CONF_NR_REFRESH_NOTIFICACAO, "", new { @style = "color:red" })
+                                                    </div>
+                                                    <div class="col-lg-4 col-md-4 col-xs-12">
+                                                        Link do Sistema
+                                                        @Html.TextBoxFor(m => m.CONF_LK_LINK_SISTEMA, new { @class = "form-control", autofocus = true, @readonly = "readonly" })
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <h4 style="margin-left: 15px; color:saddlebrown; font-weight:bold">Senha</h4>
+                                                    <div class="col-lg-2 col-md-2 col-xs-12">
+                                                        Validade (Meses)*
+                                                        @Html.TextBoxFor(m => m.CONF_NR_VALIDADE_SENHA, new { @class = "form-control", autofocus = true })
+                                                        @Html.ValidationMessageFor(m => m.CONF_NR_VALIDADE_SENHA, "", new { @style = "color:red" })
+                                                    </div>
+                                                    <div class="col-lg-2 col-md-2 col-xs-12">
+                                                        Tamanho Mínimo*
+                                                        @Html.TextBoxFor(m => m.CONF_NR_TAMANHO_SENHA, new { @class = "form-control", autofocus = true })
+                                                        @Html.ValidationMessageFor(m => m.CONF_NR_TAMANHO_SENHA, "", new { @style = "color:red" })
+                                                    </div>
+                                                    <div class="col-lg-2 col-md-2 col-xs-12">
+                                                        Validade do Código (Min)*
+                                                        @Html.TextBoxFor(m => m.CONF_IN_VALIDADE_CODIGO, new { @class = "form-control", autofocus = true })
+                                                        @Html.ValidationMessageFor(m => m.CONF_IN_VALIDADE_CODIGO, "", new { @style = "color:red" })
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <h4 style="margin-left: 15px; color:saddlebrown; font-weight:bold">Cadastros</h4>
+                                                    <div class="col-lg-3 col-md-3 col-xs-12">
+                                                        Permite CNPJ Duplicado*
+                                                        @Html.DropDownListFor(m => m.CONF_IN_CNPJ_DUPLICADO, (SelectList)ViewBag.CNPJ, "Selecionar", new { @class = "form-control", autofocus = true })
+                                                        @Html.ValidationMessageFor(m => m.CONF_IN_CNPJ_DUPLICADO, "", new { @style = "color:red" })
+                                                    </div>
+                                                    <div class="col-lg-3 col-md-3 col-xs-12">
+                                                        Usa Logotipo da Empresa*
+                                                        @Html.DropDownListFor(m => m.CONF_IN_LOGO_EMPRESA, (SelectList)ViewBag.Logotipo, "Selecionar", new { @class = "form-control", autofocus = true })
+                                                        @Html.ValidationMessageFor(m => m.CONF_IN_LOGO_EMPRESA, "", new { @style = "color:red" })
+                                                    </div>
+                                                    <div class="col-lg-3 col-md-3 col-xs-12">
+                                                        Clientes - Limite no Grid*
+                                                        @Html.TextBoxFor(m => m.CONF_NR_GRID_CLIENTE, new { @class = "form-control", autofocus = true })
+                                                        @Html.ValidationMessageFor(m => m.CONF_NR_GRID_CLIENTE, "", new { @style = "color:red" })
+                                                    </div>
+                                                    <div class="col-lg-3 col-md-3 col-xs-12">
+                                                        Mensagens - Limite no Grid*
+                                                        @Html.TextBoxFor(m => m.CONF_NR_GRID_MENSAGEM, new { @class = "form-control", autofocus = true })
+                                                        @Html.ValidationMessageFor(m => m.CONF_NR_GRID_MENSAGEM, "", new { @style = "color:red" })
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <h4 style="margin-left: 15px; color:saddlebrown; font-weight:bold">SMS</h4>
+                                                    <div class="col-lg-3 col-md-3 col-xs-12">
+                                                        Login SMS Padrão*
+                                                        @Html.TextBoxFor(m => m.CONF_SG_LOGIN_SMS, new { @class = "form-control", autofocus = true })
+                                                        @Html.ValidationMessageFor(m => m.CONF_SG_LOGIN_SMS, "", new { @style = "color:red" })
+                                                    </div>
+                                                    <div class="col-lg-3 col-md-3 col-xs-12">
+                                                        Senha SMS Padrão*
+                                                        @Html.TextBoxFor(m => m.CONF_SG_SENHA_SMS, new { @class = "form-control", autofocus = true })
+                                                        @Html.ValidationMessageFor(m => m.CONF_SG_SENHA_SMS, "", new { @style = "color:red" })
+                                                    </div>
+                                                    <div class="col-lg-3 col-md-3 col-xs-12">
+                                                        Login SMS Prioritário
+                                                        @Html.TextBoxFor(m => m.CONF_SG_LOGIN_SMS_PRIORITARIO, new { @class = "form-control", autofocus = true })
+                                                        @Html.ValidationMessageFor(m => m.CONF_SG_LOGIN_SMS_PRIORITARIO, "", new { @style = "color:red" })
+                                                    </div>
+                                                    <div class="col-lg-3 col-md-3 col-xs-12">
+                                                        Senha SMS Prioritário
+                                                        @Html.TextBoxFor(m => m.CONF_SG_SENHA_SMS_PRIORITARIO, new { @class = "form-control", autofocus = true })
+                                                        @Html.ValidationMessageFor(m => m.CONF_NR_GRID_MENSAGEM, "", new { @style = "color:red" })
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <h4 style="margin-left: 15px; color:saddlebrown; font-weight:bold">Notificações Automáticas</h4>
+                                                    <div class="col-lg-2 col-md-2 col-xs-12" style="color: green; font-weight: bold">
+                                                        @Html.LabelFor(m => m.LABEL1, new { @class = "form-control"})
+                                                    </div>  
+                                                    <div class="col-lg-2 col-md-2 col-xs-12">
+                                                        Administrador
+                                                        <br />
+                                                        @Html.CheckBoxFor(m => m.NotifAcaoAdm, new { @class = "checkbox i-checks", autofocus = true})
+                                                    </div>                                                
+                                                    <div class="col-lg-2 col-md-2 col-xs-12">
+                                                        Gerente
+                                                        <br />
+                                                        @Html.CheckBoxFor(m => m.NotifAcaoGer, new { @class = "checkbox i-checks", autofocus = true})
+                                                    </div>                                                
+                                                    <div class="col-lg-2 col-md-2 col-xs-12">
+                                                        Vendedor
+                                                        <br />
+                                                        @Html.CheckBoxFor(m => m.NotifAcaoVen, new { @class = "checkbox i-checks", autofocus = true})
+                                                    </div>                                                
+                                                    <div class="col-lg-2 col-md-2 col-xs-12">
+                                                        Operador
+                                                        <br />
+                                                        @Html.CheckBoxFor(m => m.NotifAcaoOpr, new { @class = "checkbox i-checks", autofocus = true})
+                                                    </div>                                                
+                                                    <div class="col-lg-2 col-md-2 col-xs-12">
+                                                        Usuário Comum
+                                                        <br />
+                                                        @Html.CheckBoxFor(m => m.NotifAcaoUsu, new { @class = "checkbox i-checks", autofocus = true})
+                                                    </div>                                           
+                                                </div>
+                                                <div class="form-group">
+                                                    <h4 style="margin-left: 15px; color:saddlebrown; font-weight:bold">CRM</h4>
+                                                    <div class="col-lg-2 col-md-2 col-xs-12">
+                                                        Num.Dias Data Prevista Ações
+                                                        @Html.TextBoxFor(m => m.CONF_NR_DIAS_ACAO, new { @class = "form-control touchspin5", autofocus = true })
+                                                        @Html.ValidationMessageFor(m => m.CONF_NR_DIAS_ACAO, "", new { @style = "color:red" })
+                                                    </div>
+                                                    <div class="col-lg-3 col-md-3 col-xs-12">
+                                                        Quam Assina as Propostas?*
+                                                        @Html.DropDownListFor(m => m.CONF_IN_ASSINANTE_FILIAL, (SelectList)ViewBag.Assina, "Selecionar", new { @class = "form-control", autofocus = true })
+                                                        @Html.ValidationMessageFor(m => m.CONF_IN_ASSINANTE_FILIAL, "", new { @style = "color:red" })
+                                                    </div>
+                                                    <div class="col-lg-2 col-md-2 col-xs-12">
+                                                        Num.Máximo de Etapas*
+                                                        @Html.TextBoxFor(m => m.CONF_IN_ETAPAS_CRM, new { @class = "form-control touchspin10", autofocus = true })
+                                                        @Html.ValidationMessageFor(m => m.CONF_IN_ETAPAS_CRM, "", new { @style = "color:red" })
+                                                    </div>
+                                                </div>
+                                                @*<div class="form-group">
+                                                    <h4 style="margin-left: 15px; color:saddlebrown; font-weight:bold">Pesquisas</h4>
+                                                    <div class="col-lg-2 col-md-2 col-xs-12">
+                                                        Validade Pesquisas (Dias)
+                                                        @Html.TextBoxFor(m => m.CONF_NR_VALIDADE_PESQUISA, new { @class = "form-control touchspin5", autofocus = true })
+                                                        @Html.ValidationMessageFor(m => m.CONF_NR_VALIDADE_PESQUISA, "", new { @style = "color:red" })
+                                                    </div>
+                                                    <div class="col-lg-3 col-md-3 col-xs-12">
+                                                        Quam Assina as Propostas?*
+                                                        @Html.DropDownListFor(m => m.CONF_IN_ASSINANTE_FILIAL, (SelectList)ViewBag.Assina, "Selecionar", new { @class = "form-control", autofocus = true })
+                                                        @Html.ValidationMessageFor(m => m.CONF_IN_ASSINANTE_FILIAL, "", new { @style = "color:red" })
+                                                    </div>
+                                                    <div class="col-lg-2 col-md-2 col-xs-12">
+                                                        Num.Máximo de Etapas
+                                                        @Html.TextBoxFor(m => m.CONF_IN_ETAPAS_CRM, new { @class = "form-control touchspin10", autofocus = true })
+                                                        @Html.ValidationMessageFor(m => m.CONF_IN_ETAPAS_CRM, "", new { @style = "color:red" })
+                                                    </div>
+                                                </div>*@
+                                                <div class="form-group">
+                                                    <h4 style="margin-left: 15px; color:saddlebrown; font-weight:bold">Suporte</h4>
+                                                    <div class="col-lg-3 col-md-3 col-xs-12">
+                                                        E-Mail de Suporte
+                                                        @Html.TextBoxFor(m => m.CONF_EM_CRMSYS, new { @class = "form-control", autofocus = true, @readonly = "readonly" })
+                                                    </div>
+                                                    <div class="col-lg-3 col-md-3 col-xs-12">
+                                                        E-Mail Alternativo de Suporte
+                                                        @Html.TextBoxFor(m => m.CONF_EM_CRMSYS1, new { @class = "form-control", autofocus = true, @readonly = "readonly" })
+                                                    </div>
+                                                    <div class="col-lg-2 col-md-2 col-xs-12">
+                                                        WhatsApp
+                                                        @Html.TextBoxFor(m => m.CONF_NR_SUPORTE_ZAP, new { @class = "form-control", autofocus = true, @id="zap", @readonly = "readonly" })
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <link href="~/Content/themes/base/jquery-ui.min.css" rel="stylesheet" />
+    <link href="~/Content/themes/base/all.css" rel="stylesheet" />
+    @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
+    @Styles.Render("~/plugins/jasnyBootstrapStyles")
+    @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
+    @Styles.Render("~/plugins/toastrStyles")
+    @Styles.Render("~/plugins/touchSpinStyles")
+    @Styles.Render("~/plugins/sweetAlertStyles")
+}
+@section Scripts {
+    @Scripts.Render("~/plugins/toastr")
+    <script src="~/Scripts/jquery-ui-1.12.1.min.js"></script>
+    @Scripts.Render("~/plugins/dataTables")
+    @Scripts.Render("~/bundles/inputmask")
+    @Scripts.Render("~/plugins/jasnyBootstrap")
+    @Scripts.Render("~/plugins/touchSpin")
+    @Scripts.Render("~/plugins/iCheck")
+    @Scripts.Render("~/plugins/passwordMeter")
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.maskedinput/1.4.1/jquery.maskedinput.js"></script>
+*    <script type="text/javascript">
+        $(document).ready(function () {
+
+            $('.i-checks').iCheck({
+                checkboxClass: 'icheckbox_square-green',
+                radioClass: 'iradio_square-green',
+            });
+
+        });
+    </script>
+    <script type="text/javascript">
+        $(function () {
+            $("#zap").mask("(99)99999-9999");
+        });
+    </script>
+    <script type="text/javascript">
+        $(".touchspin1").TouchSpin({
+            min: 1,
+            max: 5,
+            step: 1,
+            buttondown_class: 'btn btn-white',
+            buttonup_class: 'btn btn-white'
+        });
+    </script>
+    <script type="text/javascript">
+        $(".touchspin2").TouchSpin({
+            min: 1,
+            max: 10000,
+            step: 1,
+            buttondown_class: 'btn btn-white',
+            buttonup_class: 'btn btn-white'
+        });
+    </script>
+    <script type="text/javascript">
+        $(".touchspin3").TouchSpin({
+            min: 1,
+            max: 10000,
+            step: 1,
+            buttondown_class: 'btn btn-white',
+            buttonup_class: 'btn btn-white'
+        });
+    </script>
+    <script type="text/javascript">
+        $(".touchspin4").TouchSpin({
+            min: 1,
+            max: 30,
+            step: 1,
+            buttondown_class: 'btn btn-white',
+            buttonup_class: 'btn btn-white'
+        });
+    </script>
+    <script type="text/javascript">
+        $(".touchspin5").TouchSpin({
+            min: 1,
+            max: 5,
+            step: 1,
+            buttondown_class: 'btn btn-white',
+            buttonup_class: 'btn btn-white'
+        });
+    </script>
+    <script type="text/javascript">
+        $(".touchspin6").TouchSpin({
+            min: 1,
+            max: 30,
+            step: 1,
+            buttondown_class: 'btn btn-white',
+            buttonup_class: 'btn btn-white'
+        });
+    </script>
+    <script type="text/javascript">
+        $(".touchspin7").TouchSpin({
+            min: 1,
+            max: 30,
+            step: 1,
+            buttondown_class: 'btn btn-white',
+            buttonup_class: 'btn btn-white'
+        });
+    </script>
+    <script type="text/javascript">
+        $(".touchspin10").TouchSpin({
+            min: 1,
+            max: 9,
+            step: 1,
+            buttondown_class: 'btn btn-white',
+            buttonup_class: 'btn btn-white'
+        });
+    </script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            var i = -1;
+            var toastCount = 0;
+            var $toastlast;
+            var getMessage = function () {
+                var msg = 'Hi, welcome to Inspinia. This is example of Toastr notification box.';
+                return msg;
+            };
+
+            $('#basictoast').click(function () {
+                // Display a success toast, with a title
+                toastr.success('Edição em andamento!')
+            });
+            $('#showtoast').click(function () {
+                var shortCutFunction = $("#toastTypeGroup input:radio:checked").val();
+                var msg = $('#message').val();
+                var title = $('#title').val() || '';
+                var $showDuration = $('#showDuration');
+                var $hideDuration = $('#hideDuration');
+                var $timeOut = $('#timeOut');
+                var $extendedTimeOut = $('#extendedTimeOut');
+                var $showEasing = $('#showEasing');
+                var $hideEasing = $('#hideEasing');
+                var $showMethod = $('#showMethod');
+                var $hideMethod = $('#hideMethod');
+                var toastIndex = toastCount++;
+                toastr.options = {
+                    closeButton: $('#closeButton').prop('checked'),
+                    debug: $('#debugInfo').prop('checked'),
+                    progressBar: $('#progressBar').prop('checked'),
+                    positionClass: $('#positionGroup input:radio:checked').val() || 'toast-top-right',
+                    onclick: null
+                };
+                if ($('#addBehaviorOnToastClick').prop('checked')) {
+                    toastr.options.onclick = function () {
+                        alert('You can perform some custom action after a toast goes away');
+                    };
+                }
+                if ($showDuration.val().length) {
+                    toastr.options.showDuration = $showDuration.val();
+                }
+                if ($hideDuration.val().length) {
+                    toastr.options.hideDuration = $hideDuration.val();
+                }
+                if ($timeOut.val().length) {
+                    toastr.options.timeOut = $timeOut.val();
+                }
+                if ($extendedTimeOut.val().length) {
+                    toastr.options.extendedTimeOut = $extendedTimeOut.val();
+                }
+                if ($showEasing.val().length) {
+                    toastr.options.showEasing = $showEasing.val();
+                }
+                if ($hideEasing.val().length) {
+                    toastr.options.hideEasing = $hideEasing.val();
+                }
+                if ($showMethod.val().length) {
+                    toastr.options.showMethod = $showMethod.val();
+                }
+                if ($hideMethod.val().length) {
+                    toastr.options.hideMethod = $hideMethod.val();
+                }
+                if (!msg) {
+                    msg = getMessage();
+                }
+                $("#toastrOptions").text("Command: toastr["
+                    + shortCutFunction
+                    + "](\""
+                    + msg
+                    + (title ? "\", \"" + title : '')
+                    + "\")\n\ntoastr.options = "
+                    + JSON.stringify(toastr.options, null, 2)
+                );
+                var $toast = toastr[shortCutFunction](msg, title); // Wire up an event handler to a button in the toast, if it exists
+                $toastlast = $toast;
+                if ($toast.find('#okBtn').length) {
+                    $toast.delegate('#okBtn', 'click', function () {
+                        alert('you clicked me. i was toast #' + toastIndex + '. goodbye!');
+                        $toast.remove();
+                    });
+                }
+                if ($toast.find('#surpriseBtn').length) {
+                    $toast.delegate('#surpriseBtn', 'click', function () {
+                        alert('Surprise! you clicked me. i was toast #' + toastIndex + '. You could perform an action here.');
+                    });
+                }
+            });
+            function getLastToast() {
+                return $toastlast;
+            }
+            $('#clearlasttoast').click(function () {
+                toastr.clear(getLastToast());
+            });
+            $('#cleartoasts').click(function () {
+                toastr.clear();
+            });
+
+        });
+    </script>
+
+    @if (ViewBag.Message != null)
+    {
+        <script type="text/javascript">
+            window.onload = function () {
+                  alert("@ViewBag.Message");
+            };
+        </script>
+    }
+}

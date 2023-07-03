@@ -1,0 +1,881 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\EntityFramework.6.4.4\build\EntityFramework.props" Condition="Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.props')" />
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{1A86A20B-D1AE-408D-BB5D-87A7C09B10A7}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>EntitiesServices</RootNamespace>
+    <AssemblyName>EntitiesServices</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Azure.Communication.Email, Version=1.0.0.0, Culture=neutral, PublicKeyToken=92742159e12e44c8, processorArchitecture=MSIL">
+      <HintPath>..\packages\Azure.Communication.Email.1.0.0\lib\netstandard2.0\Azure.Communication.Email.dll</HintPath>
+    </Reference>
+    <Reference Include="Azure.Core, Version=1.30.0.0, Culture=neutral, PublicKeyToken=92742159e12e44c8, processorArchitecture=MSIL">
+      <HintPath>..\packages\Azure.Core.1.30.0\lib\net461\Azure.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Azure.Storage.Blobs, Version=12.14.1.0, Culture=neutral, PublicKeyToken=92742159e12e44c8, processorArchitecture=MSIL">
+      <HintPath>..\packages\Azure.Storage.Blobs.12.14.1\lib\netstandard2.0\Azure.Storage.Blobs.dll</HintPath>
+    </Reference>
+    <Reference Include="Azure.Storage.Common, Version=12.13.0.0, Culture=neutral, PublicKeyToken=92742159e12e44c8, processorArchitecture=MSIL">
+      <HintPath>..\packages\Azure.Storage.Common.12.13.0\lib\netstandard2.0\Azure.Storage.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.4.4\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.4.4\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=1.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Bcl.AsyncInterfaces.1.1.1\lib\net461\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.IdentityModel.Logging, Version=1.1.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.IdentityModel.Logging.1.1.2\lib\net451\Microsoft.IdentityModel.Logging.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.IdentityModel.Tokens, Version=5.1.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.IdentityModel.Tokens.5.1.2\lib\net451\Microsoft.IdentityModel.Tokens.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="Ninject, Version=3.3.4.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
+      <HintPath>..\packages\Ninject.3.3.4\lib\net45\Ninject.dll</HintPath>
+    </Reference>
+    <Reference Include="Ninject.Web.Common, Version=3.3.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
+      <HintPath>..\packages\Ninject.Web.Common.3.3.0\lib\net45\Ninject.Web.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Ninject.Web.Common.WebHost, Version=3.3.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
+      <HintPath>..\packages\Ninject.Web.Common.WebHost.3.3.0\lib\net45\Ninject.Web.Common.WebHost.dll</HintPath>
+    </Reference>
+    <Reference Include="Ninject.Web.Mvc, Version=3.3.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
+      <HintPath>..\packages\Ninject.MVC5.3.3.0\lib\net45\Ninject.Web.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Diagnostics.DiagnosticSource, Version=4.0.4.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Diagnostics.DiagnosticSource.4.6.0\lib\net46\System.Diagnostics.DiagnosticSource.dll</HintPath>
+    </Reference>
+    <Reference Include="System.IdentityModel.Tokens.Jwt, Version=5.1.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.IdentityModel.Tokens.Jwt.5.1.2\lib\net451\System.IdentityModel.Tokens.Jwt.dll</HintPath>
+    </Reference>
+    <Reference Include="System.IO, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.IO.4.3.0\lib\net462\System.IO.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.IO.Hashing, Version=6.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.IO.Hashing.6.0.0\lib\net461\System.IO.Hashing.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Memory, Version=4.0.1.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Memory.4.5.4\lib\net461\System.Memory.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Memory.Data, Version=1.0.2.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Memory.Data.1.0.2\lib\net461\System.Memory.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net" />
+    <Reference Include="System.Net.Http, Version=4.1.1.3, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Net.Http.4.3.4\lib\net46\System.Net.Http.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.Numerics.Vectors, Version=4.1.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Numerics.Vectors.4.5.0\lib\net46\System.Numerics.Vectors.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.4.3.0\lib\net462\System.Runtime.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.6.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.4.7.1\lib\net461\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.InteropServices.RuntimeInformation, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.InteropServices.RuntimeInformation.4.3.0\lib\net45\System.Runtime.InteropServices.RuntimeInformation.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
+    <Reference Include="System.Security.Cryptography.Algorithms, Version=4.2.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Security.Cryptography.Algorithms.4.3.0\lib\net463\System.Security.Cryptography.Algorithms.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Security.Cryptography.Encoding, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Security.Cryptography.Encoding.4.3.0\lib\net46\System.Security.Cryptography.Encoding.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Security.Cryptography.Primitives, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Security.Cryptography.Primitives.4.3.0\lib\net46\System.Security.Cryptography.Primitives.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Security.Cryptography.X509Certificates, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Security.Cryptography.X509Certificates.4.3.0\lib\net461\System.Security.Cryptography.X509Certificates.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Text.Encodings.Web, Version=4.0.5.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Text.Encodings.Web.4.7.2\lib\net461\System.Text.Encodings.Web.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Text.Json, Version=4.0.1.2, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Text.Json.4.7.2\lib\net461\System.Text.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Threading.Tasks.Extensions.4.5.4\lib\net461\System.Threading.Tasks.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.ValueTuple.4.5.0\lib\net47\System.ValueTuple.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.Helpers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Mvc, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Mvc.5.2.3\lib\net45\System.Web.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Razor.3.2.3\lib\net45\System.Web.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Deployment, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.Deployment.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Twilio, Version=5.38.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Twilio.5.38.0\lib\net451\Twilio.dll</HintPath>
+    </Reference>
+    <Reference Include="WebActivatorEx, Version=2.0.0.0, Culture=neutral, PublicKeyToken=7b26dc2a43f6a0d4, processorArchitecture=MSIL">
+      <HintPath>..\packages\WebActivatorEx.2.2.0\lib\net40\WebActivatorEx.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Attributes\ChechTimeAttribute.cs" />
+    <Compile Include="Attributes\CheckTimeAttributeMain.cs" />
+    <Compile Include="Attributes\CustomValidationCNPJAttribute .cs" />
+    <Compile Include="Attributes\CustomValidationCPFAttribute.cs" />
+    <Compile Include="Attributes\DataAnteriorAttribute.cs" />
+    <Compile Include="EntitiesServices\AgendaService.cs" />
+    <Compile Include="EntitiesServices\AssinanteCnpjService.cs" />
+    <Compile Include="EntitiesServices\AssinanteService.cs" />
+    <Compile Include="EntitiesServices\BancoService.cs" />
+    <Compile Include="EntitiesServices\BeneficiarioService.cs" />
+    <Compile Include="EntitiesServices\CargoService.cs" />
+    <Compile Include="EntitiesServices\CategoriaAgendaService.cs" />
+    <Compile Include="EntitiesServices\CategoriaClienteService.cs" />
+    <Compile Include="EntitiesServices\CategoriaNotificacaoService.cs" />
+    <Compile Include="EntitiesServices\CategoriaTelefoneService.cs" />
+    <Compile Include="EntitiesServices\CategoriaUsuarioService.cs" />
+    <Compile Include="EntitiesServices\ClienteCnpjService.cs" />
+    <Compile Include="EntitiesServices\ContatoService.cs" />
+    <Compile Include="EntitiesServices\EscolaridadeService.cs" />
+    <Compile Include="EntitiesServices\HonorarioService.cs" />
+    <Compile Include="EntitiesServices\NaturezaService.cs" />
+    <Compile Include="EntitiesServices\ParentescoService.cs" />
+    <Compile Include="EntitiesServices\PrecatorioService.cs" />
+    <Compile Include="EntitiesServices\RecursividadeService.cs" />
+    <Compile Include="EntitiesServices\MensagemEnviadaSistemaService.cs" />
+    <Compile Include="EntitiesServices\FunilService.cs" />
+    <Compile Include="EntitiesServices\CRMDiarioService.cs" />
+    <Compile Include="EntitiesServices\ClienteService.cs" />
+    <Compile Include="EntitiesServices\ConfiguracaoService.cs" />
+    <Compile Include="EntitiesServices\CRMOrigemService.cs" />
+    <Compile Include="EntitiesServices\CRMService.cs" />
+    <Compile Include="EntitiesServices\EMailAgendaService.cs" />
+    <Compile Include="EntitiesServices\GrupoService.cs" />
+    <Compile Include="EntitiesServices\LogService.cs" />
+    <Compile Include="EntitiesServices\MensagemAutomacaoService.cs" />
+    <Compile Include="EntitiesServices\MensagemService.cs" />
+    <Compile Include="EntitiesServices\MotivoCancelamentoService.cs" />
+    <Compile Include="EntitiesServices\MotivoEncerramentoService.cs" />
+    <Compile Include="EntitiesServices\NoticiaService.cs" />
+    <Compile Include="EntitiesServices\NotificacaoService.cs" />
+    <Compile Include="EntitiesServices\PerfilService.cs" />
+    <Compile Include="EntitiesServices\PeriodicidadeService.cs" />
+    <Compile Include="EntitiesServices\PlanoService.cs" />
+    <Compile Include="EntitiesServices\ServiceBase.cs" />
+    <Compile Include="EntitiesServices\TabelaIPCAService.cs" />
+    <Compile Include="EntitiesServices\TabelaIRRFService.cs" />
+    <Compile Include="EntitiesServices\TarefaService.cs" />
+    <Compile Include="EntitiesServices\TemplatePropostaService.cs" />
+    <Compile Include="EntitiesServices\TemplateEMailService.cs" />
+    <Compile Include="EntitiesServices\TemplateService.cs" />
+    <Compile Include="EntitiesServices\TemplateSMSService.cs" />
+    <Compile Include="EntitiesServices\TipoPessoaService.cs" />
+    <Compile Include="EntitiesServices\TipoAcaoService.cs" />
+    <Compile Include="EntitiesServices\TipoFollowService.cs" />
+    <Compile Include="EntitiesServices\TipoTarefaService.cs" />
+    <Compile Include="EntitiesServices\TRFService.cs" />
+    <Compile Include="EntitiesServices\UsuarioService.cs" />
+    <Compile Include="EntitiesServices\VaraService.cs" />
+    <Compile Include="EntitiesServices\VideoService.cs" />
+    <Compile Include="Interfaces\Repositories\IAgendaAnexoRepository.cs" />
+    <Compile Include="Interfaces\Repositories\IAgendaRepository.cs" />
+    <Compile Include="Interfaces\Repositories\IAssinanteAnexoRepository.cs" />
+    <Compile Include="Interfaces\Repositories\IAssinanteAnotacaoRepository.cs" />
+    <Compile Include="Interfaces\Repositories\IAssinanteCnpjRepository.cs" />
+    <Compile Include="Interfaces\Repositories\IAssinantePlanoRepository.cs" />
+    <Compile Include="Interfaces\Repositories\IAssinantePagamentoRepository.cs" />
+    <Compile Include="Interfaces\Repositories\IAssinanteRepository.cs" />
+    <Compile Include="Interfaces\Repositories\IBancoRepository.cs" />
+    <Compile Include="Interfaces\Repositories\IBeneficiarioAnexoRepository.cs" />
+    <Compile Include="Interfaces\Repositories\IBeneficiarioComentarioRepository.cs" />
+    <Compile Include="Interfaces\Repositories\IBeneficiarioRepository.cs" />
+    <Compile Include="Interfaces\Repositories\ICargoRepository.cs" />
+    <Compile Include="Interfaces\Repositories\ICategoriaAgendaRepository.cs" />
+    <Compile Include="Interfaces\Repositories\ICategoriaClienteRepository.cs" />
+    <Compile Include="Interfaces\Repositories\ICategoriaNotificacaoRepository.cs" />
+    <Compile Include="Interfaces\Repositories\ICategoriaTelefoneRepository.cs" />
+    <Compile Include="Interfaces\Repositories\ICategoriaUsuarioRepository.cs" />
+    <Compile Include="Interfaces\Repositories\IContatoFalhaRepository.cs" />
+    <Compile Include="Interfaces\Repositories\IContatoRepository.cs" />
+    <Compile Include="Interfaces\Repositories\ICRMFollowRepository.cs" />
+    <Compile Include="Interfaces\Repositories\IEnderecoRepository.cs" />
+    <Compile Include="Interfaces\Repositories\IEscolaridadeRepository.cs" />
+    <Compile Include="Interfaces\Repositories\IEstadoCivilRepository.cs" />
+    <Compile Include="Interfaces\Repositories\IHonorarioAnexoRepository.cs" />
+    <Compile Include="Interfaces\Repositories\IHonorarioComentarioRepository.cs" />
+    <Compile Include="Interfaces\Repositories\IHonorarioRepository.cs" />
+    <Compile Include="Interfaces\Repositories\INaturezaRepository.cs" />
+    <Compile Include="Interfaces\Repositories\IParentescoRepository.cs" />
+    <Compile Include="Interfaces\Repositories\IConfiguracaoChavesRepository.cs" />
+    <Compile Include="Interfaces\Repositories\ILogExcecaoRepository.cs" />
+    <Compile Include="Interfaces\Repositories\IMunicipioRepository.cs" />
+    <Compile Include="Interfaces\Repositories\INacionalidadeRepository.cs" />
+    <Compile Include="Interfaces\Repositories\ILinguaRepository.cs" />
+    <Compile Include="Interfaces\Repositories\IPrecatorioAnexoRepository.cs" />
+    <Compile Include="Interfaces\Repositories\IPrecatorioAnotacaoRepository.cs" />
+    <Compile Include="Interfaces\Repositories\IPrecatorioEstadoRepository.cs" />
+    <Compile Include="Interfaces\Repositories\IPrecatorioFalhaRepository.cs" />
+    <Compile Include="Interfaces\Repositories\IPrecatorioRepository.cs" />
+    <Compile Include="Interfaces\Repositories\IQualificacaoRepository.cs" />
+    <Compile Include="Interfaces\Repositories\IQuemDesligouRepository.cs" />
+    <Compile Include="Interfaces\Repositories\IResultadoRobotRepository.cs" />
+    <Compile Include="Interfaces\Repositories\IRecursividadeDataRepository.cs" />
+    <Compile Include="Interfaces\Repositories\IRecursividadeDestinoRepository.cs" />
+    <Compile Include="Interfaces\Repositories\IRecursividadeRepository.cs" />
+    <Compile Include="Interfaces\Repositories\IMensagemEnviadaSistemaRepository.cs" />
+    <Compile Include="Interfaces\Repositories\IClienteAnexoRepository.cs" />
+    <Compile Include="Interfaces\Repositories\IClienteAnotacaoRepository.cs" />
+    <Compile Include="Interfaces\Repositories\IClienteCnpjRepository.cs" />
+    <Compile Include="Interfaces\Repositories\IClienteFalhaRepository.cs" />
+    <Compile Include="Interfaces\Repositories\IClienteContatoRepository.cs" />
+    <Compile Include="Interfaces\Repositories\IClienteReferenciaRepository.cs" />
+    <Compile Include="Interfaces\Repositories\ICRMDiarioRepository.cs" />
+    <Compile Include="Interfaces\Repositories\IClienteRepository.cs" />
+    <Compile Include="Interfaces\Repositories\IConfiguracaoRepository.cs" />
+    <Compile Include="Interfaces\Repositories\ICRMAcaoRepository.cs" />
+    <Compile Include="Interfaces\Repositories\ICRMAnexoRepository.cs" />
+    <Compile Include="Interfaces\Repositories\ICRMComentarioRepository.cs" />
+    <Compile Include="Interfaces\Repositories\ICRMContatoRepository.cs" />
+    <Compile Include="Interfaces\Repositories\ICRMOrigemRepository.cs" />
+    <Compile Include="Interfaces\Repositories\ICRMPedidoAnexoRepository.cs" />
+    <Compile Include="Interfaces\Repositories\ICRMPedidoComentarioRepository.cs" />
+    <Compile Include="Interfaces\Repositories\ICRMPedidoRepository.cs" />
+    <Compile Include="Interfaces\Repositories\ICRMRepository.cs" />
+    <Compile Include="Interfaces\Repositories\IEMailAgendaRepository.cs" />
+    <Compile Include="Interfaces\Repositories\IFunilRepository.cs" />
+    <Compile Include="Interfaces\Repositories\IGrupoContatoRepository.cs" />
+    <Compile Include="Interfaces\Repositories\IGrupoRepository.cs" />
+    <Compile Include="Interfaces\Repositories\ILogRepository.cs" />
+    <Compile Include="Interfaces\Repositories\IFunilEtapaRepository.cs" />
+    <Compile Include="Interfaces\Repositories\IMensagemAnexoRepository.cs" />
+    <Compile Include="Interfaces\Repositories\IMensagemAutomacaoDatasRepository.cs" />
+    <Compile Include="Interfaces\Repositories\IMensagemAutomacaoRepository.cs" />
+    <Compile Include="Interfaces\Repositories\IMensagemDestinoRepository.cs" />
+    <Compile Include="Interfaces\Repositories\IMensagemRepository.cs" />
+    <Compile Include="Interfaces\Repositories\IMotivoCancelamentoRepository.cs" />
+    <Compile Include="Interfaces\Repositories\IMotivoEncerramentoRepository.cs" />
+    <Compile Include="Interfaces\Repositories\INoticiaComentarioRepository.cs" />
+    <Compile Include="Interfaces\Repositories\INoticiaRepository.cs" />
+    <Compile Include="Interfaces\Repositories\INotificacaoAnexoRepository.cs" />
+    <Compile Include="Interfaces\Repositories\INotificacaoRepository.cs" />
+    <Compile Include="Interfaces\Repositories\IPerfilRepository.cs" />
+    <Compile Include="Interfaces\Repositories\IPeriodicidadePlanoRepository.cs" />
+    <Compile Include="Interfaces\Repositories\IPeriodicidadeRepository.cs" />
+    <Compile Include="Interfaces\Repositories\IPlanoRepository.cs" />
+    <Compile Include="Interfaces\Repositories\IRegimeTributarioRepository.cs" />
+    <Compile Include="Interfaces\Repositories\IRepositoryBase.cs" />
+    <Compile Include="Interfaces\Repositories\ISexoRepository.cs" />
+    <Compile Include="Interfaces\Repositories\ITabelaIPCARepository.cs" />
+    <Compile Include="Interfaces\Repositories\ITabelaIRRFRepository.cs" />
+    <Compile Include="Interfaces\Repositories\ITarefaAnexoRepository.cs" />
+    <Compile Include="Interfaces\Repositories\ITarefaNotificacaoRepository.cs" />
+    <Compile Include="Interfaces\Repositories\ITarefaRepository.cs" />
+    <Compile Include="Interfaces\Repositories\ITelefoneRepository.cs" />
+    <Compile Include="Interfaces\Repositories\ITemplateEMailRepository.cs" />
+    <Compile Include="Interfaces\Repositories\ITemplatePropostaRepository.cs" />
+    <Compile Include="Interfaces\Repositories\ITemplateRepository.cs" />
+    <Compile Include="Interfaces\Repositories\ITemplateSMSRepository.cs" />
+    <Compile Include="Interfaces\Repositories\ITipoAcaoRepository.cs" />
+    <Compile Include="Interfaces\Repositories\ITipoContribuinteRepository.cs" />
+    <Compile Include="Interfaces\Repositories\ITipoCRMRepository.cs" />
+    <Compile Include="Interfaces\Repositories\ITipoPessoaRepository.cs" />
+    <Compile Include="Interfaces\Repositories\ITipoFollowRepository.cs" />
+    <Compile Include="Interfaces\Repositories\ITipoTarefaRepository.cs" />
+    <Compile Include="Interfaces\Repositories\ITipoTelefoneBaseRepository.cs" />
+    <Compile Include="Interfaces\Repositories\ITipoTelefoneRepository.cs" />
+    <Compile Include="Interfaces\Repositories\ITitularidadeRepository.cs" />
+    <Compile Include="Interfaces\Repositories\ITRFRepository.cs" />
+    <Compile Include="Interfaces\Repositories\IUFRepository.cs" />
+    <Compile Include="Interfaces\Repositories\IUsuarioAnexoRepository.cs" />
+    <Compile Include="Interfaces\Repositories\IUsuarioAnotacaoRepository.cs" />
+    <Compile Include="Interfaces\Repositories\IUsuarioRepository.cs" />
+    <Compile Include="Interfaces\Repositories\IVaraRepository.cs" />
+    <Compile Include="Interfaces\Repositories\IVideoComentarioRepository.cs" />
+    <Compile Include="Interfaces\Repositories\IVideoRepository.cs" />
+    <Compile Include="Interfaces\Services\IAgendaService.cs" />
+    <Compile Include="Interfaces\Services\IAssinanteCnpjService.cs" />
+    <Compile Include="Interfaces\Services\IAssinanteService.cs" />
+    <Compile Include="Interfaces\Services\IBancoService.cs" />
+    <Compile Include="Interfaces\Services\IBeneficiarioService.cs" />
+    <Compile Include="Interfaces\Services\ICargoService.cs" />
+    <Compile Include="Interfaces\Services\ICategoriaAgendaService.cs" />
+    <Compile Include="Interfaces\Services\ICategoriaClienteService.cs" />
+    <Compile Include="Interfaces\Services\ICategoriaNotificacaoService.cs" />
+    <Compile Include="Interfaces\Services\ICategoriaTelefoneService.cs" />
+    <Compile Include="Interfaces\Services\ICategoriaUsuarioService.cs" />
+    <Compile Include="Interfaces\Services\IClienteCnpjService.cs" />
+    <Compile Include="Interfaces\Services\IContatoService.cs" />
+    <Compile Include="Interfaces\Services\IEscolaridadeService.cs" />
+    <Compile Include="Interfaces\Services\IHonorarioService.cs" />
+    <Compile Include="Interfaces\Services\INaturezaService.cs" />
+    <Compile Include="Interfaces\Services\IParentescoService.cs" />
+    <Compile Include="Interfaces\Services\IPrecatorioService.cs" />
+    <Compile Include="Interfaces\Services\IRecursividadeService.cs" />
+    <Compile Include="Interfaces\Services\IMensagemEnviadaSistemaService.cs" />
+    <Compile Include="Interfaces\Services\IFunilService.cs" />
+    <Compile Include="Interfaces\Services\ICRMDiarioService.cs" />
+    <Compile Include="Interfaces\Services\IClienteService.cs" />
+    <Compile Include="Interfaces\Services\IConfiguracaoService.cs" />
+    <Compile Include="Interfaces\Services\ICRMOrigemService.cs" />
+    <Compile Include="Interfaces\Services\ICRMService.cs" />
+    <Compile Include="Interfaces\Services\IEMailAgendaService.cs" />
+    <Compile Include="Interfaces\Services\IGrupoService.cs" />
+    <Compile Include="Interfaces\Services\ILogService.cs" />
+    <Compile Include="Interfaces\Services\IMensagemAutomacaoService.cs" />
+    <Compile Include="Interfaces\Services\IMensagemService.cs" />
+    <Compile Include="Interfaces\Services\IMotivoCancelamentoService.cs" />
+    <Compile Include="Interfaces\Services\IMotivoEncerramentoService.cs" />
+    <Compile Include="Interfaces\Services\INoticiaService.cs" />
+    <Compile Include="Interfaces\Services\INotificacaoService.cs" />
+    <Compile Include="Interfaces\Services\IPerfilService.cs" />
+    <Compile Include="Interfaces\Services\IPeriodicidadeService.cs" />
+    <Compile Include="Interfaces\Services\IPlanoService.cs" />
+    <Compile Include="Interfaces\Services\IServiceBase.cs" />
+    <Compile Include="Interfaces\Services\ITabelaIPCAService.cs" />
+    <Compile Include="Interfaces\Services\ITabelaIRRFService.cs" />
+    <Compile Include="Interfaces\Services\ITarefaService.cs" />
+    <Compile Include="Interfaces\Services\ITemplatePropostaService.cs" />
+    <Compile Include="Interfaces\Services\ITemplateEMailService.cs" />
+    <Compile Include="Interfaces\Services\ITemplateService.cs" />
+    <Compile Include="Interfaces\Services\ITemplateSMSService.cs" />
+    <Compile Include="Interfaces\Services\ITipoAcaoService.cs" />
+    <Compile Include="Interfaces\Services\ITipoPessoaService.cs" />
+    <Compile Include="Interfaces\Services\ITipoFollowService.cs" />
+    <Compile Include="Interfaces\Services\ITipoTarefaService.cs" />
+    <Compile Include="Interfaces\Services\ITRFService.cs" />
+    <Compile Include="Interfaces\Services\IUsuarioService.cs" />
+    <Compile Include="Interfaces\Services\IVaraService.cs" />
+    <Compile Include="Interfaces\Services\IVideoService.cs" />
+    <Compile Include="Model\AGENDA.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\AGENDA_ANEXO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\AGENDA_VINCULO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\ASSINANTE.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\ASSINANTE_ANEXO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\ASSINANTE_ANOTACAO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\ASSINANTE_CONSUMO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\ASSINANTE_PAGAMENTO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\ASSINANTE_PLANO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\ASSINANTE_QUADRO_SOCIETARIO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\BANCO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\BENEFICIARIO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\BENEFICIARIO_ANEXO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\BENEFICIARIO_ANOTACOES.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\CARGO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\CATEGORIA_AGENDA.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\CATEGORIA_CLIENTE.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\CATEGORIA_NOTIFICACAO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\CATEGORIA_TELEFONE.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\CATEGORIA_USUARIO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\CLIENTE.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\CLIENTE_ANEXO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\CLIENTE_ANOTACAO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\CLIENTE_CONTATO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\CLIENTE_FALHA.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\CLIENTE_QUADRO_SOCIETARIO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\CLIENTE_REFERENCIA.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\CLIENTE_TAG.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\CONFIGURACAO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\CONFIGURACAO_CHAVES.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\CONFIGURACAO_CRIPT.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\CONTATO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\CONTATO_FALHA.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\CRM.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\CRM_ACAO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\CRM_ANEXO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\CRM_COMENTARIO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\CRM_CONTATO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\CRM_FOLLOW.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\CRM_ORIGEM.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\CRM_PEDIDO_VENDA.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\CRM_PEDIDO_VENDA_ACOMPANHAMENTO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\CRM_PEDIDO_VENDA_ANEXO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\DEPARTAMENTO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\DIARIO_PROCESSO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\EMAIL_AGENDAMENTO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\ENDERECO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\ESCOLARIDADE.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\ESTADO_CIVIL.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\FUNIL.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\FUNIL_ETAPA.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\GRAU_INSTRUCAO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\GRUPO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\GRUPO_CLIENTE.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\HONORARIO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\HONORARIO_ANEXO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\HONORARIO_ANOTACOES.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\LINGUA.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\LOAS.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\LOG.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\LOG_EXCECAO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\LOG_EXCECAO_NOVO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\MENSAGEM_ANEXO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\MENSAGEM_AUTOMACAO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\MENSAGEM_AUTOMACAO_DATAS.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\MENSAGENS.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\MENSAGENS_DESTINOS.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\MENSAGENS_ENVIADAS_SISTEMA.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\MOTIVO_CANCELAMENTO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\MOTIVO_ENCERRAMENTO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\MUNICIPIO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\NACIONALIDADE.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\NATUREZA.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\NOMENCLATURA_BRAS_SERVICOS.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\NOTICIA.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\NOTICIA_COMENTARIO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\NOTIFICACAO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\NOTIFICACAO_ANEXO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\PARENTESCO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\PERFIL.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\PERIODICIDADE.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\PERIODICIDADE_TAREFA.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\PLANO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\PLANO_PERIODICIDADE.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\PRECATORIO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\PRECATORIO_ANEXO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\PRECATORIO_ANOTACAO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\PRECATORIO_ESTADO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\PRECATORIO_FALHA.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\QUALIFICACAO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\QUEM_DESLIGOU.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\RECURSIVIDADE.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\RECURSIVIDADE_DATA.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\RECURSIVIDADE_DESTINO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\REGIME_TRIBUTARIO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\RESULTADO_ROBOT.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\Ridolfi_Model.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Ridolfi_Model.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\Ridolfi_Model.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\Ridolfi_Model.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Ridolfi_Model.edmx</DependentUpon>
+    </Compile>
+    <Compile Include="Model\SEXO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\TABELA_IMPORTACAO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\TABELA_IPCA.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\TABELA_IRRF.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\TAREFA.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\TAREFA_ACOMPANHAMENTO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\TAREFA_ANEXO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\TAREFA_NOTIFICACAO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\TAREFA_VINCULO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\TELEFONE.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\TEMPLATE.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\TEMPLATE_EMAIL.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\TEMPLATE_PROPOSTA.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\TEMPLATE_SMS.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\TIPO_ACAO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\TIPO_CONTRIBUINTE.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\TIPO_CRM.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\TIPO_FOLLOW.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\TIPO_GRUPO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\TIPO_PESSOA.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\TIPO_TAREFA.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\TIPO_TELEFONE.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\TIPO_TELEFONE_BASE.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\TITULARIDADE.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\TRF.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\UF.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\USUARIO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\USUARIO_ANEXO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\USUARIO_ANOTACAO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\VARA.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\VIDEO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\VIDEO_COMENTARIO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\VOLTA_PESQUISA.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="WorkClasses\AttachmentCRM.cs" />
+    <Compile Include="WorkClasses\AttachmentForn.cs" />
+    <Compile Include="WorkClasses\CNPJ.cs" />
+    <Compile Include="WorkClasses\Endereco.cs" />
+    <Compile Include="WorkClasses\Enumerador.cs" />
+    <Compile Include="WorkClasses\FileQueue.cs" />
+    <Compile Include="WorkClasses\Login.cs" />
+    <Compile Include="WorkClasses\MontagemGrupo.cs" />
+    <Compile Include="WorkClasses\TrocaSenha.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.Config" />
+    <EntityDeploy Include="Model\Ridolfi_Model.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>Ridolfi_Model.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <None Include="Model\Ridolfi_Model.edmx.diagram">
+      <DependentUpon>Ridolfi_Model.edmx</DependentUpon>
+    </None>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CrossCutting\CrossCutting.csproj">
+      <Project>{a33aa06b-e254-478e-a15c-86ebe681a589}</Project>
+      <Name>CrossCutting</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <Content Include="Model\Ridolfi_Model.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>Ridolfi_Model.edmx</DependentUpon>
+      <LastGenOutput>Ridolfi_Model.Context.cs</LastGenOutput>
+    </Content>
+    <Content Include="Model\Ridolfi_Model.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>Ridolfi_Model.edmx</DependentUpon>
+      <LastGenOutput>Ridolfi_Model.cs</LastGenOutput>
+    </Content>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>Este projeto faz referência a pacotes do NuGet que não estão presentes neste computador. Use a Restauração de Pacotes do NuGet para baixá-los.  Para obter mais informações, consulte http://go.microsoft.com/fwlink/?LinkID=322105. O arquivo ausente é {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\EntityFramework.6.4.4\build\EntityFramework.props'))" />
+    <Error Condition="!Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\EntityFramework.6.4.4\build\EntityFramework.targets'))" />
+  </Target>
+  <Import Project="..\packages\EntityFramework.6.4.4\build\EntityFramework.targets" Condition="Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.targets')" />
+</Project>

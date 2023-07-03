@@ -1,0 +1,1 @@
+var breadcrumbs=[['-1',"",""],['2',"SOLUTION-WIDE PROPERTIES Reference","topic_0000000000001B27.html"],['595',"ApplicationServices.Services Namespace","topic_0000000000000AD4.html"],['788',"CategoriaTelefoneAppService Class","topic_0000000000000B3B.html"],['790',"Methods","topic_0000000000000B3B_methods--.html"],['797',"ValidateReativar Method","topic_0000000000000B43.html"]];

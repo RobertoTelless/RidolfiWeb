@@ -1,0 +1,1 @@
+var breadcrumbs=[['-1',"",""],['2',"CRMPresentation Reference","topic_00000000000009F2.html"],['2735',"SystemBRPresentation.ViewModels Namespace","topic_000000000000080D.html"],['2736',"PerfilViewModel Class","topic_000000000000080E.html"],['2737',"Properties","topic_000000000000080E_props--.html"],['2738',"PERF_CD_ID Property","topic_000000000000080F.html"]];

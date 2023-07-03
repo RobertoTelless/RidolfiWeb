@@ -1,0 +1,1 @@
+search_result['10001']=["topic_0000000000001ABD_overloads--.html","CommonHelpers.IsDaylightSavingsTime Method","True if the datetime supplied falls within the period of Daylight Savings."];

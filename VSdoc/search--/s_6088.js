@@ -1,0 +1,1 @@
+search_result['6088']=["topic_000000000000109B_props--.html","IRegimeTributarioRepository Properties",""];

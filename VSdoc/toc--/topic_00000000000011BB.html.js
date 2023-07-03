@@ -1,0 +1,1 @@
+var breadcrumbs=[['-1',"",""],['2',"SOLUTION-WIDE PROPERTIES Reference","topic_0000000000001B27.html"],['6630',"ModelServices.Interfaces.EntitiesServices Namespace","topic_0000000000001112.html"],['6704',"ICRMOrigemService Interface","topic_00000000000011B6.html"],['6705',"Methods","topic_00000000000011B6_methods--.html"],['6710',"Delete Method","topic_00000000000011BB.html"]];

@@ -1,0 +1,1 @@
+c['1172']=[['1173',"TipoTarefaAppService Constructor","topic_0000000000000CDE.html",0],['1174',"Methods","topic_0000000000000CDD_methods--.html",1]];

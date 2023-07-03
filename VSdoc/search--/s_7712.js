@@ -1,0 +1,1 @@
+search_result['7712']=["topic_00000000000014C8.html","CLIENTE_ANOTACAO.CLAN_CD_ID Property",""];

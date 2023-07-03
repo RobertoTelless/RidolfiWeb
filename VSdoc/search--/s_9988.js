@@ -1,0 +1,1 @@
+search_result['9988']=["topic_0000000000001AB1.html","CommonHelpers.TableDelimiter Property","This value can be applied to the value for a constant.\r\n\r\nTableDelimiter is the same non-printable ASCII character used\r\nin teletypes and other devices to indicate a new table of data,\r\nand not likely..."];

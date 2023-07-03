@@ -1,0 +1,1 @@
+search_result['10003']=["topic_0000000000001ABE_overloads--.html","CommonHelpers.IsDaylightSavingsTime Method","Checks if the current time is DST."];

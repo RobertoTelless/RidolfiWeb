@@ -1,0 +1,1197 @@
+﻿@using Presentation.Extensions
+@model ERP_Condominios_Solution.ViewModels.PesquisaViewModel
+@{
+    Layout = "~/Views/Shared/_Layout_Admin.cshtml";
+}
+<div style="z-index: 999;" class="dotContainer">
+    <div style="top: 500px" class="dotWrapper">
+        <div class="circle"></div>
+        <div class="circle"></div>
+        <div class="circle"></div>
+        <div class="shadow"></div>
+        <div class="shadow"></div>
+        <div class="shadow"></div>
+    </div>
+</div>
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="modalContainer">
+        <div id="modal" class="modal" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        @*titulo gerado dinamicamente*@
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        @*Gerado dinamicamente*@
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="containerModalDesc">
+        <div class="modal fade" id="modalDesc" tabindex="-1" role="dialog" aria-labelledby="modalDesc" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalDesc">Texto da Pergunta</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div id="modalDescBody" class="modal-body">
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="page-title">
+        <h3 class="title">Pesquisas</h3>
+        <br />
+        <ol class="breadcrumb">
+            <li>
+                <a href="@Url.Action("CarregarBase", "BaseAdmin")">Dashboard</a>
+            </li>
+            <li>
+                <a href="@Url.Action("MontarTelaDashboardPesquisa", "Pesquisa")">Dashboard - Pesquisas</a>
+            </li>
+            <li>
+                <a href="@Url.Action("MontarTelaPesquisa", "Pesquisa")">Pesquisas</a>
+            </li>
+            <li class="active">
+                <strong>Pesquisas - Edição</strong>
+            </li>
+        </ol>
+        <br />
+    </div>
+    <div class="row">
+        <div class="col-lg-12 col-md-12 col-xs-12">
+            <div class="col-lg-12 col-md-12 col-xs-12 ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>Pesquisas - Edição</h5>
+                </div>
+                <div class="ibox-content">
+                    @Html.AntiForgeryToken()
+                    @if (!ViewData.ModelState.IsValid)
+                    {
+                        <div class="alert alert-danger">
+                            <button type="button" class="close" data-dismiss="alert">Fechar</button>
+                            @Html.ValidationSummary(false, "Erros Encontrados:", new { @class = "text-danger" })
+                        </div>
+                    }
+                    <div class="form-group">
+                        @if (Model.PESQ_IN_ATIVO == 1)
+                        {
+                            @Html.ButtonLinkIndex(text: "Enviar Pesquisa", action: "EnviarPesquisaForm", controller: "Pesquisa")
+                        }
+                        @if (Model.PESQ_IN_ATIVO == 1)
+                        {
+                            @Html.ButtonLinkIndex(text: "Responder Pesquisa", action: "ResponderPesquisaForm", controller: "Pesquisa")
+                        }
+                        @Html.ButtonLinkIndex(text: "Gerar Detalhes", action: "GerarRelatorioDetalhe", controller: "Pesquisa")
+                        @Html.ButtonLinkIndex(text: "Voltar", action: "VoltarBasePesquisa", controller: "Pesquisa")
+                    </div>
+                    <div class="tabs-container">
+                        <ul class="nav nav-tabs">
+                            @if (ViewBag.Incluir == 0)
+                            {
+                                <li class="active"><a data-toggle="tab" href="#tab-1">Dados Gerais</a></li>
+                                <li class=""><a data-toggle="tab" href="#tab-2">Anexos</a></li>
+                                <li class=""><a data-toggle="tab" href="#tab-3">Perguntas</a></li>
+                                <li class=""><a data-toggle="tab" href="#tab-4">Respostas</a></li>
+                                <li class=""><a data-toggle="tab" href="#tab-5">Anotações</a></li>
+                                <li class=""><a data-toggle="tab" href="#tab-6">Observações</a></li>
+                                <li class=""><a data-toggle="tab" href="#tab-7">Indicadores</a></li>
+                            }
+                            @if (ViewBag.Incluir == 1)
+                            {
+                                <li class=""><a data-toggle="tab" href="#tab-1">Dados Gerais</a></li>
+                                <li class="active"><a data-toggle="tab" href="#tab-2">Anexos</a></li>
+                                <li class=""><a data-toggle="tab" href="#tab-3">Perguntas</a></li>
+                                <li class=""><a data-toggle="tab" href="#tab-4">Respostas</a></li>
+                                <li class=""><a data-toggle="tab" href="#tab-5">Anotações</a></li>
+                                <li class=""><a data-toggle="tab" href="#tab-6">Observações</a></li>
+                                <li class=""><a data-toggle="tab" href="#tab-7">Indicadores</a></li>
+                            }
+                            @if (ViewBag.Incluir == 2)
+                            {
+                                <li class=""><a data-toggle="tab" href="#tab-1">Dados Gerais</a></li>
+                                <li class=""><a data-toggle="tab" href="#tab-2">Anexos</a></li>
+                                <li class="active"><a data-toggle="tab" href="#tab-3">Perguntas</a></li>
+                                <li class=""><a data-toggle="tab" href="#tab-4">Respostas</a></li>
+                                <li class=""><a data-toggle="tab" href="#tab-5">Anotações</a></li>
+                                <li class=""><a data-toggle="tab" href="#tab-6">Observações</a></li>
+                                <li class=""><a data-toggle="tab" href="#tab-7">Indicadores</a></li>
+                            }
+                            @if (ViewBag.Incluir == 3)
+                            {
+                                <li class=""><a data-toggle="tab" href="#tab-1">Dados Gerais</a></li>
+                                <li class=""><a data-toggle="tab" href="#tab-2">Anexos</a></li>
+                                <li class=""><a data-toggle="tab" href="#tab-3">Perguntas</a></li>
+                                <li class=""><a data-toggle="tab" href="#tab-4">Respostas</a></li>
+                                <li class="active"><a data-toggle="tab" href="#tab-5">Anotações</a></li>
+                                <li class=""><a data-toggle="tab" href="#tab-6">Observações</a></li>
+                                <li class=""><a data-toggle="tab" href="#tab-7">Indicadores</a></li>
+                            }
+                            @if (ViewBag.Incluir == 4)
+                            {
+                                <li class=""><a data-toggle="tab" href="#tab-1">Dados Gerais</a></li>
+                                <li class=""><a data-toggle="tab" href="#tab-2">Anexos</a></li>
+                                <li class=""><a data-toggle="tab" href="#tab-3">Perguntas</a></li>
+                                <li class="active"><a data-toggle="tab" href="#tab-4">Respostas</a></li>
+                                <li class=""><a data-toggle="tab" href="#tab-5">Anotações</a></li>
+                                <li class=""><a data-toggle="tab" href="#tab-6">Observações</a></li>
+                                <li class=""><a data-toggle="tab" href="#tab-7">Indicadores</a></li>
+                            }
+                        </ul>
+                        <div class="tab-content">
+                            @*Dados Gerais*@
+                            @if (ViewBag.Incluir == 0)
+                            {
+                                <div id="tab-1" class="tab-pane active">
+                                    <div class="panel-body">
+                                        @using (Html.BeginForm("EditarPesquisa", "Pesquisa", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", @id = "pwd-container1" }))
+                                        {
+                                            <div class="row" style="width: 100%;">
+                                                <div class="col-lg-12 col-md-12 col-xs-12">
+                                                    <div class="row">
+                                                        <div class="col-lg-2 col-md-2 col-xs-12">
+                                                            @Html.HiddenFor(m => m.ASSI_CD_ID)
+                                                            @Html.HiddenFor(m => m.PESQ_DT_CRIACAO)
+                                                            @Html.HiddenFor(m => m.PESQ_IN_ATIVO)
+                                                            @Html.HiddenFor(m => m.PESQ_LK_LINK)
+                                                            @Html.HiddenFor(m => m.PESQ_TX_OBSERVACAO)
+                                                            @Html.HiddenFor(m => m.PESQ_TX_OBSERVACOES)
+                                                            @Html.HiddenFor(m => m.USUA_CD_ID)
+                                                            @Html.HiddenFor(m => m.PESQ_CD_ID)
+                                                            Tipo de Pesquisa*
+                                                            @Html.DropDownListFor(m => m.TIPS_CD_ID, (SelectList)ViewBag.Tipos, "Selecionar", new { @class = "form-control", autofocus = true })
+                                                            @Html.ValidationMessageFor(m => m.TIPS_CD_ID, "", new { @style = "color:red" })
+                                                        </div>
+                                                        <div class="col-lg-3 col-md-3 col-xs-12">
+                                                            Campanha
+                                                            @Html.TextBoxFor(m => m.PESQ_NM_CAMPANHA, new { @class = "form-control", autofocus = true })
+                                                            @Html.ValidationMessageFor(m => m.PESQ_NM_CAMPANHA, "", new { @style = "color:red" })
+                                                        </div>
+                                                        <div class="col-lg-3 col-md-3 col-xs-12">
+                                                            Nome
+                                                            @Html.TextBoxFor(m => m.PESQ_NM_NOME, new { @class = "form-control", autofocus = true })
+                                                            @Html.ValidationMessageFor(m => m.PESQ_NM_NOME, "", new { @style = "color:red" })
+                                                        </div>
+                                                        <div class="col-lg-2 col-md-2 col-xs-12">
+                                                            Data Criação
+                                                            @Html.TextBoxFor(m => m.PESQ_DT_CRIACAO, "{0:dd/MM/yyyy}", new { @class = "form-control", autofocus = true, @readonly = "readonly" })
+                                                        </div>
+                                                        <div class="col-lg-2 col-md-2 col-xs-12">
+                                                            Data Validade*
+                                                            @Html.TextBoxFor(m => m.PESQ_DT_VALIDADE, "{0:dd/MM/yyyy}", new { @class = "form-control date-picker", autofocus = true, @id = "dp" })
+                                                            @Html.ValidationMessageFor(m => m.PESQ_DT_VALIDADE, "", new { @style = "color:red" })
+                                                        </div>
+                                                    </div>
+                                                    <br />
+                                                    <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
+                                                        <div class="col-lg-12 col-md-12 col-xs-12">
+                                                            Descrição da Pesquisa*
+                                                            @Html.TextAreaFor(m => m.PESQ_DS_DESCRICAO, new { @class = "form-control", style = "width: 100%; height: 400px;", autofocus = true })
+                                                            @Html.ValidationMessageFor(m => m.PESQ_DS_DESCRICAO, "", new { @style = "color:red" })
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                @Html.ButtonActionSubmit(text: "Confirma edição da Pesquisa", htmlAttributes: new { id = "basictoast" })
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            }
+                            else
+                            {
+                                <div id="tab-1" class="tab-pane">
+                                    <div class="panel-body">
+                                        @using (Html.BeginForm("EditarPesquisa", "Pesquisa", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", @id = "pwd-container1" }))
+                                        {
+                                            <div class="row" style="width: 100%;">
+                                                <div class="col-lg-12 col-md-12 col-xs-12">
+                                                    <div class="row">
+                                                        <div class="col-lg-2 col-md-2 col-xs-12">
+                                                            @Html.HiddenFor(m => m.ASSI_CD_ID)
+                                                            @Html.HiddenFor(m => m.PESQ_DT_CRIACAO)
+                                                            @Html.HiddenFor(m => m.PESQ_IN_ATIVO)
+                                                            @Html.HiddenFor(m => m.PESQ_LK_LINK)
+                                                            @Html.HiddenFor(m => m.PESQ_TX_OBSERVACAO)
+                                                            @Html.HiddenFor(m => m.PESQ_TX_OBSERVACOES)
+                                                            @Html.HiddenFor(m => m.USUA_CD_ID)
+                                                            @Html.HiddenFor(m => m.PESQ_CD_ID)
+                                                            Tipo de Pesquisa*
+                                                            @Html.DropDownListFor(m => m.TIPS_CD_ID, (SelectList)ViewBag.Tipos, "Selecionar", new { @class = "form-control", autofocus = true })
+                                                            @Html.ValidationMessageFor(m => m.TIPS_CD_ID, "", new { @style = "color:red" })
+                                                        </div>
+                                                        <div class="col-lg-3 col-md-3 col-xs-12">
+                                                            Campanha
+                                                            @Html.TextBoxFor(m => m.PESQ_NM_CAMPANHA, new { @class = "form-control", autofocus = true })
+                                                            @Html.ValidationMessageFor(m => m.PESQ_NM_CAMPANHA, "", new { @style = "color:red" })
+                                                        </div>
+                                                        <div class="col-lg-3 col-md-3 col-xs-12">
+                                                            Nome
+                                                            @Html.TextBoxFor(m => m.PESQ_NM_NOME, new { @class = "form-control", autofocus = true })
+                                                            @Html.ValidationMessageFor(m => m.PESQ_NM_NOME, "", new { @style = "color:red" })
+                                                        </div>
+                                                        <div class="col-lg-2 col-md-2 col-xs-12">
+                                                            Data Criação
+                                                            @Html.TextBoxFor(m => m.PESQ_DT_CRIACAO, "{0:dd/MM/yyyy}", new { @class = "form-control", autofocus = true, @readonly = "readonly" })
+                                                        </div>
+                                                        <div class="col-lg-2 col-md-2 col-xs-12">
+                                                            Data Validade*
+                                                            @Html.TextBoxFor(m => m.PESQ_DT_VALIDADE, "{0:dd/MM/yyyy}", new { @class = "form-control date-picker", autofocus = true, @id = "dp" })
+                                                            @Html.ValidationMessageFor(m => m.PESQ_DT_VALIDADE, "", new { @style = "color:red" })
+                                                        </div>
+                                                    </div>
+                                                    <br />
+                                                    <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
+                                                        <div class="col-lg-12 col-md-12 col-xs-12">
+                                                            Descrição da Pesquisa*
+                                                            @Html.TextAreaFor(m => m.PESQ_DS_DESCRICAO, new { @class = "form-control", style = "width: 100%; height: 400px;", autofocus = true })
+                                                            @Html.ValidationMessageFor(m => m.PESQ_DS_DESCRICAO, "", new { @style = "color:red" })
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                @Html.ButtonActionSubmit(text: "Confirma edição da Pesquisa", htmlAttributes: new { id = "basictoast" })
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            }
+
+                            @*Imagens - Foto e Anexos*@
+                            @if (ViewBag.Incluir == 1)
+                            {
+                                <div id="tab-2" class="tab-pane active">
+                                    <div class="panel-body">
+                                        <div class="row">
+                                            <hr />
+                                            <div class="col-lg-12 col-md-12 col-xs-12">
+                                                <h4>Anexos</h4>
+                                                <br />
+                                                <div class="form-group">
+                                                    @using (Html.BeginForm("UploadFilePesquisa", "Pesquisa", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { enctype = "multipart/form-data", @id = "pwd-container2" }))
+                                                    {
+                                                        <div class="ibox-content">
+                                                            @if (Model.PESQUISA_ANEXO.Count > 0)
+                                                            {
+                                                                <table class="table table-striped table-bordered table-hover dataTables-example">
+                                                                    <thead style="background-color:lightsteelblue">
+                                                                        <tr>
+                                                                            <th>Título</th>
+                                                                            <th>Data</th>
+                                                                            <th>Tipo</th>
+                                                                            <th class="td-one-action">Ações</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                        @foreach (var cond in (Model.PESQUISA_ANEXO))
+                                                                        {
+                                                                            <tr>
+                                                                                <td style="width: auto"><a href="@Url.Action("VerAnexoPesquisa", "Pesquisa", new { id = cond.PEAN_CD_ID })" />@cond.PEAN_NM_TITULO</td>
+                                                                                <td>@cond.PEAN_DT_ANEXO.ToShortDateString()</td>
+                                                                                @if (cond.PEAN_IN_TIPO == 1)
+                                                                                {
+                                                                                    <td>Imagem</td>
+                                                                                }
+                                                                                else if (cond.PEAN_IN_TIPO == 2)
+                                                                                {
+                                                                                    <td>Vídeo</td>
+                                                                                }
+                                                                                else if (cond.PEAN_IN_TIPO == 3)
+                                                                                {
+                                                                                    <td>PDF</td>
+                                                                                }
+                                                                                else if (cond.PEAN_IN_TIPO == 4)
+                                                                                {
+                                                                                    <td>Audio</td>
+                                                                                }
+                                                                                else if (cond.PEAN_IN_TIPO == 5)
+                                                                                {
+                                                                                    <td>Documento/Word</td>
+                                                                                }
+                                                                                else if (cond.PEAN_IN_TIPO == 6)
+                                                                                {
+                                                                                    <td>Planilha/Excel</td>
+                                                                                }
+                                                                                else
+                                                                                {
+                                                                                    <td>Outros</td>
+                                                                                }
+                                                                                <td class="td-one-action">
+                                                                                    @if (cond.PEAN_IN_TIPO == 1 || cond.PEAN_IN_TIPO == 2)
+                                                                                    {
+                                                                                        @Html.TableLinkDetails(cond.PEAN_CD_ID, "VerAnexoPesquisa", "fa-camera", "Visualizar")
+                                                                                    }
+                                                                                    @if (cond.PEAN_IN_TIPO == 4)
+	                                                                                {
+                                                                                        @Html.TableLinkDetails(cond.PEAN_CD_ID, "VerAnexoPesquisaAudio","fa-volume-up", "Visualizar")
+	                                                                                }
+                                                                                    @if (cond.PEAN_IN_TIPO == 3)
+                                                                                    {
+                                                                                        <a title="Visualizar" class="fa fa-camera fa-lg" href="~/PdfViewer/web/viewer.html?file=@(cond.PEAN_AQ_ARQUIVO.Replace("~", ""))&ReturnUrl=@Request.Url.AbsolutePath" target="_blank"></a>
+                                                                                    }
+                                                                                    @Html.TableLinkDetails(cond.PEAN_CD_ID, "DownloadPesquisa", "fa-download", "Download")
+                                                                                </td>
+                                                                            </tr>
+                                                                        }
+                                                                    </tbody>
+                                                                </table>
+                                                            }
+                                                            <div class="form-group">
+                                                                <div class="col-lg-12 col-md-12 col-xs-12">
+                                                                    <input style="float: left; margin-right: 5px;" type="file" name="file" id="file" class="btn btn-sm btn-warning" />
+                                                                    <input style="float: left; margin-right: 5px;" type="submit" value="Incluir Anexo" class="btn btn-sm btn-success" />
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    }
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                            else
+                            {
+                                <div id="tab-2" class="tab-pane">
+                                    <div class="panel-body">
+                                        <div class="row">
+                                            <hr />
+                                            <div class="col-lg-12 col-md-12 col-xs-12">
+                                                <h4>Anexos</h4>
+                                                <br />
+                                                <div class="form-group">
+                                                    @using (Html.BeginForm("UploadFilePesquisa", "Pesquisa", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { enctype = "multipart/form-data", @id = "pwd-container2" }))
+                                                    {
+                                                        <div class="ibox-content">
+                                                            @if (Model.PESQUISA_ANEXO.Count > 0)
+                                                            {
+                                                                <table class="table table-striped table-bordered table-hover dataTables-example">
+                                                                    <thead style="background-color:lightsteelblue">
+                                                                        <tr>
+                                                                            <th>Título</th>
+                                                                            <th>Data</th>
+                                                                            <th>Tipo</th>
+                                                                            <th class="td-one-action">Ações</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                        @foreach (var cond in (Model.PESQUISA_ANEXO))
+                                                                        {
+                                                                            <tr>
+                                                                                <td style="width: auto"><a href="@Url.Action("VerAnexoPesquisa", "Pesquisa", new { id = cond.PEAN_CD_ID })" />@cond.PEAN_NM_TITULO</td>
+                                                                                <td>@cond.PEAN_DT_ANEXO.ToShortDateString()</td>
+                                                                                @if (cond.PEAN_IN_TIPO == 1)
+                                                                                {
+                                                                                    <td>Imagem</td>
+                                                                                }
+                                                                                else if (cond.PEAN_IN_TIPO == 2)
+                                                                                {
+                                                                                    <td>Vídeo</td>
+                                                                                }
+                                                                                else if (cond.PEAN_IN_TIPO == 3)
+                                                                                {
+                                                                                    <td>PDF</td>
+                                                                                }
+                                                                                else if (cond.PEAN_IN_TIPO == 4)
+                                                                                {
+                                                                                    <td>Audio</td>
+                                                                                }
+                                                                                else if (cond.PEAN_IN_TIPO == 5)
+                                                                                {
+                                                                                    <td>Documento/Word</td>
+                                                                                }
+                                                                                else if (cond.PEAN_IN_TIPO == 6)
+                                                                                {
+                                                                                    <td>Planilha/Excel</td>
+                                                                                }
+                                                                                else
+                                                                                {
+                                                                                    <td>Outros</td>
+                                                                                }
+                                                                                <td class="td-one-action">
+                                                                                    @if (cond.PEAN_IN_TIPO == 1 || cond.PEAN_IN_TIPO == 2)
+                                                                                    {
+                                                                                        @Html.TableLinkDetails(cond.PEAN_CD_ID, "VerAnexoPesquisa", "fa-camera", "Visualizar")
+                                                                                    }
+                                                                                    @if (cond.PEAN_IN_TIPO == 4)
+	                                                                                {
+                                                                                        @Html.TableLinkDetails(cond.PEAN_CD_ID, "VerAnexoPesquisaAudio","fa-volume-up", "Visualizar")
+	                                                                                }
+                                                                                    @if (cond.PEAN_IN_TIPO == 3)
+                                                                                    {
+                                                                                        <a title="Visualizar" class="fa fa-camera fa-lg" href="~/PdfViewer/web/viewer.html?file=@(cond.PEAN_AQ_ARQUIVO.Replace("~", ""))&ReturnUrl=@Request.Url.AbsolutePath" target="_blank"></a>
+                                                                                    }
+                                                                                    @Html.TableLinkDetails(cond.PEAN_CD_ID, "DownloadPesquisa", "fa-download", "Download")
+                                                                                </td>
+                                                                            </tr>
+                                                                        }
+                                                                    </tbody>
+                                                                </table>
+                                                            }
+                                                            <div class="form-group">
+                                                                <div class="col-lg-12 col-md-12 col-xs-12">
+                                                                    <input style="float: left; margin-right: 5px;" type="file" name="file" id="file" class="btn btn-sm btn-warning" />
+                                                                    <input style="float: left; margin-right: 5px;" type="submit" value="Incluir Anexo" class="btn btn-sm btn-success" />
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    }
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+
+                            @*Anotações*@
+                            @if (ViewBag.Incluir == 3)
+                            {
+                                <div id="tab-5" class="tab-pane active">
+                                    <div class="panel-body">
+                                        <div class="row">
+                                            <div class="col-lg-12">
+                                                <h4>Anotações:</h4>
+                                                @if (Model.PESQUISA_ANOTACAO.Where(p => p.PECO_IN_ATIVO == 1).ToList().Count > 0)
+                                                {
+                                                    foreach (var item in (Model.PESQUISA_ANOTACAO.Where(p => p.PECO_IN_ATIVO == 1)).OrderByDescending(a => a.PECO_DT_ANOTACAO))
+                                                    {
+                                                        <div class="social-feed-box">
+                                                            <div class="social-avatar">
+                                                                <a href="" class="pull-left">
+                                                                    <img src="@Url.Content(item.USUARIO.USUA_AQ_FOTO)" style="width: auto; height: auto; max-height: 110px; max-width: 90px;">
+                                                                </a>
+                                                                <span style="color: #337ab7; cursor:pointer;" alt="Excluir" class="tbl-link fa-lg fa fa-trash-o" onclick="ShowModalExcluirAnotacao('/Pesquisa/ExcluirAnotacaoPesquisa/@item.PECO_CD_ID')" title="Excluir"></span>
+                                                                <div class="media-body">
+                                                                    <a href="@Url.Action("EditarAnotacaoPesquisa", "Pesquisa", new { id = item.PECO_CD_ID })">
+                                                                        @item.USUARIO.USUA_NM_NOME
+                                                                    </a>
+                                                                    <small class="text-muted">@item.PECO_DT_ANOTACAO.ToString("dd/MM/yyyy HH:mm")</small>
+                                                                </div>
+                                                            </div>
+                                                            <div class="social-body">
+                                                                <p>
+                                                                    @item.PECO_TX_ANOTACAO
+                                                                </p>
+                                                            </div>
+                                                        </div>
+                                                    }
+                                                }
+                                            </div>
+                                        </div>
+                                        <br />
+                                        <div class="form-group">
+                                            @Html.ButtonLinkIndex(text: "Incluir Nova Anotação", action: "IncluirAnotacaoPesquisa", controller: "Pesquisa")
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                            else
+                            {
+                                <div id="tab-5" class="tab-pane">
+                                    <div class="panel-body">
+                                        <div class="row">
+                                            <div class="col-lg-12">
+                                                <h4>Anotações:</h4>
+                                                @if (Model.PESQUISA_ANOTACAO.Where(p => p.PECO_IN_ATIVO == 1).ToList().Count > 0)
+                                                {
+                                                    foreach (var item in (Model.PESQUISA_ANOTACAO.Where(p => p.PECO_IN_ATIVO == 1)).OrderByDescending(a => a.PECO_DT_ANOTACAO))
+                                                    {
+                                                        <div class="social-feed-box">
+                                                            <div class="social-avatar">
+                                                                <a href="" class="pull-left">
+                                                                    <img src="@Url.Content(item.USUARIO.USUA_AQ_FOTO)" style="width: auto; height: auto; max-height: 110px; max-width: 90px;">
+                                                                </a>
+                                                                <span style="color: #337ab7; cursor:pointer;" alt="Excluir" class="tbl-link fa-lg fa fa-trash-o" onclick="ShowModalExcluirAnotacao('/Pesquisa/ExcluirAnotacaoPesquisa/@item.PECO_CD_ID')" title="Excluir"></span>
+                                                                <div class="media-body">
+                                                                    <a href="@Url.Action("EditarAnotacaoPesquisa", "Pesquisa", new { id = item.PECO_CD_ID })">
+                                                                        @item.USUARIO.USUA_NM_NOME
+                                                                    </a>
+                                                                    <small class="text-muted">@item.PECO_DT_ANOTACAO.ToString("dd/MM/yyyy HH:mm")</small>
+                                                                </div>
+                                                            </div>
+                                                            <div class="social-body">
+                                                                <p>
+                                                                    @item.PECO_TX_ANOTACAO
+                                                                </p>
+                                                            </div>
+                                                        </div>
+                                                    }
+                                                }
+                                            </div>
+                                        </div>
+                                        <br />
+                                        <div class="form-group">
+                                            @Html.ButtonLinkIndex(text: "Incluir Nova Anotação", action: "IncluirAnotacaoPesquisa", controller: "Pesquisa")
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                                
+                            @*Perguntas*@
+                            @if (ViewBag.Incluir == 2)
+                            {
+                                <div id="tab-3" class="tab-pane active">
+                                    <div class="panel-body">
+                                        @using (Html.BeginForm("EditarPesquisa", "Pesquisa", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", @id = "pwd-container1" }))
+                                        {
+                                            <div class="row">
+                                                <div class="col-lg-2">
+                                                    <div class="ibox float-e-margins">
+                                                        <div class="ibox-title"  style="background-color: darkseagreen; color: darkgreen">
+                                                            <span class="label label-primary pull-right">Hoje</span>
+                                                            <h5>Pesquisas</h5>
+                                                        </div>
+                                                        <div class="ibox-content">
+                                                            <h1 class="no-margins">@ViewBag.Pergs</h1>
+                                                            <small>Perguntas Ativas</small>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        }
+                                        <div class="row">
+                                            <hr />
+                                            <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
+                                                <div class="col-lg-12 col-md-12 col-xs-12">
+                                                    <h4>Perguntas da Pesquisa</h4>
+                                                    <br />
+                                                    @if (Model.PESQUISA_ITEM.Count > 0)
+                                                    {
+                                                        <table class="table table-striped table-bordered table-hover dataTables-example">
+                                                            <thead style="background-color:lightsteelblue">
+                                                                <tr>
+                                                                    <th>Ordem</th>
+                                                                    <th>Tipo</th>
+                                                                    <th>Título</th>
+                                                                    <th>Num.Opções</th>
+                                                                    <th>Obrigatória</th>
+                                                                    <th class="td-one-action">Ações</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                @foreach (var cond in (Model.PESQUISA_ITEM))
+                                                                {
+                                                                    <tr>
+                                                                        <td style="width: auto"><a href="@Url.Action("EditarPerguntaPesquisa", "Pesquisa", new { id = cond.PEIT_CD_ID })" />@cond.PEIT_IN_ORDEM</td>
+                                                                        <td>@cond.TIPO_ITEM_PESQUISA.TIIT_NM_NOME</td>
+                                                                        <td style="cursor: pointer; text-decoration: underline; color: #337ab7;" onclick="mostrarDesc('@cond.PEIT_DS_PERGUNTA')">@cond.PEIT_NM_PERGUNTA</td>
+                                                                        @if (cond.TIPO_ITEM_PESQUISA.TIIT_IN_OPCAO == 1)
+                                                                        {
+                                                                            if (@cond.PESQUISA_ITEM_OPCAO.Count > 0)
+                                                                            {
+                                                                                <td>@cond.PESQUISA_ITEM_OPCAO.Count</td>
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                <td>Nenhuma</td>
+                                                                            }
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            <td>Não se Aplica</td>
+                                                                        }
+                                                                        @if (cond.PEIT_IN_OBRIGATORIA == 1)
+                                                                        {
+                                                                            <td style="width: auto"><span class="badge badge-primary">Sim</span></td>
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            <td style="width: auto"><span class="badge badge-warning">Não</span></td>
+                                                                        }
+                                                                        <td class="td-one-action">
+                                                                            @Html.TableLinkDetails(cond.PEIT_CD_ID, "EditarPerguntaPesquisa", "fa-edit", "Editar/Consultar")
+                                                                            @if (cond.PEIT_IN_ATIVO == 1)
+                                                                            {
+                                                                                <span style="color: #337ab7; cursor:pointer;" alt="Excluir" class="tbl-link fa-lg fa fa-trash-o" onclick="ShowModalExcluirPergunta('/Pesquisa/ExcluirPerguntaPesquisa/@cond.PEIT_CD_ID')" title="Excluir"></span>
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                <span style="color: #337ab7; cursor:pointer;" alt="Reativar" class="tbl-link fa-lg fa fa-refresh" onclick="ShowModalReativarPergunta('/Pesquisa/ReativarPerguntaPesquisa/@cond.PEIT_CD_ID')" title="Reativar"></span>
+                                                                            }
+                                                                        </td>
+                                                                    </tr>
+                                                                }
+                                                            </tbody>
+                                                        </table>
+                                                    }
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            @Html.ButtonLinkIndex(text: "Incluir Nova Pergunta na Pesquisa", action: "IncluirPerguntaPesquisa", controller: "Pesquisa")
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                            else
+                            {
+                                <div id="tab-3" class="tab-pane">
+                                    <div class="panel-body">
+                                        @using (Html.BeginForm("EditarPesquisa", "Pesquisa", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", @id = "pwd-container1" }))
+                                        {
+                                            <div class="row">
+                                                <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
+                                                    <div class="col-lg-4 col-md-4 col-xs-12">
+                                                        @Html.HiddenFor(m => m.ASSI_CD_ID)
+                                                        @Html.HiddenFor(m => m.PESQ_DS_DESCRICAO)
+                                                        @Html.HiddenFor(m => m.PESQ_DT_CRIACAO)
+                                                        @Html.HiddenFor(m => m.PESQ_DT_VALIDADE)
+                                                        @Html.HiddenFor(m => m.PESQ_IN_ATIVO)
+                                                        @Html.HiddenFor(m => m.PESQ_LK_LINK)
+                                                        @Html.HiddenFor(m => m.PESQ_NM_NOME)
+                                                        @Html.HiddenFor(m => m.PESQ_TX_OBSERVACAO)
+                                                        @Html.HiddenFor(m => m.PESQ_TX_OBSERVACOES)
+                                                        @Html.HiddenFor(m => m.TIPS_CD_ID)
+                                                        @Html.HiddenFor(m => m.USUA_CD_ID)
+                                                        @Html.HiddenFor(m => m.PESQ_CD_ID)
+                                                        Num. Perguntas
+                                                        @Html.TextBoxFor(m => m.NumPerguntas, new { @class = "form-control", autofocus = true, @readonly="readonly", @style = "color:green; font-weight:bold" })
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        }
+                                        <div class="row">
+                                            <hr />
+                                            <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
+                                                <div class="col-lg-12 col-md-12 col-xs-12">
+                                                    <h4>Perguntas da Pesquisa</h4>
+                                                    <br />
+                                                    @if (Model.PESQUISA_ITEM.Count > 0)
+                                                    {
+                                                        <table class="table table-striped table-bordered table-hover dataTables-example">
+                                                            <thead style="background-color:lightsteelblue">
+                                                                <tr>
+                                                                    <th>Ordem</th>
+                                                                    <th>Tipo</th>
+                                                                    <th>Título</th>
+                                                                    <th>Num.Opções</th>
+                                                                    <th>Obrigatória</th>
+                                                                    <th class="td-one-action">Ações</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                @foreach (var cond in (Model.PESQUISA_ITEM))
+                                                                {
+                                                                    <tr>
+                                                                        <td style="width: auto"><a href="@Url.Action("EditarPerguntaPesquisa", "Pesquisa", new { id = cond.PEIT_CD_ID })" />@cond.PEIT_IN_ORDEM</td>
+                                                                        <td>@cond.TIPO_ITEM_PESQUISA.TIIT_NM_NOME</td>
+                                                                        <td style="cursor: pointer; text-decoration: underline; color: #337ab7;" onclick="mostrarDesc('@cond.PEIT_DS_PERGUNTA')">@cond.PEIT_NM_PERGUNTA</td>
+                                                                        @if (cond.TIPO_ITEM_PESQUISA.TIIT_IN_OPCAO == 1)
+                                                                        {
+                                                                            if (@cond.PESQUISA_ITEM_OPCAO.Count > 0)
+                                                                            {
+                                                                                <td>@cond.PESQUISA_ITEM_OPCAO.Count</td>
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                <td>Nenhuma</td>
+                                                                            }
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            <td>Não se Aplica</td>
+                                                                        }
+                                                                        @if (cond.PEIT_IN_OBRIGATORIA == 1)
+                                                                        {
+                                                                            <td style="width: auto"><span class="badge badge-primary">Sim</span></td>
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            <td style="width: auto"><span class="badge badge-warning">Não</span></td>
+                                                                        }
+                                                                        <td class="td-one-action">
+                                                                            @Html.TableLinkDetails(cond.PEIT_CD_ID, "EditarPerguntaPesquisa", "fa-edit", "Editar/Consultar")
+                                                                            @if (cond.PEIT_IN_ATIVO == 1)
+                                                                            {
+                                                                                <span style="color: #337ab7; cursor:pointer;" alt="Excluir" class="tbl-link fa-lg fa fa-trash-o" onclick="ShowModalExcluirPergunta('/Pesquisa/ExcluirPerguntaPesquisa/@cond.PEIT_CD_ID')" title="Excluir"></span>
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                <span style="color: #337ab7; cursor:pointer;" alt="Reativar" class="tbl-link fa-lg fa fa-refresh" onclick="ShowModalReativarPergunta('/Pesquisa/ReativarPerguntaPesquisa/@cond.PEIT_CD_ID')" title="Reativar"></span>
+                                                                            }
+                                                                        </td>
+                                                                    </tr>
+                                                                }
+                                                            </tbody>
+                                                        </table>
+                                                    }
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            @Html.ButtonLinkIndex(text: "Incluir Nova Pergunta na Pesquisa", action: "IncluirPerguntaPesquisa", controller: "Pesquisa")
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+
+                            @*Respostas*@
+                            <div id="tab-4" class="tab-pane">
+                                <div class="panel-body">
+                                    @*@using (Html.BeginForm("EditarCliente", "Cliente", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", @id = "pwd-container1" }))
+                                    {
+                                        <div class="row">
+                                            <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
+                                                <div class="col-lg-4 col-md-4 col-xs-12">
+                                                    @Html.HiddenFor(m => m.ASSI_CD_ID)
+                                                    @Html.HiddenFor(m => m.CACL_CD_ID)
+                                                    @Html.HiddenFor(m => m.CLIE_AQ_FOTO)
+                                                    @Html.HiddenFor(m => m.CLIE_CD_ID)
+                                                    @Html.HiddenFor(m => m.CLIE_DT_CADASTRO)
+                                                    @Html.HiddenFor(m => m.CLIE_DT_NASCIMENTO)
+                                                    @Html.HiddenFor(m => m.CLIE_IN_ATIVO)
+                                                    @Html.HiddenFor(m => m.CLIE_NM_BAIRRO)
+                                                    @Html.HiddenFor(m => m.CLIE_NM_BAIRRO_ENTREGA)
+                                                    @Html.HiddenFor(m => m.CLIE_NM_CIDADE)
+                                                    @Html.HiddenFor(m => m.CLIE_NM_CIDADE_ENTREGA)
+                                                    @Html.HiddenFor(m => m.CLIE_NM_ENDERECO)
+                                                    @Html.HiddenFor(m => m.CLIE_NM_ENDERECO_ENTREGA)
+                                                    @Html.HiddenFor(m => m.CLIE_NM_MAE)
+                                                    @Html.HiddenFor(m => m.CLIE_NM_NACIONALIDADE)
+                                                    @Html.HiddenFor(m => m.CLIE_NM_NATURALIDADE)
+                                                    @Html.HiddenFor(m => m.CLIE_NM_NOME)
+                                                    @Html.HiddenFor(m => m.CLIE_NM_NOME_CONJUGE)
+                                                    @Html.HiddenFor(m => m.CLIE_NM_PAI)
+                                                    @Html.HiddenFor(m => m.CLIE_NM_PROFISSAO)
+                                                    @Html.HiddenFor(m => m.CLIE_NM_RAZAO)
+                                                    @Html.HiddenFor(m => m.CLIE_NR_CEP)
+                                                    @Html.HiddenFor(m => m.CLIE_NR_CEP_ENTREGA)
+                                                    @Html.HiddenFor(m => m.CLIE_NR_CNPJ)
+                                                    @Html.HiddenFor(m => m.CLIE_NR_CPF)
+                                                    @Html.HiddenFor(m => m.CLIE_NR_FAX)
+                                                    @Html.HiddenFor(m => m.CLIE_NR_INSCRICAO_ESTADUAL)
+                                                    @Html.HiddenFor(m => m.CLIE_NR_INSCRICAO_MUNICIPAL)
+                                                    @Html.HiddenFor(m => m.CLIE_NR_RG)
+                                                    @Html.HiddenFor(m => m.CLIE_NR_SUFRAMA)
+                                                    @Html.HiddenFor(m => m.CLIE_SG_NATURALIADE_UF)
+                                                    @Html.HiddenFor(m => m.CLIE_SG_UF_ENTREGA)
+                                                    @Html.HiddenFor(m => m.CLIE_TX_OBSERVACOES)
+                                                    @Html.HiddenFor(m => m.CLIE_UF_CD_ENTREGA)
+                                                    @Html.HiddenFor(m => m.CLIE_VL_LIMITE_CREDITO)
+                                                    @Html.HiddenFor(m => m.CLIE_VL_SALDO)
+                                                    @Html.HiddenFor(m => m.FILI_CD_ID)
+                                                    @Html.HiddenFor(m => m.RETR_CD_ID)
+                                                    @Html.HiddenFor(m => m.SEXO_CD_ID)
+                                                    @Html.HiddenFor(m => m.TICO_CD_ID)
+                                                    @Html.HiddenFor(m => m.TIPE_CD_ID)
+                                                    @Html.HiddenFor(m => m.UF_CD_ID)
+                                                    @Html.HiddenFor(m => m.USUA_CD_ID)
+                                                    @Html.HiddenFor(m => m.CLIE_NM_COMPLEMENTO)
+                                                    @Html.HiddenFor(m => m.CLIE_NM_COMPLEMENTO_ENTREGA)
+                                                    @Html.HiddenFor(m => m.CLIE_NM_SITUACAO)
+                                                    E-Mail*
+                                                    @Html.TextBoxFor(m => m.CLIE_NM_EMAIL, new { @class = "form-control", autofocus = true })
+                                                    @Html.ValidationMessageFor(m => m.CLIE_NM_EMAIL, "", new { @style = "color:red" })
+                                                </div>
+                                                <div class="col-lg-4 col-md-4 col-xs-12">
+                                                    E-Mail DANFE
+                                                    @Html.TextBoxFor(m => m.CLIE_NM_EMAIL_DANFE, new { @class = "form-control", autofocus = true })
+                                                    @Html.ValidationMessageFor(m => m.CLIE_NM_EMAIL_DANFE, "", new { @style = "color:red" })
+                                                </div>
+                                                <div class="col-lg-4 col-md-4 col-xs-12">
+                                                    WebSite
+                                                    @Html.TextBoxFor(m => m.CLIE_NM_REDES_SOCIAIS, new { @class = "form-control", autofocus = true })
+                                                    @Html.ValidationMessageFor(m => m.CLIE_NM_REDES_SOCIAIS, "", new { @style = "color:red" })
+                                                </div>
+                                            </div>
+                                            <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
+                                                <div class="col-lg-2 col-md-2 col-xs-12">
+                                                    Telefone
+                                                    @Html.TextBoxFor(m => m.CLIE_NR_TELEFONE, new { @class = "form-control", autofocus = true, @id = "tel" })
+                                                    @Html.ValidationMessageFor(m => m.CLIE_NR_TELEFONE, "", new { @style = "color:red" })
+                                                </div>
+                                                <div class="col-lg-2 col-md-2 col-xs-12">
+                                                    Celular
+                                                    @Html.TextBoxFor(m => m.CLIE_NR_CELULAR, new { @class = "form-control", autofocus = true, @id = "cel" })
+                                                    @Html.ValidationMessageFor(m => m.CLIE_NR_CELULAR, "", new { @style = "color:red" })
+                                                </div>
+                                                <div class="col-lg-2 col-md-2 col-xs-12">
+                                                    WhatsApp
+                                                    @Html.TextBoxFor(m => m.CLIE_NR_TELEFONE_ADICIONAL, new { @class = "form-control", autofocus = true, @id = "telAdicional" })
+                                                    @Html.ValidationMessageFor(m => m.CLIE_NR_TELEFONE_ADICIONAL, "", new { @style = "color:red" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
+                                            @Html.ButtonActionSubmit(text: "Confirma edição de Contatos", htmlAttributes: new { id = "basictoast" })
+                                        </div>
+                                    }
+                                    <div class="row">
+                                        <hr />
+                                        <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
+                                            <div class="col-lg-12 col-md-12 col-xs-12">
+                                                <h4>Contatos</h4>
+                                                <br />
+                                                @if (Model.CLIENTE_CONTATO.Count > 0)
+                                                {
+                                                    <table class="table table-striped table-bordered table-hover dataTables-example">
+                                                        <thead style="background-color:lightsteelblue">
+                                                            <tr>
+                                                                <th>Nome</th>
+                                                                <th>Cargo</th>
+                                                                <th>E-Mail</th>
+                                                                <th>Telefone</th>
+                                                                <th>Ativo</th>
+                                                                <th class="td-one-action">Ações</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            @foreach (var cond in (Model.CLIENTE_CONTATO))
+                                                            {
+                                                                <tr>
+                                                                    <td style="width: auto"><a href="@Url.Action("EditarContato", "Cliente", new { id = cond.CLCO_CD_ID })" />@cond.CLCO_NM_NOME</td>
+                                                                    <td>@cond.CLCO_NM_CARGO</td>
+                                                                    <td>@cond.CLCO_NM_EMAIL</td>
+                                                                    <td>@cond.CLCO_NM_TELEFONE</td>
+                                                                    @if (cond.CLCO_IN_ATIVO == 1)
+                                                                    {
+                                                                        <td>Sim</td>
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        <td>Não</td>
+                                                                    }
+                                                                    <td class="td-one-action">
+                                                                        @Html.TableLinkDetails(cond.CLCO_CD_ID, "EditarContato", "fa-edit", "Editar/Consultar")
+                                                                        @if (cond.CLCO_IN_ATIVO == 1)
+                                                                        {
+                                                                            <span style="color: #337ab7; cursor:pointer;" alt="Excluir" class="tbl-link fa-lg fa fa-trash-o" onclick="ShowModalExcluirContato('/Cliente/ExcluirContato/@cond.CLCO_CD_ID')" title="Excluir"></span>
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            <span style="color: #337ab7; cursor:pointer;" alt="Reativar" class="tbl-link fa-lg fa fa-refresh" onclick="ShowModalReativarContato('/Cliente/ReativarContato/@cond.CLCO_CD_ID')" title="Reativar"></span>
+                                                                        }
+                                                                    </td>
+                                                                </tr>
+                                                            }
+                                                        </tbody>
+                                                    </table>
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        @Html.ButtonLinkIndex(text: "Incluir Novo Contato do Cliente", action: "IncluirContato", controller: "Cliente")
+                                    </div>*@
+                                </div>
+                            </div>
+
+                            @*Observações*@
+                            <div id="tab-6" class="tab-pane">
+                                <div class="panel-body">
+                                    @using (Html.BeginForm("EditarPesquisa", "Pesquisa", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", @id = "pwd-container1" }))
+                                    {
+                                        <div class="row">
+                                            <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
+                                                <div class="col-lg-12 col-md-12 col-xs-12">
+                                                    @Html.HiddenFor(m => m.ASSI_CD_ID)
+                                                    @Html.HiddenFor(m => m.PESQ_DS_DESCRICAO)
+                                                    @Html.HiddenFor(m => m.PESQ_CD_ID)
+                                                    @Html.HiddenFor(m => m.PESQ_DT_CRIACAO)
+                                                    @Html.HiddenFor(m => m.PESQ_DT_VALIDADE)
+                                                    @Html.HiddenFor(m => m.PESQ_IN_ATIVO)
+                                                    @Html.HiddenFor(m => m.PESQ_LK_LINK)
+                                                    @Html.HiddenFor(m => m.PESQ_NM_NOME)
+                                                    @Html.HiddenFor(m => m.PESQ_TX_OBSERVACAO)
+                                                    @Html.HiddenFor(m => m.TIPS_CD_ID)
+                                                    @Html.HiddenFor(m => m.USUA_CD_ID)
+p                                                    Observações
+                                                    @Html.TextAreaFor(m => m.PESQ_TX_OBSERVACOES, new { @class = "form-control", style = "width: 100%; height: 400px;", autofocus = true })
+                                                    @Html.ValidationMessageFor(m => m.PESQ_TX_OBSERVACOES, "", new { @style = "color:red" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            @Html.ButtonActionSubmit(text: "Confirma edição de Observações", htmlAttributes: new { id = "basictoast" })
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+
+                            @*Indicadores*@
+                            <div id="tab-8" class="tab-pane">
+                                <div class="panel-body">
+                                    <div class="row">
+                                        <div class="col-lg-2">
+                                            <div class="ibox float-e-margins">
+                                                <div class="ibox-title"  style="background-color: darkseagreen; color: darkgreen">
+                                                    <span class="label label-primary pull-right">30 dias</span>
+                                                    <h5>Pesquisas</h5>
+                                                </div>
+                                                <div class="ibox-content">
+                                                    <h1 class="no-margins">@ViewBag.Pergs</h1>
+                                                    <small>Perguntas Ativas</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-2">
+                                            <div class="ibox float-e-margins">
+                                                <div class="ibox-title"  style="background-color: darkseagreen; color: darkgreen">
+                                                    <span class="label label-primary pull-right">30 dias</span>
+                                                    <h5>Pesquisas</h5>
+                                                </div>
+                                                <div class="ibox-content">
+                                                    <h1 class="no-margins">@ViewBag.PesqResps</h1>
+                                                    <small>Total de Respostas</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <div class="ibox float-e-margins">
+                                                <div class="ibox-title"  style="background-color: darkseagreen; color: darkgreen">
+                                                    <span class="label label-primary pull-right">Hoje</span>
+                                                    <h5>Últimas Respostas (30 dias)</h5>
+                                                </div>
+                                                <div class="ibox-content">
+                                                    @if ((ViewBag.ListaRespostas as List<EntitiesServices.Model.PESQUISA_RESPOSTA>).Count > 0)
+                                                    {
+                                                        <table class="table table-hover">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th>Respondida Por</th>
+                                                                    <th>Data</th>
+                                                                    <th>E-Mail</th>
+                                                                    <th>Telefone</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                @foreach (var cond in (ViewBag.ListaRespostas as List<EntitiesServices.Model.PESQUISA_RESPOSTA>))
+                                                                {
+                                                                    <tr>
+                                                                        <td>@cond.CLIENTE.CLIE_NM_NOME</td>
+                                                                        <td>@cond.PERE_DT_RESPOSTA.ToShortDateString()</td>
+                                                                        <td>@cond.PERE_EM_EMAIL_RESPONDENTE</td>
+                                                                        <td>@cond.PERE_NR_TELEFONE_RESPONDENTE</td>
+                                                                    </tr>
+                                                                }
+                                                            </tbody>
+                                                        </table>
+                                                    }
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <link href="~/Content/themes/base/jquery-ui.min.css" rel="stylesheet" />
+    <link href="~/Content/themes/base/all.css" rel="stylesheet" />
+    @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
+    @Styles.Render("~/plugins/jasnyBootstrapStyles")
+    @Styles.Render("~/plugins/toastrStyles")
+}
+@section Scripts {
+    @Scripts.Render("~/plugins/toastr")
+    <script src="~/Scripts/jquery-ui-1.12.1.min.js"></script>
+    @Scripts.Render("~/plugins/dataTables")
+    @Scripts.Render("~/bundles/inputmask")
+    @Scripts.Render("~/plugins/jasnyBootstrap")
+    @Scripts.Render("~/plugins/sparkline")
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.maskedinput/1.4.1/jquery.maskedinput.js"></script>
+
+    <script>
+        $(function () {
+            limpaModal();
+        });
+
+        function limpaModal() {
+            $('#btnModal').remove();
+            $('#modalTitle').remove();
+        }
+
+        function ShowModalExcluirPergunta(url) {
+            $('#modal').find('.modal-footer').prepend('<a id="btnModal" alt="Desativar" class="btn btn-primary" href="' + url + '" target="_self" title="Desativar">Confirmar</a>');
+            $('#modal').find('.modal-body').html('Confirma exclusão da Pergunta?');
+            $('#modal').find('.modal-header').prepend('<h5 id="modalTitle" class="modal-title">Confimar Exclusão</h5>');
+            $('#modal').modal('show');
+        }
+
+        function ShowModalReativarPergunta(url) {
+            $('#modal').find('.modal-footer').prepend('<a id="btnModal" alt="Reativar" class="btn btn-primary" href="' + url + '" target="_self" title="Reativar">Confirmar</a>');
+            $('#modal').find('.modal-body').html('Confirma reativação da Pergunta?');
+            $('#modal').find('.modal-header').prepend('<h5 id="modalTitle" class="modal-title">Confimar Reativação</h5>');
+            $('#modal').modal('show');
+        }
+
+        function ShowModalExcluirAnotacao(url) {
+            $('#modal').find('.modal-footer').prepend('<a id="btnModal" alt="Desativar" class="btn btn-primary" href="' + url + '" target="_self" title="Desativar">Confirmar</a>');
+            $('#modal').find('.modal-body').html('Confirma exclusão da Anotação?');
+            $('#modal').find('.modal-header').prepend('<h5 id="modalTitle" class="modal-title">Confimar Exclusão</h5>');
+            $('#modal').modal('show');
+        }
+    </script>
+    <script>
+        function mostrarDesc(desc) {
+            $('#modalDescBody').html(desc);
+            $('#modalDesc').modal('show');
+        }
+    </script>
+    <script type="text/javascript" language="javascript">
+        $(function () {
+            $('.date-picker').datepicker(
+                {
+                    dateFormat: 'dd/mm/yy',
+                    dayNames: ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'],
+                    dayNamesMin: ['D', 'S', 'T', 'Q', 'Q', 'S', 'S', 'D'],
+                    dayNamesShort: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'],
+                    monthNames: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'],
+                    monthNamesShort: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
+                    nextText: 'Proximo',
+                    prevText: 'Anterior',
+                    showOn: "focus"
+                }
+            )
+                .css("display", "normal")
+                .next("button").button({
+                    icons: { primary: "ui-icon-calendar" },
+                    label: "Selecione uma data",
+                    text: false
+                });
+        });
+    </script>
+
+
+    <script type="text/javascript">
+        $(function () {
+            $("#dp").mask("99/99/9999");
+        });
+    </script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            var i = -1;
+            var toastCount = 0;
+            var $toastlast;
+            var getMessage = function () {
+                var msg = 'Hi, welcome to Inspinia. This is example of Toastr notification box.';
+                return msg;
+            };
+
+            $('#basictoast').click(function () {
+                // Display a success toast, with a title
+                toastr.success('Edição am andamento!')
+            });
+            $('#showtoast').click(function () {
+                var shortCutFunction = $("#toastTypeGroup input:radio:checked").val();
+                var msg = $('#message').val();
+                var title = $('#title').val() || '';
+                var $showDuration = $('#showDuration');
+                var $hideDuration = $('#hideDuration');
+                var $timeOut = $('#timeOut');
+                var $extendedTimeOut = $('#extendedTimeOut');
+                var $showEasing = $('#showEasing');
+                var $hideEasing = $('#hideEasing');
+                var $showMethod = $('#showMethod');
+                var $hideMethod = $('#hideMethod');
+                var toastIndex = toastCount++;
+                toastr.options = {
+                    closeButton: $('#closeButton').prop('checked'),
+                    debug: $('#debugInfo').prop('checked'),
+                    progressBar: $('#progressBar').prop('checked'),
+                    positionClass: $('#positionGroup input:radio:checked').val() || 'toast-top-right',
+                    onclick: null
+                };
+                if ($('#addBehaviorOnToastClick').prop('checked')) {
+                    toastr.options.onclick = function () {
+                        alert('You can perform some custom action after a toast goes away');
+                    };
+                }
+                if ($showDuration.val().length) {
+                    toastr.options.showDuration = $showDuration.val();
+                }
+                if ($hideDuration.val().length) {
+                    toastr.options.hideDuration = $hideDuration.val();
+                }
+                if ($timeOut.val().length) {
+                    toastr.options.timeOut = $timeOut.val();
+                }
+                if ($extendedTimeOut.val().length) {
+                    toastr.options.extendedTimeOut = $extendedTimeOut.val();
+                }
+                if ($showEasing.val().length) {
+                    toastr.options.showEasing = $showEasing.val();
+                }
+                if ($hideEasing.val().length) {
+                    toastr.options.hideEasing = $hideEasing.val();
+                }
+                if ($showMethod.val().length) {
+                    toastr.options.showMethod = $showMethod.val();
+                }
+                if ($hideMethod.val().length) {
+                    toastr.options.hideMethod = $hideMethod.val();
+                }
+                if (!msg) {
+                    msg = getMessage();
+                }
+                $("#toastrOptions").text("Command: toastr["
+                    + shortCutFunction
+                    + "](\""
+                    + msg
+                    + (title ? "\", \"" + title : '')
+                    + "\")\n\ntoastr.options = "
+                    + JSON.stringify(toastr.options, null, 2)
+                );
+                var $toast = toastr[shortCutFunction](msg, title); // Wire up an event handler to a button in the toast, if it exists
+                $toastlast = $toast;
+                if ($toast.find('#okBtn').length) {
+                    $toast.delegate('#okBtn', 'click', function () {
+                        alert('you clicked me. i was toast #' + toastIndex + '. goodbye!');
+                        $toast.remove();
+                    });
+                }
+                if ($toast.find('#surpriseBtn').length) {
+                    $toast.delegate('#surpriseBtn', 'click', function () {
+                        alert('Surprise! you clicked me. i was toast #' + toastIndex + '. You could perform an action here.');
+                    });
+                }
+            });
+            function getLastToast() {
+                return $toastlast;
+            }
+            $('#clearlasttoast').click(function () {
+                toastr.clear(getLastToast());
+            });
+            $('#cleartoasts').click(function () {
+                toastr.clear();
+            });
+
+        });
+    </script>
+    @if (ViewBag.Message != null)
+    {
+        <script type="text/javascript">
+            window.onload = function () {
+                  alert("@ViewBag.Message");
+            };
+        </script>
+    }
+}
+

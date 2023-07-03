@@ -1,0 +1,1 @@
+search_result['9946']=["topic_0000000000001A91.html","AddressGeoData Class","A struct for two point geo data."];

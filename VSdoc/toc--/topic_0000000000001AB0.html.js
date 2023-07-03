@@ -1,0 +1,1 @@
+var breadcrumbs=[['-1',"",""],['2',"SOLUTION-WIDE PROPERTIES Reference","topic_0000000000001B27.html"],['1237',"CrossCutting Namespace","topic_0000000000001A8A.html"],['1252',"CommonHelpers Class","topic_0000000000001A9D.html"],['1253',"Properties","topic_0000000000001A9D_props--.html"],['1261',"ColumnDelimiter Property","topic_0000000000001AB0.html"]];

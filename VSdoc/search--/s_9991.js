@@ -1,0 +1,1 @@
+search_result['9991']=["topic_0000000000001AB4.html","CommonHelpers.CurDir Property","Summary:\r\n    Gets or sets the fully qualified path of the current working directory.\r\n    For services, the current directory via normal means shows the Windows System32\r\n    directory because the se..."];

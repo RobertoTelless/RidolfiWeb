@@ -1,0 +1,1 @@
+search_result['7762']=["topic_00000000000014EB.html","CLIENTE_QUADRO_SOCIETARIO.CLQS_NM_PAIS_ORIGEM Property",""];

@@ -1,0 +1,1 @@
+var breadcrumbs=[['-1',"",""],['2',"SOLUTION-WIDE PROPERTIES Reference","topic_0000000000001B27.html"],['1851',"ERP_Condominios_Solution Namespace","topic_0000000000000000.html"],['1861',"RouteConfig Class","topic_000000000000000A.html"],['1862',"Methods","topic_000000000000000A_methods--.html"],['1863',"RegisterRoutes Method","topic_000000000000000B.html"]];

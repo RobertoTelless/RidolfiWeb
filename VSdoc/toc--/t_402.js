@@ -1,0 +1,1 @@
+c['402']=[['403',"GetAllItens Method","topic_0000000000000A2A.html",0],['404',"GetByID Method","topic_0000000000000A2B.html",0],['405',"ValidateCreate Method","topic_0000000000000A27.html",0],['406',"ValidateDelete Method","topic_0000000000000A29.html",0],['407',"ValidateEdit Method","topic_0000000000000A28.html",0]];

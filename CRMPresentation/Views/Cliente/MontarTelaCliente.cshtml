@@ -1,0 +1,455 @@
+﻿@using Presentation.Extensions
+@using CrossCutting;
+@model EntitiesServices.Model.CLIENTE
+@{
+    Layout = "~/Views/Shared/_Layout_Admin.cshtml";
+}
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="modalContainer">
+        <div id="modal" class="modal" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        @*Titulo gerado dinamicamente*@
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        @*Gerado dinamicamente*@
+                    </div>
+                    <div class="modal-footer">
+                        <button onclick="limpaModal()" type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="page-title">
+        <h3 class="title">Clientes</h3>
+        <br />
+        <ol class="breadcrumb">
+            <li>
+                <a href="@Url.Action("CarregarBase", "BaseAdmin")">Dashboard</a>
+            </li>
+            <li>
+                <a href="@Url.Action("MontarTelaDashboardCadastros", "BaseAdmin")">Dashboard</a>
+            </li>
+            <li class="active">
+                <strong>Clientes</strong>
+            </li>
+        </ol>
+        <br />
+    </div>
+    @if (ViewBag.Perfil == "ADM" || ViewBag.Perfil == "GER")
+    {
+        <div class="row">
+            <div class="col-lg-2">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title"  style="background-color: darkseagreen; color: darkgreen">
+                        <span class="label label-primary pull-right">Hoje</span>
+                        <h5>Clientes</h5>
+                    </div>
+                    <div class="ibox-content">
+                        <h1 class="no-margins">@ViewBag.Clientes</h1>
+                        <small>Últimos Contatos</small>
+                        <br />
+                        <br />
+                        <br />
+                        <br />
+                    </div>
+                </div>
+            </div>
+            @if ((Int32)Session["PermCRM"] == 1)
+            {
+                <div class="col-lg-2">
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-title"  style="background-color: darkseagreen; color: darkgreen">
+                            <span class="label label-primary pull-right">Hoje</span>
+                            <h5>Clientes</h5>
+                        </div>
+                        <div class="ibox-content">
+                            <h1 class="no-margins">@ViewBag.Pedidos</h1>
+                            <small>Sem Proposta</small>
+                            <br />
+                            <br />
+                            @Html.ButtonLinkIndex(text: "Ver", controller: "Cliente", action: "VerClientesSemProposta", buttonClass: "white")
+                        </div>
+                    </div>
+                </div>
+            }
+            <div class="col-lg-2">
+                <div class="ibox float-e-margins">
+                <div class="ibox-title"  style="background-color: darkseagreen; color: darkgreen">
+                        <span class="label label-primary pull-right">Hoje</span>
+                        <h5>Clientes</h5>
+                    </div>
+                    <div class="ibox-content">
+                        <h1 class="no-margins">@ViewBag.Inativos</h1>
+                        <small>Clientes Inativos</small>
+                        <br />
+                        <br />
+                        @Html.ButtonLinkIndex(text: "Ver", controller: "Cliente", action: "VerClientesInativos", buttonClass: "white")
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+    <div class="row">
+        <div class="col-lg-12 col-md-12 col-xs-12">
+            <div class="col-lg-12 col-md-12 col-xs-12 ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>Filtros</h5>
+                </div>
+
+                @using (Html.BeginForm("FiltrarCliente", "Cliente", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal" }))
+                {
+                    <div class="ibox-content">
+                        <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
+                            <div class="col-lg-2 col-md-2 col-xs-12">
+                                Categoria do Cliente
+                                @Html.DropDownListFor(m => m.CACL_CD_ID, (SelectList)ViewBag.Tipos, "Selecionar", new { @class = "form-control" })
+                            </div>
+                            <div class="col-lg-6 col-md-6 col-xs-12">
+                                Nome/Razão Social
+                                <select name="CLIE_CD_ID" id="lstCliente" class="form-control" data-val="true" style="display: none;">
+                                    <option>Selecionar</option>
+                                </select>
+                            </div>
+                            <div class="col-lg-2 col-md-2 col-xs-12">
+                                CPF
+                                @Html.TextBoxFor(m => m.CLIE_NR_CPF, new { @class = "form-control", @id = "cpf", autofocus = true })
+                            </div>
+                            <div class="col-lg-2 col-md-2 col-xs-12">
+                                CNPJ
+                                @Html.TextBoxFor(m => m.CLIE_NR_CNPJ, new { @class = "form-control", @id = "cnpj", autofocus = true })
+                            </div>
+                        </div>
+                        <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
+                            <div class="col-lg-3 col-md-3 col-xs-12">
+                                E-Mail
+                                @Html.TextBoxFor(m => m.CLIE_NM_EMAIL, new { @class = "form-control", autofocus = true })
+                            </div>
+                            <div class="col-lg-3 col-md-3 col-xs-12">
+                                Cidade
+                                @Html.TextBoxFor(m => m.CLIE_NM_CIDADE, new { @class = "form-control", autofocus = true })
+                            </div>
+                            <div class="col-lg-2 col-md-2 col-xs-12">
+                                UF
+                                @Html.DropDownListFor(m => m.UF_CD_ID, (SelectList)ViewBag.UF, "Selecionar", new { @class = "form-control" })
+                            </div>
+                            @if (ViewBag.Perfil == "ADM")
+                            {
+                                <div class="col-lg-3 col-md-3 col-xs-12">
+                                    Empresa/Filial
+                                    @Html.DropDownListFor(m => m.FILI_CD_ID, (SelectList)ViewBag.Empresas, "Selecionar", new { @class = "form-control" })
+                                </div>
+                            }
+                        </div>
+                        <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
+                            <div class="col-lg-12 col-md-12 col-xs-12">
+                                @Html.ButtonActionSubmit(text: "Filtrar")
+                                @Html.ButtonLinkIndex(text: "Filtro Completo", action: "MontarTelaFiltroGenericoCliente", controller: "Cliente", buttonClass: "success")
+                                @Html.ButtonLinkIndex(text: "Retirar Filtro", controller: "Cliente", action: "RetirarFiltroCliente")
+                                @Html.ButtonLinkIndexShort("Exibir Todos", null, "warning", new { @id = "todos", onclick = "ProcessaTodos()" })
+                                @Html.ButtonLinkIndex(text: "Exibir Cards", controller: "Cliente", action: "VerCardsCliente")
+                                @Html.ButtonLinkIndex(text: "Incluir Novo Cliente", controller: "Cliente", action: "IncluirCliente", buttonClass: "primary")
+                                @Html.ButtonLinkIndex(text: "Gerar Planilha", action: "GerarClientePlanilha", controller: "Cliente")
+                                @Html.ButtonLinkIndex(text: "Importar Planilha", action: "ImportarPlanilhaCliente", controller: "Cliente", buttonClass: "primary")
+                                @Html.ButtonLinkIndex(text: "Falhas de Importação", action: "VerFalhasImportacao", controller: "Cliente")
+                                @Html.ButtonLinkIndex(text: "Gerar Listagem", controller: "Cliente", action: "GerarRelatorioLista")
+                                @Html.ButtonLinkIndex(text: "Indicadores", action: "MontarTelaIndicadoresCliente", controller: "Cliente", buttonClass: "success")
+                                @Html.ButtonLinkIndex(text: "Mensagens Enviadas", action: "VerMensagensEnviadas1", controller: "Cliente", buttonClass: "success")
+                                @Html.ButtonLinkIndex(text: "Mensagem Aniversariantes", action: "EnviarMailAniversarioChama1", controller: "Cliente", buttonClass: "success")
+                                @Html.ButtonLinkIndex(text: "Voltar", controller: "Cliente", action: "VoltarDash")
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-12 col-md-12 col-xs-12">
+            <div class="col-lg-12 col-md-12 col-xs-12 ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>Clientes</h5>
+                </div>
+                <div class="ibox-content">
+                    @if (!ViewData.ModelState.IsValid)
+                    {
+                        <div class="alert alert-danger">
+                            <button type="button" class="close" data-dismiss="alert">Fechar</button>
+                            @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+                        </div>
+                    }
+                    <div class="row">
+                        @if (ViewBag.TipoCarga == 1)
+                        {
+                            <h4 style="color:green; font-weight: bold; background-color:beige">ATENÇÃO - Estão sendo exibidos apenas os @ViewBag.NumCarga clientes com contatos mais recentes</h4>
+                        }
+                        else
+                        {
+                            <h4  style="color:green; font-weight: bold; background-color:beige">ATENÇÃO - Estão sendo exibidos todos os clientes cadastrados</h4>
+                        }
+                        @if (ViewBag.Listas != null &&(ViewBag.Listas as List<EntitiesServices.Model.CLIENTE>).Count > 0)
+                        {
+                            <table class="table table-striped table-bordered table-hover dataTables-example">
+                                <thead style="background-color:lightsteelblue">
+                                    <tr>
+                                        @if (ViewBag.Perfil == "ADM")
+                                        {
+                                            <th style="width: auto">Empresa/Filial</th>
+                                        }
+                                        <th style="width: auto">Nome</th>
+                                        <th style="width: auto">CPF</th>
+                                        <th style="width: auto">CNPJ</th>
+                                        <th style="width: auto">E-Mail</th>
+                                        <th style="width: auto">Celular</th>
+                                        <th style="width: auto">Cidade</th>
+                                        <th style="width: auto">UF</th>
+                                        <th style="width: auto"></th>
+                                        <th class="td-one-action">Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var cond in (ViewBag.Listas as List<EntitiesServices.Model.CLIENTE>))
+                                    {
+                                        if (cond.CLIE_CD_ID == ViewBag.CodigoCliente)
+                                        {
+                                            <tr style="background: #c7ffc7;">
+                                                @if (ViewBag.Perfil == "ADM")
+                                                {
+                                                    <td style="width: auto">@cond.EMPRESA.EMPR_NM_NOME</td>
+                                                }
+                                                <td style="width: auto"><a href="@Url.Action("EditarCliente", "Cliente", new { id = cond.CLIE_CD_ID })" />@cond.CLIE_NM_NOME</td>
+                                                <td style="width: auto">@cond.CLIE_NR_CPF</td>
+                                                <td style="width: auto">@cond.CLIE_NR_CNPJ</td>
+                                                <td style="width: auto"><a href="@Url.Action("EnviarEMailCliente", "Cliente", new { id = cond.CLIE_CD_ID })" />@cond.CLIE_NM_EMAIL</td>
+                                                <td style="width: auto"><a href="@Url.Action("EnviarSMSCliente", "Cliente", new { id = cond.CLIE_CD_ID })" />@cond.CLIE_NR_CELULAR</td>
+                                                <td style="width: auto">@cond.CLIE_NM_CIDADE</td>
+                                                @if (cond.UF != null)
+                                                {
+                                                    <td style="width: auto">@cond.UF.UF_SG_SIGLA</td>
+                                                }
+                                                else
+                                                {
+                                                    <td style="width: auto">-</td>
+                                                }
+                                                @if (!String.IsNullOrEmpty(cond.CLIE_AQ_FOTO))
+                                                {
+                                                    <td style="width: auto"><img src="@Url.Content(cond.CLIE_AQ_FOTO)" style="width: auto; height: auto; max-height: 75px; max-width: 65px;" data-toggle="modal" data-target="#fotoModal" onclick="CriaModal('@cond.CLIE_NM_NOME', '@Url.Content(cond.CLIE_AQ_FOTO)')"></td>
+                                                }
+                                                else
+                                                {
+                                                    <td style="width: auto"><img src="~/Images/icone_imagem.jpg" style="width: auto; height: auto; max-height: 65px; max-width: 55px;" data-toggle="modal" data-target="#fotoModal" onclick="CriaModal('@cond.CLIE_NM_NOME', '/Images/a8.jpg')"></td>
+                                                }
+                                                <td class="td-one-action">
+                                                    @Html.TableLinkDetails(cond.CLIE_CD_ID, "EditarCliente", "fa-edit", "Editar/Consultar")
+                                                    @if (cond.CLIE_IN_ATIVO == 1)
+                                                    {
+                                                        <span style="color: #337ab7; cursor:pointer;" alt="Excluir" class="tbl-link fa-lg fa fa-trash-o" onclick="ShowModalExcluir('/Cliente/ExcluirCliente/@cond.CLIE_CD_ID')" title="Excluir"></span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span style="color: #337ab7; cursor:pointer;" alt="Reativar" class="tbl-link fa-lg fa fa-refresh" onclick="ShowModalReativar('/Cliente/ReativarCliente/@cond.CLIE_CD_ID')" title="Reativar"></span>
+                                                    }
+                                                </td>
+                                            </tr>
+                                        }
+                                        else
+                                        {
+                                            <tr>
+                                                @if (ViewBag.Perfil == "ADM")
+                                                {
+                                                    <td style="width: auto">@cond.EMPRESA.EMPR_NM_NOME</td>
+                                                }
+                                                <td><a href="@Url.Action("EditarCliente", "Cliente", new { id = cond.CLIE_CD_ID })" />@cond.CLIE_NM_NOME</td>
+                                                <td style="width: auto">@cond.CLIE_NR_CPF</td>
+                                                <td>@cond.CLIE_NR_CNPJ</td>
+                                                <td><a href="@Url.Action("EnviarEMailCliente", "Cliente", new { id = cond.CLIE_CD_ID })" />@cond.CLIE_NM_EMAIL</td>
+                                                <td><a href="@Url.Action("EnviarSMSCliente", "Cliente", new { id = cond.CLIE_CD_ID })" />@cond.CLIE_NR_CELULAR</td>
+                                                <td>@cond.CLIE_NM_CIDADE</td>
+                                                @if (cond.UF != null)
+                                                {
+                                                    <td>@cond.UF.UF_SG_SIGLA</td>
+                                                }
+                                                else
+                                                {
+                                                    <td>-</td>
+                                                }
+                                                @if (!String.IsNullOrEmpty(cond.CLIE_AQ_FOTO))
+                                                {
+                                                    <td><img src="@Url.Content(cond.CLIE_AQ_FOTO)" style="width: auto; height: auto; max-height: 55px; max-width: 45px;" data-toggle="modal" data-target="#fotoModal" onclick="CriaModal('@cond.CLIE_NM_NOME', '@Url.Content(cond.CLIE_AQ_FOTO)')"></td>
+                                                }
+                                                else
+                                                {
+                                                    <td><img src="~/Images/icone_imagem.jpg" style="width: auto; height: auto; max-height: 55px; max-width: 45px;" data-toggle="modal" data-target="#fotoModal" onclick="CriaModal('@cond.CLIE_NM_NOME', '/Images/a8.jpg')"></td>
+                                                }
+                                                <td class="td-one-action">
+                                                    @Html.TableLinkDetails(cond.CLIE_CD_ID, "EditarCliente", "fa-edit", "Editar/Consultar")
+                                                    @if (cond.CLIE_IN_ATIVO == 1)
+                                                    {
+                                                        <span style="color: #337ab7; cursor:pointer;" alt="Excluir" class="tbl-link fa-lg fa fa-trash-o" onclick="ShowModalExcluir('/Cliente/ExcluirCliente/@cond.CLIE_CD_ID')" title="Excluir"></span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span style="color: #337ab7; cursor:pointer;" alt="Reativar" class="tbl-link fa-lg fa fa-refresh" onclick="ShowModalReativar('/Cliente/ReativarCliente/@cond.CLIE_CD_ID')" title="Reativar"></span>
+                                                    }
+                                                </td>
+                                            </tr>
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+                        }
+                        else
+                        {
+                            <div class="row">
+                                <div class="col-lg-4 col-md-4 col-xs-2">
+
+                                </div>
+                                <div style="border: 5px solid #F6A54A; padding: 10px; border-radius: 8px 8px; " class="col-lg-4 col-md-4 col-xs-8">
+                                    <h2 style="font-weight: bold">Sua pesquisa não retornou nenhum resultado</h2>
+                                    <p>Tente outras opções de pesquisa</p>
+
+                                    @Html.ButtonLinkIndex(text: "Retirar Filtro", controller: "Cliente", action: "RetirarFiltroCliente")
+                                </div>
+                                <div class="col-lg-4 col-md-4 col-xs-2">
+
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <link href="~/Content/themes/base/all.css" rel="stylesheet" />  
+    @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
+    @Styles.Render("~/plugins/jasnyBootstrapStyles")
+    <link href="~/Content/plugins/select2/select2.min.css" rel="stylesheet" />
+}
+
+@section Scripts {
+
+    @Scripts.Render("~/plugins/dataTables")
+    @Scripts.Render("~/bundles/inputmask")
+    @Scripts.Render("~/plugins/jasnyBootstrap")
+    <script src="~/Scripts/plugins/select2/select2.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.maskedinput/1.4.1/jquery.maskedinput.js"></script>
+    <script>
+        $(function () {
+            limpaModal();
+        });
+
+        function limpaModal() {
+            $('#btnModal').remove();
+            $('#modalTitle').remove();
+        }
+
+        function ShowModalExcluir(url) {
+            $('#modal').find('.modal-footer').prepend('<a id="btnModal" alt="Desativar" class="btn btn-primary" href="' + url + '" target="_self" title="Desativar">Confirmar</a>');
+            $('#modal').find('.modal-body').html('Confirma exclusão de Cliente?');
+            $('#modal').find('.modal-header').prepend('<h5 id="modalTitle" class="modal-title">Confimar Exclusão</h5>');
+            $('#modal').modal('show');
+        }
+
+        function ShowModalReativar(url) {
+            $('#modal').find('.modal-footer').prepend('<a id="btnModal" alt="Reativar" class="btn btn-primary" href="' + url + '" target="_self" title="Reativar">Confirmar</a>');
+            $('#modal').find('.modal-body').html('Confirma reativação de Cliente?');
+            $('#modal').find('.modal-header').prepend('<h5 id="modalTitle" class="modal-title">Confimar Reativação</h5>');
+            $('#modal').modal('show');
+        }
+    </script>
+     <script>
+        $("#lstCliente").select2({
+            //data: filterSelect,
+            ajax: {
+                url: '../Cliente/BuscaNomeRazao',
+                type: 'POST',
+                data: function (params) {
+                    var query = {
+                        nome: params.term
+                    }
+                    return query
+                },
+                processResults: function (data) {
+                    console.log(data);
+                    return {
+                        results: data
+                    }
+                }
+            },
+            placeholder: 'Busque por NOME ou RAZÃO SOCIAL',
+            minimumInputLength: 1
+        });
+    </script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            $('.dataTables-example').DataTable({
+                pageLength: 25,
+                dom: '<"html5buttons"B>lTfgitp',
+                buttons: [
+                    { extend: 'excel', title: 'Clientes_Planilha' },
+                    { extend: 'pdf', title: 'Clientes_PDF' },
+
+                    {
+                        extend: 'print',
+                        customize: function (win) {
+                            $(win.document.body).addClass('white-bg');
+                            $(win.document.body).css('font-size', '10px');
+
+                            $(win.document.body).find('table')
+                                    .addClass('compact')
+                                    .css('font-size', 'inherit');
+                        }
+                    }
+                ]
+            });         
+        });
+    </script>
+    <script type="text/javascript">
+        $(function () {
+            $("#cpf").mask("999.999.999-99");
+            $("#cnpj").mask("99.999.999/9999-99");
+        });
+    </script>
+
+    <script>
+        function MudaIdCliente(id) {
+            $('#idClie').val(id);
+        }
+    </script>
+
+    <script>
+        function ProcessaTodos() {
+            var t = confirm("A exibição de todos os clientes cadastrados pode demorar. Confirma?");
+            if(t == true)
+            {
+                $.ajax({
+                    url: '../Cliente/MostrarTudoCliente'
+                    , type: 'POST'
+                });
+            }
+        }
+    </script>
+
+}
+
+@if (ViewBag.Message != null)
+{
+    <script type="text/javascript">
+            window.onload = function () {
+                alert("@ViewBag.Message");
+            };
+    </script>
+}
+

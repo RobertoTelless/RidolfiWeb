@@ -1,0 +1,1 @@
+search_result['4827']=["topic_0000000000000DC3.html","ClienteService.GetAllRegimes Method",""];

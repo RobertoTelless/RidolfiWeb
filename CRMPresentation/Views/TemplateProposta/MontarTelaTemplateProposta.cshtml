@@ -1,0 +1,288 @@
+﻿@using Presentation.Extensions
+@using CrossCutting;
+@using System.IO;
+@using EntitiesServices.Work_Classes;
+@model EntitiesServices.Model.TEMPLATE_PROPOSTA
+@{
+    Layout = "~/Views/Shared/_Layout_Admin.cshtml";
+}
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="modalContainer">
+        <div id="modal" class="modal" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        @*titulo gerado dinamicamente*@
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        @*Gerado dinamicamente*@
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="page-title">
+        <h3 class="title">Modelos de Propostas</h3>
+        <br />
+        <ol class="breadcrumb">
+            <li>
+                <a href="@Url.Action("CarregarBase", "BaseAdmin")">Dashboard</a>
+            </li>
+            <li>
+                <a href="@Url.Action("MontarTelaDashboardCadastros", "BaseAdmin")">Dashboard - Cadastros</a>
+            </li>
+            <li class="active">
+                <strong>Modelos de Propostas</strong>
+            </li>
+        </ol>
+        <br />
+    </div>
+
+    <div class="row">
+        <div class="col-lg-12 col-md-12 col-xs-12">
+            <div class="col-lg-12 col-md-12 col-xs-12 ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>Filtros</h5>
+                </div>
+
+                @using (Html.BeginForm("FiltrarTemplateProposta", "TemplateProposta", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal" }))
+                {
+                    <div class="ibox-content">
+                        <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
+                            <div class="col-lg-2 col-md-2 col-xs-12">
+                                Sigla
+                                @Html.TextBoxFor(m => m.TEPR_SG_SIGLA, new { @class = "form-control", autofocus = true })
+                            </div>
+                            <div class="col-lg-3 col-md-3 col-xs-12">
+                                Nome
+                                @Html.TextBoxFor(m => m.TEPR_NM_NOME, new { @class = "form-control", autofocus = true })
+                            </div>
+                            <div class="col-lg-7 col-md-7 col-xs-12">
+                                Texto
+                                @Html.TextBoxFor(m => m.TEPR_TX_TEXTO, new { @class = "form-control", autofocus = true })
+                            </div>
+                        </div>
+                        <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
+                            <div class="col-lg-12 col-md-12 col-xs-12">
+                                @Html.ButtonActionSubmit(text: "Filtrar")
+                                @if (ViewBag.Perfil == "ADM" || ViewBag.Perfil == "GER")
+                                {
+                                    @Html.ButtonLinkIndex(text: "Incluir Novo Modelo de Proposta", controller: "TemplateProposta", action: "IncluirTemplateProposta", buttonClass: "primary")
+                                }
+                                @Html.ButtonLinkIndex(text: "Retirar Filtro", controller: "TemplateProposta", action: "RetirarFiltroTemplateProposta")
+                                @Html.ButtonLinkIndex(text: "Exibir Todas", controller: "TemplateProposta", action: "MostrarTudoTemplateProposta")
+                                @Html.ButtonLinkIndex(text: "Voltar", action: "VoltarDash", controller: "TemplateProposta")
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-12 col-md-12 col-xs-12">
+            <div class="col-lg-12 col-md-12 col-xs-12 ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>Modelos de Propostas</h5>
+                </div>
+                <div class="ibox-content">
+                    @if (!ViewData.ModelState.IsValid)
+                    {
+                        <div class="alert alert-danger">
+                            <button type="button" class="close" data-dismiss="alert">Fechar</button>
+                            @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+                        </div>
+                    }
+                    <div class="row">
+                        @if (ViewBag.Listas != null && (ViewBag.Listas as List<EntitiesServices.Model.TEMPLATE_PROPOSTA>).Count > 0)
+                        {
+                            <table class="table table-striped table-bordered table-hover dataTables-example">
+                                <thead style="background-color:lightsteelblue">
+                                    <tr>
+                                        @if ((String)Session["PerfilUsuario"] != "ADM")
+                                        {
+                                            <th style="width: auto">Empresa</th>
+                                        }
+                                        <th style="width: auto">Sigla</th>
+                                        <th style="width: auto">Nome</th>
+                                        <th class="td-one-action">Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var cond in (ViewBag.Listas as List<EntitiesServices.Model.TEMPLATE_PROPOSTA>))
+                                    {
+                                        <tr>
+                                            @if ((String)Session["PerfilUsuario"] != "ADM")
+                                            {
+                                                <td style="width: auto">@cond.EMPRESA.EMPR_NM_NOME</td>
+                                            }
+                                            <td style="width: auto">@cond.TEPR_SG_SIGLA</td>
+                                            @if (cond.TEPR_IN_FIXO == 0)
+                                            {
+                                                <td style="width: auto"><a href="@Url.Action("EditarTemplateProposta", "TemplateProposta", new { id = cond.TEPR_CD_ID })" />@cond.TEPR_NM_NOME</td>
+                                            }
+                                            else
+                                            {
+                                                <td style="width: auto">@cond.TEPR_NM_NOME</td>
+                                            }
+                                            <td class="td-one-action">
+                                                @if (ViewBag.Perfil == "ADM" || ViewBag.Perfil == "GER" )
+                                                {
+                                                    if (cond.TEPR_IN_FIXO == 0)
+                                                    {
+                                                        @Html.TableLinkDetails(cond.TEPR_CD_ID, "EditarTemplateProposta", "fa-edit", "Editar")
+                                                        if (cond.TEPR_IN_ATIVO == 1)
+                                                        {
+                                                            <span style="color: #337ab7; cursor:pointer;" alt="Desativar" class="tbl-link fa-lg fa fa-trash-o" onclick="ShowModalExcluir('/TemplateProposta/ExcluirTemplateProposta/@cond.TEPR_CD_ID')" title="Excluir"></span>
+                                                        }
+                                                        else
+                                                        {   
+                                                            <span style="color: #337ab7; cursor:pointer;" alt="Reativar" class="tbl-link fa-lg fa fa-refresh" onclick="ShowModalReativar('/TemplateProposta/ReativarTemplateProposta/@cond.TEPR_CD_ID')" title="Reativar"></span>
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        @Html.TableLinkDetails(cond.TEPR_CD_ID, "VerTemplateProposta", "fa-search", "Visualizar")
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    @Html.TableLinkDetails(cond.TEPR_CD_ID, "VerTemplateProposta", "fa-search", "Visualizar")
+                                                }
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        }
+                        else
+                        {
+                            <div class="row">
+                                <div class="col-lg-4 col-md-4 col-xs-2">
+
+                                </div>
+                                <div style="border: 5px solid #F6A54A; padding: 10px; border-radius: 8px 8px; " class="col-lg-4 col-md-4 col-xs-8">
+                                    <h2 style="font-weight: bold">Sua pesquisa não retornou nenhum resultado</h2>
+                                    <p>Tente outras opções de pesquisa</p>
+
+                                    @Html.ButtonLinkIndex(text: "Retirar Filtro", controller: "TemplateProposta", action: "RetirarFiltroTemplateProposta")
+                                </div>
+                                <div class="col-lg-4 col-md-4 col-xs-2">
+
+                                </div>
+                            </div>
+                        }
+                </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <link href="~/Content/themes/base/all.css" rel="stylesheet" />  
+    @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
+    @Styles.Render("~/plugins/jasnyBootstrapStyles")
+    <link href="~/Content/plugins/select2/select2.min.css" rel="stylesheet" />
+}
+
+@section Scripts {
+
+    @Scripts.Render("~/plugins/dataTables")
+    @Scripts.Render("~/bundles/inputmask")
+    @Scripts.Render("~/plugins/jasnyBootstrap")
+    <script src="~/Scripts/plugins/select2/select2.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.maskedinput/1.4.1/jquery.maskedinput.js"></script>
+        <script>
+        $(function () {
+            limpaModal();
+        });
+
+        function limpaModal() {
+            $('#btnModal').remove();
+            $('#modalTitle').remove();
+        }
+
+        function ShowModalExcluir(url) {
+            $('#modal').find('.modal-footer').prepend('<a id="btnModal" alt="Desativar" class="btn btn-primary" href="' + url + '" target="_self" title="Desativar">Confirmar</a>');
+            $('#modal').find('.modal-body').html('Confirma exclusão do Modelo?');
+            $('#modal').find('.modal-header').prepend('<h5 id="modalTitle" class="modal-title">Confimar Exclusão</h5>');
+            $('#modal').modal('show');
+        }
+
+        function ShowModalReativar(url) {
+            $('#modal').find('.modal-footer').prepend('<a id="btnModal" alt="Reativar" class="btn btn-primary" href="' + url + '" target="_self" title="Reativar">Confirmar</a>');
+            $('#modal').find('.modal-body').html('Confirma reativação do Modelo?');
+            $('#modal').find('.modal-header').prepend('<h5 id="modalTitle" class="modal-title">Confimar Reativação</h5>');
+            $('#modal').modal('show');
+        }
+    </script>
+    <script>
+        function Fade() {
+            $('.dotContainer').fadeIn("fast");
+            $('#login').css("filter", "blur(4px)");
+        }
+    </script>
+    <script>
+        $(window).on("load", function () {
+            $('.dotContainer').fadeOut("slow");
+            $('#title').css("filter", "blur(0)");
+            $('#content').css("filter", "blur(0)");
+        });
+    </script>
+    <script>
+        function mostrarDesc(desc) {
+            $('#modalDescBody').html(desc);
+            $('#modalDesc').modal('show');
+        }
+    </script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            $('.dataTables-example').DataTable({
+                pageLength: 25,
+                dom: '<"html5buttons"B>lTfgitp',
+                buttons: [
+                    { extend: 'excel', title: 'PadraoProposta_Planilha' },
+                    { extend: 'pdf', title: 'Padrao_PropostaPDF' },
+
+                    {
+                        extend: 'print',
+                        customize: function (win) {
+                            $(win.document.body).addClass('white-bg');
+                            $(win.document.body).css('font-size', '10px');
+
+                            $(win.document.body).find('table')
+                                    .addClass('compact')
+                                    .css('font-size', 'inherit');
+                        }
+                    }
+                ]
+
+            });
+
+           
+
+        });
+
+    </script>
+}
+
+@if (ViewBag.Message != null)
+{
+    <script type="text/javascript">
+            window.onload = function () {
+                alert("@ViewBag.Message");
+            };
+    </script>
+}
+

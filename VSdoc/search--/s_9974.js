@@ -1,0 +1,1 @@
+search_result['9974']=["topic_0000000000001AA3.html","CommonHelpers.IsOnlyDigits Method","This string extension process checks for all characters being digits.\r\nConversion functions to test numbers may translate letters as Hex values."];

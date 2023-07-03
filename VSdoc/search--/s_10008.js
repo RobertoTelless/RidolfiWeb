@@ -1,0 +1,1 @@
+search_result['10008']=["topic_0000000000001AC3.html","CommonHelpers.GetCurrentCPUUsage Method","Gets the current % processor time from the performance counter."];

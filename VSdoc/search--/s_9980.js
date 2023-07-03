@@ -1,0 +1,1 @@
+search_result['9980']=["topic_0000000000001AA9.html","CommonHelpers.IsEmailFormat Method","This extension method for the String object checks the string to see if it is a valid email format.\r\nIt does not check whether it is a valid, working email."];

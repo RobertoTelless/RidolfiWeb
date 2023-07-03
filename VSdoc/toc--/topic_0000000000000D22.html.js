@@ -1,0 +1,1 @@
+var breadcrumbs=[['-1',"",""],['2',"SOLUTION-WIDE PROPERTIES Reference","topic_0000000000001B27.html"],['4200',"EntitiesServices.Attributes Namespace","topic_0000000000000D13.html"],['4209',"CustomValidationCNPJAttribute Class","topic_0000000000000D20.html"],['4211',"Methods","topic_0000000000000D20_methods--.html"],['4212',"IsValid Method","topic_0000000000000D22.html"]];

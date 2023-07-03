@@ -1,0 +1,91 @@
+﻿@using Presentation.Extensions
+@model EntitiesServices.Model.USUARIO
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-lg-12 col-md-12 col-xs-12">
+            <div class="col-lg-4 col-md-4 col-xs-12 ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>Alteração de Senha</h5>
+                </div>
+                @using (Html.BeginForm("TrocarSenhaCodigo", "ControleAcesso", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", @id="pwd-container1" }))
+                {
+                    <div class="ibox-content">
+                        @Html.AntiForgeryToken()
+                        @if (!ViewData.ModelState.IsValid)
+                        {
+                            <div class="alert alert-danger">
+                                <button type="button" class="close" data-dismiss="alert">Fechar</button>
+                                @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+                            </div>
+                        }
+                        <div class="form-group">
+                            @Html.HiddenFor(m => m.ASSI_CD_ID)
+                            @Html.HiddenFor(m => m.CARG_CD_ID)
+                            @Html.HiddenFor(m => m.CAUS_CD_ID)
+                            @Html.HiddenFor(m => m.PERF_CD_ID)
+                            @Html.HiddenFor(m => m.USUA_CD_ID)
+                            @Html.HiddenFor(m => m.USUA_AQ_FOTO)
+                            @Html.HiddenFor(m => m.USUA_DT_ACESSO)
+                            @Html.HiddenFor(m => m.USUA_DT_ALTERACAO)
+                            @Html.HiddenFor(m => m.USUA_DT_BLOQUEADO)
+                            @Html.HiddenFor(m => m.USUA_DT_CADASTRO)
+                            @Html.HiddenFor(m => m.USUA_DT_TROCA_SENHA)
+                            @Html.HiddenFor(m => m.USUA_DT_ULTIMA_FALHA)
+                            @Html.HiddenFor(m => m.USUA_IN_ATIVO)
+                            @Html.HiddenFor(m => m.USUA_IN_BLOQUEADO)
+                            @Html.HiddenFor(m => m.USUA_IN_LOGADO)
+                            @Html.HiddenFor(m => m.USUA_IN_LOGIN_PROVISORIO)
+                            @Html.HiddenFor(m => m.USUA_IN_PROVISORIO)
+                            @Html.HiddenFor(m => m.USUA_NM_EMAIL)
+                            @Html.HiddenFor(m => m.USUA_NM_LOGIN)
+                            @Html.HiddenFor(m => m.USUA_NM_NOME)
+                            @Html.HiddenFor(m => m.USUA_NM_SENHA)
+                            @Html.HiddenFor(m => m.USUA_NR_ACESSOS)
+                            @Html.HiddenFor(m => m.USUA_NR_CELULAR)
+                            @Html.HiddenFor(m => m.USUA_NR_CPF)
+                            @Html.HiddenFor(m => m.USUA_NR_FALHAS)
+                            @Html.HiddenFor(m => m.USUA_NR_MATRICULA)
+                            @Html.HiddenFor(m => m.USUA_NR_RG)
+                            @Html.HiddenFor(m => m.USUA_NR_TELEFONE)
+                            @Html.HiddenFor(m => m.USUA_NR_WHATSAPP)
+                            @Html.HiddenFor(m => m.USUA_TX_OBSERVACOES)
+                            @Html.HiddenFor(m => m.USUA_NM_NOVA_SENHA)
+                            @Html.HiddenFor(m => m.USUA_NM_SENHA_CONFIRMA)
+                            @Html.HiddenFor(m => m.USUA_NM_SENHA)
+                            @Html.HiddenFor(m => m.EMPR_CD_ID)
+                            Informe o código de validação que você recebeu via e-mail ou SMS*
+                            @Html.TextBoxFor(m => m.USUA_NR_MATRICULA, new { @class = "form-control", autofocus = true, @style = "font-weight:bold; color:darkblue" })
+                            @Html.ValidationMessageFor(m => m.USUA_NR_MATRICULA, "", new { @style = "color:red" })
+                        </div>
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary block full-width m-b demo2">Confirmar Alteração de Senha</button>
+                        </div>
+                    </div>
+                }
+            </div>
+         </div>
+    </div>
+</div>
+
+@section Styles {
+    <link href="~/Content/themes/base/all.css" rel="stylesheet" />  
+    @Styles.Render("~/plugins/sweetAlertStyles")
+}
+
+@section Scripts 
+{
+    @Scripts.Render("~/plugins/passwordMeter")
+    @Scripts.Render("~/plugins/sweetAlert")
+}
+
+@if (ViewBag.Message != null)
+{
+    <script type="text/javascript">
+        window.onload = function () {
+            alert("@ViewBag.Message");
+        };
+    </script>
+}

@@ -1,0 +1,1 @@
+c['1072']=[['1073',"EditarTarefa(int) Method","topic_00000000000003C4.html",0],['1074',"EditarTarefa(TarefaViewModel) Method","topic_00000000000003C5.html",0]];

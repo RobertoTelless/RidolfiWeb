@@ -1,0 +1,376 @@
+﻿@using Presentation.Extensions
+@model ERP_Condominios_Solution.ViewModels.FunilViewModel
+@{
+    Layout = "~/Views/Shared/_Layout_Admin.cshtml";
+}
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="page-title">
+        <h3 class="title">Funis de Processos</h3>
+        <br />
+        <ol class="breadcrumb">
+            <li>
+                <a href="@Url.Action("CarregarBase", "BaseAdmin")">Dashboard</a>
+            </li>
+            <li>
+                <a href="@Url.Action("MontarTelaDashboardCRMNovo", "CRM")">Dashboard</a>
+            </li>
+            <li>
+                <a href="@Url.Action("MontarTelaFunil", "Funil")">Funis de Processos</a>
+            </li>
+            <li class="active">
+                <strong>Funis de Processos - Edição</strong>
+            </li>
+        </ol>
+        <br />
+    </div>
+    <div class="row">
+        <div class="col-lg-12 col-md-12 col-xs-12">
+            <div class="col-lg-12 col-md-12 col-xs-12 ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>Funis de Processos - Edição</h5>
+                </div>
+                <div class="ibox-content">
+                    @Html.AntiForgeryToken()
+                    @if (!ViewData.ModelState.IsValid)
+                    {
+                        <div class="alert alert-danger">
+                            <button type="button" class="close" data-dismiss="alert">Fechar</button>
+                            @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+                        </div>
+                    }
+                    <div class="form-group">
+                        @Html.ButtonLinkIndex(text: "Voltar", action: "VoltarBaseFunil", controller: "Funil")
+                    </div>
+                    <div class="tabs-container">
+                        <ul class="nav nav-tabs">
+                            <li class="active"><a data-toggle="tab" href="#tab-1">Dados Gerais</a></li>
+                            <li class=""><a data-toggle="tab" href="#tab-4">Etapas</a></li>
+                        </ul>
+                        <div class="tab-content">
+                            @*Dados Gerais*@
+                            <div id="tab-1" class="tab-pane active">
+                                <div class="panel-body">
+                                    @using (Html.BeginForm("EditarFunil", "Funil", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", @id = "pwd-container1" }))
+                                    {
+                                        <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
+                                            <div class="col-lg-3 col-md-3 col-xs-12">
+                                                @Html.HiddenFor(m => m.ASSI_CD_ID)
+                                                @Html.HiddenFor(m => m.FUNI_DT_CADASTRO)
+                                                @Html.HiddenFor(m => m.FUNI_IN_ATIVO)
+                                                @Html.HiddenFor(m => m.FUNI_CD_ID)
+                                                @Html.HiddenFor(m => m.FUNI_IN_FIXO)
+                                                @Html.HiddenFor(m => m.FUNI_IN_TIPO)
+                                                Nome*
+                                                @Html.TextBoxFor(m => m.FUNI_NM_NOME, new { @class = "form-control", autofocus = true })
+                                                @Html.ValidationMessageFor(m => m.FUNI_NM_NOME, "", new { @style = "color:red" })
+                                            </div>
+                                            <div class="col-lg-2 col-md-2 col-xs-12">
+                                                Sigla*
+                                                @Html.TextBoxFor(m => m.FUNI_SG_SIGLA, new { @class = "form-control", autofocus = true })
+                                                @Html.ValidationMessageFor(m => m.FUNI_SG_SIGLA, "", new { @style = "color:red" })
+                                            </div>
+                                            <div class="col-lg-3 col-md-3 col-xs-12">
+                                                Processo com geração de proposta?
+                                                <br />
+                                                @Html.CheckBoxFor(m => m.Proposta, new { @class = "checkbox i-checks", autofocus = true })
+                                            </div>                                                
+                                                <div class="col-lg-2 col-md-2 col-xs-12">
+                                                Mensagem para Cliente?
+                                                <br />
+                                                @Html.CheckBoxFor(m => m.Cliente, new { @class = "checkbox i-checks", autofocus = true })
+                                            </div>                                                
+                                            <div class="col-lg-2 col-md-2 col-xs-12">
+                                                Mensagem para Responsável?
+                                                <br />
+                                                @Html.CheckBoxFor(m => m.Responsavel, new { @class = "checkbox i-checks", autofocus = true })
+                                            </div>                                                
+                                        </div>
+                                        <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
+                                            <div class="col-lg-12 col-md-12 col-xs-12">
+                                                Descrição
+                                                @Html.TextAreaFor(m => m.FUNI_DS_DESCRICAO, new { @class = "form-control", style = "width: 100%; height: 100px;", autofocus = true })
+                                                @Html.ValidationMessageFor(m => m.FUNI_DS_DESCRICAO, "", new { @style = "color:red" })
+                                            </div>
+                                        </div>
+                                        if (Model.FUNI_IN_FIXO == 0)
+                                        {
+                                            <div class="form-group">
+                                                @Html.ButtonActionSubmit(text: "Confirma edição de Funil de Processo", htmlAttributes: new { id = "basictoast" })
+                                            </div>
+                                        }
+                                    }
+                                </div>
+                            </div>
+                                
+                            @*Etapas*@
+                            <div id="tab-4" class="tab-pane">
+                                <div class="panel-body">
+                                    <div class="row">
+                                        <hr />
+                                        <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
+                                            <div class="col-lg-12 col-md-12 col-xs-12">
+                                                <h4>Etapas do Funil</h4>
+                                                <br />
+                                                @if (Model.FUNIL_ETAPA.Count > 0)
+                                                {
+                                                    <table class="table table-striped table-bordered table-hover dataTables-example">
+                                                        <thead style="background-color:lightsteelblue">
+                                                            <tr>
+                                                                <th style="width: auto">Ordem</th>
+                                                                <th style="width: auto">Nome</th>
+                                                                <th style="width: auto">Sigla</th>
+                                                                <th style="width: auto">Descrição</th>
+                                                                <th style="width: auto">Permite Encerramento?</th>
+                                                                <th style="width: auto">Etapa após envio de Proposta?</th>
+                                                                <th style="width: auto">Envia E-Mail?</th>
+                                                                <th style="width: auto">Envia SMS?</th>
+                                                                <th class="td-one-action">Ações</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            @foreach (var cond in (Model.FUNIL_ETAPA).OrderBy(p => p.FUET_IN_ORDEM))
+                                                            {
+                                                                <tr>
+                                                                    <td style="width: auto; color: green; font-weight: bold">@cond.FUET_IN_ORDEM</td>
+                                                                    <td style="width: auto"><a href="@Url.Action("EditarEtapa", "Funil", new { id = cond.FUET_CD_ID })" />@cond.FUET_NM_NOME</td>
+                                                                    <td style="width: auto">@cond.FUET_SG_SIGLA</td>
+                                                                    <td style="width: auto">@cond.FUET_DS_DESCRICAO</td>
+                                                                    @if (cond.FUET_IN_ENCERRA ==  1)
+                                                                    {
+                                                                        <td style="width: auto"><span class="badge badge-success">Sim</span></td>
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        <td style="width: auto"><span class="badge badge-warning">Não</span></td>
+                                                                    }
+                                                                    @if (cond.FUET_IN_PROPOSTA ==  1)
+                                                                    {
+                                                                        <td style="width: auto"><span class="badge badge-success">Sim</span></td>
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        <td style="width: auto"><span class="badge badge-warning">Não</span></td>
+                                                                    }
+                                                                    @if (cond.FUET_IN_EMAIL ==  1)
+                                                                    {
+                                                                        <td style="width: auto"><span class="badge badge-success">Sim</span></td>
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        <td style="width: auto"><span class="badge badge-warning">Não</span></td>
+                                                                    }
+                                                                    @if (cond.FUET_IN_SMS ==  1)
+                                                                    {
+                                                                        <td style="width: auto"><span class="badge badge-success">Sim</span></td>
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        <td style="width: auto"><span class="badge badge-warning">Não</span></td>
+                                                                    }
+                                                                    <td class="td-one-action">
+                                                                        @if (Model.FUNI_IN_FIXO == 0)
+                                                                        {
+                                                                            @Html.TableLinkDetails(cond.FUET_CD_ID, "EditarEtapa", "fa-edit", "Editar")
+                                                                            if (cond.FUET_IN_ATIVO == 1)
+                                                                            {
+                                                                                @Html.TableLinkDetails(cond.FUET_CD_ID, "ExcluirEtapa", "fa-trash-o", "Desativar")
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                @Html.TableLinkDetails(cond.FUET_CD_ID, "ReativarEtapa", "fa-refresh", "Reativar")
+                                                                            }
+                                                                        }
+                                                                    </td>
+                                                                </tr>
+                                                            }
+                                                        </tbody>
+                                                    </table>
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                    @if (ViewBag.Etapa == 1 & Model.FUNI_IN_FIXO == 0)
+                                    {
+                                        <div class="form-group">
+                                            @Html.ButtonLinkIndex(text: "Incluir Nova Etapa do Funil", action: "IncluirEtapa", controller: "Funil")
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <link href="~/Content/themes/base/jquery-ui.min.css" rel="stylesheet" />
+    <link href="~/Content/themes/base/all.css" rel="stylesheet" />
+    @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
+    @Styles.Render("~/plugins/jasnyBootstrapStyles")
+    @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
+    @Styles.Render("~/plugins/toastrStyles")
+    @Styles.Render("~/plugins/touchSpinStyles")
+    @Styles.Render("~/plugins/sweetAlertStyles")
+}
+@section Scripts {
+    @Scripts.Render("~/plugins/toastr")
+    <script src="~/Scripts/jquery-ui-1.12.1.min.js"></script>
+    @Scripts.Render("~/plugins/dataTables")
+    @Scripts.Render("~/bundles/inputmask")
+    @Scripts.Render("~/plugins/jasnyBootstrap")
+    @Scripts.Render("~/plugins/touchSpin")
+    @Scripts.Render("~/plugins/iCheck")
+    @Scripts.Render("~/plugins/passwordMeter")
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.maskedinput/1.4.1/jquery.maskedinput.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            $('.dataTables-example').DataTable({
+                pageLength: 25,
+                dom: '<"html5buttons"B>lTfgitp',
+                buttons: [
+                    { extend: 'excel', title: 'Etapa_Planilha' },
+                    { extend: 'pdf', title: 'Etapa_PDF' },
+
+                    {
+                        extend: 'print',
+                        customize: function (win) {
+                            $(win.document.body).addClass('white-bg');
+                            $(win.document.body).css('font-size', '10px');
+
+                            $(win.document.body).find('table')
+                                .addClass('compact')
+                                .css('font-size', 'inherit');
+                        }
+                    }
+                ]
+            });
+        });
+    </script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            $('.i-checks').iCheck({
+                checkboxClass: 'icheckbox_square-green',
+                radioClass: 'iradio_square-green',
+            });
+
+        });
+    </script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            var i = -1;
+            var toastCount = 0;
+            var $toastlast;
+            var getMessage = function () {
+                var msg = 'Hi, welcome to Inspinia. This is example of Toastr notification box.';
+                return msg;
+            };
+
+            $('#basictoast').click(function () {
+                // Display a success toast, with a title
+                toastr.success('Edição am andamento!')
+            });
+            $('#showtoast').click(function () {
+                var shortCutFunction = $("#toastTypeGroup input:radio:checked").val();
+                var msg = $('#message').val();
+                var title = $('#title').val() || '';
+                var $showDuration = $('#showDuration');
+                var $hideDuration = $('#hideDuration');
+                var $timeOut = $('#timeOut');
+                var $extendedTimeOut = $('#extendedTimeOut');
+                var $showEasing = $('#showEasing');
+                var $hideEasing = $('#hideEasing');
+                var $showMethod = $('#showMethod');
+                var $hideMethod = $('#hideMethod');
+                var toastIndex = toastCount++;
+                toastr.options = {
+                    closeButton: $('#closeButton').prop('checked'),
+                    debug: $('#debugInfo').prop('checked'),
+                    progressBar: $('#progressBar').prop('checked'),
+                    positionClass: $('#positionGroup input:radio:checked').val() || 'toast-top-right',
+                    onclick: null
+                };
+                if ($('#addBehaviorOnToastClick').prop('checked')) {
+                    toastr.options.onclick = function () {
+                        alert('You can perform some custom action after a toast goes away');
+                    };
+                }
+                if ($showDuration.val().length) {
+                    toastr.options.showDuration = $showDuration.val();
+                }
+                if ($hideDuration.val().length) {
+                    toastr.options.hideDuration = $hideDuration.val();
+                }
+                if ($timeOut.val().length) {
+                    toastr.options.timeOut = $timeOut.val();
+                }
+                if ($extendedTimeOut.val().length) {
+                    toastr.options.extendedTimeOut = $extendedTimeOut.val();
+                }
+                if ($showEasing.val().length) {
+                    toastr.options.showEasing = $showEasing.val();
+                }
+                if ($hideEasing.val().length) {
+                    toastr.options.hideEasing = $hideEasing.val();
+                }
+                if ($showMethod.val().length) {
+                    toastr.options.showMethod = $showMethod.val();
+                }
+                if ($hideMethod.val().length) {
+                    toastr.options.hideMethod = $hideMethod.val();
+                }
+                if (!msg) {
+                    msg = getMessage();
+                }
+                $("#toastrOptions").text("Command: toastr["
+                    + shortCutFunction
+                    + "](\""
+                    + msg
+                    + (title ? "\", \"" + title : '')
+                    + "\")\n\ntoastr.options = "
+                    + JSON.stringify(toastr.options, null, 2)
+                );
+                var $toast = toastr[shortCutFunction](msg, title); // Wire up an event handler to a button in the toast, if it exists
+                $toastlast = $toast;
+                if ($toast.find('#okBtn').length) {
+                    $toast.delegate('#okBtn', 'click', function () {
+                        alert('you clicked me. i was toast #' + toastIndex + '. goodbye!');
+                        $toast.remove();
+                    });
+                }
+                if ($toast.find('#surpriseBtn').length) {
+                    $toast.delegate('#surpriseBtn', 'click', function () {
+                        alert('Surprise! you clicked me. i was toast #' + toastIndex + '. You could perform an action here.');
+                    });
+                }
+            });
+            function getLastToast() {
+                return $toastlast;
+            }
+            $('#clearlasttoast').click(function () {
+                toastr.clear(getLastToast());
+            });
+            $('#cleartoasts').click(function () {
+                toastr.clear();
+            });
+
+        });
+    </script>
+
+    @if (ViewBag.Message != null)
+    {
+        <script type="text/javascript">
+            window.onload = function () {
+                  alert("@ViewBag.Message");
+            };
+        </script>
+    }
+}
+

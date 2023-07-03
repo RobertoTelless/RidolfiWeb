@@ -1,0 +1,1 @@
+c['6560']=[['6561',"TipoTarefaService Constructor","topic_0000000000000F6B.html",0],['6562',"Methods","topic_0000000000000F69_methods--.html",1],['6574',"Fields","topic_0000000000000F69_vars--.html",1]];

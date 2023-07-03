@@ -1,0 +1,1 @@
+c['845']=[['846',"EditarNoticia(int) Method","topic_0000000000000304.html",0],['847',"EditarNoticia(NoticiaViewModel) Method","topic_0000000000000305.html",0]];

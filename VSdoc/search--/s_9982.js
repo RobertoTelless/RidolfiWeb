@@ -1,0 +1,1 @@
+search_result['9982']=["topic_0000000000001AAB.html","CommonHelpers.GetDecimal Method","This string extension converts string to decimal value, or returns the default value."];

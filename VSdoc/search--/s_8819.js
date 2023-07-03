@@ -1,0 +1,1 @@
+search_result['8819']=["topic_000000000000180D.html","TEMPLATE_SMS.ASSI_CD_ID Property",""];

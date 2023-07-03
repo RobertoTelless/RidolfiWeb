@@ -1,0 +1,1 @@
+var breadcrumbs=[['-1',"",""],['2',"SOLUTION-WIDE PROPERTIES Reference","topic_0000000000001B27.html"],['2923',"ERP_Condominios_Solution.ViewModels Namespace","topic_00000000000003E0.html"],['3658',"MensagemViewModel Class","topic_000000000000069F.html"],['3659',"Properties","topic_000000000000069F_props--.html"],['3677',"MENS_DT_ENVIO Property","topic_00000000000006AA.html"]];

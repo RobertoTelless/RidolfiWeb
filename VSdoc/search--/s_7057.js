@@ -1,0 +1,1 @@
+search_result['7057']=["topic_00000000000012D7.html","ITemplateService.Create (TEMPLATE, LOG) Method",""];

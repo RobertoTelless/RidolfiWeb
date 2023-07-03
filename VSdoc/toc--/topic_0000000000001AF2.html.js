@@ -1,0 +1,1 @@
+var breadcrumbs=[['-1',"",""],['2',"SOLUTION-WIDE PROPERTIES Reference","topic_0000000000001B27.html"],['1237',"CrossCutting Namespace","topic_0000000000001A8A.html"],['1345',"Email Class","topic_0000000000001AF1.html"],['1346',"Properties","topic_0000000000001AF1_props--.html"],['1362',"SMTP Property","topic_0000000000001AF2.html"]];

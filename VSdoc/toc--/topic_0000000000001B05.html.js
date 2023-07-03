@@ -1,0 +1,1 @@
+var breadcrumbs=[['-1',"",""],['2',"SOLUTION-WIDE PROPERTIES Reference","topic_0000000000001B27.html"],['1237',"CrossCutting Namespace","topic_0000000000001A8A.html"],['1366',"Formatters Class","topic_0000000000001B04.html"],['1367',"Methods","topic_0000000000001B04_methods--.html"],['1370',"CPFFormatter Method","topic_0000000000001B05.html"]];

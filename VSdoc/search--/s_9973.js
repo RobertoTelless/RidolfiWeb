@@ -1,0 +1,1 @@
+search_result['9973']=["topic_0000000000001AA2.html","CommonHelpers.IsBoolean Method","Tests a string, assumed to be in a format that can be converted, to a Boolean value.\r\nRecognizes as true (case insensitive) true, on, yes, up, ok, good, start, 1, -1\r\nRecognizes as false (case insensi..."];

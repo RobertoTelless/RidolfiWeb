@@ -1,0 +1,1018 @@
+﻿@using Presentation.Extensions
+@using CrossCutting;
+@using EntitiesServices.Work_Classes;
+@model EntitiesServices.Model.CRM
+@{
+    Layout = "~/Views/Shared/_Layout_Admin.cshtml";
+}
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="modalContainer">
+        <div id="modal" class="modal" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        @*titulo gerado dinamicamente*@
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        @*Gerado dinamicamente*@
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="containerModalDesc">
+        <div class="modal fade" id="modalDesc" tabindex="-1" role="dialog" aria-labelledby="modalDesc" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalDesc">Descrição do Processo</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div id="modalDescBody" class="modal-body">
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="page-title">
+        <h3 class="title">Processos - CRM</h3>
+        <br />
+        <ol class="breadcrumb">
+            <li>
+                <a href="@Url.Action("CarregarBase", "BaseAdmin")">Dashboard</a>
+            </li>
+            <li>
+                <a href="@Url.Action("MontarTelaDashboardCRMNovo", "CRM")">Dashboard de Processos</a>
+            </li>
+            <li class="active">
+                <strong>Processos</strong>
+            </li>
+        </ol>
+        <br />
+    </div>
+
+    <div class="row">
+        <div class="col-lg-12 col-md-12 col-xs-12">
+            <div class="col-lg-12 col-md-12 col-xs-12 ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>Filtros</h5>
+                </div>
+
+                @using (Html.BeginForm("FiltrarCRM", "CRM", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal" }))
+                {
+                    <div class="ibox-content">
+                        <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
+                            <div class="col-lg-2 col-md-2 col-xs-12">
+                                Funil
+                                @Html.DropDownListFor(m => m.FUNI_CD_ID, (SelectList)ViewBag.Funis, "Selecionar", new { @class = "form-control", autofocus = true })
+                            </div>
+                            <div class="col-lg-2 col-md-2 col-xs-12">
+                                Data Início
+                                @Html.TextBoxFor(m => m.CRM1_DT_CRIACAO, "{0:dd/MM/yyyy}", new { @class = "form-control date-picker", autofocus = true, @id="data1" })
+                            </div>
+                            <div class="col-lg-2 col-md-2 col-xs-12">
+                                Data Final
+                                @Html.TextBoxFor(m => m.CRM1_DT_CANCELAMENTO, "{0:dd/MM/yyyy}", new { @class = "form-control date-picker", autofocus = true, @id="data2" })
+                            </div>
+                            <div class="col-lg-2 col-md-2 col-xs-12">
+                                Origem
+                                @Html.DropDownListFor(m => m.ORIG_CD_ID, (SelectList)ViewBag.Origem, "Selecionar", new { @class = "form-control", autofocus = true })
+                            </div>
+                            <div class="col-lg-2 col-md-2 col-xs-12">
+                                Situação
+                                @Html.DropDownListFor(m => m.CRM1_IN_ATIVO, (SelectList)ViewBag.Adic, "Selecionar", new { @class = "form-control", autofocus = true })
+                            </div>
+                            <div class="col-lg-2 col-md-2 col-xs-12">
+                                Favorito
+                                @Html.DropDownListFor(m => m.CRM1_IN_ESTRELA, (SelectList)ViewBag.Favorito, "Selecionar", new { @class = "form-control", autofocus = true })
+                            </div>
+                        </div>
+                        <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
+                            <div class="col-lg-3 col-md-3 col-xs-12">
+                                Campanha
+                                @Html.TextBoxFor(m => m.CRM1_NM_CAMPANHA, new { @class = "form-control", autofocus = true })
+                            </div>
+                            <div class="col-lg-2 col-md-2 col-xs-12">
+                                Temperatura
+                                @Html.DropDownListFor(m => m.CRM1_NR_TEMPERATURA, (SelectList)ViewBag.Temp, "Selecionar", new { @class = "form-control", autofocus = true })
+                            </div>
+                            <div class="col-lg-3 col-md-3 col-xs-12">
+                                Nome do Processo
+                                @Html.TextBoxFor(m => m.CRM1_NM_NOME, new { @class = "form-control", autofocus = true })
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-xs-12">
+                                Cliente (Nome, Razão Social ou CPF)
+                                @Html.TextBoxFor(m => m.CRM1_DS_DESCRICAO, new { @class = "form-control", autofocus = true })
+                            </div>
+                        </div>
+                        <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
+                            <div class="col-lg-12 col-md-12 col-xs-12">                                     
+                                @Html.ButtonActionSubmit(text: "Filtrar")
+                                @Html.ButtonLinkIndex(text: "Incluir Novo Processo", controller: "CRM", action: "IncluirProcessoCRM", buttonClass: "primary")
+                                @Html.ButtonLinkIndex(text: "Retirar Filtro", controller: "CRM", action: "RetirarFiltroCRM")
+                                @Html.ButtonLinkIndex(text: "Visualização Kanban", controller: "CRM", action: "MontarTelaKanbanCRM")
+                                @Html.ButtonLinkIndex(text: "Ações do Usuário", controller: "CRM", action: "VerAcoesUsuarioCRMPrevia1")
+                                @Html.ButtonLinkIndex(text: "Propostas", action: "VerPedidosUsuarioCRMPrevia", controller: "CRM")
+                                @Html.ButtonLinkIndex(text: "Histórico", controller: "CRM", action: "MontarTelaHistoricoGeral")
+                                @Html.ButtonLinkIndex(text: "Gerar Listagem", controller: "CRM", action: "GerarRelatorioListaCRM")
+                                @Html.ButtonLinkIndex(text: "Mensagens Enviadas", action: "VerMensagensEnviadas", controller: "CRM", buttonClass: "success")
+                                @if ((Int32)Session["PermComercial"] == 1)
+                                {
+                                    @Html.ButtonLinkIndex(text: "Módulo Comercial", action: "CarregarDesenvolvimento", controller: "BaseAdmin", buttonClass: "danger")
+                                }
+                                @Html.ButtonLinkIndex(text: "Voltar", action: "MontarTelaDashboardCRMNovo", controller: "CRM")                
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-12 col-md-12 col-xs-12"  id="Lista">
+            <div class="col-lg-12 col-md-12 col-xs-12 ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>Processos</h5>
+                </div>
+                <div class="ibox-content">
+                    @if (!ViewData.ModelState.IsValid)
+                    {
+                        <div class="alert alert-danger">
+                            <button type="button" class="close" data-dismiss="alert">Fechar</button>
+                            @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+                        </div>
+                    }
+                    <div class="row">
+                        @if (ViewBag.Listas != null && (ViewBag.Listas as List<EntitiesServices.Model.CRM>).Count > 0)
+                        {
+                            <table class="table table-striped table-bordered table-hover dataTables-example">
+                                <thead style="background-color:lightsteelblue">
+                                    <tr>
+                                        <th class="td-one-action"></th>
+                                        <th style="width: auto">Funil</th>
+                                        <th style="width: auto">Etapa</th>
+                                        <th style="width: auto">Cliente</th>
+                                        <th style="width: auto">Campanha</th>
+                                        <th style="width: auto">Título</th>
+                                        <th style="width: auto">Próxima Ação</th>
+                                        <th style="width: auto">Data Prevista</th>
+                                        <th style="width: auto">Origem</th>
+                                        <th style="width: auto">Situação</th>
+                                        <th style="width: auto">Temperatura</th>
+                                        <th class="td-one-action">Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var cond in (ViewBag.Listas as List<EntitiesServices.Model.CRM>).OrderByDescending(p => p.CRM1_DT_CRIACAO))
+                                    {
+                                        if (cond.CRM_ACAO.Where(p => p.CRAC_IN_STATUS == 1).ToList().Count == 0)
+                                        {
+                                            <tr>                                            
+                                                <td class="td-one-action">
+                                                    @if (cond.CRM1_IN_ATIVO != 3)
+                                                    {
+                                                        if (cond.CRM1_IN_ESTRELA == 1)
+                                                        {
+                                                            <span style="color: #337ab7; cursor:pointer;" alt="Desativar" class="tbl-link fa-lg fa fa-star" onclick="ShowModalEstrelaNao('/CRM/EstrelaNao/@cond.CRM1_CD_ID')" title="Arquivar"></span>
+                                                        }
+                                                        else if (cond.CRM1_IN_ESTRELA == 0)
+                                                        {   
+                                                            <span style="color: #337ab7; cursor:pointer;" alt="Reativar" class="tbl-link fa-lg fa fa-star-o" onclick="ShowModalEstrelaSim('/CRM/EstrelaSim/@cond.CRM1_CD_ID')" title="Reativar"></span>
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        if (cond.CRM1_IN_ESTRELA == 1)
+                                                        {
+                                                            <span style="color: #337ab7; cursor:pointer;" alt="Desativar" class="tbl-link fa-lg fa fa-star" title="Arquivar"></span>
+                                                        }
+                                                        else if (cond.CRM1_IN_ESTRELA == 0)
+                                                        {   
+                                                            <span style="color: #337ab7; cursor:pointer;" alt="Reativar" class="tbl-link fa-lg fa fa-star-o" title="Reativar"></span>
+                                                        }
+                                                    }
+                                                </td>
+
+                                                <td>@cond.FUNIL.FUNI_NM_NOME</td>
+                                                @if (@cond.FUNIL.FUNIL_ETAPA.Where(p => p.FUET_IN_ORDEM == cond.CRM1_IN_STATUS).ToList().Count > 0)
+                                                {
+                                                    <td>@cond.FUNIL.FUNIL_ETAPA.Where(p => p.FUET_IN_ORDEM == cond.CRM1_IN_STATUS).First().FUET_NM_NOME</td>
+                                                }
+                                                else
+                                                {
+                                                    <td>Encerrado</td>
+                                                }                                                
+                                                
+                                                <td><a href="@Url.Action("EditarClienteForm", "CRM", new { id = cond.CLIE_CD_ID })" />@cond.CLIENTE.CLIE_NM_NOME</td>
+                                                
+                                                @if (cond.CRM1_NM_CAMPANHA != null)
+                                                {
+                                                    <td><span class="badge badge-success">@cond.CRM1_NM_CAMPANHA</span></td>
+                                                }
+                                                else
+                                                {
+                                                    <td><span class="badge badge-warning">Não Definida</span></td>
+                                                }
+
+
+                                                @if (cond.CRM1_IN_ATIVO == 3 || cond.CRM1_IN_ATIVO == 4 || cond.CRM1_IN_ATIVO == 8)
+                                                {
+                                                    <td><a href="@Url.Action("VisualizarProcessoCRM", "CRM", new { id = cond.CRM1_CD_ID })" />@cond.CRM1_NM_NOME</td>
+                                                }
+                                                else if (cond.CRM1_IN_ATIVO == 2)
+                                                {
+                                                    <td><a href="@Url.Action("VisualizarProcessoCRM", "CRM", new { id = cond.CRM1_CD_ID })" />@cond.CRM1_NM_NOME</td>
+                                                }                                             
+                                                else
+                                                {
+                                                    if (ViewBag.Perfil == "ADM" || ViewBag.Perfil == "GER"  || ViewBag.Perfil == "OPR" )
+                                                    {
+                                                        if (cond.CRM1_DT_ENCERRAMENTO == null)
+                                                        {
+                                                            <td><a href="@Url.Action("AcompanhamentoProcessoCRM", "CRM", new { id = cond.CRM1_CD_ID })" />@cond.CRM1_NM_NOME</td>
+                                                        }
+                                                        else
+                                                        {
+                                                            <td><a href="@Url.Action("VisualizarProcessoCRM", "CRM", new { id = cond.CRM1_CD_ID })" />@cond.CRM1_NM_NOME</td>
+                                                        }
+
+                                                    }
+                                                    else
+                                                    {
+                                                        <td><a href="@Url.Action("VisualizarProcessoCRM", "CRM", new { id = cond.CRM1_CD_ID })" />@cond.CRM1_NM_NOME</td>
+                                                    }
+                                                }
+
+
+                                                @if (cond.CRM_ACAO.Where(p => p.CRAC_IN_STATUS == 1).ToList().Count > 0)
+                                                {
+                                                    <td style="width: auto">@cond.CRM_ACAO.Where(p => p.CRAC_IN_STATUS == 1).OrderByDescending(m => m.CRAC_DT_PREVISTA).FirstOrDefault().CRAC_DS_DESCRICAO</td>
+                                                    if (cond.CRM_ACAO.Where(p => p.CRAC_IN_STATUS == 1).OrderByDescending(m => m.CRAC_DT_PREVISTA).FirstOrDefault().CRAC_DT_PREVISTA.Value.Date >= DateTime.Today.Date)
+                                                    {
+                                                        <td style="width: auto; color: green; font-weight:bold">@cond.CRM_ACAO.Where(p => p.CRAC_IN_STATUS == 1).OrderByDescending(m => m.CRAC_DT_PREVISTA).FirstOrDefault().CRAC_DT_PREVISTA.Value.ToShortDateString()</td>
+                                                    }
+                                                    else
+                                                    {
+                                                        <td style="width: auto; color: red; font-weight:bold">@cond.CRM_ACAO.Where(p => p.CRAC_IN_STATUS == 1).OrderByDescending(m => m.CRAC_DT_PREVISTA).FirstOrDefault().CRAC_DT_PREVISTA.Value.ToShortDateString()</td>
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    <td>-</td>
+                                                    <td>-</td>
+                                                }
+
+                                                @if (cond.CRM_ORIGEM != null)
+	                                            {
+                                                    <td style="width: auto">@cond.CRM_ORIGEM.CROR_NM_NOME</td>
+                                                }
+                                                else
+                                                {
+                                                    <td style="width: auto">-</td>
+                                                }
+
+                                                @if (cond.CRM1_IN_ATIVO == 1)
+	                                            {
+                                                    <td><span class="badge badge-success">Ativo</span></td>
+                                                }
+                                                else if (cond.CRM1_IN_ATIVO == 2)
+                                                {
+                                                    <td><span class="badge badge-warning">Arquivado</span></td>
+                                                }
+                                                else if (cond.CRM1_IN_ATIVO == 3)
+                                                {
+                                                    <td><span class="badge badge-warning">Cancelado</span></td>
+                                                }   
+                                                else if (cond.CRM1_IN_ATIVO == 4)
+                                                {
+                                                    <td><span class="badge badge-danger">Falhado</span></td>
+                                                }
+                                                else if (cond.CRM1_IN_ATIVO == 5)
+                                                {
+                                                    <td><span class="badge badge-primary">Sucesso</span></td>
+                                                }
+                                                else if (cond.CRM1_IN_ATIVO == 6)
+                                                {
+                                                    <td><span class="badge badge-success">Faturamento</span></td>
+                                                }
+                                                else if (cond.CRM1_IN_ATIVO == 7)
+                                                {
+                                                    <td><span class="badge badge-warning">Expedição</span></td>
+                                                }
+                                                else if (cond.CRM1_IN_ATIVO == 8)
+                                                {
+                                                    <td><span class="badge badge-primary">Entregue</span></td>
+                                                }
+
+                                                @if (cond.CRM1_NR_TEMPERATURA == 1)
+	                                            {
+                                                    <td><span class="badge badge-success">Fria</span></td>
+                                                }
+                                                else if (cond.CRM1_NR_TEMPERATURA == 2)
+                                                {
+                                                    <td><span class="badge badge-primary">Morna</span></td>
+                                                }
+                                                else if (cond.CRM1_NR_TEMPERATURA == 3)
+                                                {
+                                                    <td><span class="badge badge-danger">Quente</span></td>
+                                                }
+                                                else if (cond.CRM1_NR_TEMPERATURA == 4)
+                                                {
+                                                    <td><span class="badge badge-danger">Muito Quente</span></td>
+                                                }
+                                                else
+                                                {
+                                                    <td><span class="badge badge-info">Não Definida</span></td>
+                                                }
+
+                                                <td class="td-one-action">
+                                                    @if (cond.CRM1_IN_ATIVO == 3 || cond.CRM1_IN_ATIVO == 4 || cond.CRM1_IN_ATIVO == 8)
+                                                    {
+                                                        @Html.TableLinkDetails(cond.CRM1_CD_ID, "VisualizarProcessoCRM", "fa-search", "Consultar")
+                                                    }
+                                                    else if (cond.CRM1_IN_ATIVO == 2)
+                                                    {
+                                                        @Html.TableLinkDetails(cond.CRM1_CD_ID, "VisualizarProcessoCRM", "fa-search", "Consultar")
+                                                        @*<span style="color: #337ab7; cursor:pointer;" alt="Reativar" class="tbl-link fa-lg fa fa-refresh" onclick="ShowModalReativar('/CRM/ReativarProcesso/@cond.CRM1_CD_ID')" title="Reativar"></span>*@
+                                                    }                                             
+                                                    else
+                                                    {
+                                                        if (ViewBag.Perfil == "ADM" || ViewBag.Perfil == "GER"  || ViewBag.Perfil == "OPR" )
+                                                        {
+                                                            if (cond.CRM1_DT_ENCERRAMENTO == null)
+                                                            {
+                                                                @Html.TableLinkDetails(cond.CRM1_CD_ID, "AcompanhamentoProcessoCRM", "fa-cubes", "Acompanhar")
+                                                                <span style="color: #337ab7; cursor:pointer;" alt="Desativar" class="tbl-link fa-lg fa fa-trash-o" onclick="ShowModalExcluir('/CRM/ExcluirProcesso/@cond.CRM1_CD_ID')" title="Arquivar"></span>
+                                                                @Html.TableLinkDetails(cond.CRM1_CD_ID, "CancelarProcessoCRM", "fa-times", "Cancelar")
+                                                                @*@Html.TableLinkDetails(cond.CRM1_CD_ID, "EncerrarProcessoCRM", "fa-check", "Encerrar")*@
+                                                            }
+                                                            else
+                                                            {
+                                                                @Html.TableLinkDetails(cond.CRM1_CD_ID, "VisualizarProcessoCRM", "fa-search", "Consultar")
+                                                            }
+
+                                                        }
+                                                        else
+                                                        {
+                                                            @Html.TableLinkDetails(cond.CRM1_CD_ID, "VisualizarProcessoCRM", "fa-search", "Consultar")
+                                                        }
+                                                    }
+                                                </td>
+                                            </tr>
+                                        }
+                                        else
+                                        {
+                                            if (cond.CRM_ACAO.Where(p => p.CRAC_IN_STATUS == 1).OrderByDescending(m => m.CRAC_DT_PREVISTA).FirstOrDefault().CRAC_DT_PREVISTA.Value.Date >= DateTime.Today.Date)
+                                            {
+                                                <tr style="background-color: beige">                                            
+                                                    <td class="td-one-action">
+                                                        @if (cond.CRM1_IN_ATIVO != 3)
+                                                        {
+                                                            if (cond.CRM1_IN_ESTRELA == 1)
+                                                            {
+                                                                <span style="color: #337ab7; cursor:pointer;" alt="Desativar" class="tbl-link fa-lg fa fa-star" onclick="ShowModalEstrelaNao('/CRM/EstrelaNao/@cond.CRM1_CD_ID')" title="Arquivar"></span>
+                                                            }
+                                                            else if (cond.CRM1_IN_ESTRELA == 0)
+                                                            {   
+                                                                <span style="color: #337ab7; cursor:pointer;" alt="Reativar" class="tbl-link fa-lg fa fa-star-o" onclick="ShowModalEstrelaSim('/CRM/EstrelaSim/@cond.CRM1_CD_ID')" title="Reativar"></span>
+                                                            }
+                                                        }
+                                                        else
+                                                        {
+                                                            if (cond.CRM1_IN_ESTRELA == 1)
+                                                            {
+                                                                <span style="color: #337ab7; cursor:pointer;" alt="Desativar" class="tbl-link fa-lg fa fa-star" title="Arquivar"></span>
+                                                            }
+                                                            else if (cond.CRM1_IN_ESTRELA == 0)
+                                                            {   
+                                                                <span style="color: #337ab7; cursor:pointer;" alt="Reativar" class="tbl-link fa-lg fa fa-star-o" title="Reativar"></span>
+                                                            }
+                                                        }
+                                                    </td>
+
+                                                    <td>@cond.FUNIL.FUNI_NM_NOME</td>
+                                                    @if (@cond.FUNIL.FUNIL_ETAPA.Where(p => p.FUET_IN_ORDEM == cond.CRM1_IN_STATUS).ToList().Count > 0)
+                                                    {
+                                                        <td>@cond.FUNIL.FUNIL_ETAPA.Where(p => p.FUET_IN_ORDEM == cond.CRM1_IN_STATUS).First().FUET_NM_NOME</td>
+                                                    }
+                                                    else
+                                                    {
+                                                        <td>Encerrado</td>
+                                                    }                                                
+                                                
+                                                    <td><a href="@Url.Action("EditarClienteForm", "CRM", new { id = cond.CLIE_CD_ID })" />@cond.CLIENTE.CLIE_NM_NOME</td>
+                                                
+                                                    @if (cond.CRM1_NM_CAMPANHA != null)
+                                                    {
+                                                        <td><span class="badge badge-success">@cond.CRM1_NM_CAMPANHA</span></td>
+                                                    }
+                                                    else
+                                                    {
+                                                        <td><span class="badge badge-warning">Não Definida</span></td>
+                                                    }
+                                                    @if (cond.CRM1_IN_ATIVO == 3 || cond.CRM1_IN_ATIVO == 4 || cond.CRM1_IN_ATIVO == 8)
+                                                    {
+                                                        <td><a href="@Url.Action("VisualizarProcessoCRM", "CRM", new { id = cond.CRM1_CD_ID })" />@cond.CRM1_NM_NOME</td>
+                                                    }
+                                                    else if (cond.CRM1_IN_ATIVO == 2)
+                                                    {
+                                                        <td><a href="@Url.Action("VisualizarProcessoCRM", "CRM", new { id = cond.CRM1_CD_ID })" />@cond.CRM1_NM_NOME</td>
+                                                    }                                             
+                                                    else
+                                                    {
+                                                        if (ViewBag.Perfil == "ADM" || ViewBag.Perfil == "GER"  || ViewBag.Perfil == "OPR" )
+                                                        {
+                                                            if (cond.CRM1_DT_ENCERRAMENTO == null)
+                                                            {
+                                                                <td><a href="@Url.Action("AcompanhamentoProcessoCRM", "CRM", new { id = cond.CRM1_CD_ID })" />@cond.CRM1_NM_NOME</td>
+                                                            }
+                                                            else
+                                                            {
+                                                                <td><a href="@Url.Action("VisualizarProcessoCRM", "CRM", new { id = cond.CRM1_CD_ID })" />@cond.CRM1_NM_NOME</td>
+                                                            }
+
+                                                        }
+                                                        else
+                                                        {
+                                                            <td><a href="@Url.Action("VisualizarProcessoCRM", "CRM", new { id = cond.CRM1_CD_ID })" />@cond.CRM1_NM_NOME</td>
+                                                        }
+                                                    }
+
+
+                                                    @if (cond.CRM_ACAO.Where(p => p.CRAC_IN_STATUS == 1).ToList().Count > 0)
+                                                    {
+                                                        <td style="width: auto">@cond.CRM_ACAO.Where(p => p.CRAC_IN_STATUS == 1).OrderByDescending(m => m.CRAC_DT_PREVISTA).FirstOrDefault().CRAC_DS_DESCRICAO</td>
+                                                        if (cond.CRM_ACAO.Where(p => p.CRAC_IN_STATUS == 1).OrderByDescending(m => m.CRAC_DT_PREVISTA).FirstOrDefault().CRAC_DT_PREVISTA.Value.Date >= DateTime.Today.Date)
+                                                        {
+                                                            <td style="width: auto; color: green; font-weight:bold">@cond.CRM_ACAO.Where(p => p.CRAC_IN_STATUS == 1).OrderByDescending(m => m.CRAC_DT_PREVISTA).FirstOrDefault().CRAC_DT_PREVISTA.Value.ToShortDateString()</td>
+                                                        }
+                                                        else
+                                                        {
+                                                            <td style="width: auto; color: red; font-weight:bold">@cond.CRM_ACAO.Where(p => p.CRAC_IN_STATUS == 1).OrderByDescending(m => m.CRAC_DT_PREVISTA).FirstOrDefault().CRAC_DT_PREVISTA.Value.ToShortDateString()</td>
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        <td>-</td>
+                                                        <td>-</td>
+                                                    }
+
+                                                    @if (cond.CRM_ORIGEM != null)
+	                                                {
+                                                        <td style="width: auto">@cond.CRM_ORIGEM.CROR_NM_NOME</td>
+                                                    }
+                                                    else
+                                                    {
+                                                        <td style="width: auto">-</td>
+                                                    }
+
+                                                    @if (cond.CRM1_IN_ATIVO == 1)
+	                                                {
+                                                        <td><span class="badge badge-success">Ativo</span></td>
+                                                    }
+                                                    else if (cond.CRM1_IN_ATIVO == 2)
+                                                    {
+                                                        <td><span class="badge badge-warning">Arquivado</span></td>
+                                                    }
+                                                    else if (cond.CRM1_IN_ATIVO == 3)
+                                                    {
+                                                        <td><span class="badge badge-warning">Cancelado</span></td>
+                                                    }   
+                                                    else if (cond.CRM1_IN_ATIVO == 4)
+                                                    {
+                                                        <td><span class="badge badge-danger">Falhado</span></td>
+                                                    }
+                                                    else if (cond.CRM1_IN_ATIVO == 5)
+                                                    {
+                                                        <td><span class="badge badge-primary">Sucesso</span></td>
+                                                    }
+                                                    else if (cond.CRM1_IN_ATIVO == 6)
+                                                    {
+                                                        <td><span class="badge badge-success">Faturamento</span></td>
+                                                    }
+                                                    else if (cond.CRM1_IN_ATIVO == 7)
+                                                    {
+                                                        <td><span class="badge badge-warning">Expedição</span></td>
+                                                    }
+                                                    else if (cond.CRM1_IN_ATIVO == 8)
+                                                    {
+                                                        <td><span class="badge badge-primary">Entregue</span></td>
+                                                    }
+
+                                                    @if (cond.CRM1_NR_TEMPERATURA == 1)
+	                                                {
+                                                        <td><span class="badge badge-success">Fria</span></td>
+                                                    }
+                                                    else if (cond.CRM1_NR_TEMPERATURA == 2)
+                                                    {
+                                                        <td><span class="badge badge-primary">Morna</span></td>
+                                                    }
+                                                    else if (cond.CRM1_NR_TEMPERATURA == 3)
+                                                    {
+                                                        <td><span class="badge badge-danger">Quente</span></td>
+                                                    }
+                                                    else if (cond.CRM1_NR_TEMPERATURA == 4)
+                                                    {
+                                                        <td><span class="badge badge-danger">Muito Quente</span></td>
+                                                    }
+                                                    else
+                                                    {
+                                                        <td><span class="badge badge-info">Não Definida</span></td>
+                                                    }
+
+                                                    <td class="td-one-action">
+                                                        @if (cond.CRM1_IN_ATIVO == 3 || cond.CRM1_IN_ATIVO == 4 || cond.CRM1_IN_ATIVO == 8)
+                                                        {
+                                                            @Html.TableLinkDetails(cond.CRM1_CD_ID, "VisualizarProcessoCRM", "fa-search", "Consultar")
+                                                        }
+                                                        else if (cond.CRM1_IN_ATIVO == 2)
+                                                        {
+                                                            @Html.TableLinkDetails(cond.CRM1_CD_ID, "VisualizarProcessoCRM", "fa-search", "Consultar")
+                                                            <span style="color: #337ab7; cursor:pointer;" alt="Reativar" class="tbl-link fa-lg fa fa-refresh" onclick="ShowModalReativar('/CRM/ReativarProcesso/@cond.CRM1_CD_ID')" title="Reativar"></span>
+                                                        }                                             
+                                                        else
+                                                        {
+                                                            if (ViewBag.Perfil == "ADM" || ViewBag.Perfil == "GER"  || ViewBag.Perfil == "OPR" )
+                                                            {
+                                                                if (cond.CRM1_DT_ENCERRAMENTO == null)
+                                                                {
+                                                                    @Html.TableLinkDetails(cond.CRM1_CD_ID, "AcompanhamentoProcessoCRM", "fa-cubes", "Acompanhar")
+                                                                    <span style="color: #337ab7; cursor:pointer;" alt="Desativar" class="tbl-link fa-lg fa fa-trash-o" onclick="ShowModalExcluir('/CRM/ExcluirProcesso/@cond.CRM1_CD_ID')" title="Arquivar"></span>
+                                                                    @Html.TableLinkDetails(cond.CRM1_CD_ID, "CancelarProcessoCRM", "fa-times", "Cancelar")
+                                                                    @*@Html.TableLinkDetails(cond.CRM1_CD_ID, "EncerrarProcessoCRM", "fa-check", "Encerrar")*@
+                                                                }
+                                                                else
+                                                                {
+                                                                    @Html.TableLinkDetails(cond.CRM1_CD_ID, "VisualizarProcessoCRM", "fa-search", "Consultar")
+                                                                }
+
+                                                            }
+                                                            else
+                                                            {
+                                                                @Html.TableLinkDetails(cond.CRM1_CD_ID, "VisualizarProcessoCRM", "fa-search", "Consultar")
+                                                            }
+                                                        }
+                                                    </td>
+                                                </tr>
+                                            }
+                                            else
+                                            {
+                                                <tr style="background-color: blanchedalmond">                                            
+                                                    <td class="td-one-action">
+                                                        @if (cond.CRM1_IN_ATIVO != 3)
+                                                        {
+                                                            if (cond.CRM1_IN_ESTRELA == 1)
+                                                            {
+                                                                <span style="color: #337ab7; cursor:pointer;" alt="Desativar" class="tbl-link fa-lg fa fa-star" onclick="ShowModalEstrelaNao('/CRM/EstrelaNao/@cond.CRM1_CD_ID')" title="Arquivar"></span>
+                                                            }
+                                                            else if (cond.CRM1_IN_ESTRELA == 0)
+                                                            {   
+                                                                <span style="color: #337ab7; cursor:pointer;" alt="Reativar" class="tbl-link fa-lg fa fa-star-o" onclick="ShowModalEstrelaSim('/CRM/EstrelaSim/@cond.CRM1_CD_ID')" title="Reativar"></span>
+                                                            }
+                                                        }
+                                                        else
+                                                        {
+                                                            if (cond.CRM1_IN_ESTRELA == 1)
+                                                            {
+                                                                <span style="color: #337ab7; cursor:pointer;" alt="Desativar" class="tbl-link fa-lg fa fa-star" title="Arquivar"></span>
+                                                            }
+                                                            else if (cond.CRM1_IN_ESTRELA == 0)
+                                                            {   
+                                                                <span style="color: #337ab7; cursor:pointer;" alt="Reativar" class="tbl-link fa-lg fa fa-star-o" title="Reativar"></span>
+                                                            }
+                                                        }
+                                                    </td>
+
+                                                    <td>@cond.FUNIL.FUNI_NM_NOME</td>
+                                                    @if (@cond.FUNIL.FUNIL_ETAPA.Where(p => p.FUET_IN_ORDEM == cond.CRM1_IN_STATUS).ToList().Count > 0)
+                                                    {
+                                                        <td>@cond.FUNIL.FUNIL_ETAPA.Where(p => p.FUET_IN_ORDEM == cond.CRM1_IN_STATUS).First().FUET_NM_NOME</td>
+                                                    }
+                                                    else
+                                                    {
+                                                        <td>Encerrado</td>
+                                                    }                                                
+                                                    <td><a href="@Url.Action("EditarClienteForm", "CRM", new { id = cond.CLIE_CD_ID })" />@cond.CLIENTE.CLIE_NM_NOME</td>
+                                                    @if (cond.CRM1_NM_CAMPANHA != null)
+                                                    {
+                                                        <td><span class="badge badge-success">@cond.CRM1_NM_CAMPANHA</span></td>
+                                                    }
+                                                    else
+                                                    {
+                                                        <td><span class="badge badge-warning">Não Definida</span></td>
+                                                    }
+                                                
+                                                    @if (cond.CRM1_IN_ATIVO == 3 || cond.CRM1_IN_ATIVO == 4 || cond.CRM1_IN_ATIVO == 8)
+                                                    {
+                                                        <td><a href="@Url.Action("VisualizarProcessoCRM", "CRM", new { id = cond.CRM1_CD_ID })" />@cond.CRM1_NM_NOME</td>
+                                                    }
+                                                    else if (cond.CRM1_IN_ATIVO == 2)
+                                                    {
+                                                        <td><a href="@Url.Action("VisualizarProcessoCRM", "CRM", new { id = cond.CRM1_CD_ID })" />@cond.CRM1_NM_NOME</td>
+                                                    }                                             
+                                                    else
+                                                    {
+                                                        if (ViewBag.Perfil == "ADM" || ViewBag.Perfil == "GER"  || ViewBag.Perfil == "OPR" )
+                                                        {
+                                                            if (cond.CRM1_DT_ENCERRAMENTO != null)
+                                                            {
+                                                                <td><a href="@Url.Action("AcompanhamentoProcessoCRM", "CRM", new { id = cond.CRM1_CD_ID })" />@cond.CRM1_NM_NOME</td>
+                                                            }
+                                                            else
+                                                            {
+                                                                <td><a href="@Url.Action("VisualizarProcessoCRM", "CRM", new { id = cond.CRM1_CD_ID })" />@cond.CRM1_NM_NOME</td>
+                                                            }
+
+                                                        }
+                                                        else
+                                                        {
+                                                            <td><a href="@Url.Action("VisualizarProcessoCRM", "CRM", new { id = cond.CRM1_CD_ID })" />@cond.CRM1_NM_NOME</td>
+                                                        }
+                                                    }
+
+
+                                                    @if (cond.CRM_ACAO.Where(p => p.CRAC_IN_STATUS == 1).ToList().Count > 0)
+                                                    {
+                                                        <td style="width: auto">@cond.CRM_ACAO.Where(p => p.CRAC_IN_STATUS == 1).OrderByDescending(m => m.CRAC_DT_PREVISTA).FirstOrDefault().CRAC_DS_DESCRICAO</td>
+                                                        if (cond.CRM_ACAO.Where(p => p.CRAC_IN_STATUS == 1).OrderByDescending(m => m.CRAC_DT_PREVISTA).FirstOrDefault().CRAC_DT_PREVISTA.Value.Date >= DateTime.Today.Date)
+                                                        {
+                                                            <td style="width: auto; color: green; font-weight:bold">@cond.CRM_ACAO.Where(p => p.CRAC_IN_STATUS == 1).OrderByDescending(m => m.CRAC_DT_PREVISTA).FirstOrDefault().CRAC_DT_PREVISTA.Value.ToShortDateString()</td>
+                                                        }
+                                                        else
+                                                        {
+                                                            <td style="width: auto; color: red; font-weight:bold">@cond.CRM_ACAO.Where(p => p.CRAC_IN_STATUS == 1).OrderByDescending(m => m.CRAC_DT_PREVISTA).FirstOrDefault().CRAC_DT_PREVISTA.Value.ToShortDateString()</td>
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        <td>-</td>
+                                                        <td>-</td>
+                                                    }
+
+                                                    @if (cond.CRM_ORIGEM != null)
+	                                                {
+                                                        <td style="width: auto">@cond.CRM_ORIGEM.CROR_NM_NOME</td>
+                                                    }
+                                                    else
+                                                    {
+                                                        <td style="width: auto">-</td>
+                                                    }
+
+                                                    @if (cond.CRM1_IN_ATIVO == 1)
+	                                                {
+                                                        <td><span class="badge badge-success">Ativo</span></td>
+                                                    }
+                                                    else if (cond.CRM1_IN_ATIVO == 2)
+                                                    {
+                                                        <td><span class="badge badge-warning">Arquivado</span></td>
+                                                    }
+                                                    else if (cond.CRM1_IN_ATIVO == 3)
+                                                    {
+                                                        <td><span class="badge badge-warning">Cancelado</span></td>
+                                                    }   
+                                                    else if (cond.CRM1_IN_ATIVO == 4)
+                                                    {
+                                                        <td><span class="badge badge-danger">Falhado</span></td>
+                                                    }
+                                                    else if (cond.CRM1_IN_ATIVO == 5)
+                                                    {
+                                                        <td><span class="badge badge-primary">Sucesso</span></td>
+                                                    }
+                                                    else if (cond.CRM1_IN_ATIVO == 6)
+                                                    {
+                                                        <td><span class="badge badge-success">Faturamento</span></td>
+                                                    }
+                                                    else if (cond.CRM1_IN_ATIVO == 7)
+                                                    {
+                                                        <td><span class="badge badge-warning">Expedição</span></td>
+                                                    }
+                                                    else if (cond.CRM1_IN_ATIVO == 8)
+                                                    {
+                                                        <td><span class="badge badge-primary">Entregue</span></td>
+                                                    }
+
+                                                    @if (cond.CRM1_NR_TEMPERATURA == 1)
+	                                                {
+                                                        <td><span class="badge badge-success">Fria</span></td>
+                                                    }
+                                                    else if (cond.CRM1_NR_TEMPERATURA == 2)
+                                                    {
+                                                        <td><span class="badge badge-primary">Morna</span></td>
+                                                    }
+                                                    else if (cond.CRM1_NR_TEMPERATURA == 3)
+                                                    {
+                                                        <td><span class="badge badge-danger">Quente</span></td>
+                                                    }
+                                                    else if (cond.CRM1_NR_TEMPERATURA == 4)
+                                                    {
+                                                        <td><span class="badge badge-danger">Muito Quente</span></td>
+                                                    }
+                                                    else
+                                                    {
+                                                        <td><span class="badge badge-info">Não Definida</span></td>
+                                                    }
+
+                                                    <td class="td-one-action">
+                                                        @if (cond.CRM1_IN_ATIVO == 3 || cond.CRM1_IN_ATIVO == 4 || cond.CRM1_IN_ATIVO == 8)
+                                                        {
+                                                            @Html.TableLinkDetails(cond.CRM1_CD_ID, "VisualizarProcessoCRM", "fa-search", "Consultar")
+                                                        }
+                                                        else if (cond.CRM1_IN_ATIVO == 2)
+                                                        {
+                                                            @Html.TableLinkDetails(cond.CRM1_CD_ID, "VisualizarProcessoCRM", "fa-search", "Consultar")
+                                                            <span style="color: #337ab7; cursor:pointer;" alt="Reativar" class="tbl-link fa-lg fa fa-refresh" onclick="ShowModalReativar('/CRM/ReativarProcesso/@cond.CRM1_CD_ID')" title="Reativar"></span>
+                                                        }                                             
+                                                        else
+                                                        {
+                                                            if (ViewBag.Perfil == "ADM" || ViewBag.Perfil == "GER"  || ViewBag.Perfil == "OPR" )
+                                                            {
+                                                                if (cond.CRM1_DT_ENCERRAMENTO == null)
+                                                                {
+                                                                    @Html.TableLinkDetails(cond.CRM1_CD_ID, "AcompanhamentoProcessoCRM", "fa-cubes", "Acompanhar")
+                                                                    <span style="color: #337ab7; cursor:pointer;" alt="Desativar" class="tbl-link fa-lg fa fa-folder-open-o" onclick="ShowModalExcluir('/CRM/ExcluirProcesso/@cond.CRM1_CD_ID')" title="Arquivar"></span>
+                                                                    @Html.TableLinkDetails(cond.CRM1_CD_ID, "CancelarProcessoCRM", "fa-times", "Cancelar")
+                                                                    @Html.TableLinkDetails(cond.CRM1_CD_ID, "EncerrarProcessoCRM", "fa-check", "Encerrar")
+                                                                }
+                                                                else
+                                                                {
+                                                                    @Html.TableLinkDetails(cond.CRM1_CD_ID, "VisualizarProcessoCRM", "fa-search", "Consultar")
+                                                                }
+
+                                                            }
+                                                            else
+                                                            {
+                                                                @Html.TableLinkDetails(cond.CRM1_CD_ID, "VisualizarProcessoCRM", "fa-search", "Consultar")
+                                                            }
+                                                        }
+                                                    </td>
+                                                </tr>
+                                            }
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+                        }
+                        else
+                        {
+                            <div class="row">
+                                <div class="col-lg-4 col-md-4 col-xs-2">
+
+                                </div>
+                                <div style="border: 5px solid #F6A54A; padding: 10px; border-radius: 8px 8px; " class="col-lg-4 col-md-4 col-xs-8">
+                                    <h2 style="font-weight: bold">Sua pesquisa não retornou nenhum resultado</h2>
+                                    <p>Tente outras opções de pesquisa</p>
+
+                                    @Html.ButtonLinkIndex(text: "Retirar Filtro", controller: "CRM", action: "RetirarFiltroCRM")
+                                </div>
+                                <div class="col-lg-4 col-md-4 col-xs-2">
+
+                                </div>
+                            </div>
+                        }
+                </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Styles {
+    <link href="~/Content/themes/base/jquery-ui.min.css" rel="stylesheet" />
+    <link href="~/Content/themes/base/all.css" rel="stylesheet" />
+    <link href="~/Content/jquery.datetimepicker.css" rel="stylesheet" />
+    @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
+    @Styles.Render("~/plugins/jasnyBootstrapStyles")
+    @Styles.Render("~/plugins/toastrStyles")
+    @*@Styles.Render("~/Content/plugins/summernote/summernote.css")*@
+    <link href="~/Content/jquery-ui-timepicker-addon.min.css" rel="stylesheet" />
+    <link href="~/Content/plugins/select2/select2.min.css" rel="stylesheet" />
+    @Styles.Render("~/plugins/summernoteStyles")
+}
+
+@section Scripts {
+
+    <script src="~/Scripts/jquery.datetimepicker.full.min.js"></script>
+    <script type="text/javascript" src="~/Scripts/moment.min.js"></script>
+    <script type="text/javascript" src="~/Scripts/bootstrap.min.js"></script>
+    <script type="text/javascript" src="~/Scripts/jquery.datetimepicker"></script>
+    <script src="~/Scripts/jquery-ui-timepicker-addon.min.js"></script>
+    @Scripts.Render("~/plugins/toastr")
+    <script src="~/Scripts/jquery-ui-1.12.1.min.js"></script>
+    @Scripts.Render("~/plugins/dataTables")
+    @Scripts.Render("~/bundles/inputmask")
+    @Scripts.Render("~/plugins/jasnyBootstrap")
+    @Scripts.Render("~/plugins/sparkline")
+    @*@Scripts.Render("~/Scripts/plugins/summernote/summernote.min.js")*@
+    <script src="~/Scripts/plugins/select2/select2.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.maskedinput/1.4.1/jquery.maskedinput.js"></script>    
+    <script src="~/Scripts/uploadAnexo.js"></script>
+    @Scripts.Render("~/plugins/summernote")
+    
+    <script>
+        $(function () {
+            limpaModal();
+        });
+
+        function limpaModal() {
+            $('#btnModal').remove();
+            $('#modalTitle').remove();
+        }
+
+        function ShowModalExcluir(url) {
+            $('#modal').find('.modal-footer').prepend('<a id="btnModal" alt="Desativar" class="btn btn-primary" href="' + url + '" target="_self" title="Desativar">Confirmar</a>');
+            $('#modal').find('.modal-body').html('Confirma arquivamento do Processo?');
+            $('#modal').find('.modal-header').prepend('<h5 id="modalTitle" class="modal-title">Confimar Exclusão</h5>');
+            $('#modal').modal('show');
+        }
+
+        function ShowModalReativar(url) {
+            $('#modal').find('.modal-footer').prepend('<a id="btnModal" alt="Reativar" class="btn btn-primary" href="' + url + '" target="_self" title="Reativar">Confirmar</a>');
+            $('#modal').find('.modal-body').html('Confirma reativação do Processo?');
+            $('#modal').find('.modal-header').prepend('<h5 id="modalTitle" class="modal-title">Confimar Reativação</h5>');
+            $('#modal').modal('show');
+        }
+
+        function ShowModalEstrelaSim(url) {
+            $('#modal').find('.modal-footer').prepend('<a id="btnModal" alt="Desativar" class="btn btn-primary" href="' + url + '" target="_self" title="Desativar">Confirmar</a>');
+            $('#modal').find('.modal-body').html('Confirma Favorito?');
+            $('#modal').find('.modal-header').prepend('<h5 id="modalTitle" class="modal-title">Confimar Favorito</h5>');
+            $('#modal').modal('show');
+        }
+
+        function ShowModalEstrelaNao(url) {
+            $('#modal').find('.modal-footer').prepend('<a id="btnModal" alt="Desativar" class="btn btn-primary" href="' + url + '" target="_self" title="Desativar">Confirmar</a>');
+            $('#modal').find('.modal-body').html('Confirma Retirar Favorito?');
+            $('#modal').find('.modal-header').prepend('<h5 id="modalTitle" class="modal-title">Confimar Retirar Favorito</h5>');
+            $('#modal').modal('show');
+        }
+    </script>  
+    <script>
+        function mostrarDesc(desc) {
+            $('#modalDescBody').html(desc);
+            $('#modalDesc').modal('show');
+        }
+    </script>
+    
+    <script type="text/javascript">
+        function ValidaDiv(valPessoa) {
+            if (valPessoa == '2') {
+                $("#Lista").hide();
+                $("#Kanban").show();
+            } else if (valPessoa == '1') {
+                $("#Kanban").hide();
+                $("#Lista").show();
+        }
+
+        $(document).ready(function () {
+            ValidaDiv($('#visao').val());
+        });
+    </script>
+
+    <script>
+        $("#lstCliente").select2({
+            //data: filterSelect,
+            ajax: {
+                url: '../Cliente/BuscaNomeRazao',
+                type: 'POST',
+                data: function (params) {
+                    var query = {
+                        nome: params.term
+                    }
+                    return query
+                },
+                processResults: function (data) {
+                    console.log(data);
+                    return {
+                        results: data
+                    }
+                }
+            },
+            placeholder: 'Busque por NOME ou RAZÃO SOCIAL',
+            minimumInputLength: 1
+        });
+    </script>
+    <script type="text/javascript" language="javascript">
+        $(function () {
+            $('.date-picker').datepicker(
+                {
+                    dateFormat: 'dd/mm/yy',
+                    dayNames: ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'],
+                    dayNamesMin: ['D', 'S', 'T', 'Q', 'Q', 'S', 'S', 'D'],
+                    dayNamesShort: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'],
+                    monthNames: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'],
+                    monthNamesShort: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
+                    nextText: 'Proximo',
+                    prevText: 'Anterior',
+                    showOn: "focus"
+                }
+            )
+                .css("display", "normal")
+                .next("button").button({
+                    icons: { primary: "ui-icon-calendar" },
+                    label: "Selecione uma data",
+                    text: false
+                });
+        });
+    </script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            $('.dataTables-example').DataTable({
+                pageLength: 25,
+                dom: '<"html5buttons"B>lTfgitp',
+                buttons: [
+                    { extend: 'excel', title: 'CRM_Planilha' },
+                    { extend: 'pdf', title: 'CRM_PDF' },
+
+                    {
+                        extend: 'print',
+                        customize: function (win) {
+                            $(win.document.body).addClass('white-bg');
+                            $(win.document.body).css('font-size', '10px');
+
+                            $(win.document.body).find('table')
+                                    .addClass('compact')
+                                    .css('font-size', 'inherit');
+                        }
+                    }
+                ]
+
+            });      
+        });
+    </script>
+    <script type="text/javascript">
+        $(function () {
+            $("#cpf").mask("999.999.999-99");
+            $("#cnpj").mask("99.999.999/9999-99");
+            $("#data1").mask("99/99/9999");
+            $("#data2").mask("99/99/9999");
+        });
+    </script>
+
+    <script>
+        function MudaIdCliente(id) {
+            $('#idClie').val(id);
+        }
+    </script>
+
+    <script>
+        function GetCurrentDate() {
+            var today = new Date();
+            var dd = String(today.getDate()).padStart(2, '0');
+            var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+            var yyyy = today.getFullYear();
+
+            today = dd + '/' + mm + '/' + yyyy;
+            return today;
+        }
+    </script>
+
+    <script>
+        function InstanceDatePickerEnc() {
+            $('.dtEnc').datepicker(
+                {
+                    dateFormat: 'dd/mm/yy',
+                    dayNames: ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'],
+                    dayNamesMin: ['D', 'S', 'T', 'Q', 'Q', 'S', 'S', 'D'],
+                    dayNamesShort: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'],
+                    monthNames: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'],
+                    monthNamesShort: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
+                    nextText: 'Proximo',
+                    prevText: 'Anterior',
+                    showOn: "focus"
+                }
+            )
+                .css("display", "normal")
+                .next("button").button({
+                    icons: { primary: "ui-icon-calendar" },
+                    label: "Selecione uma data",
+                    text: false
+                });
+        }
+    </script>
+
+}
+
+@if (ViewBag.Message != null)
+{
+    <script type="text/javascript">
+            window.onload = function () {
+                alert("@ViewBag.Message");
+            };
+    </script>
+}
+

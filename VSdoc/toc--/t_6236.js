@@ -1,0 +1,1 @@
+c['6236']=[['6237',"Create(MENSAGEM_AUTOMACAO) Method","topic_0000000000000E73.html",0],['6238',"Create(MENSAGEM_AUTOMACAO, LOG) Method","topic_0000000000000E72.html",0]];

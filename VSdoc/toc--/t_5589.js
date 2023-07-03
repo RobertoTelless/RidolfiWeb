@@ -1,0 +1,1 @@
+c['5589']=[['5590',"ASSINANTE Property","topic_0000000000001839.html",0],['5591',"CLIENTE Property","topic_000000000000183A.html",0],['5592',"TIPE_CD_ID Property","topic_0000000000001836.html",0],['5593',"TIPE_IN_ATIVO Property","topic_0000000000001838.html",0],['5594',"TIPE_NM_NOME Property","topic_0000000000001837.html",0]];

@@ -1,0 +1,1 @@
+c['7177']=[['7178',"Create(TEMPLATE_SMS) Method","topic_00000000000012E4.html",0],['7179',"Create(TEMPLATE_SMS, LOG) Method","topic_00000000000012E3.html",0]];

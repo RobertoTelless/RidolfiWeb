@@ -1,0 +1,1 @@
+var breadcrumbs=[['-1',"",""],['2',"SOLUTION-WIDE PROPERTIES Reference","topic_0000000000001B27.html"],['1409',"DataServices.Repositories Namespace","topic_000000000000191D.html"],['1592',"FunilEtapaRepository Class","topic_00000000000019B2.html"],['1593',"Methods","topic_00000000000019B2_methods--.html"],['1596',"GetItensByFunil Method","topic_00000000000019B5.html"]];

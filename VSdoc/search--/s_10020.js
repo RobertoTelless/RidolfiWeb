@@ -1,0 +1,1 @@
+search_result['10020']=["topic_0000000000001ACC.html","CommonHelpers.CelsiusToFahrenheit Method","Converts Celsius to Fahrenheit"];

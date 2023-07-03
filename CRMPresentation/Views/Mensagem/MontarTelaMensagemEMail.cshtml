@@ -1,0 +1,518 @@
+﻿@using Presentation.Extensions
+@using CrossCutting;
+@using EntitiesServices.Work_Classes;
+@model EntitiesServices.Model.MENSAGENS
+@{
+    Layout = "~/Views/Shared/_Layout_Admin.cshtml";
+}
+<div class="wrapper wrapper-content animated fadeInRight">
+
+    <div id="containerModalDesc">
+        <div class="modal fade" id="modalDesc" tabindex="-1" role="dialog" aria-labelledby="modalDesc" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalDesc">Conteúdo da Mensagem</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div id="modalDescBody" class="modal-body">
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="containerModalDescF">
+        <div class="modal fade" id="modalDescF" tabindex="-1" role="dialog" aria-labelledby="modalDescF" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalDesc">Retorno do Erro</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div id="modalDescBodyF" class="modal-body">
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modalContainer">
+        <div id="modal" class="modal" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        @*titulo gerado dinamicamente*@
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        @*Gerado dinamicamente*@
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="page-title">
+        <h3 class="title">Mensagens</h3>
+        <br />
+        <ol class="breadcrumb">
+            <li>
+                <a href="@Url.Action("CarregarBase", "BaseAdmin")">Dashboard</a>
+            </li>
+            <li>
+                <a href="@Url.Action("MontarTelaDashboardMensagens", "Mensagem")">Dashboard</a>
+            </li>
+            <li class="active">
+                <strong>Mensagens - E-Mail</strong>
+            </li>
+        </ol>
+        <br />
+    </div>
+
+    @*Widgets*@
+    <br />
+    <div class="row">
+        <h4 style="color: green; font-weight: bold; background-color:antiquewhite">ATENÇÃO: Todas as mensagens serão geradas na empresa/filial do usuário logado</h4>
+        <div class="col-lg-2">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title"  style="background-color: cornflowerblue; color: darkgreen">
+                    <span class="label label-success pull-right">Hoje</span>
+                    <h5>Mensagens</h5>
+                </div>
+                <div class="ibox-content">
+                    <h1 class="no-margins">@ViewBag.EMailsDia</h1>
+                    <small>E-Mails Criados - Dia</small>
+                    <br />
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-2">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title"  style="background-color: cornflowerblue; color: darkgreen">
+                    <span class="label label-success pull-right">Hoje</span>
+                    <h5>Mensagens</h5>
+                </div>
+                <div class="ibox-content">
+                    <h1 class="no-margins">@ViewBag.EMailTotalEnvio</h1>
+                    <small>E-Mails Enviados</small>
+                    <br />
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-2">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title"  style="background-color: cornflowerblue; color: darkgreen">
+                    <span class="label label-success pull-right">Hoje</span>
+                    <h5>Mensagens</h5>
+                </div>
+                <div class="ibox-content">
+                    <h1 class="no-margins">@ViewBag.EMailTotalEnvioMes</h1>
+                    <small>E-Mails Enviados - Mês</small>
+                    <br />
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-2">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title"  style="background-color: cornflowerblue; color: darkgreen">
+                    <span class="label label-success pull-right">Hoje</span>
+                    <h5>Mensagens</h5>
+                </div>
+                <div class="ibox-content">
+                    <h1 class="no-margins">@ViewBag.EMailTotalEnvioDia</h1>
+                    <small>E-Mails Enviados - Dia</small>
+                    <br />
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-2">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title"  style="background-color: cornflowerblue; color: darkgreen">
+                    <span class="label label-success pull-right">Hoje</span>
+                    <h5>Mensagens</h5>
+                </div>
+                <div class="ibox-content">
+                    <h1 class="no-margins">@ViewBag.EMailAguarda</h1>
+                    <small>E-Mails - Agendados</small>
+                    <br />
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-2">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title"  style="background-color: cornflowerblue; color: darkgreen">
+                    <span class="label label-success pull-right">Hoje</span>
+                    <h5>Mensagens</h5>
+                </div>
+                <div class="ibox-content">
+                    <h1 class="no-margins">@ViewBag.EMailFalha</h1>
+                    <small>E-Mails - Falhas</small>
+                    <br />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-12 col-md-12 col-xs-12">
+            <div class="col-lg-12 col-md-12 col-xs-12 ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>Filtros</h5>
+                </div>
+
+                @using (Html.BeginForm("FiltrarMensagemEMail", "Mensagem", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal" }))
+                {
+                    <div class="ibox-content">
+                        <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
+                            <div class="col-lg-5 col-md-5 col-xs-12">
+                                Conteúdo
+                                @Html.TextBoxFor(m => m.MENS_TX_TEXTO, new { @class = "form-control", autofocus = true })
+                            </div>
+                            <div class="col-lg-2 col-md-2 col-xs-12">
+                                Data Envio
+                                @Html.TextBoxFor(m => m.MENS_DT_ENVIO, "{0:dd/MM/yyyy}", new { @class = "form-control date-picker", autofocus = true, @id = "data2" })
+                            </div>
+                        </div>
+                        <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
+                            <div class="col-lg-12 col-md-12 col-xs-12">
+                                @Html.ButtonActionSubmit(text: "Filtrar")
+                                @Html.ButtonLinkIndex(text: "Criar Novo E-Mail", controller: "Mensagem", action: "IncluirMensagemEMail", buttonClass: "primary")
+                                @Html.ButtonLinkIndex(text: "Ver Hoje", controller: "Mensagem", action: "RetirarFiltroMensagemEMail")
+                                @Html.ButtonLinkIndex(text: "Ver Mês Atual", controller: "Mensagem", action: "MostrarMesAtualMensagemEMail")
+                                @Html.ButtonLinkIndex(text: "Ver Todos Meses", controller: "Mensagem", action: "MostrarMesesMensagemEMail")
+                                @Html.ButtonLinkIndex(text: "Ver Agendados", controller: "Mensagem", action: "VerEMailAgendados")
+                                @Html.ButtonLinkIndex(text: "Voltar", controller: "Mensagem", action: "MontarTelaDashboardMensagens")
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-12 col-md-12 col-xs-12">
+            <div class="col-lg-12 col-md-12 col-xs-12 ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>Mensagens - E-Mail</h5>
+                </div>
+                <div class="ibox-content">
+                    @if (!ViewData.ModelState.IsValid)
+                    {
+                        <div class="alert alert-danger">
+                            <button type="button" class="close" data-dismiss="alert">Fechar</button>
+                            @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+                        </div>
+                    }
+                    <div class="row">
+                        @if (ViewBag.Listas != null && (ViewBag.Listas as List<EntitiesServices.Model.MENSAGENS>).Count > 0)
+                        {
+                            <table class="table table-striped table-bordered table-hover dataTables-example">
+                                <thead style="background-color:lightsteelblue">
+                                    <tr>
+                                        <th style="width: auto">Tipo</th>
+                                        <th style="width: auto">Data Criação</th>
+                                        <th style="width: auto">Data Envio</th>
+                                        <th style="width: auto">Nome</th>
+                                        <th style="width: auto">Agendamento</th>
+                                        <th style="width: auto">Destinos</th>
+                                        <th style="width: auto">Recursividade</th>
+                                        <th style="width: auto">Status</th>
+                                        <th style="width: auto">CRM</th>
+                                        <th class="td-one-action">Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var cond in (ViewBag.Listas as List<EntitiesServices.Model.MENSAGENS>))
+                                    {
+                                        <tr>
+                                            @if (cond.MENS_IN_TIPO == 1)
+                                            {
+                                                <td><span class="badge badge-primary">E-Mail</span></td>
+                                            }
+                                            else if (cond.MENS_IN_TIPO == 2)
+                                            {
+                                                <td><span class="badge badge-success">SMS</span></td>
+                                            }
+                                            else if (cond.MENS_IN_TIPO == 3)
+                                            {
+                                                <td><span class="badge badge-danger">WhatsApp</span></td>
+                                            }
+
+                                            <td style="width: auto">@cond.MENS_DT_CRIACAO.Value.ToShortDateString() @cond.MENS_DT_CRIACAO.Value.ToShortTimeString()</td>
+                                            
+                                            @if (cond.MENS_DT_ENVIO != null)
+                                            {
+                                                <td style="width: auto">@cond.MENS_DT_ENVIO.Value.ToShortDateString() @cond.MENS_DT_ENVIO.Value.ToShortTimeString()</td>
+                                            }
+                                            else
+                                            {
+                                                <td>-</td>
+                                            }
+
+                                            <td style="width: auto">@cond.MENS_NM_NOME</td>
+
+                                            @if (cond.MENS_DT_AGENDAMENTO != null)
+                                            {
+                                                <td style="width: auto">@cond.MENS_DT_AGENDAMENTO.Value.ToShortDateString() @cond.MENS_DT_AGENDAMENTO.Value.ToShortTimeString()</td>
+                                            }
+                                            else
+                                            {
+                                                <td>-</td>
+                                            }
+
+                                            @if (cond.MENS_IN_DESTINOS != 0)
+                                            {
+                                                <td style="width: auto">@cond.MENS_IN_DESTINOS</td>
+                                            }
+                                            else
+                                            {
+                                                <td>-</td>
+                                            }
+
+                                            @if (cond.MENS_NR_REPETICOES > 0)
+                                            {
+                                                <td><span class="badge badge-success">Sim</span></td>
+                                            }
+                                            else
+                                            {
+                                                <td><span class="badge badge-primary">Não</span></td>
+                                            }
+
+                                            @if (cond.MENS_IN_STATUS == 1)
+                                            {
+                                                <td><span class="badge badge-primary">Agendado</span></td>
+                                            }
+                                            else if (cond.MENS_IN_STATUS == 2)
+                                            {
+                                                <td><span class="badge badge-success">Enviado</span></td>
+                                            }
+                                            else if (cond.MENS_IN_STATUS == 3)
+                                            {
+                                                <td><span class="badge badge-danger">Falhado</span></td>
+                                            }
+                                            else if (cond.MENS_IN_STATUS == 4)
+                                            {
+                                                <td><span class="badge badge-warning">Programado</span></td>
+                                            }
+
+                                            @if (cond.MENS_IN_CRM == 1)
+                                            {
+                                                <td><span class="badge badge-success">Sim</span></td>
+                                            }
+                                            else
+                                            {
+                                                <td><span class="badge badge-primary">Não</span></td>
+                                            }
+                                            <td class="td-one-action">
+                                                @if (ViewBag.Perfil != "VIS")
+                                                {
+                                                    @Html.TableLinkDetails(cond.MENS_CD_ID, "VerMensagemEMail", "fa-search", "Consultar")
+                                                    if (cond.MENS_IN_ATIVO == 1)
+                                                    {
+                                                        <span style="color: #337ab7; cursor:pointer;" alt="Desativar" class="tbl-link fa-lg fa fa-trash-o" onclick="ShowModalExcluir('/Mensagem/ExcluirMensagemEMail/@cond.MENS_CD_ID')" title="Excluir"></span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span style="color: #337ab7; cursor:pointer;" alt="Reativar" class="tbl-link fa-lg fa fa-refresh" onclick="ShowModalReativar('/Mensagem/ReativarMensagemEMail/@cond.MENS_CD_ID')" title="Reativar"></span>
+                                                    }
+                                                    if ((Int32)Session["PermCRM"] == 1)
+                                                    {
+                                                        @Html.TableLinkDetails(cond.MENS_CD_ID, "ConverterMensagemCRMEMail", "fa-fork", "Criar Processo CRM")
+                                                    }
+                                                    if (cond.MENS_NR_REPETICOES > 0)
+                                                    {
+                                                        @Html.TableLinkDetails(cond.MENS_CD_ID, "VerRecursividades", "fa-calendar", "Ver Recursividades")
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    @Html.TableLinkDetails(cond.MENS_CD_ID, "VerMensagemEMail", "fa-search", "Consultar")
+                                                }
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        }
+                        else
+                        {
+                            <div class="row">
+                                <div class="col-lg-4 col-md-4 col-xs-2">
+
+                                </div>
+                                <div style="border: 5px solid #F6A54A; padding: 10px; border-radius: 8px 8px; " class="col-lg-4 col-md-4 col-xs-8">
+                                    <h2 style="font-weight: bold">Sua pesquisa não retornou nenhum resultado</h2>
+                                    <p>Tente outras opções de pesquisa</p>
+
+                                    @Html.ButtonLinkIndex(text: "Retirar Filtro", controller: "Mensagem", action: "RetirarFiltroMensagemEMail")
+                                </div>
+                                <div class="col-lg-4 col-md-4 col-xs-2">
+
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Styles {
+    <link href="~/Content/themes/base/jquery-ui.min.css" rel="stylesheet" />
+    <link href="~/Content/themes/base/all.css" rel="stylesheet" />
+    <link href="~/Content/jquery.datetimepicker.css" rel="stylesheet" />
+    @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
+    @Styles.Render("~/plugins/jasnyBootstrapStyles")
+    @Styles.Render("~/plugins/toastrStyles")
+    @*@Styles.Render("~/Content/plugins/summernote/summernote.css")*@
+    <link href="~/Content/jquery-ui-timepicker-addon.min.css" rel="stylesheet" />
+    <link href="~/Content/plugins/select2/select2.min.css" rel="stylesheet" />
+    @Styles.Render("~/plugins/summernoteStyles")
+}
+
+@section Scripts {
+
+    <script src="~/Scripts/jquery.datetimepicker.full.min.js"></script>
+    <script type="text/javascript" src="~/Scripts/moment.min.js"></script>
+    <script type="text/javascript" src="~/Scripts/bootstrap.min.js"></script>
+    <script type="text/javascript" src="~/Scripts/jquery.datetimepicker"></script>
+    <script src="~/Scripts/jquery-ui-timepicker-addon.min.js"></script>
+    @Scripts.Render("~/plugins/toastr")
+    <script src="~/Scripts/jquery-ui-1.12.1.min.js"></script>
+    @Scripts.Render("~/plugins/dataTables")
+    @Scripts.Render("~/bundles/inputmask")
+    @Scripts.Render("~/plugins/jasnyBootstrap")
+    @Scripts.Render("~/plugins/sparkline")
+    @*@Scripts.Render("~/Scripts/plugins/summernote/summernote.min.js")*@
+    <script src="~/Scripts/plugins/select2/select2.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.maskedinput/1.4.1/jquery.maskedinput.js"></script>
+    <script src="~/Scripts/uploadAnexo.js"></script>
+    @Scripts.Render("~/plugins/summernote")
+
+
+    <script>
+        $(function () {
+            limpaModal();
+        });
+
+        function limpaModal() {
+            $('#btnModal').remove();
+            $('#modalTitle').remove();
+        }
+
+        function ShowModalExcluir(url) {
+            $('#modal').find('.modal-footer').prepend('<a id="btnModal" alt="Desativar" class="btn btn-primary" href="' + url + '" target="_self" title="Desativar">Confirmar</a>');
+            $('#modal').find('.modal-body').html('Confirma exclusão da Mensagem?');
+            $('#modal').find('.modal-header').prepend('<h5 id="modalTitle" class="modal-title">Confimar Exclusão</h5>');
+            $('#modal').modal('show');
+        }
+
+        function ShowModalReativar(url) {
+            $('#modal').find('.modal-footer').prepend('<a id="btnModal" alt="Reativar" class="btn btn-primary" href="' + url + '" target="_self" title="Reativar">Confirmar</a>');
+            $('#modal').find('.modal-body').html('Confirma reativação da Mensagem?');
+            $('#modal').find('.modal-header').prepend('<h5 id="modalTitle" class="modal-title">Confimar Reativação</h5>');
+            $('#modal').modal('show');
+        }
+    </script>
+
+    <script>
+        function mostrarDesc(desc) {
+            $('#modalDescBody').html(desc);
+            $('#modalDesc').modal('show');
+        }
+    </script>
+    <script>
+        function mostrarDescFalhas(desc) {
+            $('#modalDescBodyF').html(desc);
+            $('#modalDescF').modal('show');
+        }
+    </script>
+
+    <script type="text/javascript" language="javascript">
+        $(function () {
+            $('.date-picker').datepicker(
+                {
+                    dateFormat: 'dd/mm/yy',
+                    dayNames: ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'],
+                    dayNamesMin: ['D', 'S', 'T', 'Q', 'Q', 'S', 'S', 'D'],
+                    dayNamesShort: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'],
+                    monthNames: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'],
+                    monthNamesShort: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
+                    nextText: 'Proximo',
+                    prevText: 'Anterior',
+                    showOn: "focus"
+                }
+            )
+                .css("display", "normal")
+                .next("button").button({
+                    icons: { primary: "ui-icon-calendar" },
+                    label: "Selecione uma data",
+                    text: false
+                });
+        });
+    </script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            $('.dataTables-example').DataTable({
+                pageLength: 25,
+                dom: '<"html5buttons"B>lTfgitp',
+                buttons: [
+                    { extend: 'excel', title: 'EMail_Planilha' },
+                    { extend: 'pdf', title: 'EMail_PDF' },
+
+                    {
+                        extend: 'print',
+                        customize: function (win) {
+                            $(win.document.body).addClass('white-bg');
+                            $(win.document.body).css('font-size', '10px');
+
+                            $(win.document.body).find('table')
+                                .addClass('compact')
+                                .css('font-size', 'inherit');
+                        }
+                    }
+                ]
+            });
+        });
+
+    </script>
+    <script type="text/javascript">
+        $(function () {
+            $("#data1").mask("99/99/9999");
+            $("#data2").mask("99/99/9999");
+        });
+    </script>
+
+
+}
+
+@if (ViewBag.Message != null)
+{
+    <script type="text/javascript">
+            window.onload = function () {
+                alert("@ViewBag.Message");
+            };
+    </script>
+}
+

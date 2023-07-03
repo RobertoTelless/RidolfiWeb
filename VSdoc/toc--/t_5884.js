@@ -1,0 +1,1 @@
+c['5884']=[['5885',"Create(ASSINANTE) Method","topic_0000000000000D5E.html",0],['5886',"Create(ASSINANTE, LOG) Method","topic_0000000000000D5D.html",0]];

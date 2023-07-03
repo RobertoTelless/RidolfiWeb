@@ -1,0 +1,1 @@
+var breadcrumbs=[['-1',"",""],['2',"SOLUTION-WIDE PROPERTIES Reference","topic_0000000000001B27.html"],['1237',"CrossCutting Namespace","topic_0000000000001A8A.html"],['1378',"HtmlToText Class","topic_0000000000001B0F.html"],['1379',"Methods","topic_0000000000001B0F_methods--.html"],['1383',"ConvertTo Method","topic_0000000000001B13.html"]];

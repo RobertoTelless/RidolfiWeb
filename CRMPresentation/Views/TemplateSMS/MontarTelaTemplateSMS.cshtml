@@ -1,0 +1,270 @@
+﻿@using Presentation.Extensions
+@using CrossCutting;
+@using System.IO;
+@using EntitiesServices.Work_Classes;
+@model EntitiesServices.Model.TEMPLATE_SMS
+@{
+    Layout = "~/Views/Shared/_Layout_Admin.cshtml";
+}
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="modalContainer">
+        <div id="modal" class="modal" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        @*titulo gerado dinamicamente*@
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        @*Gerado dinamicamente*@
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="page-title">
+        <h3 class="title">Modelos de SMS</h3>
+        <br />
+        <ol class="breadcrumb">
+            <li>
+                <a href="@Url.Action("CarregarBase", "BaseAdmin")">Dashboard</a>
+            </li>
+            <li>
+                <a href="@Url.Action("MontarTelaDashboardMensagens", "Mensagem")">Dashboard - Mensagens</a>
+            </li>
+            <li class="active">
+                <strong>Modelos de SMS</strong>
+            </li>
+        </ol>
+        <br />
+    </div>
+
+    <div class="row">
+        <div class="col-lg-12 col-md-12 col-xs-12">
+            <div class="col-lg-12 col-md-12 col-xs-12 ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>Filtros</h5>
+                </div>
+
+                @using (Html.BeginForm("FiltrarTemplateSMS", "TemplateSMS", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal" }))
+                {
+                    <div class="ibox-content">
+                        <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
+                            <div class="col-lg-2 col-md-2 col-xs-12">
+                                Sigla
+                                @Html.TextBoxFor(m => m.TSMS_SG_SIGLA, new { @class = "form-control", autofocus = true })
+                            </div>
+                            <div class="col-lg-3 col-md-3 col-xs-12">
+                                Nome
+                                @Html.TextBoxFor(m => m.TSMS_NM_NOME, new { @class = "form-control", autofocus = true })
+                            </div>
+                            <div class="col-lg-7 col-md-7 col-xs-12">
+                                Texto
+                                @Html.TextBoxFor(m => m.TSMS_TX_CORPO, new { @class = "form-control", autofocus = true })
+                            </div>
+                        </div>
+                        <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
+                            <div class="col-lg-12 col-md-12 col-xs-12">
+                                @Html.ButtonActionSubmit(text: "Filtrar")
+                                @if (ViewBag.Perfil == "ADM" || ViewBag.Perfil == "GER")
+                                {
+                                    @Html.ButtonLinkIndex(text: "Incluir Novo Modelo de SMS", controller: "TemplateSMS", action: "IncluirTemplateSMS", buttonClass: "primary")
+                                }
+                                @Html.ButtonLinkIndex(text: "Retirar Filtro", controller: "TemplateSMS", action: "RetirarFiltroTemplateSMS")
+                                @Html.ButtonLinkIndex(text: "Exibir Todos", controller: "TemplateSMS", action: "MostrarTudoTemplateSMS")
+                                @Html.ButtonLinkIndex(text: "Voltar", action: "MontarTelaDashboardCadastros", controller: "BaseAdmin")
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-12 col-md-12 col-xs-12">
+            <div class="col-lg-12 col-md-12 col-xs-12 ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>Modelos de SMS</h5>
+                </div>
+                <div class="ibox-content">
+                    @if (!ViewData.ModelState.IsValid)
+                    {
+                        <div class="alert alert-danger">
+                            <button type="button" class="close" data-dismiss="alert">Fechar</button>
+                            @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+                        </div>
+                    }
+                    <div class="row">
+                        @if (ViewBag.Listas != null && (ViewBag.Listas as List<EntitiesServices.Model.TEMPLATE_SMS>).Count > 0)
+                        {
+                            <table class="table table-striped table-bordered table-hover dataTables-example">
+                                <thead style="background-color:lightsteelblue">
+                                    <tr>
+                                        @if ((String)Session["PerfilUsuario"] != "ADM")
+                                        {
+                                            <th style="width: auto">Empresa</th>
+                                        }
+                                        <th style="width: auto">Sigla</th>
+                                        <th style="width: auto">Nome</th>
+                                        <th class="td-one-action">Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var cond in (ViewBag.Listas as List<EntitiesServices.Model.TEMPLATE_SMS>))
+                                    {
+                                        <tr>
+                                            @if ((String)Session["PerfilUsuario"] != "ADM")
+                                            {
+                                                <td style="width: auto">@cond.EMPRESA.EMPR_NM_NOME</td>
+                                            }
+                                            <td style="width: auto">@cond.TSMS_SG_SIGLA</td>
+                                            @if (cond.TSMS_IN_FIXO == 0)
+                                            {
+                                                <td style="width: auto"><a href="@Url.Action("EditarTemplateSMS", "TemplateSMS", new { id = cond.TSMS_CD_ID })" />@cond.TSMS_NM_NOME</td>
+                                            }
+                                            else
+                                            {
+                                                <td style="width: auto">@cond.TSMS_NM_NOME</td>
+                                            }
+                                            <td class="td-one-action">
+                                                @if (ViewBag.Perfil == "ADM" || ViewBag.Perfil == "GER" )
+                                                {
+                                                    if (cond.TSMS_IN_FIXO == 0)
+                                                    {
+                                                        @Html.TableLinkDetails(cond.TSMS_CD_ID, "EditarTemplateSMS", "fa-edit", "Editar")
+                                                        if (cond.TSMS_IN_ATIVO == 1)
+                                                        {
+                                                            <span style="color: #337ab7; cursor:pointer;" alt="Desativar" class="tbl-link fa-lg fa fa-trash-o" onclick="ShowModalExcluir('/TemplateSMS/ExcluirTemplateSMS/@cond.TSMS_CD_ID')" title="Excluir"></span>
+                                                        }
+                                                        else
+                                                        {   
+                                                            <span style="color: #337ab7; cursor:pointer;" alt="Reativar" class="tbl-link fa-lg fa fa-refresh" onclick="ShowModalReativar('/TemplateSMS/ReativarTemplateSMS/@cond.TSMS_CD_ID')" title="Reativar"></span>
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        @Html.TableLinkDetails(cond.TSMS_CD_ID, "VerTemplateSMS", "fa-search", "Visualizar")
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    @Html.TableLinkDetails(cond.TSMS_CD_ID, "VerTemplateSMS", "fa-search", "Visualizar")
+                                                }
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        }
+                        else
+                        {
+                            <div class="row">
+                                <div class="col-lg-4 col-md-4 col-xs-2">
+
+                                </div>
+                                <div style="border: 5px solid #F6A54A; padding: 10px; border-radius: 8px 8px; " class="col-lg-4 col-md-4 col-xs-8">
+                                    <h2 style="font-weight: bold">Sua pesquisa não retornou nenhum resultado</h2>
+                                    <p>Tente outras opções de pesquisa</p>
+
+                                    @Html.ButtonLinkIndex(text: "Retirar Filtro", controller: "TemplateSMS", action: "RetirarFiltroTemplateSMS")
+                                </div>
+                                <div class="col-lg-4 col-md-4 col-xs-2">
+
+                                </div>
+                            </div>
+                        }
+                </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <link href="~/Content/themes/base/all.css" rel="stylesheet" />  
+    @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
+    @Styles.Render("~/plugins/jasnyBootstrapStyles")
+    <link href="~/Content/plugins/select2/select2.min.css" rel="stylesheet" />
+}
+
+@section Scripts {
+
+    @Scripts.Render("~/plugins/dataTables")
+    @Scripts.Render("~/bundles/inputmask")
+    @Scripts.Render("~/plugins/jasnyBootstrap")
+    <script src="~/Scripts/plugins/select2/select2.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.maskedinput/1.4.1/jquery.maskedinput.js"></script>
+        <script>
+        $(function () {
+            limpaModal();
+        });
+
+        function limpaModal() {
+            $('#btnModal').remove();
+            $('#modalTitle').remove();
+        }
+
+        function ShowModalExcluir(url) {
+            $('#modal').find('.modal-footer').prepend('<a id="btnModal" alt="Desativar" class="btn btn-primary" href="' + url + '" target="_self" title="Desativar">Confirmar</a>');
+            $('#modal').find('.modal-body').html('Confirma exclusão do Modelo?');
+            $('#modal').find('.modal-header').prepend('<h5 id="modalTitle" class="modal-title">Confimar Exclusão</h5>');
+            $('#modal').modal('show');
+        }
+
+        function ShowModalReativar(url) {
+            $('#modal').find('.modal-footer').prepend('<a id="btnModal" alt="Reativar" class="btn btn-primary" href="' + url + '" target="_self" title="Reativar">Confirmar</a>');
+            $('#modal').find('.modal-body').html('Confirma reativação do Modelo?');
+            $('#modal').find('.modal-header').prepend('<h5 id="modalTitle" class="modal-title">Confimar Reativação</h5>');
+            $('#modal').modal('show');
+        }
+    </script>
+    <script>
+        function mostrarDesc(desc) {
+            $('#modalDescBody').html(desc);
+            $('#modalDesc').modal('show');
+        }
+    </script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            $('.dataTables-example').DataTable({
+                pageLength: 25,
+                dom: '<"html5buttons"B>lTfgitp',
+                buttons: [
+                    { extend: 'excel', title: 'PadraoSMS_Planilha' },
+                    { extend: 'pdf', title: 'PadraoSMS_PDF' },
+
+                    {
+                        extend: 'print',
+                        customize: function (win) {
+                            $(win.document.body).addClass('white-bg');
+                            $(win.document.body).css('font-size', '10px');
+
+                            $(win.document.body).find('table')
+                                    .addClass('compact')
+                                    .css('font-size', 'inherit');
+                        }
+                    }
+                ]
+            });           
+        });
+    </script>
+}
+
+@if (ViewBag.Message != null)
+{
+    <script type="text/javascript">
+            window.onload = function () {
+                alert("@ViewBag.Message");
+            };
+    </script>
+}
+

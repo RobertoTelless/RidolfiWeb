@@ -1,0 +1,1 @@
+search_result['9952']=["topic_0000000000001A92.html","Latitude1 Field","Latitude for the first geo point."];

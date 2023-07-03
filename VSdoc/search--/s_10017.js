@@ -1,0 +1,1 @@
+search_result['10017']=["topic_0000000000001AC9_overloads--.html","CommonHelpers.GetLinearDistance Method","Eliminates the user having to use altitude values."];
