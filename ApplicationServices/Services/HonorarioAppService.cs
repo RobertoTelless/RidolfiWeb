@@ -222,5 +222,29 @@ namespace ApplicationServices.Services
             }
         }
 
+        public Tuple<Int32, List<HONORARIO>, Boolean> ExecuteFilterTuple(Int32? tipo, String cpf, String cnpj, String razao, String nome, Int32 idAss)
+        {
+            try
+            {
+                List<HONORARIO> objeto = new List<HONORARIO>();
+                Int32 volta = 0;
+
+                // Processa filtro
+                objeto = _baseService.ExecuteFilter(tipo, cpf, cnpj, razao, nome);
+                if (objeto.Count == 0)
+                {
+                    volta = 1;
+                }
+
+                // Monta tupla
+                var tupla = Tuple.Create(volta, objeto, true);
+                return tupla;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
     }
 }

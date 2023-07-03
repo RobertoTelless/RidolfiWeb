@@ -203,8 +203,8 @@
                 buttons: [
                     { extend: 'copy' },
                     { extend: 'csv' },
-                    { extend: 'excel', title: 'ExampleFile' },
-                    { extend: 'pdf', title: 'ExampleFile' },
+                    { extend: 'excel', title: 'TRF_Planilha' },
+                    { extend: 'pdf', title: 'TRF_PDF' },
 
                     {
                         extend: 'print',
@@ -223,18 +223,7 @@
         });
 
     </script>
-    <script type="text/javascript">
-        $(function () {
-            $("#cpf").mask("999.999.999-99");
-            $("#cnpj").mask("99.999.999/9999-99");
-        });
-    </script>
 
-     <script>
-        function MudaIdForn(id) {
-            $('#idForn').val(id);
-        }
-    </script>
 }
 
 @if (ViewBag.Message != null)

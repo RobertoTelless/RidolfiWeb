@@ -129,6 +129,10 @@ namespace CRMPresentation.Controllers
             Session["BeneficiarioAlterada"] = 0;
             Session["TRFs"] = null;
             Session["TRFAlterada"] = 0;
+            Session["Varas"] = null;
+            Session["VaraAlterada"] = 0;
+            Session["Honorarios"] = null;
+            Session["HonorarioAlterada"] = 0;
             return RedirectToAction("Login", "ControleAcesso");
             //return RedirectToAction("CarregarLandingPage", "BaseAdmin");
         }

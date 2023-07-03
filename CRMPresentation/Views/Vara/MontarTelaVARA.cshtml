@@ -56,7 +56,7 @@
                                     @Html.TextBoxFor(m => m.VARA_NM_NOME, new { @class = "form-control", autofocus = true })
                                 </div>
                                 <div class="col-lg-2 col-md-2 col-xs-12">
-                                    UF
+                                    Tribunal
                                     @Html.DropDownListFor(m => m.TRF1_CD_ID, (SelectList)ViewBag.TRF, "Selecionar", new { @class = "form-control" })                            
                                 </div>
                             </div>
@@ -199,8 +199,8 @@
                 buttons: [
                     { extend: 'copy' },
                     { extend: 'csv' },
-                    { extend: 'excel', title: 'ExampleFile' },
-                    { extend: 'pdf', title: 'ExampleFile' },
+                    { extend: 'excel', title: 'Vara_Planilha' },
+                    { extend: 'pdf', title: 'Vara_PDF' },
 
                     {
                         extend: 'print',
@@ -218,18 +218,6 @@
             });
         });
 
-    </script>
-    <script type="text/javascript">
-        $(function () {
-            $("#cpf").mask("999.999.999-99");
-            $("#cnpj").mask("99.999.999/9999-99");
-        });
-    </script>
-
-     <script>
-        function MudaIdForn(id) {
-            $('#idForn').val(id);
-        }
     </script>
 }
 

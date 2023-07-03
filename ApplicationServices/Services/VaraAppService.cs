@@ -190,5 +190,30 @@ namespace ApplicationServices.Services
                 throw;
             }
         }
+
+        public Tuple<Int32, List<VARA>, Boolean> ExecuteFilterTuple(String nome, Int32? trf, Int32 idAss)
+        {
+            try
+            {
+                List<VARA> objeto = new List<VARA>();
+                Int32 volta = 0;
+
+                // Processa filtro
+                objeto = _baseService.ExecuteFilter(nome, trf);
+                if (objeto.Count == 0)
+                {
+                    volta = 1;
+                }
+
+                // Monta tupla
+                var tupla = Tuple.Create(volta, objeto, true);
+                return tupla;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
     }
 }

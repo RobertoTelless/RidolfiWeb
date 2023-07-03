@@ -21,6 +21,7 @@ namespace ApplicationServices.Interfaces
         List<HONORARIO> GetAllItens();
         List<HONORARIO> GetAllItensAdm();
         Int32 ExecuteFilter(Int32? tipo, String cpf, String cnpj, String razao, String nome, out List<HONORARIO> objeto);
+        Tuple<Int32, List<HONORARIO>, Boolean> ExecuteFilterTuple(Int32? tipo, String cpf, String cnpj, String razao, String nome, Int32 idAss);
 
         List<TIPO_PESSOA> GetAllTiposPessoa();
 

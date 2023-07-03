@@ -858,4 +858,16 @@
   <data name="M0269" xml:space="preserve">
     <value>Cliente não especifiado no destino</value>
   </data>
+  <data name="M0270" xml:space="preserve">
+    <value>TRF já incluído</value>
+  </data>
+  <data name="M0271" xml:space="preserve">
+    <value>Impossível excluir esse TRF. Existem registros vinculados a ele</value>
+  </data>
+  <data name="M0272" xml:space="preserve">
+    <value>Vara já cadastrada</value>
+  </data>
+  <data name="M0273" xml:space="preserve">
+    <value>Impossível excluir essa Vara. Existem registros vinculados a ela</value>
+  </data>
 </root>

@@ -2282,5 +2282,41 @@ namespace CRMPresentation.App_Start {
                 return ResourceManager.GetString("M0269", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a TRF já incluído.
+        /// </summary>
+        internal static string M0270 {
+            get {
+                return ResourceManager.GetString("M0270", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Impossível excluir esse TRF. Existem registros vinculados a ele.
+        /// </summary>
+        internal static string M0271 {
+            get {
+                return ResourceManager.GetString("M0271", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Vara já cadastrada.
+        /// </summary>
+        internal static string M0272 {
+            get {
+                return ResourceManager.GetString("M0272", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Impossível excluir essa Vara. Existem registros vinculados a ela.
+        /// </summary>
+        internal static string M0273 {
+            get {
+                return ResourceManager.GetString("M0273", resourceCulture);
+            }
+        }
     }
 }

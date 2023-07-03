@@ -19,6 +19,7 @@ namespace ApplicationServices.Interfaces
         List<VARA> GetAllItensAdm();
         VARA GetItemById(Int32 id);
         Int32 ExecuteFilter(String nome, Int32? trf, out List<VARA> objeto);
+        Tuple<Int32, List<VARA>, Boolean> ExecuteFilterTuple(String nome, Int32? trf, Int32 idAss);
         List<TRF> GetAllTRF();
     }
 }

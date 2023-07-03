@@ -20,6 +20,7 @@
         </ol>
         <br />
     </div>
+
     <div class="row">
         <div class="col-lg-12 col-md-12 col-xs-12">
             <div class="col-lg-12 col-md-12 col-xs-12 ibox float-e-margins">
@@ -38,8 +39,10 @@
                         @using (Html.BeginForm("IncluirHonorario", "Honorario", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", @id = "pwd-container1" }))
                         {
                             <div class="form-group">
+                                <br />
+                                @Html.ButtonActionSubmit(text: "BtnSubmit", htmlAttributes: new { id = "submit", style = "display: none;" })
                                 <button class="btnSubmit btn btn-sm btn-success" id="basictoast" type="button">Confirma inclusão de Advogado</button>
-                                @Html.ButtonLinkIndex(text: "Voltar", action: "VoltarBaseHonorario", controller: "Honorario")
+                                @Html.ButtonLinkIndex(text: "Cancelar", action: "VoltarBaseHonorario", controller: "Honorario")
                             </div>
                             <ul class="nav nav-tabs">
                                 <li class="active"><a data-toggle="tab" href="#tab-1">Dados Gerais</a></li>
@@ -118,12 +121,12 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="form-group">
+                                @*<div class="form-group">
                                     <br />
                                     @Html.ButtonActionSubmit(text: "BtnSubmit", htmlAttributes: new { id = "submit", style = "display: none;" })
                                     <button class="btnSubmit btn btn-sm btn-success" id="basictoast" type="button">Confirma inclusão de Advogado</button>
                                     @Html.ButtonLinkIndex(text: "Cancelar", action: "VoltarBaseHonorario", controller: "Honorario")
-                                </div>
+                                </div>*@
                             </div>
                         }
                     </div>
@@ -152,9 +155,6 @@
         $(function () {
             $("#cpf").mask("999.999.999-99");
             $("#cnpj").mask("99.999.999/9999-99");
-            $("#cep").mask("99999-999");
-            $('#tel').mask('(99)9999-9999');
-            $('#dn').mask('99/99/9999');
         });
     </script>
     <script type="text/javascript">
@@ -263,50 +263,6 @@
         SendFilesV2('imgTran', 'Honorario', 'UploadFileToSession');
     </script>
 
-    <script type="text/javascript" language="javascript">
-        $(function () {
-            $('.date-picker').datepicker(
-                {
-                    dateFormat: 'dd/mm/yy',
-                    dayNames: ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'],
-                    dayNamesMin: ['D', 'S', 'T', 'Q', 'Q', 'S', 'S', 'D'],
-                    dayNamesShort: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'],
-                    monthNames: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'],
-                    monthNamesShort: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
-                    nextText: 'Proximo',
-                    prevText: 'Anterior',
-                    showOn: "focus"
-                }
-            )
-                .css("display", "normal")
-                .next("button").button({
-                    icons: { primary: "ui-icon-calendar" },
-                    label: "Selecione uma data",
-                    text: false
-                });
-        });
-    </script>
-    <script type="text/javascript">
-        function ValidaDiv(valPessoa) {
-            if (valPessoa == '2') {
-                $("#PF").hide();
-                $("#PJ").show();
-                $("#PJ1").show();
-            } else if (valPessoa == '1') { //Se o tempo for mé igual a 2 mostra a divCpf
-                $("#PJ").hide();
-                $("#PJ1").hide();
-                $("#PF").show();
-            } else { //Se não for 1, 2 ou 4 esconde as duas
-                $("#PJ").hide();
-                $("#PJ1").hide();
-                $("#PF").hide();
-            }
-        }
-
-        $(document).ready(function () {
-            ValidaDiv($('#pessoa').val());
-        });
-    </script>
     @if (ViewBag.Message != null)
     {
         <script type="text/javascript">

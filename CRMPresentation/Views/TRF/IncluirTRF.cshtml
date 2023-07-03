@@ -44,8 +44,6 @@
                             <div class="form-group">
                                 <br />
                                 @Html.ButtonActionSubmit(text: "Confirma Inclusão de Tribunal Federal", htmlAttributes: new { id = "basictoast" })
-                                @*@Html.ButtonActionSubmit(text: "BtnSubmit", htmlAttributes: new { id = "submit", style = "display: none;" })
-                                <button class="btnSubmit btn btn-sm btn-success" id="basictoast" type="button">Confirma inclusão de Telefone</button>*@
                                 @Html.ButtonLinkIndex(text: "Voltar", action: "VoltarBaseTRF", controller: "TRF")
                             </div>
                             <ul class="nav nav-tabs">
@@ -103,53 +101,6 @@
     @Scripts.Render("~/plugins/jasnyBootstrap")
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.maskedinput/1.4.1/jquery.maskedinput.js"></script>
     <script src="~/Scripts/uploadAnexo.js"></script>
-
-    <script type="text/javascript">
-        $(function () {
-            $("#cpf").mask("999.999.999-99");
-            $("#cnpj").mask("99.999.999/9999-99");
-            $("#cep").mask("99999-999");
-            $('#tel').mask("(99) 9999-9999");
-            $('#cel').mask("(99) 99999-9999");
-            $('#wh').mask("(99) 99999-9999");
-        });
-    </script>
-    <script type="text/javascript">
-        $(function () {
-            $('#PF').hide();
-            $('#PJ').hide();
-        });
-
-        $(document).ready(function () {
-            //Chama o evento após selecionar um valor
-            $('#pessoa').on('change', function () {
-                //Verifica se o valor é igual a 1 e mostra a divCnpj
-                if (this.value == '2') {
-                    $("#PF").hide();
-                    $("#PJ").show();
-                    $("#razao").show();
-                }
-                //Se o tempo for mé igual a 2 mostra a divCpf
-                else if (this.value == '1') {
-                    $("#PJ").hide();
-                    $("#PF").show();
-                    $("#razao").hide();
-                }
-                else if (this.value == '4') {
-                    $("#PF").show();
-                    $("#PJ").hide();
-                    $("#razao").hide();
-                }
-
-                //Se não for nem 1 nem 2 esconde as duas
-                else {
-                    $("#PJ").hide();
-                    $("#PF").hide();
-                    $("#razao").hide();
-                }
-            });
-        });
-    </script>
     <script type="text/javascript">
         $(document).ready(function () {
 
@@ -252,30 +203,6 @@
         });
     </script>
 
-    <script>
-        function PesquisaCep(cep, btn, tipoEnd) {
-            data = {
-                cep: cep
-                , tipoEnd: tipoEnd
-            }
-
-            $('#btnBuscaCep').attr("disabled", "disabled");
-
-            $.ajax({
-                url: '../Telefone/PesquisaCEP_Javascript'
-                , type: 'POST'
-                , data: data
-                , success: function (r) {
-                    $('#endereco').val(r.TELE_NM_ENDERECO);
-                    $('#bairro').val(r.TELE_NM_BAIRRO);
-                    $('#cidade').val(r.TELE_NM_CIDADE);
-
-                    $('#uf option[value="' + r.UF_CD_ID + '"]').attr("selected", "selected");
-                    $('#btnBuscaCep').removeAttr("disabled");
-                }
-            });
-        }
-    </script>
 
     @if (ViewBag.Message != null)
     {

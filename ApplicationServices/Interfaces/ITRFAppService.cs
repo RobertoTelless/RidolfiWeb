@@ -19,6 +19,7 @@ namespace ApplicationServices.Interfaces
         List<TRF> GetAllItensAdm();
         TRF GetItemById(Int32 id);
         Int32 ExecuteFilter(String nome, Int32? uf, out List<TRF> objeto);
+        Tuple<Int32, List<TRF>, Boolean> ExecuteFilterTuple(String nome, Int32? uf, Int32 idAss);
 
         List<UF> GetAllUF();
         UF GetUFbySigla(String sigla);
