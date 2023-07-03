@@ -401,9 +401,7 @@ namespace ERP_Condominios_Solution.Controllers
                 Session["IdAssinante"] = usuario.ASSI_CD_ID;
                 Session["Assinante"] = usuario.ASSINANTE;
                 Session["PlanosVencidos"] = null;
-                Session["IdEmpresa"] = usuario.EMPR_CD_ID;
-                Session["Empresa"] = usuario.EMPRESA;
-                Session["NomeEmpresa"] = usuario.EMPRESA.EMPR_NM_NOME;
+                Session["IdEmpresa"] = 3;
 
                 // Reseta flags de permissao e totais
                 Session["PermMens"] = 0;
@@ -634,7 +632,7 @@ namespace ERP_Condominios_Solution.Controllers
                 Session["Excecao"] = ex;
                 Session["ExcecaoTipo"] = ex.GetType().ToString();
                 GravaLogExcecao grava = new GravaLogExcecao(baseApp);
-                Int32 voltaX = grava.GravarLogExcecao(ex, "Acesso", "CRMSys", 1, (USUARIO)Session["UserCredentials"]);
+                Int32 voltaX = grava.GravarLogExcecao(ex, "Acesso", "RidolfiWeb", 1, (USUARIO)Session["UserCredentials"]);
                 return RedirectToAction("TrataExcecao", "BaseAdmin");
             }
         }
@@ -734,7 +732,7 @@ namespace ERP_Condominios_Solution.Controllers
                 Session["Excecao"] = ex;
                 Session["ExcecaoTipo"] = ex.GetType().ToString();
                 GravaLogExcecao grava = new GravaLogExcecao(baseApp);
-                Int32 voltaX = grava.GravarLogExcecao(ex, "Acesso", "CRMSys", 1, (USUARIO)Session["UserCredentials"]);
+                Int32 voltaX = grava.GravarLogExcecao(ex, "Acesso", "RidolfiWeb", 1, (USUARIO)Session["UserCredentials"]);
                 return RedirectToAction("TrataExcecao", "BaseAdmin");
             }
         }
@@ -753,7 +751,7 @@ namespace ERP_Condominios_Solution.Controllers
 
             // Prepara rodape
             ASSINANTE assi = (ASSINANTE)Session["Assinante"];
-            String rod = "<b>CRMSys</b>";
+            String rod = "<b>RidolfiWeb</b>";
 
             // Prepara corpo do e-mail e trata link
             String corpo = vm.MENS_TX_TEXTO + "<br /><br />";
@@ -819,7 +817,7 @@ namespace ERP_Condominios_Solution.Controllers
                 Session["Excecao"] = ex;
                 Session["ExcecaoTipo"] = ex.GetType().ToString();
                 GravaLogExcecao grava = new GravaLogExcecao(baseApp);
-                Int32 voltaX = grava.GravarLogExcecao(ex, "Acesso", "CRMSys", 1, (USUARIO)Session["UserCredentials"]);
+                Int32 voltaX = grava.GravarLogExcecao(ex, "Acesso", "RidolfiWeb", 1, (USUARIO)Session["UserCredentials"]);
                 throw;
             }
 
@@ -914,7 +912,7 @@ namespace ERP_Condominios_Solution.Controllers
                 Session["Excecao"] = ex;
                 Session["ExcecaoTipo"] = ex.GetType().ToString();
                 GravaLogExcecao grava = new GravaLogExcecao(baseApp);
-                Int32 voltaX = grava.GravarLogExcecao(ex, "Acesso", "CRMSys", 1, (USUARIO)Session["UserCredentials"]);
+                Int32 voltaX = grava.GravarLogExcecao(ex, "Acesso", "RidolfiWeb", 1, (USUARIO)Session["UserCredentials"]);
                 return RedirectToAction("TrataExcecao", "BaseAdmin");
             }
         }
@@ -975,7 +973,7 @@ namespace ERP_Condominios_Solution.Controllers
                 Session["Excecao"] = ex;
                 Session["ExcecaoTipo"] = ex.GetType().ToString();
                 GravaLogExcecao grava = new GravaLogExcecao(baseApp);
-                Int32 voltaX = grava.GravarLogExcecao(ex, "Acesso", "CRMSys", 1, (USUARIO)Session["UserCredentials"]);
+                Int32 voltaX = grava.GravarLogExcecao(ex, "Acesso", "RidolfiWeb", 1, (USUARIO)Session["UserCredentials"]);
                 return RedirectToAction("TrataExcecao", "BaseAdmin");
             }
         }
@@ -1060,7 +1058,7 @@ namespace ERP_Condominios_Solution.Controllers
                 Session["Excecao"] = ex;
                 Session["ExcecaoTipo"] = ex.GetType().ToString();
                 GravaLogExcecao grava = new GravaLogExcecao(baseApp);
-                Int32 voltaX = grava.GravarLogExcecao(ex, "Acesso", "CRMSys", 1, (USUARIO)Session["UserCredentials"]);
+                Int32 voltaX = grava.GravarLogExcecao(ex, "Acesso", "RidolfiWeb", 1, (USUARIO)Session["UserCredentials"]);
                 return RedirectToAction("TrataExcecao", "BaseAdmin");
             }
         }
@@ -1153,7 +1151,7 @@ namespace ERP_Condominios_Solution.Controllers
                 Session["Excecao"] = ex;
                 Session["ExcecaoTipo"] = ex.GetType().ToString();
                 GravaLogExcecao grava = new GravaLogExcecao(baseApp);
-                Int32 voltaX = grava.GravarLogExcecao(ex, "Acesso", "CRMSys", 1, (USUARIO)Session["UserCredentials"]);
+                Int32 voltaX = grava.GravarLogExcecao(ex, "Acesso", "RidolfiWeb", 1, (USUARIO)Session["UserCredentials"]);
                 return RedirectToAction("TrataExcecao", "BaseAdmin");
             }
         }

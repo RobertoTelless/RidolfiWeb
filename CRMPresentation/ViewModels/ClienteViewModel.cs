@@ -152,6 +152,9 @@ namespace ERP_Condominios_Solution.ViewModels
         public Nullable<int> NACI_CD_ID { get; set; }
         public Nullable<int> MUNI_CD_ID { get; set; }
         public Nullable<int> MUNI_SG_UF { get; set; }
+        public Nullable<int> TRF1_CD_ID { get; set; }
+        public Nullable<int> VARA_CD_ID { get; set; }
+        public Nullable<int> PREC_CD_ID { get; set; }
 
         // Filtros
         public Nullable<int> OperaCategoria { get; set; }
@@ -175,7 +178,6 @@ namespace ERP_Condominios_Solution.ViewModels
         public Nullable<int> OperaUFNatur { get; set; }
         public Nullable<int> OperaNacion { get; set; }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual CATEGORIA_CLIENTE CATEGORIA_CLIENTE { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<CLIENTE_ANEXO> CLIENTE_ANEXO { get; set; }
@@ -183,6 +185,8 @@ namespace ERP_Condominios_Solution.ViewModels
         public virtual ICollection<CLIENTE_ANOTACAO> CLIENTE_ANOTACAO { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<CLIENTE_CONTATO> CLIENTE_CONTATO { get; set; }
+        public virtual MUNICIPIO MUNICIPIO { get; set; }
+        public virtual NACIONALIDADE NACIONALIDADE { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<CLIENTE_QUADRO_SOCIETARIO> CLIENTE_QUADRO_SOCIETARIO { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
@@ -195,6 +199,7 @@ namespace ERP_Condominios_Solution.ViewModels
         public virtual TIPO_PESSOA TIPO_PESSOA { get; set; }
         public virtual UF UF { get; set; }
         public virtual UF UF1 { get; set; }
+        public virtual UF UF2 { get; set; }
         public virtual USUARIO USUARIO { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<CRM> CRM { get; set; }
@@ -214,8 +219,8 @@ namespace ERP_Condominios_Solution.ViewModels
         public virtual ICollection<RECURSIVIDADE_DESTINO> RECURSIVIDADE_DESTINO { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<RESULTADO_ROBOT> RESULTADO_ROBOT { get; set; }
-        public virtual MUNICIPIO MUNICIPIO { get; set; }
-        public virtual NACIONALIDADE NACIONALIDADE { get; set; }
-        public virtual UF UF2 { get; set; }
+        public virtual PRECATORIO PRECATORIO { get; set; }
+        public virtual TRF TRF { get; set; }
+        public virtual VARA VARA { get; set; }
     }
 }

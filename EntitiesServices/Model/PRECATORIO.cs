@@ -22,6 +22,7 @@ namespace EntitiesServices.Model
             this.LOAS = new HashSet<LOAS>();
             this.PRECATORIO_ANEXO = new HashSet<PRECATORIO_ANEXO>();
             this.PRECATORIO_ANOTACAO = new HashSet<PRECATORIO_ANOTACAO>();
+            this.CLIENTE = new HashSet<CLIENTE>();
         }
     
         public int PREC_CD_ID { get; set; }
@@ -90,5 +91,7 @@ namespace EntitiesServices.Model
         public virtual USUARIO USUARIO { get; set; }
         public virtual PRECATORIO_ESTADO PRECATORIO_ESTADO { get; set; }
         public virtual TRF TRF { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<CLIENTE> CLIENTE { get; set; }
     }
 }

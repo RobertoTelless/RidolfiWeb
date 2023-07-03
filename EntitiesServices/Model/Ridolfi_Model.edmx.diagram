@@ -316,6 +316,9 @@
         <AssociationConnector Association="RidolfiDB_WebModel.FK_USUARIO_ANOTACAO_USUARIO" ManuallyRouted="false" />
         <AssociationConnector Association="RidolfiDB_WebModel.FK_VIDEO_COMENTARIO_USUARIO" ManuallyRouted="false" />
         <AssociationConnector Association="RidolfiDB_WebModel.FK_VIDEO_COMENTARIO_VIDEO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_CLIENTE_PRECATORIO" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_CLIENTE_TRF" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_CLIENTE_VARA" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

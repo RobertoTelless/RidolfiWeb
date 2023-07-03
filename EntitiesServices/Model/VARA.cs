@@ -14,6 +14,12 @@ namespace EntitiesServices.Model
     
     public partial class VARA
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public VARA()
+        {
+            this.CLIENTE = new HashSet<CLIENTE>();
+        }
+    
         public int VARA_CD_ID { get; set; }
         public int TRF1_CD_ID { get; set; }
         public string VARA_NM_NOME { get; set; }
@@ -21,5 +27,7 @@ namespace EntitiesServices.Model
         public string VARA_TX_OBSERVACOES { get; set; }
     
         public virtual TRF TRF { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<CLIENTE> CLIENTE { get; set; }
     }
 }

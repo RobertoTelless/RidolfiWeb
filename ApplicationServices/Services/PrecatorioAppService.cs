@@ -210,7 +210,7 @@ namespace ApplicationServices.Services
                 {
                     return 1;
                 }
-                if (item.CRM.Count > 0)
+                if (item.CLIENTE.Count > 0)
                 {
                     return 1;
                 }

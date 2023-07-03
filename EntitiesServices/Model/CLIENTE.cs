@@ -94,6 +94,9 @@ namespace EntitiesServices.Model
         public string CLIE_NM_COMPLEMENTO_ENTREGA { get; set; }
         public string CLIE_NR_NUMERO_ENTREGA { get; set; }
         public string CLIE_CM_END1 { get; set; }
+        public Nullable<int> TRF1_CD_ID { get; set; }
+        public Nullable<int> VARA_CD_ID { get; set; }
+        public Nullable<int> PREC_CD_ID { get; set; }
     
         public virtual CATEGORIA_CLIENTE CATEGORIA_CLIENTE { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
@@ -136,5 +139,8 @@ namespace EntitiesServices.Model
         public virtual ICollection<RECURSIVIDADE_DESTINO> RECURSIVIDADE_DESTINO { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<RESULTADO_ROBOT> RESULTADO_ROBOT { get; set; }
+        public virtual PRECATORIO PRECATORIO { get; set; }
+        public virtual TRF TRF { get; set; }
+        public virtual VARA VARA { get; set; }
     }
 }

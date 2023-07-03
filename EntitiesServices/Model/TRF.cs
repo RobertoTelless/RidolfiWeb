@@ -20,6 +20,7 @@ namespace EntitiesServices.Model
             this.LOAS = new HashSet<LOAS>();
             this.PRECATORIO = new HashSet<PRECATORIO>();
             this.VARA = new HashSet<VARA>();
+            this.CLIENTE = new HashSet<CLIENTE>();
         }
     
         public int TRF1_CD_ID { get; set; }
@@ -36,5 +37,7 @@ namespace EntitiesServices.Model
         public virtual UF UF { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<VARA> VARA { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<CLIENTE> CLIENTE { get; set; }
     }
 }

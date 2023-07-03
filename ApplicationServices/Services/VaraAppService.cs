@@ -134,6 +134,10 @@ namespace ApplicationServices.Services
             try
             {
                 // Verifica integridade referencial
+                if (item.CLIENTE.Count > 0)
+                {
+                    return 1;
+                }
 
                 // Acerta campos
                 item.VARA_IN_ATIVO = 0;

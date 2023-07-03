@@ -159,7 +159,7 @@ namespace ApplicationServices.Services
                 }
 
                 //Completa campos de usuários
-                //usuario.USUA_NM_SENHA = Cryptography.Encode(usuario.USUA_NM_SENHA);
+                usuario.USUA_NM_SENHA = Cryptography.Encode(usuario.USUA_NM_SENHA);
                 usuario.USUA_IN_BLOQUEADO = 0;
                 usuario.USUA_IN_PROVISORIO = 0;
                 usuario.USUA_IN_LOGIN_PROVISORIO = 0;
@@ -219,7 +219,7 @@ namespace ApplicationServices.Services
                 }
 
                 //Completa campos de usuários
-                //usuario.USUA_NM_SENHA = Cryptography.Encode(usuario.USUA_NM_SENHA);
+                usuario.USUA_NM_SENHA = Cryptography.Encode(usuario.USUA_NM_SENHA);
                 usuario.USUA_IN_BLOQUEADO = 0;
                 usuario.USUA_IN_PROVISORIO = 0;
                 usuario.USUA_IN_LOGIN_PROVISORIO = 0;
@@ -346,10 +346,6 @@ namespace ApplicationServices.Services
             try
             {
                 // Verifica integridade
-                //if (usuario.FORNECEDOR_ANOTACOES.Count > 0)
-                //{
-                //    return 1;
-                //}
                 if (usuario.NOTICIA_COMENTARIO.Count > 0)
                 {
                     return 1;
@@ -680,8 +676,6 @@ namespace ApplicationServices.Services
                 CONFIGURACAO conf = _usuarioService.CarregaConfiguracao(usuario.ASSI_CD_ID);
 
                 //Completa e acerta campos 
-                //usuario.USUA_NM_SENHA = Cryptography.Encrypt(usuario.USUA_NM_NOVA_SENHA);
-                //usuario.USUA_NM_SENHA = usuario.USUA_NM_NOVA_SENHA;
                 usuario.USUA_DT_TROCA_SENHA = DateTime.Now.Date;
                 usuario.USUA_IN_BLOQUEADO = 0;
                 usuario.USUA_IN_PROVISORIO = 0;
@@ -815,7 +809,7 @@ namespace ApplicationServices.Services
             mensagem.EMAIL_TO_DESTINO = usuario.USUA_NM_EMAIL;
             mensagem.NOME_EMISSOR_AZURE = conf.CONF_NM_EMISSOR_AZURE;
             mensagem.ENABLE_SSL = true;
-            mensagem.NOME_EMISSOR = "CRMSys";
+            mensagem.NOME_EMISSOR = "RidolfiWeb";
             mensagem.PORTA = conf.CONF_NM_PORTA_SMTP;
             mensagem.PRIORIDADE = System.Net.Mail.MailPriority.High;
             mensagem.SENHA_EMISSOR = conf.CONF_NM_SENDGRID_PWD;

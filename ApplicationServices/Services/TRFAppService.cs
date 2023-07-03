@@ -143,6 +143,14 @@ namespace ApplicationServices.Services
                 {
                     return 1;
                 }
+                if (item.CLIENTE.Count > 0)
+                {
+                    return 1;
+                }
+                if (item.VARA.Count > 0)
+                {
+                    return 1;
+                }
 
                 // Acerta campos
                 item.TRF1_IN_ATIVO = 0;

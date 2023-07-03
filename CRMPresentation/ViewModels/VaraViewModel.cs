@@ -19,9 +19,9 @@ namespace ERP_Condominios_Solution.ViewModels
         public int VARA_IN_ATIVO { get; set; }
         public string VARA_TX_OBSERVACOES { get; set; }
 
+        public virtual TRF TRF { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<CLIENTE> CLIENTE { get; set; }
-        public virtual TRF TRF { get; set; }
 
     }
 }

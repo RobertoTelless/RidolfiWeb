@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="RidolfiDB_WebModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012.Azure" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="RidolfiDB_WebModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012.Azure" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="AGENDA">
           <Key>
             <PropertyRef Name="AGEN_CD_ID" />
@@ -290,6 +290,9 @@
           </Key>
           <Property Name="CLIE_CD_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="ASSI_CD_ID" Type="int" Nullable="false" />
+          <Property Name="TRF1_CD_ID" Type="int" />
+          <Property Name="VARA_CD_ID" Type="int" />
+          <Property Name="PREC_CD_ID" Type="int" />
           <Property Name="CLIE_NM_NOME" Type="varchar" MaxLength="50" Nullable="false" />
           <Property Name="CACL_CD_ID" Type="int" />
           <Property Name="USUA_CD_ID" Type="int" />
@@ -2375,6 +2378,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_CLIENTE_PRECATORIO">
+          <End Role="PRECATORIO" Type="Self.PRECATORIO" Multiplicity="0..1" />
+          <End Role="CLIENTE" Type="Self.CLIENTE" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PRECATORIO">
+              <PropertyRef Name="PREC_CD_ID" />
+            </Principal>
+            <Dependent Role="CLIENTE">
+              <PropertyRef Name="PREC_CD_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_CLIENTE_QUADRO_SOCIETARIO_CLIENTE">
           <End Role="CLIENTE" Type="Self.CLIENTE" Multiplicity="1" />
           <End Role="CLIENTE_QUADRO_SOCIETARIO" Type="Self.CLIENTE_QUADRO_SOCIETARIO" Multiplicity="*" />
@@ -2459,6 +2474,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_CLIENTE_TRF">
+          <End Role="TRF" Type="Self.TRF" Multiplicity="0..1" />
+          <End Role="CLIENTE" Type="Self.CLIENTE" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TRF">
+              <PropertyRef Name="TRF1_CD_ID" />
+            </Principal>
+            <Dependent Role="CLIENTE">
+              <PropertyRef Name="TRF1_CD_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_CLIENTE_UF">
           <End Role="UF" Type="Self.UF" Multiplicity="0..1" />
           <End Role="CLIENTE" Type="Self.CLIENTE" Multiplicity="*" />
@@ -2504,6 +2531,18 @@
             </Principal>
             <Dependent Role="CLIENTE">
               <PropertyRef Name="USUA_CD_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CLIENTE_VARA">
+          <End Role="VARA" Type="Self.VARA" Multiplicity="0..1" />
+          <End Role="CLIENTE" Type="Self.CLIENTE" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="VARA">
+              <PropertyRef Name="VARA_CD_ID" />
+            </Principal>
+            <Dependent Role="CLIENTE">
+              <PropertyRef Name="VARA_CD_ID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -4449,6 +4488,10 @@
             <End Role="NACIONALIDADE" EntitySet="NACIONALIDADE" />
             <End Role="CLIENTE" EntitySet="CLIENTE" />
           </AssociationSet>
+          <AssociationSet Name="FK_CLIENTE_PRECATORIO" Association="Self.FK_CLIENTE_PRECATORIO">
+            <End Role="PRECATORIO" EntitySet="PRECATORIO" />
+            <End Role="CLIENTE" EntitySet="CLIENTE" />
+          </AssociationSet>
           <AssociationSet Name="FK_CLIENTE_QUADRO_SOCIETARIO_CLIENTE" Association="Self.FK_CLIENTE_QUADRO_SOCIETARIO_CLIENTE">
             <End Role="CLIENTE" EntitySet="CLIENTE" />
             <End Role="CLIENTE_QUADRO_SOCIETARIO" EntitySet="CLIENTE_QUADRO_SOCIETARIO" />
@@ -4477,6 +4520,10 @@
             <End Role="TIPO_PESSOA" EntitySet="TIPO_PESSOA" />
             <End Role="CLIENTE" EntitySet="CLIENTE" />
           </AssociationSet>
+          <AssociationSet Name="FK_CLIENTE_TRF" Association="Self.FK_CLIENTE_TRF">
+            <End Role="TRF" EntitySet="TRF" />
+            <End Role="CLIENTE" EntitySet="CLIENTE" />
+          </AssociationSet>
           <AssociationSet Name="FK_CLIENTE_UF" Association="Self.FK_CLIENTE_UF">
             <End Role="UF" EntitySet="UF" />
             <End Role="CLIENTE" EntitySet="CLIENTE" />
@@ -4491,6 +4538,10 @@
           </AssociationSet>
           <AssociationSet Name="FK_CLIENTE_USUARIO" Association="Self.FK_CLIENTE_USUARIO">
             <End Role="USUARIO" EntitySet="USUARIO" />
+            <End Role="CLIENTE" EntitySet="CLIENTE" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CLIENTE_VARA" Association="Self.FK_CLIENTE_VARA">
+            <End Role="VARA" EntitySet="VARA" />
             <End Role="CLIENTE" EntitySet="CLIENTE" />
           </AssociationSet>
           <AssociationSet Name="FK_CONFIGURACAO_ASSINANTE" Association="Self.FK_CONFIGURACAO_ASSINANTE">
@@ -5058,8 +5109,7 @@
             <End Role="VARA" EntitySet="VARA" />
           </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="RidolfiDB_WebModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -5488,6 +5538,12 @@
           <NavigationProperty Name="MENSAGENS_ENVIADAS_SISTEMA" Relationship="Self.FK_MENSAGENS_ENVIADAS_SISTEMA_CLIENTE" FromRole="CLIENTE" ToRole="MENSAGENS_ENVIADAS_SISTEMA" />
           <NavigationProperty Name="RECURSIVIDADE_DESTINO" Relationship="Self.FK_RECURSIVIDADE_DESTINO_CLIENTE" FromRole="CLIENTE" ToRole="RECURSIVIDADE_DESTINO" />
           <NavigationProperty Name="RESULTADO_ROBOT" Relationship="Self.FK_RESULTADO_ROBOT_CLIENTE" FromRole="CLIENTE" ToRole="RESULTADO_ROBOT" />
+          <Property Name="TRF1_CD_ID" Type="Int32" />
+          <Property Name="VARA_CD_ID" Type="Int32" />
+          <Property Name="PREC_CD_ID" Type="Int32" />
+          <NavigationProperty Name="PRECATORIO" Relationship="RidolfiDB_WebModel.FK_CLIENTE_PRECATORIO" FromRole="CLIENTE" ToRole="PRECATORIO" />
+          <NavigationProperty Name="TRF" Relationship="RidolfiDB_WebModel.FK_CLIENTE_TRF" FromRole="CLIENTE" ToRole="TRF" />
+          <NavigationProperty Name="VARA" Relationship="RidolfiDB_WebModel.FK_CLIENTE_VARA" FromRole="CLIENTE" ToRole="VARA" />
         </EntityType>
         <EntityType Name="CLIENTE_ANEXO">
           <Key>
@@ -6781,6 +6837,7 @@
           <NavigationProperty Name="USUARIO" Relationship="Self.FK_PRECATORIO_USUARIO" FromRole="PRECATORIO" ToRole="USUARIO" />
           <NavigationProperty Name="PRECATORIO_ESTADO" Relationship="Self.FKPRECATORIO966532" FromRole="PRECATORIO" ToRole="PRECATORIO_ESTADO" />
           <NavigationProperty Name="TRF" Relationship="Self.FKPRECATORIO966598" FromRole="PRECATORIO" ToRole="TRF" />
+          <NavigationProperty Name="CLIENTE" Relationship="RidolfiDB_WebModel.FK_CLIENTE_PRECATORIO" FromRole="PRECATORIO" ToRole="CLIENTE" />
         </EntityType>
         <EntityType Name="PRECATORIO_ANEXO">
           <Key>
@@ -7247,6 +7304,7 @@
           <NavigationProperty Name="PRECATORIO" Relationship="Self.FKPRECATORIO966598" FromRole="TRF" ToRole="PRECATORIO" />
           <NavigationProperty Name="UF" Relationship="Self.FKTRF126253" FromRole="TRF" ToRole="UF" />
           <NavigationProperty Name="VARA" Relationship="Self.FKVARA689447" FromRole="TRF" ToRole="VARA" />
+          <NavigationProperty Name="CLIENTE" Relationship="RidolfiDB_WebModel.FK_CLIENTE_TRF" FromRole="TRF" ToRole="CLIENTE" />
         </EntityType>
         <EntityType Name="UF">
           <Key>
@@ -7391,6 +7449,7 @@
           <Property Name="VARA_IN_ATIVO" Type="Int32" Nullable="false" />
           <Property Name="VARA_TX_OBSERVACOES" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="TRF" Relationship="Self.FKVARA689447" FromRole="VARA" ToRole="TRF" />
+          <NavigationProperty Name="CLIENTE" Relationship="RidolfiDB_WebModel.FK_CLIENTE_VARA" FromRole="VARA" ToRole="CLIENTE" />
         </EntityType>
         <EntityType Name="VIDEO">
           <Key>
@@ -10479,7 +10538,55 @@
             <End Role="VIDEO" EntitySet="VIDEO" />
             <End Role="VIDEO_COMENTARIO" EntitySet="VIDEO_COMENTARIO" />
           </AssociationSet>
+          <AssociationSet Name="FK_CLIENTE_PRECATORIO" Association="RidolfiDB_WebModel.FK_CLIENTE_PRECATORIO">
+            <End Role="PRECATORIO" EntitySet="PRECATORIO" />
+            <End Role="CLIENTE" EntitySet="CLIENTE" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CLIENTE_TRF" Association="RidolfiDB_WebModel.FK_CLIENTE_TRF">
+            <End Role="TRF" EntitySet="TRF" />
+            <End Role="CLIENTE" EntitySet="CLIENTE" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CLIENTE_VARA" Association="RidolfiDB_WebModel.FK_CLIENTE_VARA">
+            <End Role="VARA" EntitySet="VARA" />
+            <End Role="CLIENTE" EntitySet="CLIENTE" />
+          </AssociationSet>
         </EntityContainer>
+        <Association Name="FK_CLIENTE_PRECATORIO">
+          <End Type="RidolfiDB_WebModel.PRECATORIO" Role="PRECATORIO" Multiplicity="0..1" />
+          <End Type="RidolfiDB_WebModel.CLIENTE" Role="CLIENTE" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PRECATORIO">
+              <PropertyRef Name="PREC_CD_ID" />
+            </Principal>
+            <Dependent Role="CLIENTE">
+              <PropertyRef Name="PREC_CD_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CLIENTE_TRF">
+          <End Type="RidolfiDB_WebModel.TRF" Role="TRF" Multiplicity="0..1" />
+          <End Type="RidolfiDB_WebModel.CLIENTE" Role="CLIENTE" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TRF">
+              <PropertyRef Name="TRF1_CD_ID" />
+            </Principal>
+            <Dependent Role="CLIENTE">
+              <PropertyRef Name="TRF1_CD_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CLIENTE_VARA">
+          <End Type="RidolfiDB_WebModel.VARA" Role="VARA" Multiplicity="0..1" />
+          <End Type="RidolfiDB_WebModel.CLIENTE" Role="CLIENTE" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="VARA">
+              <PropertyRef Name="VARA_CD_ID" />
+            </Principal>
+            <Dependent Role="CLIENTE">
+              <PropertyRef Name="VARA_CD_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -10788,6 +10895,9 @@
           <EntitySetMapping Name="CLIENTE">
             <EntityTypeMapping TypeName="RidolfiDB_WebModel.CLIENTE">
               <MappingFragment StoreEntitySet="CLIENTE">
+                <ScalarProperty Name="PREC_CD_ID" ColumnName="PREC_CD_ID" />
+                <ScalarProperty Name="VARA_CD_ID" ColumnName="VARA_CD_ID" />
+                <ScalarProperty Name="TRF1_CD_ID" ColumnName="TRF1_CD_ID" />
                 <ScalarProperty Name="CLIE_CD_ID" ColumnName="CLIE_CD_ID" />
                 <ScalarProperty Name="ASSI_CD_ID" ColumnName="ASSI_CD_ID" />
                 <ScalarProperty Name="CLIE_NM_NOME" ColumnName="CLIE_NM_NOME" />
