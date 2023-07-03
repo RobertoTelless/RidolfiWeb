@@ -1,0 +1,415 @@
+﻿@using Presentation.Extensions
+@model ERP_CRM_Solution.ViewModels.HonorarioViewModel
+@{
+    Layout = "~/Views/Shared/_Layout_Admin.cshtml";
+}
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="page-title">
+        <h3 class="title">Advogados</h3>
+        <br />
+        <ol class="breadcrumb">
+            <li>
+                <a href="@Url.Action("CarregarBase", "BaseAdmin")">Dashboard</a>
+            </li>
+            <li>
+                <a href="@Url.Action("MontarTelaHonorario", "Honorario")">Advogados</a>
+            </li>
+            <li class="active">
+                <strong>Advogados - Edição</strong>
+            </li>
+        </ol>
+        <br />
+    </div>
+    <div class="row">
+        <div class="col-lg-12 col-md-12 col-xs-12">
+            <div class="col-lg-12 col-md-12 col-xs-12 ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>Advogados - Edição</h5>
+                </div>
+                <div class="ibox-content">
+                    @if (!ViewData.ModelState.IsValid)
+                    {
+                        <div class="alert alert-danger">
+                            <button type="button" class="close" data-dismiss="alert">Fechar</button>
+                            @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+                        </div>
+                    }
+                    <div class="tabs-container">
+                        <ul class="nav nav-tabs">
+                            <li class="active"><a data-toggle="tab" href="#tab-1">Dados Gerais</a></li>
+                            <li class=""><a data-toggle="tab" href="#tab-2">Anexos</a></li>
+                            <li class=""><a data-toggle="tab" href="#tab-3">Anotações</a></li>
+                        </ul>
+
+                        <div class="tab-content">
+                            @*Dados Gerais*@
+                            <div id="tab-1" class="tab-pane active">
+                                <div class="panel-body">
+                                    @using (Html.BeginForm("EditarHonorario", "Honorario", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", @id = "pwd-container1" }))
+                                    {
+                                        <div class="form-group">
+                                            @Html.ButtonActionSubmit(text: "BtnSubmit", htmlAttributes: new { id = "submit", style = "display: none;" })
+                                            <button class="btnSubmit btn btn-sm btn-success" id="basictoast" type="button">Confirma Edição de Advogado</button>
+                                            @Html.ButtonLinkIndex(text: "Voltar", action: "VoltarBaseHonorario", controller: "Honorario")
+                                        </div>
+                                        <div class="row">
+                                            <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
+                                                <div class="col-lg-2 col-md-2 col-xs-12">
+                                                    @Html.HiddenFor(m => m.HONO_DT_CADASTRO)
+                                                    @Html.HiddenFor(m => m.HONO_IN_ATIVO)
+                                                    @Html.HiddenFor(m => m.HONO_CD_ID)
+                                                    Tipo de Pessoa*
+                                                    @Html.DropDownListFor(m => m.TIPE_CD_ID, (SelectList)ViewBag.TipoPessoa, "Selecionar", new { @class = "form-control", autofocus = true, @id = "pessoa", onchange = "ValidaDiv($(this).val())" })
+                                                    @Html.ValidationMessageFor(m => m.TIPE_CD_ID, "", new { @style = "color:red" })
+                                                </div>
+                                                <div class="col-lg-4 col-md-4 col-xs-12">
+                                                    Nome*
+                                                    @Html.TextBoxFor(m => m.HONO_NM_NOME, new { @class = "form-control", autofocus = true })
+                                                    @Html.ValidationMessageFor(m => m.HONO_NM_NOME, "", new { @style = "color:red" })
+                                                </div>
+                                                <div class="col-lg-4 col-md-4 col-xs-12" id="PJ">
+                                                    Razão Social
+                                                    @Html.TextBoxFor(m => m.HONO_NM_RAZAO_SOCIAL, new { @class = "form-control", autofocus = true })
+                                                    @Html.ValidationMessageFor(m => m.HONO_NM_RAZAO_SOCIAL, "", new { @style = "color:red" })
+                                                </div>
+                                            </div>
+                                            <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
+                                                <div class="col-lg-2 col-md-2 col-xs-12">
+                                                    CPF    
+                                                    @Html.TextBoxFor(m => m.HONO_NR_CPF, new { @class = "form-control", autofocus = true, @id="cpf" })
+                                                    @Html.ValidationMessageFor(m => m.HONO_NR_CPF, "", new { @style = "color:red" })
+                                                </div>
+                                                <div class="col-lg-2 col-md-2 col-xs-12" id="PJ1">
+                                                    CNPJ    
+                                                    @Html.TextBoxFor(m => m.HONO_NR_CNPJ, new { @class = "form-control", autofocus = true, @id="cnpj" })
+                                                    @Html.ValidationMessageFor(m => m.HONO_NR_CNPJ, "", new { @style = "color:red" })
+                                                </div>
+                                                <div class="col-lg-2 col-md-2 col-xs-12">
+                                                    OAB    
+                                                    @Html.TextBoxFor(m => m.HONO_NR_OAB, new { @class = "form-control", autofocus = true })
+                                                    @Html.ValidationMessageFor(m => m.HONO_NR_OAB, "", new { @style = "color:red" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+
+                            @*Anexos*@
+                            <div id="tab-2" class="tab-pane">
+                                <div class="panel-body">
+                                    <div class="row">
+                                        <hr />
+                                        <div class="col-lg-12 col-md-12 col-xs-12"> 
+                                            <h4>Anexos</h4>
+                                            <br />
+                                            <div class="form-group">
+                                                @using (Html.BeginForm("UploadFileHonorario", "Honorario", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { enctype = "multipart/form-data", @id="pwd-container2" }))
+                                                {
+                                                    <div class="ibox-content">
+                                                        @if (Model.HONORARIO_ANEXO.Count > 0)
+                                                        {
+                                                            <table class="table table-striped table-bordered table-hover dataTables-example">
+                                                                <thead style ="background-color:lightsteelblue">
+                                                                    <tr>
+                                                                        <th>Título</th>
+                                                                        <th>Data</th>
+                                                                        <th>Tipo</th>
+                                                                        <th class="td-one-action">Ações</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    @foreach (var cond in (Model.HONORARIO_ANEXO))
+                                                                    {
+                                                                        <tr>
+                                                                            <td>@cond.HOAN_NM_TITULO</td>
+                                                                            <td>@cond.HOAN_DT_ANEXO.ToShortDateString()</td>
+                                                                            @if (cond.HOAN_IN_TIPO == 1)
+	                                                                        {
+                                                                                <td><span class="badge badge-success">Imagem/Vídeo</span></td>
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                <td><span class="badge badge-primary">Arquivo</span></td>
+                                                                            }
+                                                                            <td class="td-one-action">
+                                                                                @if (cond.HOAN_IN_TIPO == 1 || cond.HOAN_IN_TIPO == 2)
+                                                                                {
+                                                                                    @Html.TableLinkDetails(cond.HOAN_CD_ID, "VerAnexoHonorario", "fa-camera", "Visualizar")
+                                                                                }
+                                                                                @if (cond.HOAN_IN_TIPO == 3)
+                                                                                {
+                                                                                    <a title="Visualizar" class="fa fa-camera fa-lg" href="~/PdfViewer/web/viewer.html?file=@(cond.HOAN_AQ_ARQUIVO.Replace("~", ""))&ReturnUrl=@Request.Url.AbsolutePath" target="_blank"></a>
+                                                                                }
+                                                                                @Html.TableLinkDetails(cond.HOAN_CD_ID, "DownloadHonorario","fa-download", "Download")
+                                                                            </td>
+                                                                        </tr>
+                                                                    }
+                                                                </tbody>
+                                                            </table>
+                                                        }
+                                                        <input type="file" name="file" id="file" class="btn btn-sm btn-warning"/>
+                                                        <br />
+                                                        <div class="form-group">
+                                                            <input type="submit" value="Incluir Anexo" class="btn btn-sm btn-success" />
+                                                        </div>
+                                                    </div>
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        
+                            @*Comentários*@
+                            <div id="tab-3" class="tab-pane">
+                                <div class="panel-body">
+                                    <div class="ibox float-e-margins" style="border-bottom: solid; border-bottom-color: darkblue; border-bottom-width: 1px; border-left: solid; border-left-color: darkblue; border-left-width: 1px; border-right: solid; border-right-color: darkblue; border-right-width: 1px; border-top: solid; border-top-color: darkblue; border-top-width: 1px; height: 800px" >
+                                        <div class="ibox-title"  style="color: black">
+                                            <h5>Anotações - Follow-Up</h5>
+                                        </div>
+                                        <div class="ibox-content" style="color: black; overflow: auto">
+                                            <div class="row">
+                                                <div class="col-lg-12">
+                                                    @if (Model.HONORARIO_ANOTACOES.Count > 0)
+                                                    {
+                                                        foreach (var item in (Model.HONORARIO_ANOTACOES))
+                                                        {
+                                                            <div class="social-feed-box">
+                                                                <div class="social-avatar">
+                                                                    <a href="" class="pull-left">
+                                                                        <img src="@Url.Content(item.USUARIO.USUA_AQ_FOTO)" style="width: auto; height: auto; max-height: 110px; max-width: 90px;">
+                                                                    </a>
+                                                                    <div class="media-body">
+                                                                        <a href="#">
+                                                                            @item.USUARIO.USUA_NM_NOME
+                                                                        </a>
+                                                                        <small class="text-muted">@item.HOAT_DT_COMENTARIO.ToString("dd/MM/yyyy HH:mm")</small>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="social-body">
+                                                                    <p>
+                                                                        @item.HOAT_TX_TEXTO
+                                                                    </p>
+                                                                </div>
+                                                            </div>
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        <div class="row">
+                                                            <div class="col-lg-4 col-md-4 col-xs-2">
+
+                                                            </div>
+                                                            <div style="border: 5px solid #F6A54A; padding: 10px; border-radius: 8px 8px; " class="col-lg-4 col-md-4 col-xs-8">
+                                                                <h2 style="font-weight: bold">Nenhuma anotação cadastrada nesse advogado</h2>
+                                                            </div>
+                                                            <div class="col-lg-4 col-md-4 col-xs-2">
+
+                                                            </div>
+                                                        </div>
+                                                    }
+                                                </div>
+                                            </div>
+                                            <br />
+                                            <div class="form-group">
+                                                @Html.ButtonLinkIndex(text: "Incluir Novo Comentário", action: "IncluirComentario", controller: "Honorario")
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>                    
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <link href="~/Content/themes/base/jquery-ui.min.css" rel="stylesheet" />
+    <link href="~/Content/themes/base/all.css" rel="stylesheet" />
+    @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
+    @Styles.Render("~/plugins/jasnyBootstrapStyles")
+    @Styles.Render("~/plugins/toastrStyles")
+}
+@section Scripts {
+    @Scripts.Render("~/plugins/toastr")
+    @Scripts.Render("~/plugins/dataTables")
+    @Scripts.Render("~/bundles/inputmask")
+    @Scripts.Render("~/plugins/jasnyBootstrap")
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.maskedinput/1.4.1/jquery.maskedinput.js"></script>
+    <script src="~/Scripts/uploadAnexo.js"></script>
+
+    <script type="text/javascript">
+        $(function () {
+            $("#cpf").mask("999.999.999-99");
+            $("#cnpj").mask("99.999.999/9999-99");
+            $("#cep").mask("99999-999");
+            $('#tel').mask('(99)9999-9999');
+            $('#dn').mask('99/99/9999');
+        });
+    </script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            var i = -1;
+            var toastCount = 0;
+            var $toastlast;
+            var getMessage = function () {
+                var msg = 'Hi, welcome to Inspinia. This is example of Toastr notification box.';
+                return msg;
+            };
+
+            $('#basictoast').click(function () {
+                // Display a success toast, with a title
+                toastr.success('Edição em andamento!')
+            });
+            $('#showtoast').click(function () {
+                var shortCutFunction = $("#toastTypeGroup input:radio:checked").val();
+                var msg = $('#message').val();
+                var title = $('#title').val() || '';
+                var $showDuration = $('#showDuration');
+                var $hideDuration = $('#hideDuration');
+                var $timeOut = $('#timeOut');
+                var $extendedTimeOut = $('#extendedTimeOut');
+                var $showEasing = $('#showEasing');
+                var $hideEasing = $('#hideEasing');
+                var $showMethod = $('#showMethod');
+                var $hideMethod = $('#hideMethod');
+                var toastIndex = toastCount++;
+                toastr.options = {
+                    closeButton: $('#closeButton').prop('checked'),
+                    debug: $('#debugInfo').prop('checked'),
+                    progressBar: $('#progressBar').prop('checked'),
+                    positionClass: $('#positionGroup input:radio:checked').val() || 'toast-top-right',
+                    onclick: null
+                };
+                if ($('#addBehaviorOnToastClick').prop('checked')) {
+                    toastr.options.onclick = function () {
+                        alert('You can perform some custom action after a toast goes away');
+                    };
+                }
+                if ($showDuration.val().length) {
+                    toastr.options.showDuration = $showDuration.val();
+                }
+                if ($hideDuration.val().length) {
+                    toastr.options.hideDuration = $hideDuration.val();
+                }
+                if ($timeOut.val().length) {
+                    toastr.options.timeOut = $timeOut.val();
+                }
+                if ($extendedTimeOut.val().length) {
+                    toastr.options.extendedTimeOut = $extendedTimeOut.val();
+                }
+                if ($showEasing.val().length) {
+                    toastr.options.showEasing = $showEasing.val();
+                }
+                if ($hideEasing.val().length) {
+                    toastr.options.hideEasing = $hideEasing.val();
+                }
+                if ($showMethod.val().length) {
+                    toastr.options.showMethod = $showMethod.val();
+                }
+                if ($hideMethod.val().length) {
+                    toastr.options.hideMethod = $hideMethod.val();
+                }
+                if (!msg) {
+                    msg = getMessage();
+                }
+                $("#toastrOptions").text("Command: toastr["
+                    + shortCutFunction
+                    + "](\""
+                    + msg
+                    + (title ? "\", \"" + title : '')
+                    + "\")\n\ntoastr.options = "
+                    + JSON.stringify(toastr.options, null, 2)
+                );
+                var $toast = toastr[shortCutFunction](msg, title); // Wire up an event handler to a button in the toast, if it exists
+                $toastlast = $toast;
+                if ($toast.find('#okBtn').length) {
+                    $toast.delegate('#okBtn', 'click', function () {
+                        alert('you clicked me. i was toast #' + toastIndex + '. goodbye!');
+                        $toast.remove();
+                    });
+                }
+                if ($toast.find('#surpriseBtn').length) {
+                    $toast.delegate('#surpriseBtn', 'click', function () {
+                        alert('Surprise! you clicked me. i was toast #' + toastIndex + '. You could perform an action here.');
+                    });
+                }
+            });
+            function getLastToast() {
+                return $toastlast;
+            }
+            $('#clearlasttoast').click(function () {
+                toastr.clear(getLastToast());
+            });
+            $('#cleartoasts').click(function () {
+                toastr.clear();
+            });
+
+        });
+    </script>
+
+    <script>
+        SendFilesV2('imgTran', 'Honorario', 'UploadFileToSession');
+    </script>
+    <script>
+        SendFilesV2('imgTransportadora', 'Honorario', 'UploadFileToSession');
+    </script>
+
+    <script type="text/javascript" language="javascript">
+        $(function () {
+            $('.date-picker').datepicker(
+                {
+                    dateFormat: 'dd/mm/yy',
+                    dayNames: ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'],
+                    dayNamesMin: ['D', 'S', 'T', 'Q', 'Q', 'S', 'S', 'D'],
+                    dayNamesShort: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'],
+                    monthNames: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'],
+                    monthNamesShort: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
+                    nextText: 'Proximo',
+                    prevText: 'Anterior',
+                    showOn: "focus"
+                }
+            )
+                .css("display", "normal")
+                .next("button").button({
+                    icons: { primary: "ui-icon-calendar" },
+                    label: "Selecione uma data",
+                    text: false
+                });
+        });
+    </script>
+    <script type="text/javascript">
+        function ValidaDiv(valPessoa) {
+            if (valPessoa == '2') {
+                $("#PF").hide();
+                $("#PJ").show();
+                $("#PJ1").show();
+            } else if (valPessoa == '1') { //Se o tempo for mé igual a 2 mostra a divCpf
+                $("#PJ").hide();
+                $("#PJ1").hide();
+                $("#PF").show();
+            } else { //Se não for 1, 2 ou 4 esconde as duas
+                $("#PJ").hide();
+                $("#PJ1").hide();
+                $("#PF").hide();
+            }
+        }
+
+        $(document).ready(function () {
+            ValidaDiv($('#pessoa').val());
+        });
+    </script>
+    @if (ViewBag.Message != null)
+    {
+        <script type="text/javascript">
+            window.onload = function () {
+                  alert("@ViewBag.Message");
+            };
+        </script>
+    }
+}

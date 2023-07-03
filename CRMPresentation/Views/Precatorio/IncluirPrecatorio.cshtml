@@ -1,0 +1,561 @@
+﻿@using Presentation.Extensions
+@model ERP_CRM_Solution.ViewModels.PrecatorioViewModel
+@{
+    Layout = "~/Views/Shared/_Layout_Admin.cshtml";
+}
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="page-title">
+        <h3 class="title">Precatórios</h3>
+        <br />
+        <ol class="breadcrumb">
+            <li>
+                <a href="@Url.Action("CarregarBase", "BaseAdmin")">Dashboard</a>
+            </li>
+            <li>
+                <a href="@Url.Action("MontarTelaPrecatorio", "Precatorio")">Precatórios</a>
+            </li>
+            <li class="active">
+                <strong>Precatórios - Inclusão</strong>
+            </li>
+        </ol>
+        <br />
+    </div>
+    <div class="row">
+        <div class="col-lg-12 col-md-12 col-xs-12">
+            <div class="col-lg-12 col-md-12 col-xs-12 ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>Precatórios - Inclusão</h5>
+                </div>
+                <div class="ibox-content">
+                    @if (!ViewData.ModelState.IsValid)
+                    {
+                        <div class="alert alert-danger">
+                            <button type="button" class="close" data-dismiss="alert">Fechar</button>
+                            @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+                        </div>
+                    }
+                    <div class="tabs-container">
+                        @using (Html.BeginForm("IncluirPrecatorio", "Precatorio", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", @id = "pwd-container1" }))
+                        {
+                            <div class="form-group">
+                                <br />
+                                @Html.ButtonActionSubmit(text: "BtnSubmit", htmlAttributes: new { id = "submit", style = "display: none;" })
+                                <button class="btnSubmit btn btn-sm btn-success" id="basictoast" type="button">Confirma inclusão de Precatório</button>
+                                @Html.ButtonLinkIndex(text: "Voltar", action: "VoltarBasePrecatorio", controller: "Precatorio")
+                            </div>
+                            <ul class="nav nav-tabs">
+                                <li class="active"><a data-toggle="tab" href="#tab-1">Dados Gerais</a></li>
+                                <li class=""><a data-toggle="tab" href="#tab-2">Beneficiário</a></li>
+                                <li class=""><a data-toggle="tab" href="#tab-3">Advogado</a></li>
+                                <li class=""><a data-toggle="tab" href="#tab-4">Anexos</a></li>
+                            </ul>
+
+                            <div class="tab-content">
+                                @*Dados Gerais*@
+                                <div id="tab-1" class="tab-pane active">
+                                    <div class="panel-body">
+                                        <div class="row">
+                                            <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
+                                                <div class="col-lg-3 col-md-3 col-xs-12">
+                                                    @Html.HiddenFor(m => m.PREC_DT_CADASTRO)
+                                                    @Html.HiddenFor(m => m.PREC_IN_ATIVO)
+                                                    Tribunal*
+                                                    @Html.DropDownListFor(m => m.TRF1_CD_ID, (SelectList)ViewBag.TRF, "Selecionar", new { @class = "form-control", autofocus = true })
+                                                    @Html.ValidationMessageFor(m => m.TRF1_CD_ID, "", new { @style = "color:red" })
+                                                </div>
+                                                <div class="col-lg-3 col-md-3 col-xs-12">
+                                                    Natureza*
+                                                    @Html.DropDownListFor(m => m.NATU_CD_ID, (SelectList)ViewBag.Natureza, "Selecionar", new { @class = "form-control", autofocus = true })
+                                                    @Html.ValidationMessageFor(m => m.NATU_CD_ID, "", new { @style = "color:red" })
+                                                </div>
+                                                <div class="col-lg-2 col-md-2 col-xs-12">
+                                                    Estado
+                                                    @Html.DropDownListFor(m => m.PRES_CD_ID, (SelectList)ViewBag.Estado, "Selecionar", new { @class = "form-control", autofocus = true })
+                                                    @Html.ValidationMessageFor(m => m.PRES_CD_ID, "", new { @style = "color:red" })
+                                                </div>
+                                                <div class="col-lg-2 col-md-2 col-xs-12">
+                                                    Num.Precatório*
+                                                    @Html.TextBoxFor(m => m.PREC_NM_PRECATORIO, new { @class = "form-control", autofocus = true })
+                                                    @Html.ValidationMessageFor(m => m.PREC_NM_PRECATORIO, "", new { @style = "color:red" })
+                                                </div>
+                                                <div class="col-lg-2 col-md-2 col-xs-12">
+                                                    Ano*
+                                                    @Html.TextBoxFor(m => m.PREC_NR_ANO, new { @class = "form-control", autofocus = true, @id="ano" })
+                                                    @Html.ValidationMessageFor(m => m.PREC_NR_ANO, "", new { @style = "color:red" })
+                                                </div>
+                                            </div>
+                                            <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
+                                                <div class="col-lg-3 col-md-3 col-xs-12">
+                                                    Proc.Original*
+                                                    @Html.TextBoxFor(m => m.PREC_NM_PROCESSO_ORIGEM, new { @class = "form-control", autofocus = true })
+                                                    @Html.ValidationMessageFor(m => m.PREC_NM_PROCESSO_ORIGEM, "", new { @style = "color:red" })
+                                                </div>
+                                                <div class="col-lg-2 col-md-2 col-xs-12">
+                                                    Data Inserção*
+                                                    @Html.TextBoxFor(m => m.PREC_DT_INSERT_BD, "{0:dd/MM/yyyy}", new { @class = "form-control date-picker", autofocus = true, @id = "dn" })
+                                                    @Html.ValidationMessageFor(m => m.PREC_DT_INSERT_BD, "", new { @style = "color:red" })
+                                                </div>
+                                                <div class="col-lg-2 col-md-2 col-xs-12">
+                                                    Data Prot.Tribunal
+                                                    @Html.TextBoxFor(m => m.PREC_DT_PROTOCOLO_TRF, "{0:dd/MM/yyyy}", new { @class = "form-control date-picker", autofocus = true, @id = "dp" })
+                                                    @Html.ValidationMessageFor(m => m.PREC_DT_PROTOCOLO_TRF, "", new { @style = "color:red" })
+                                                </div>
+                                                <div class="col-lg-2 col-md-2 col-xs-12">
+                                                    Data Expedição
+                                                    @Html.TextBoxFor(m => m.PREC_DT_EXPEDICAO, "{0:dd/MM/yyyy}", new { @class = "form-control date-picker", autofocus = true, @id = "de" })
+                                                    @Html.ValidationMessageFor(m => m.PREC_DT_EXPEDICAO, "", new { @style = "color:red" })
+                                                </div>
+                                                <div class="col-lg-3 col-md-3 col-xs-12">
+                                                    Situação Atual
+                                                    @Html.DropDownListFor(m => m.PREC_IN_SITUACAO_ATUAL, (SelectList)ViewBag.Situacao, "Selecionar", new { @class = "form-control", autofocus = true })
+                                                    @Html.ValidationMessageFor(m => m.PREC_IN_SITUACAO_ATUAL, "", new { @style = "color:red" })
+                                                </div>
+                                            </div>
+                                            <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
+                                                <div class="col-lg-4 col-md-4 col-xs-12">
+                                                    Requerente*
+                                                    @Html.TextBoxFor(m => m.PREC_NM_REQUERENTE, new { @class = "form-control", autofocus = true })
+                                                    @Html.ValidationMessageFor(m => m.PREC_NM_REQUERENTE, "", new { @style = "color:red" })
+                                                </div>
+                                                <div class="col-lg-4 col-md-4 col-xs-12">
+                                                    Deprecante*
+                                                    @Html.TextBoxFor(m => m.PREC_NM_DEPRECANTE, new { @class = "form-control", autofocus = true })
+                                                    @Html.ValidationMessageFor(m => m.PREC_NM_DEPRECANTE, "", new { @style = "color:red" })
+                                                </div>
+                                                <div class="col-lg-4 col-md-4 col-xs-12">
+                                                    Requerido*
+                                                    @Html.TextBoxFor(m => m.PREC_NM_REQUERIDO, new { @class = "form-control", autofocus = true })
+                                                    @Html.ValidationMessageFor(m => m.PREC_NM_REQUERIDO, "", new { @style = "color:red" })
+                                                </div>
+                                            </div>
+                                            <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
+                                                <div class="col-lg-12 col-md-12 col-xs-12">
+                                                    Assunto
+                                                    @Html.TextAreaFor(m => m.PREC_NM_ASSUNTO, new { @class = "form-control", style = "width: 100%; height: 200px;", autofocus = true })
+                                                    @Html.ValidationMessageFor(m => m.PREC_NM_ASSUNTO, "", new { @style = "color:red" })
+                                                </div>
+                                            </div>
+                                            <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
+                                                <div class="col-lg-2 col-md-2 col-xs-12">
+                                                    Procedimento
+                                                    @Html.DropDownListFor(m => m.PREC_SG_PROCEDIMENTO, (SelectList)ViewBag.Procedimento, "Selecionar", new { @class = "form-control", autofocus = true })
+                                                    @Html.ValidationMessageFor(m => m.PREC_SG_PROCEDIMENTO, "", new { @style = "color:red" })
+                                                </div>
+                                                <div class="col-lg-4 col-md-4 col-xs-12">
+                                                    Situação Requisição
+                                                    @Html.TextBoxFor(m => m.PREC_NM_SITUACAO_REQUISICAO, new { @class = "form-control", autofocus = true })
+                                                    @Html.ValidationMessageFor(m => m.PREC_NM_SITUACAO_REQUISICAO, "", new { @style = "color:red" })
+                                                </div>
+                                                <div class="col-lg-2 col-md-2 col-xs-12">
+                                                    Valor Inscrito (R$)
+                                                    @Html.TextBoxFor(m => m.PREC_VL_VALOR_INSCRITO_PROPOSTA, new { @class = "form-control", autofocus = true })
+                                                    @Html.ValidationMessageFor(m => m.PREC_VL_VALOR_INSCRITO_PROPOSTA, "", new { @style = "color:red" })
+                                                </div>
+                                                <div class="col-lg-2 col-md-2 col-xs-12">
+                                                    Num.Proc.Execução
+                                                    @Html.TextBoxFor(m => m.PREC_NM_PROC_EXECUCAO, new { @class = "form-control", autofocus = true })
+                                                    @Html.ValidationMessageFor(m => m.PREC_NM_PROC_EXECUCAO, "", new { @style = "color:red" })
+                                                </div>
+                                                <div class="col-lg-2 col-md-2 col-xs-12">
+                                                    Ofício Requisitório
+                                                    @Html.TextBoxFor(m => m.PREC_NM_OFICIO_REQUISITORIO, new { @class = "form-control", autofocus = true })
+                                                    @Html.ValidationMessageFor(m => m.PREC_NM_OFICIO_REQUISITORIO, "", new { @style = "color:red" })
+                                                </div>
+                                            </div>
+                                            <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
+                                                <div class="col-lg-2 col-md-2 col-xs-12">
+                                                    Pesquisado?*
+                                                    @Html.DropDownListFor(m => m.PREC_IN_FOI_PESQUISADO, (SelectList)ViewBag.Pesquisado, "Selecionar", new { @class = "form-control", autofocus = true })
+                                                    @Html.ValidationMessageFor(m => m.PREC_IN_FOI_PESQUISADO, "", new { @style = "color:red" })
+                                                </div>
+                                                <div class="col-lg-2 col-md-2 col-xs-12">
+                                                    Importado CRM?*
+                                                    @Html.DropDownListFor(m => m.PREC_IN_FOI_IMPORTADO_PIPE, (SelectList)ViewBag.CRM, "Selecionar", new { @class = "form-control", autofocus = true })
+                                                    @Html.ValidationMessageFor(m => m.PREC_IN_FOI_IMPORTADO_PIPE, "", new { @style = "color:red" })
+                                                </div>
+                                                <div class="col-lg-2 col-md-2 col-xs-12">
+                                                    Requisição Bloqueada?
+                                                    @Html.DropDownListFor(m => m.PREC_NM_REQUISICAO_BLOQUEADA, (SelectList)ViewBag.Bloqueada, "Selecionar", new { @class = "form-control", autofocus = true })
+                                                    @Html.ValidationMessageFor(m => m.PREC_NM_REQUISICAO_BLOQUEADA, "", new { @style = "color:red" })
+                                                </div>
+                                                <div class="col-lg-2 col-md-2 col-xs-12">   
+                                                    PRC LOA*
+                                                    @Html.DropDownListFor(m => m.PREC_NM_PRC_LOA, (SelectList)ViewBag.LOA, "Selecionar", new { @class = "form-control", autofocus = true })
+                                                    @Html.ValidationMessageFor(m => m.PREC_NM_PRC_LOA, "", new { @style = "color:red" })
+                                                </div>
+                                                <div class="col-lg-4 col-md-4 col-xs-12">   
+                                                    Responsável*
+                                                    @Html.DropDownListFor(m => m.USUA_CD_ID, (SelectList)ViewBag.Usuarios, "Selecionar", new { @class = "form-control", autofocus = true })
+                                                    @Html.ValidationMessageFor(m => m.USUA_CD_ID, "", new { @style = "color:red" })
+                                                </div>
+                                            </div>
+                                            <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
+                                                <div class="col-lg-12 col-md-12 col-xs-12">
+                                                    Observações*
+                                                    @Html.TextAreaFor(m => m.PREC_TX_OBSERVACAO, new { @class = "form-control", style = "width: 100%; height: 200px;", autofocus = true })
+                                                    @Html.ValidationMessageFor(m => m.PREC_TX_OBSERVACAO, "", new { @style = "color:red" })
+                                                </div>
+                                            </div>                                   
+                                        </div>
+                                    </div>
+                                </div>
+
+                                @*beneficiario*@
+                                <div id="tab-2" class="tab-pane">
+                                    <div class="panel-body">
+                                        <div class="row">
+                                            <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
+                                                <div class="col-lg-4 col-md-4 col-xs-12">
+                                                    Nome Beneficiário*
+                                                    @Html.DropDownListFor(m => m.BENE_CD_ID, (SelectList)ViewBag.Beneficiario, "Selecionar", new { @class = "form-control", autofocus = true })
+                                                    @Html.ValidationMessageFor(m => m.BENE_CD_ID, "", new { @style = "color:red" })
+                                                </div>
+                                                <div class="col-lg-2 col-md-2 col-xs-12">
+                                                    Data Base*
+                                                    @Html.TextBoxFor(m => m.PREC_DT_BEN_DATABASE, "{0:dd/MM/yyyy}", new { @class = "form-control date-picker", autofocus = true, @id = "d1" })
+                                                    @Html.ValidationMessageFor(m => m.PREC_DT_BEN_DATABASE, "", new { @style = "color:red" })
+                                                </div>
+                                                <div class="col-lg-2 col-md-2 col-xs-12">
+                                                    Valor Principal (R$)*
+                                                    @Html.TextBoxFor(m => m.PREC_VL_BEN_VALOR_PRINCIPAL, new { @class = "form-control", autofocus = true })
+                                                    @Html.ValidationMessageFor(m => m.PREC_VL_BEN_VALOR_PRINCIPAL, "", new { @style = "color:red" })
+                                                </div>
+                                                <div class="col-lg-2 col-md-2 col-xs-12">
+                                                    Juros (R$)
+                                                    @Html.TextBoxFor(m => m.PREC_VL_JUROS, new { @class = "form-control", autofocus = true })
+                                                    @Html.ValidationMessageFor(m => m.PREC_VL_JUROS, "", new { @style = "color:red" })
+                                                </div>
+                                                <div class="col-lg-2 col-md-2 col-xs-12">
+                                                    Valor Inicial PSS (R$)
+                                                    @Html.TextBoxFor(m => m.PREC_VL_VALOR_INICIAL_PSS, new { @class = "form-control", autofocus = true })
+                                                    @Html.ValidationMessageFor(m => m.PREC_VL_VALOR_INICIAL_PSS, "", new { @style = "color:red" })
+                                                </div>
+                                            </div>
+                                            <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
+                                                <div class="col-lg-3 col-md-3 col-xs-12">
+                                                    Valor Requisitado (R$)*
+                                                    @Html.TextBoxFor(m => m.PREC_VL_BEN_VALOR_REQUISITADO, new { @class = "form-control", autofocus = true })
+                                                    @Html.ValidationMessageFor(m => m.PREC_VL_BEN_VALOR_REQUISITADO, "", new { @style = "color:red" })
+                                                </div>
+                                                <div class="col-lg-2 col-md-2 col-xs-12">
+                                                    IR RRA
+                                                    @Html.DropDownListFor(m => m.PREC_SG_BEN_IR_RRA, (SelectList)ViewBag.IRBeneficiario, "Selecionar", new { @class = "form-control", autofocus = true })
+                                                    @Html.ValidationMessageFor(m => m.PREC_SG_BEN_IR_RRA, "", new { @style = "color:red" })
+                                                </div>
+                                                <div class="col-lg-2 col-md-2 col-xs-12">
+                                                    Meses Atrasados
+                                                    @Html.TextBoxFor(m => m.PREC_BEN_MESES_EXE_ANTERIOR, new { @class = "form-control", autofocus = true })
+                                                    @Html.ValidationMessageFor(m => m.PREC_BEN_MESES_EXE_ANTERIOR, "", new { @style = "color:red" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                @*Advogado*@
+                                <div id="tab-3" class="tab-pane">
+                                    <div class="panel-body">
+                                        <div class="row">
+                                            <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
+                                                <div class="col-lg-4 col-md-4 col-xs-12">
+                                                    Nome Advogado
+                                                    @Html.DropDownListFor(m => m.HONO_CD_ID, (SelectList)ViewBag.Advogado, "Selecionar", new { @class = "form-control", autofocus = true })
+                                                    @Html.ValidationMessageFor(m => m.HONO_CD_ID, "", new { @style = "color:red" })
+                                                </div>
+                                                <div class="col-lg-2 col-md-2 col-xs-12">
+                                                    Data Base
+                                                    @Html.TextBoxFor(m => m.PREC_DT_HON_DATABASE, "{0:dd/MM/yyyy}", new { @class = "form-control date-picker", autofocus = true, @id = "d2" })
+                                                    @Html.ValidationMessageFor(m => m.PREC_DT_HON_DATABASE, "", new { @style = "color:red" })
+                                                </div>
+                                                <div class="col-lg-2 col-md-2 col-xs-12">
+                                                    Valor Principal (R$)
+                                                    @Html.TextBoxFor(m => m.PREC_VL_HON_VALOR_PRINCIPAL, new { @class = "form-control", autofocus = true })
+                                                    @Html.ValidationMessageFor(m => m.PREC_VL_HON_VALOR_PRINCIPAL, "", new { @style = "color:red" })
+                                                </div>
+                                                <div class="col-lg-2 col-md-2 col-xs-12">
+                                                    Juros (R$)
+                                                    @Html.TextBoxFor(m => m.PREC_VL_HON_JUROS, new { @class = "form-control", autofocus = true })
+                                                    @Html.ValidationMessageFor(m => m.PREC_VL_HON_JUROS, "", new { @style = "color:red" })
+                                                </div>
+                                                <div class="col-lg-2 col-md-2 col-xs-12">
+                                                    Valor Inicial PSS (R$)
+                                                    @Html.TextBoxFor(m => m.PREC_VL_HON_VALOR_INICIAL_PSS, new { @class = "form-control", autofocus = true })
+                                                    @Html.ValidationMessageFor(m => m.PREC_VL_HON_VALOR_INICIAL_PSS, "", new { @style = "color:red" })
+                                                </div>
+                                            </div>
+                                            <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
+                                                <div class="col-lg-3 col-md-3 col-xs-12">
+                                                    Valor Requisitado (R$)
+                                                    @Html.TextBoxFor(m => m.PREC_VL_HON_VALOR_REQUISITADO, new { @class = "form-control", autofocus = true })
+                                                    @Html.ValidationMessageFor(m => m.PREC_VL_HON_VALOR_REQUISITADO, "", new { @style = "color:red" })
+                                                </div>
+                                                <div class="col-lg-2 col-md-2 col-xs-12">
+                                                    IR RRA*
+                                                    @Html.DropDownListFor(m => m.PREC_SG_HON_IR_RRA, (SelectList)ViewBag.IRAdvogado, "Selecionar", new { @class = "form-control", autofocus = true })
+                                                    @Html.ValidationMessageFor(m => m.PREC_SG_HON_IR_RRA, "", new { @style = "color:red" })
+                                                </div>
+                                                <div class="col-lg-2 col-md-2 col-xs-12">
+                                                    Meses Atrasados
+                                                    @Html.TextBoxFor(m => m.PREC_IN_HON_MESES_EXE_ANTERIOR, new { @class = "form-control", autofocus = true })
+                                                    @Html.ValidationMessageFor(m => m.PREC_IN_HON_MESES_EXE_ANTERIOR, "", new { @style = "color:red" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                @*Anexos*@
+                                <div id="tab-4" class="tab-pane">
+                                    <div class="panel-body">
+                                        <div class="row">
+                                            <hr />
+                                            <div class="col-lg-12 col-md-12 col-xs-12">
+                                                <h4>Anexos</h4><input class="btn btn-sm btn-warning" id="inputFile" type="file" multiple />
+                                                <br />
+                                                <div class="form-group">
+                                                    <div class="ibox-content">
+                                                        <br />
+                                                        <table style="width: 100%;" class="table table-striped table-bordered table-hover dataTables-example" id="myFiles">
+                                                            <thead style="background-color:lightsteelblue">
+                                                                <tr>
+                                                                    <td>Nome</td>
+                                                                    <td>Tipo</td>
+                                                                    <td>Ações</td>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody></tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                @*<div class="form-group">
+                                    <br />
+                                    @Html.ButtonActionSubmit(text: "BtnSubmit", htmlAttributes: new { id = "submit", style = "display: none;" })
+                                    <button class="btnSubmit btn btn-sm btn-success" id="basictoast" type="button">Confirma inclusão de Precatório</button>
+                                    @Html.ButtonLinkIndex(text: "Voltar", action: "VoltarBasePrecatorio", controller: "Precatorio")
+                                </div>*@
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <link href="~/Content/themes/base/jquery-ui.min.css" rel="stylesheet" />
+    <link href="~/Content/themes/base/all.css" rel="stylesheet" />
+    <link href="~/Content/jquery.datetimepicker.css" rel="stylesheet" />
+    @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
+    @Styles.Render("~/plugins/jasnyBootstrapStyles")
+    @Styles.Render("~/plugins/toastrStyles")
+}
+@section Scripts {
+    <script src="~/Scripts/jquery.datetimepicker.full.min.js"></script>
+    <script type="text/javascript" src="~/Scripts/moment.min.js"></script>
+    <script type="text/javascript" src="~/Scripts/bootstrap.min.js"></script>
+    <script type="text/javascript" src="~/Scripts/jquery.datetimepicker"></script>
+
+    @Scripts.Render("~/plugins/toastr")
+    <script src="~/Scripts/jquery-ui-1.12.1.min.js"></script>
+    @Scripts.Render("~/plugins/dataTables")
+    @Scripts.Render("~/bundles/inputmask")
+    @Scripts.Render("~/plugins/jasnyBootstrap")
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.maskedinput/1.4.1/jquery.maskedinput.js"></script>
+    <script src="~/Scripts/uploadAnexo.js"></script>
+
+    <script type="text/javascript">
+        $(function () {
+            $("#cpf").mask("999.999.999-99");
+            $("#cnpj").mask("99.999.999/9999-99");
+            $("#cep").mask("99999-999");
+            $('#tel').mask('(99)9999-9999');
+            $('#dn').mask('99/99/9999');
+            $('#dp').mask('99/99/9999');
+            $('#de').mask('99/99/9999');
+            $('#d1').mask('99/99/9999');
+            $('#d2').mask('99/99/9999');
+            $('#cel').mask('(99)99999-9999');
+            $('#tel2').mask('(99)9999-9999');
+            $('#tel3').mask('(99)9999-9999');
+            $('#tel4').mask('(99)9999-9999');
+            $('#cel2').mask('(99)99999-9999');
+            $('#cel3').mask('(99)99999-9999');
+            $('#cel4').mask('(99)99999-9999');
+        });
+    </script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            var i = -1;
+            var toastCount = 0;
+            var $toastlast;
+            var getMessage = function () {
+                var msg = 'Hi, welcome to Inspinia. This is example of Toastr notification box.';
+                return msg;
+            };
+
+            $('#basictoast').click(function () {
+                // Display a success toast, with a title
+                toastr.success('Inclusão em andamento!')
+            });
+            $('#showtoast').click(function () {
+                var shortCutFunction = $("#toastTypeGroup input:radio:checked").val();
+                var msg = $('#message').val();
+                var title = $('#title').val() || '';
+                var $showDuration = $('#showDuration');
+                var $hideDuration = $('#hideDuration');
+                var $timeOut = $('#timeOut');
+                var $extendedTimeOut = $('#extendedTimeOut');
+                var $showEasing = $('#showEasing');
+                var $hideEasing = $('#hideEasing');
+                var $showMethod = $('#showMethod');
+                var $hideMethod = $('#hideMethod');
+                var toastIndex = toastCount++;
+                toastr.options = {
+                    closeButton: $('#closeButton').prop('checked'),
+                    debug: $('#debugInfo').prop('checked'),
+                    progressBar: $('#progressBar').prop('checked'),
+                    positionClass: $('#positionGroup input:radio:checked').val() || 'toast-top-right',
+                    onclick: null
+                };
+                if ($('#addBehaviorOnToastClick').prop('checked')) {
+                    toastr.options.onclick = function () {
+                        alert('You can perform some custom action after a toast goes away');
+                    };
+                }
+                if ($showDuration.val().length) {
+                    toastr.options.showDuration = $showDuration.val();
+                }
+                if ($hideDuration.val().length) {
+                    toastr.options.hideDuration = $hideDuration.val();
+                }
+                if ($timeOut.val().length) {
+                    toastr.options.timeOut = $timeOut.val();
+                }
+                if ($extendedTimeOut.val().length) {
+                    toastr.options.extendedTimeOut = $extendedTimeOut.val();
+                }
+                if ($showEasing.val().length) {
+                    toastr.options.showEasing = $showEasing.val();
+                }
+                if ($hideEasing.val().length) {
+                    toastr.options.hideEasing = $hideEasing.val();
+                }
+                if ($showMethod.val().length) {
+                    toastr.options.showMethod = $showMethod.val();
+                }
+                if ($hideMethod.val().length) {
+                    toastr.options.hideMethod = $hideMethod.val();
+                }
+                if (!msg) {
+                    msg = getMessage();
+                }
+                $("#toastrOptions").text("Command: toastr["
+                    + shortCutFunction
+                    + "](\""
+                    + msg
+                    + (title ? "\", \"" + title : '')
+                    + "\")\n\ntoastr.options = "
+                    + JSON.stringify(toastr.options, null, 2)
+                );
+                var $toast = toastr[shortCutFunction](msg, title); // Wire up an event handler to a button in the toast, if it exists
+                $toastlast = $toast;
+                if ($toast.find('#okBtn').length) {
+                    $toast.delegate('#okBtn', 'click', function () {
+                        alert('you clicked me. i was toast #' + toastIndex + '. goodbye!');
+                        $toast.remove();
+                    });
+                }
+                if ($toast.find('#surpriseBtn').length) {
+                    $toast.delegate('#surpriseBtn', 'click', function () {
+                        alert('Surprise! you clicked me. i was toast #' + toastIndex + '. You could perform an action here.');
+                    });
+                }
+            });
+            function getLastToast() {
+                return $toastlast;
+            }
+            $('#clearlasttoast').click(function () {
+                toastr.clear(getLastToast());
+            });
+            $('#cleartoasts').click(function () {
+                toastr.clear();
+            });
+
+        });
+    </script>
+
+    <script>
+        SendFilesV2('imgTran', 'Precatorio', 'UploadFileToSession');
+    </script>
+
+    <script type="text/javascript" language="javascript">
+        $(function () {
+            $('.date-picker').datepicker(
+                {
+                    dateFormat: 'dd/mm/yy',
+                    dayNames: ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'],
+                    dayNamesMin: ['D', 'S', 'T', 'Q', 'Q', 'S', 'S', 'D'],
+                    dayNamesShort: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'],
+                    monthNames: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'],
+                    monthNamesShort: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
+                    nextText: 'Proximo',
+                    prevText: 'Anterior',
+                    showOn: "focus"
+                }
+            )
+                .css("display", "normal")
+                .next("button").button({
+                    icons: { primary: "ui-icon-calendar" },
+                    label: "Selecione uma data",
+                    text: false
+                });
+        });
+    </script>
+    <script type="text/javascript">
+        function ValidaDiv(valPessoa) {
+            if (valPessoa == '2') {
+                $("#PF").hide();
+                $("#PF1").hide();
+                $("#PF4").hide();
+                $("#PF5").hide();
+                $("#PJ").show();
+                $("#PJ1").show();
+                $("#PJ2").show();
+            } else if (valPessoa == '1') { //Se o tempo for mé igual a 2 mostra a divCpf
+                $("#PJ").hide();
+                $("#PJ1").hide();
+                $("#PJ2").hide();
+                $("#PF").show();
+                $("#PF1").show();
+                $("#PF4").show();
+                $("#PF5").show();
+            } else { //Se não for 1, 2 ou 4 esconde as duas
+                $("#PJ").hide();
+                $("#PJ1").hide();
+                $("#PJ2").hide();
+                $("#PF").hide();
+                $("#PF1").hide();
+                $("#PF4").hide();
+                $("#PF5").hide();
+            }
+        }
+
+        $(document).ready(function () {
+            ValidaDiv($('#pessoa').val());
+        });
+    </script>
+    @if (ViewBag.Message != null)
+    {
+        <script type="text/javascript">
+            window.onload = function () {
+                  alert("@ViewBag.Message");
+            };
+        </script>
+    }
+}

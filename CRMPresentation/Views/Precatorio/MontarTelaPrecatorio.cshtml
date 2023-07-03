@@ -1,0 +1,395 @@
+﻿@using Presentation.Extensions
+@using CrossCutting;
+@model EntitiesServices.Model.PRECATORIO
+@{
+    Layout = "~/Views/Shared/_Layout_Admin.cshtml";
+}
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="modalContainer">
+        <div id="modal" class="modal" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        @*Titulo gerado dinamicamente*@
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        @*Gerado dinamicamente*@
+                    </div>
+                    <div class="modal-footer">
+                        <button onclick="limpaModal()" type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="page-title">
+        <h3 class="title">Precatórios</h3>
+        <br />
+        <ol class="breadcrumb">
+            <li>
+                <a href="@Url.Action("CarregarBase", "BaseAdmin")">Dashboard</a>
+            </li>
+            <li>
+                <a href="@Url.Action("MontarTelaDashboardCadastros", "BaseAdmin")">Dashboard Cadastros</a>
+            </li>
+            <li class="active">
+                <strong>Precatórios</strong>
+            </li>
+        </ol>
+        <br />
+    </div>
+    @*<div class="row">
+        <div class="col-lg-2">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title"  style="background-color:cornflowerblue; color:darkblue">
+                    <span class="label label-success pull-right">Hoje</span>
+                    <h5>Precatórios</h5>
+                </div>
+                <div class="ibox-content">
+                    <h1 class="no-margins">@ViewBag.ContagemFiltro</h1>
+                    <small>Exibidos na Tela</small>
+                    <br />
+                </div>
+            </div>
+        </div>
+    </div>*@
+
+    <div class="row">
+        <div class="col-lg-12 col-md-12 col-xs-12">
+            <div class="col-lg-12 col-md-12 col-xs-12 ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>Filtros</h5>
+                </div>
+
+                @using (Html.BeginForm("FiltrarPrecatorio", "Precatorio", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal" }))
+                {
+                    <div class="ibox-content">
+                        <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
+                            <div class="col-lg-2 col-md-2 col-xs-5ths">
+                                Tribunal
+                                @Html.DropDownListFor(m => m.TRF1_CD_ID, (SelectList)ViewBag.TRF, "Selecionar", new { @class = "form-control" })                            
+                            </div>
+                            <div class="col-lg-3 col-md-3 col-xs-5ths">
+                                Beneficiário
+                                @Html.DropDownListFor(m => m.BENE_CD_ID, (SelectList)ViewBag.Beneficiario, "Selecionar", new { @class = "form-control" })                            
+                            </div>
+                            <div class="col-lg-3 col-md-3 col-xs-5ths">
+                                Advogado
+                                @Html.DropDownListFor(m => m.HONO_CD_ID, (SelectList)ViewBag.Advogado, "Selecionar", new { @class = "form-control" })                            
+                            </div>
+                            <div class="col-lg-2 col-md-2 col-xs-5ths">
+                                Natureza
+                                @Html.DropDownListFor(m => m.NATU_CD_ID, (SelectList)ViewBag.Natureza, "Selecionar", new { @class = "form-control" })                            
+                            </div>
+                            <div class="col-lg-2 col-md-2 col-xs-5ths">
+                                Estado
+                                @Html.DropDownListFor(m => m.PRES_CD_ID, (SelectList)ViewBag.Estado, "Selecionar", new { @class = "form-control" })                            
+                            </div>
+                        </div>
+                        <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
+                            <div class="col-lg-3 col-md-3 col-xs-12">
+                                Requerente
+                                @Html.TextBoxFor(m => m.PREC_NM_REQUERENTE, new { @class = "form-control", autofocus = true })
+                            </div>
+                            <div class="col-lg-1 col-md-1 col-xs-12">
+                                Ano
+                                @Html.TextBoxFor(m => m.PREC_NR_ANO, new { @class = "form-control", autofocus = true, @id="ano" })
+                            </div>
+                            <div class="col-lg-2 col-md-2 col-xs-5ths">
+                                Incluído CRM
+                                @Html.DropDownListFor(m => m.PREC_IN_FOI_IMPORTADO_PIPE, (SelectList)ViewBag.CRM, "Selecionar", new { @class = "form-control" })                            
+                            </div>
+                            <div class="col-lg-2 col-md-2 col-xs-5ths">
+                                Pesquisado
+                                @Html.DropDownListFor(m => m.PREC_IN_FOI_PESQUISADO, (SelectList)ViewBag.Pesquisa, "Selecionar", new { @class = "form-control" })                            
+                            </div>
+                            <div class="col-lg-1 col-md-1 col-xs-12">
+                                Valor Inicial (R$)
+                                @Html.TextBoxFor(m => m.PREC_VL_BEN_VALOR_REQUISITADO, new { @class = "form-control", autofocus = true })
+                            </div>
+                            <div class="col-lg-1 col-md-1 col-xs-12">
+                                Valor Final (R$)
+                                @Html.TextBoxFor(m => m.PREC_VL_HON_VALOR_REQUISITADO, new { @class = "form-control", autofocus = true })
+                            </div>
+                            <div class="col-lg-2 col-md-2 col-xs-5ths">
+                                Situação
+                                @Html.DropDownListFor(m => m.PREC_IN_SITUACAO_ATUAL, (SelectList)ViewBag.Situacao, "Selecionar", new { @class = "form-control" })                            
+                            </div>
+                        </div>
+                        <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
+                            <div class="col-lg-12 col-md-12 col-xs-12">
+                                @Html.ButtonActionSubmit(text: "Filtrar")
+                                @Html.ButtonLinkIndex(text: "Filtro Genérico", controller: "Precatorio", action: "MontarTelaFiltroGenericoPrecatorio", buttonClass: "success")
+                                @Html.ButtonLinkIndex(text: "Novo Precatório", controller: "Precatorio", action: "IncluirPrecatorio", buttonClass: "primary")
+                                @Html.ButtonLinkIndex(text: "Retirar Filtro", controller: "Precatorio", action: "RetirarFiltroPrecatorio")
+                                @Html.ButtonLinkIndex(text: "Exibir Todos", controller: "Precatorio", action: "MostrarTudoPrecatorio")
+                                @Html.ButtonLinkIndex(text: "Gerar Relatório", controller: "Precatorio", action: "GerarRelatorioLista")
+                                @Html.ButtonLinkIndex(text: "Importação", controller: "Precatorio", action: "IncluirPrecatorioTRFExcel", buttonClass: "success")
+                                @Html.ButtonLinkIndex(text: "Dashboard", controller: "Precatorio", action: "VoltarDash")
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-12 col-md-12 col-xs-12">
+            <div class="col-lg-12 col-md-12 col-xs-12 ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>Totais</h5>
+                </div>
+                <div class="ibox-content">
+                    <div class="row">
+                        <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
+                            <div class="col-lg-2 col-md-2 col-xs-12">
+                                Valor Inscrito Proposta (R$)
+                                @Html.TextBox("Prop", CrossCutting.Formatters.DecimalFormatter((Decimal)ViewBag.ValorInscProp), new { @class = "form-control", autofocus = true, @style = "color:green; font-wheight: bold"  })                            
+                            </div>
+                            <div class="col-lg-2 col-md-2 col-xs-12">
+                                Valor Principal (R$)
+                                @Html.TextBox("Prin", CrossCutting.Formatters.DecimalFormatter((Decimal)ViewBag.ValorPrincipal), new { @class = "form-control", autofocus = true, @style = "color:green; font-wheight: bold"  })                            
+                            </div>
+                            <div class="col-lg-2 col-md-2 col-xs-12">
+                                Juros (R$)
+                                @Html.TextBox("Juros", CrossCutting.Formatters.DecimalFormatter((Decimal)ViewBag.Juros), new { @class = "form-control", autofocus = true, @style = "color:green; font-wheight: bold"  })                            
+                            </div>
+                            <div class="col-lg-2 col-md-2 col-xs-12">
+                                Valor PSS (R$)
+                                @Html.TextBox("PSS", CrossCutting.Formatters.DecimalFormatter((Decimal)ViewBag.Valor_PSS), new { @class = "form-control", autofocus = true, @style = "color:green; font-wheight: bold"  })                            
+                            </div>
+                            <div class="col-lg-2 col-md-2 col-xs-12">
+                                Valor Requisitado (R$)
+                                @Html.TextBox("Req", CrossCutting.Formatters.DecimalFormatter((Decimal)ViewBag.Valor_Req), new { @class = "form-control", autofocus = true, @style = "color:green; font-wheight: bold"  })                            
+                            </div>
+                        </div>
+                    </div>
+                </div>        
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-12 col-md-12 col-xs-12">
+            <div class="col-lg-12 col-md-12 col-xs-12 ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>Precatórios</h5>
+                </div>
+                <div class="ibox-content">
+                    @if (!ViewData.ModelState.IsValid)
+                    {
+                        <div class="alert alert-danger">
+                            <button type="button" class="close" data-dismiss="alert">Fechar</button>
+                            @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+                        </div>
+                    }
+                    <div class="row">
+                        @if (ViewBag.Listas != null && (ViewBag.Listas as List<EntitiesServices.Model.PRECATORIO>).Count > 0)
+                        {
+                            <table class="table table-striped table-bordered table-hover dataTables-example">
+                                <thead style="background-color:lightsteelblue">
+                                    <tr>
+                                        <th>Tribunal</th>
+                                        <th>Precatório</th>
+                                        <th>Proc.Execução</th>
+                                        <th>Requerente</th>
+                                        <th>Requerido</th>
+                                        <th>Beneficiário</th>
+                                        <th>Ano</th>
+                                        <th>Valor (R$)</th>
+                                        <th>Situação</th>
+                                        <th>Responsável</th>
+                                        <th class="td-one-action">Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var cond in (ViewBag.Listas as List<EntitiesServices.Model.PRECATORIO>))
+                                    {
+                                        <tr>
+                                            <td>@cond.TRF.TRF1_NM_NOME</td>
+                                            <td>@cond.PREC_NM_PRECATORIO</td>
+                                            <td>@cond.PREC_NM_PROC_EXECUCAO</td>
+                                            <td>@cond.PREC_NM_REQUERENTE</td>
+                                            <td>@cond.PREC_NM_REQUERIDO</td>
+                                            @if (cond.BENEFICIARIO != null)
+                                            {
+                                                <td>@cond.BENEFICIARIO.BENE_NM_NOME</td>
+                                            }
+                                            else
+                                            {
+                                                <td>-</td>
+                                            }
+                                            <td>@cond.PREC_NR_ANO</td>
+                                            @if (cond.PREC_VL_BEN_VALOR_REQUISITADO != null)
+                                            {
+                                                <td>@CrossCutting.Formatters.DecimalFormatter(cond.PREC_VL_BEN_VALOR_REQUISITADO.Value)</td>
+                                            }
+                                            else
+                                            {
+                                                <td>-</td>
+                                            }
+                                            @if (cond.PREC_IN_SITUACAO_ATUAL == 1)
+                                            {
+                                                <td><span class="badge badge-primary">Pago</span></td>
+
+                                            }
+                                            else if (cond.PREC_IN_SITUACAO_ATUAL == 3)
+                                            {
+                                                <td><span class="badge badge-success">Parcial</span></td>
+
+                                            }
+                                            else
+                                            {
+                                                <td><span class="badge badge-danger">Não Pago</span></td>
+                                            }
+                                            <td>@cond.USUARIO.USUA_NM_NOME</td>
+                                            <td class="td-one-action">
+                                                @if (ViewBag.Perfil != "VIS")
+                                                {
+                                                    if (cond.PREC_IN_FOI_IMPORTADO_PIPE == 0 || cond.PREC_IN_FOI_IMPORTADO_PIPE == null)
+                                                    {
+                                                        @Html.TableLinkDetails(cond.PREC_CD_ID, "ExportarCRM", "fa-send", "Enviar CRM")
+                                                    }
+                                                    @Html.TableLinkDetails(cond.PREC_CD_ID, "EditarPrecatorio", "fa-edit", "Editar/Consultar")
+                                                    if (cond.PREC_IN_ATIVO == 1)
+                                                    {
+                                                        <span style="color: #337ab7; cursor:pointer;" alt="Desativar" class="tbl-link fa-lg fa fa-trash-o" onclick="ShowModalExcluir('/Precatorio/ExcluirPrecatorio/@cond.PREC_CD_ID')" title="Desativar"></span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span style="color: #337ab7; cursor:pointer;" alt="Reativar" class="tbl-link fa-lg fa fa-refresh" onclick="ShowModalReativar('/Precatorio/ReativarPrecatorio/@cond.PREC_CD_ID')" title="Reativar"></span>
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    @Html.TableLinkDetails(cond.PREC_CD_ID, "VerPrecatorio", "fa-search", "Consultar")
+                                                }
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        }
+                        else
+                        {
+                            <div class="row">
+                                <div class="col-lg-4 col-md-4 col-xs-2">
+
+                                </div>
+                                <div style="border: 5px solid #F6A54A; padding: 10px; border-radius: 8px 8px; " class="col-lg-4 col-md-4 col-xs-8">
+                                    <h2 style="font-weight: bold">Sua pesquisa não retornou nenhum resultado</h2>
+                                    <p>Tente outras opções de pesquisa</p>
+
+                                    @Html.ButtonLinkIndex(text: "Retirar Filtro", controller: "Precatorio", action: "RetirarFiltroPrecatorio")
+                                </div>
+                                <div class="col-lg-4 col-md-4 col-xs-2">
+
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>       
+            
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <link href="~/Content/themes/base/all.css" rel="stylesheet" />
+    @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
+    @Styles.Render("~/plugins/jasnyBootstrapStyles")
+}
+
+@section Scripts {
+
+    @Scripts.Render("~/plugins/dataTables")
+    @Scripts.Render("~/bundles/inputmask")
+    @Scripts.Render("~/plugins/jasnyBootstrap")
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.maskedinput/1.4.1/jquery.maskedinput.js"></script>
+
+
+    <script>
+        $(function () {
+            limpaModal();
+        });
+
+        function limpaModal() {
+            $('#btnModal').remove();
+            $('#modalTitle').remove();
+        }
+        function ShowModalExcluir(url) {
+            $('#modal').find('.modal-footer').prepend('<a id="btnModal" alt="Desativar" class="btn btn-primary" href="' + url + '" target="_self" title="Desativar">Confirmar</a>');
+            $('#modal').find('.modal-body').html('Confirma exclusão de Precatório?');
+            $('#modal').find('.modal-header').prepend('<h5 id="modalTitle" class="modal-title">Confimar Exclusão</h5>');
+            $('#modal').modal('show');
+        }
+
+        function ShowModalReativar(url) {
+            $('#modal').find('.modal-footer').prepend('<a id="btnModal" alt="Reativar" class="btn btn-primary" href="' + url + '" target="_self" title="Reativar">Confirmar</a>');
+            $('#modal').find('.modal-body').html('Confirma reativação de Precatório?');
+            $('#modal').find('.modal-header').prepend('<h5 id="modalTitle" class="modal-title">Confimar Reativação</h5>');
+            $('#modal').modal('show');
+        }
+    </script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            $('.dataTables-example').DataTable({
+                pageLength: 25,
+                dom: '<"html5buttons"B>lTfgitp',
+                buttons: [
+                    { extend: 'excel', title: 'ExampleFile' },
+                    { extend: 'pdf', title: 'ExampleFile' },
+
+                    {
+                        extend: 'print',
+                        customize: function (win) {
+                            $(win.document.body).addClass('white-bg');
+                            $(win.document.body).css('font-size', '10px');
+
+                            $(win.document.body).find('table')
+                                .addClass('compact')
+                                .css('font-size', 'inherit');
+                        }
+                    }
+                ]
+
+            });
+
+
+
+        });
+
+    </script>
+    <script type="text/javascript">
+        $(function () {
+            $("#cpf").mask("999.999.999-99");
+            $("#cnpj").mask("99.999.999/9999-99");
+            $("#ano").mask("9999");
+        });
+    </script>
+
+     <script>
+        function MudaIdTrans(id) {
+            $('#idTrans').val(id);
+        }
+    </script>
+
+}
+
+@if (ViewBag.Message != null)
+{
+    <script type="text/javascript">
+            window.onload = function () {
+                alert("@ViewBag.Message");
+            };
+    </script>
+}
+
