@@ -68,7 +68,6 @@
                                 <div class="col-lg-12 col-md-12 col-xs-12">
                                     @Html.ButtonActionSubmit(text: "Filtrar")
                                     @Html.ButtonLinkIndex(text: "Incluir Novo Cliente", controller: "Cliente", action: "IncluirCliente", buttonClass: "primary")
-                                    @Html.ButtonLinkIndex(text: "Inclusão Rápida", action: "IncluirClienteRapido", controller: "Cliente", buttonClass: "primary")
                                     @Html.ButtonLinkIndex(text: "Retirar Filtro", controller: "Cliente", action: "RetirarFiltroCliente")
                                     @Html.ButtonLinkIndexShort("Exibir Todos", null, "warning", new { @id = "todos", onclick = "ProcessaTodos()" })
                                     @Html.ButtonLinkIndex(text: "Exibir Lista de Clientes", controller: "Cliente", action: "MontarTelaCliente")
@@ -127,10 +126,6 @@
                                                 }
                                             </div>
                                             <div class="col-sm-9">
-                                                @if (ViewBag.Perfil == "ADM")
-                                                {
-                                                    <h3><strong>@cond.EMPRESA.EMPR_NM_NOME</strong></h3><br />
-                                                }
                                                 <h3><strong>@cond.CLIE_NM_NOME</strong></h3>
                                                 <p><i class="fa fa-envelope"></i> <a href="@Url.Action("EnviarEMailCliente", "Cliente", new { id = cond.CLIE_CD_ID})">@cond.CLIE_NM_EMAIL</a> </p>
                                                 <address>

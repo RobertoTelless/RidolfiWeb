@@ -33,7 +33,6 @@ namespace ERP_Condominios_Solution.Controllers
         private readonly ILogAppService logApp;
         private readonly IUsuarioAppService usuApp;
         private readonly IConfiguracaoAppService confApp;
-        private readonly IEmpresaAppService empApp;
 
         private String msg;
         private Exception exception;
@@ -1150,15 +1149,7 @@ namespace ERP_Condominios_Solution.Controllers
             PdfPCell cell = new PdfPCell();
             cell.Border = 0;
             Image image = null;
-            if (conf.CONF_IN_LOGO_EMPRESA == 1)
-            {
-                EMPRESA empresa = empApp.GetItemByAssinante(idAss);
-                image = Image.GetInstance(Server.MapPath(empresa.EMPR_AQ_LOGO));
-            }
-            else
-            {
-                image = Image.GetInstance(Server.MapPath("~/Images/CRM_Icon2.jpg"));
-            }
+            image = Image.GetInstance(Server.MapPath("~/Images/CRM_Icon2.jpg"));
             image.ScaleAbsolute(50, 50);
             cell.AddElement(image);
             table.AddCell(cell);
@@ -1434,15 +1425,7 @@ namespace ERP_Condominios_Solution.Controllers
             PdfPCell cell = new PdfPCell();
             cell.Border = 0;
             Image image = null;
-            if (conf.CONF_IN_LOGO_EMPRESA == 1)
-            {
-                EMPRESA empresa = empApp.GetItemByAssinante(idAss);
-                image = Image.GetInstance(Server.MapPath(empresa.EMPR_AQ_LOGO));
-            }
-            else
-            {
-                image = Image.GetInstance(Server.MapPath("~/Images/CRM_Icon2.jpg"));
-            }
+            image = Image.GetInstance(Server.MapPath("~/Images/CRM_Icon2.jpg"));
             image.ScaleAbsolute(50, 50);
             cell.AddElement(image);
             table.AddCell(cell);

@@ -56,19 +56,12 @@
                                                     @Html.HiddenFor(m => m.GRUP_DT_CADASTRO)
                                                     @Html.HiddenFor(m => m.GRUP_IN_ATIVO)
                                                     @Html.HiddenFor(m => m.USUA_CD_ID)
+                                                    @Html.HiddenFor(m => m.EMPR_CD_ID)
                                                     Nome*
                                                     @Html.TextBoxFor(m => m.GRUP_NM_NOME, new { @class = "form-control", autofocus = true, @id = "nome" })
                                                     @Html.ValidationMessageFor(m => m.GRUP_NM_NOME, "", new { @style = "color:red" })
                                                 </div>
                                             </div>
-                                            @if (ViewBag.Perfil == "ADM")
-                                            {
-                                                <div class="col-lg-3 col-md-3 col-xs-12">
-                                                    Empresa/Filial
-                                                    @Html.DropDownListFor(m => m.EMPR_CD_ID, (SelectList)ViewBag.Empresas, "Selecionar", new { @class = "form-control", autofocus = true })
-                                                    @Html.ValidationMessageFor(m => m.EMPR_CD_ID, "", new { @style = "color:red" })
-                                                </div>
-                                            }
                                         </div>
                                         <hr />
                                         <h5 style="color:green; background-color: beige">Especifique os filtros para a seleção dos componentes desse grupo</h5>                                                

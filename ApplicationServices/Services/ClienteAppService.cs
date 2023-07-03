@@ -18,13 +18,17 @@ namespace ApplicationServices.Services
         private readonly IConfiguracaoService _confService;
         private readonly ICRMService _crmService;
         private readonly ICategoriaClienteService _ccService;
+        private readonly IPrecatorioService _precService;
+        private readonly IBeneficiarioService _beneService;
 
-        public ClienteAppService(IClienteService baseService, IConfiguracaoService confService, ICRMService crmService, ICategoriaClienteService ccService) : base(baseService)
+        public ClienteAppService(IClienteService baseService, IConfiguracaoService confService, ICRMService crmService, ICategoriaClienteService ccService, IPrecatorioService precService, IBeneficiarioService beneService) : base(baseService)
         {
             _baseService = baseService;
             _confService = confService;
             _crmService = crmService;   
             _ccService = ccService; 
+            _precService = precService;
+            _beneService = beneService;
         }
 
         public List<CLIENTE> GetAllItens(Int32 idAss)
@@ -191,52 +195,38 @@ namespace ApplicationServices.Services
 
             // Busca em Clientes
             List<CLIENTE> listaClientes = new List<CLIENTE>();
-            if (permissoes[0] == 1 )
-            {
-                listaClientes = _baseService.GetAllItens(idAss).Where(p => p.CLIE_NM_NOME.Contains(parm) || p.CLIE_NM_EMAIL.Contains(parm)).ToList();
-                if (perfil != "ADM")
-                {
-                    listaClientes = listaClientes.Where(p => p.EMPR_CD_ID == empresa).ToList();
-                }          
-            }
+            listaClientes = _baseService.GetAllItens(idAss).Where(p => p.CLIE_NM_NOME.Contains(parm) || p.CLIE_NM_EMAIL.Contains(parm)).ToList();
+
+            // Busca em Precatorios
+            List<PRECATORIO> listaPrec = new List<PRECATORIO>();
+            listaPrec = _precService.GetAllItens().Where(p => p.PREC_NM_PRECATORIO.Contains(parm) || p.PREC_NM_ASSUNTO.Contains(parm)  || p.PREC_NM_REQUERENTE.Contains(parm)  || p.PREC_NM_REQUERIDO.Contains(parm)  || p.PREC_NM_DEPRECANTE.Contains(parm)  || p.PREC_NM_PROCESSO_ORIGEM.Contains(parm)).ToList();
+
+            // Busca em Beneficiarios
+            List<BENEFICIARIO> listaBene = new List<BENEFICIARIO>();
+            listaBene = _beneService.GetAllItens().Where(p => p.BENE_NM_NOME.Contains(parm)).ToList();
 
             // Busca em Processos
             List<CRM> listaCRM = new List<CRM>();
             List<CRM_ACAO> listaAcao = new List<CRM_ACAO>();
             List<CRM_PEDIDO_VENDA> listaProp = new List<CRM_PEDIDO_VENDA>();
-            if (permissoes[1] == 1)
+            listaCRM = _crmService.GetAllItens(idAss).Where(p => p.CRM1_NM_NOME.Contains(parm) || p.CLIENTE.CLIE_NM_NOME.Contains(parm) || p.CRM1_DS_DESCRICAO.Contains(parm)).ToList();
+            if (ValidarItensDiversos.IsDateTime(parm))
             {
-                listaCRM = _crmService.GetAllItens(idAss).Where(p => p.CRM1_NM_NOME.Contains(parm) || p.CLIENTE.CLIE_NM_NOME.Contains(parm) || p.CRM1_DS_DESCRICAO.Contains(parm)).ToList();
-                if (ValidarItensDiversos.IsDateTime(parm))
-                {
-                    listaCRM = listaCRM.Where(p => p.CRM1_DT_CRIACAO.Value.Date == Convert.ToDateTime(parm)).ToList();
-                    if (perfil != "ADM")
-                    {
-                        listaCRM = listaCRM.Where(p => p.EMPR_CD_ID == empresa).ToList();
-                    }
-                }
+                listaCRM = listaCRM.Where(p => p.CRM1_DT_CRIACAO.Value.Date == Convert.ToDateTime(parm)).ToList();
+            }
 
-                // Busca em Ações
-                listaAcao = _crmService.GetAllAcoes(idAss).Where(p => p.CRAC_NM_TITULO.Contains(parm)).ToList();
-                if (ValidarItensDiversos.IsDateTime(parm))
-                {
-                    listaAcao = listaAcao.Where(p => p.CRAC_DT_CRIACAO.Value.Date == Convert.ToDateTime(parm) || p.CRAC_DT_PREVISTA.Value.Date == Convert.ToDateTime(parm)).ToList();
-                    if (perfil != "ADM")
-                    {
-                        listaAcao = listaAcao.Where(p => p.CRM.EMPR_CD_ID == empresa).ToList();
-                    }
-                }
+            // Busca em Ações
+            listaAcao = _crmService.GetAllAcoes(idAss).Where(p => p.CRAC_NM_TITULO.Contains(parm)).ToList();
+            if (ValidarItensDiversos.IsDateTime(parm))
+            {
+                listaAcao = listaAcao.Where(p => p.CRAC_DT_CRIACAO.Value.Date == Convert.ToDateTime(parm) || p.CRAC_DT_PREVISTA.Value.Date == Convert.ToDateTime(parm)).ToList();
+            }
 
-                // Busca em Propostas
-                listaProp = _crmService.GetAllPedidos(idAss).Where(p => p.CRPV_NM_NOME.Contains(parm) || p.CRPV_IN_NUMERO_GERADO.ToString() == parm || p.CRPV_TX_CONDICOES_COMERCIAIS.Contains(parm)).ToList();
-                if (ValidarItensDiversos.IsDateTime(parm))
-                {
-                    listaProp = listaProp.Where(p => p.CRPV_DT_PEDIDO.Date.ToString() == parm || p.CRPV_DT_VALIDADE.Date.ToString() == parm).ToList();
-                    if (perfil != "ADM")
-                    {
-                        listaProp = listaProp.Where(p => p.CRM.EMPR_CD_ID == empresa).ToList();
-                    }
-                }
+            // Busca em Propostas
+            listaProp = _crmService.GetAllPedidos(idAss).Where(p => p.CRPV_NM_NOME.Contains(parm) || p.CRPV_IN_NUMERO_GERADO.ToString() == parm || p.CRPV_TX_CONDICOES_COMERCIAIS.Contains(parm)).ToList();
+            if (ValidarItensDiversos.IsDateTime(parm))
+            {
+                listaProp = listaProp.Where(p => p.CRPV_DT_PEDIDO.Date.ToString() == parm || p.CRPV_DT_VALIDADE.Date.ToString() == parm).ToList();
             }
 
             // Prepara lista de retorno
@@ -260,6 +250,31 @@ namespace ApplicationServices.Services
                 volta.ASSI_CD_ID = idAss;
                 listaVolta.Add(volta);  
             }
+            foreach (PRECATORIO item in listaPrec)
+            {
+                VOLTA_PESQUISA volta = new VOLTA_PESQUISA();
+                volta.PEGR_IN_TIPO = 5;
+                volta.PEGR_CD_ITEM = item.PREC_CD_ID;
+                volta.PEGR_NM_NOME1 = item.PREC_NM_PRECATORIO;
+                volta.PEGR_NM_NOME2 = item.TRF.TRF1_NM_NOME;
+                volta.PEGR_NM_NOME3 = item.PREC_NM_REQUERENTE;
+                volta.PEGR_NM_NOME4 = item.PREC_NM_REQUERIDO;
+                volta.ASSI_CD_ID = idAss;
+                listaVolta.Add(volta);
+            }
+            foreach (BENEFICIARIO item in listaBene)
+            {
+                VOLTA_PESQUISA volta = new VOLTA_PESQUISA();
+                volta.PEGR_IN_TIPO = 6;
+                volta.PEGR_CD_ITEM = item.BENE_CD_ID;
+                volta.PEGR_NM_NOME1 = item.BENE_NM_NOME;
+                volta.PEGR_NM_NOME2 = item.BENE_EM_EMAIL;
+                volta.PEGR_NM_NOME3 = item.BENE_NR_TELEFONE;
+                volta.PEGR_NM_NOME4 = item.BENE_NR_CELULAR;
+                volta.ASSI_CD_ID = idAss;
+                listaVolta.Add(volta);
+            }
+
             foreach (CRM item in listaCRM)
             {
                 VOLTA_PESQUISA volta = new VOLTA_PESQUISA();

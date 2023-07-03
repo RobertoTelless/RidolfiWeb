@@ -44,7 +44,6 @@ namespace ERP_Condominios_Solution.Controllers
         private readonly IVideoAppService vidApp;
         private readonly IClienteAppService cliApp;
         private readonly IGrupoAppService gruApp;
-        private readonly IFilialAppService filApp;
         private readonly ITemplatePropostaAppService tpApp;
         private readonly IAssinanteAppService assiApp;
         private readonly IPlanoAppService planApp;
@@ -54,7 +53,9 @@ namespace ERP_Condominios_Solution.Controllers
         private readonly IMensagemEnviadaSistemaAppService envApp;
         private readonly ITemplateEMailAppService mailApp;
         private readonly ITemplateSMSAppService smsApp;
-        private readonly IEmpresaAppService empApp;
+        private readonly IPrecatorioAppService precApp;
+        private readonly IBeneficiarioAppService beneApp;
+        private readonly ITRFAppService trfApp;
 
         private String msg;
         private Exception exception;
@@ -65,7 +66,7 @@ namespace ERP_Condominios_Solution.Controllers
         MENSAGENS_ENVIADAS_SISTEMA objetEnviadaoAntes = new MENSAGENS_ENVIADAS_SISTEMA();
         List<MENSAGENS_ENVIADAS_SISTEMA> listaMasterEnviada = new List<MENSAGENS_ENVIADAS_SISTEMA>();
 
-        public BaseAdminController(IUsuarioAppService baseApps, ILogAppService logApps, INoticiaAppService notApps, ITarefaAppService tarApps, INotificacaoAppService notfApps, IUsuarioAppService usuApps, IAgendaAppService ageApps, IConfiguracaoAppService confApps, IVideoAppService vidApps, IClienteAppService cliApps, IGrupoAppService gruApps, IFilialAppService filApps, ITemplatePropostaAppService tpApps, IAssinanteAppService assiApps, IPlanoAppService planApps, ICRMAppService crmApps, IMensagemAppService menApps, ITemplateAppService temApps, IMensagemEnviadaSistemaAppService envApps, ITemplateEMailAppService mailApps, ITemplateSMSAppService smsApps, IEmpresaAppService empApps)
+        public BaseAdminController(IUsuarioAppService baseApps, ILogAppService logApps, INoticiaAppService notApps, ITarefaAppService tarApps, INotificacaoAppService notfApps, IUsuarioAppService usuApps, IAgendaAppService ageApps, IConfiguracaoAppService confApps, IVideoAppService vidApps, IClienteAppService cliApps, IGrupoAppService gruApps, ITemplatePropostaAppService tpApps, IAssinanteAppService assiApps, IPlanoAppService planApps, ICRMAppService crmApps, IMensagemAppService menApps, ITemplateAppService temApps, IMensagemEnviadaSistemaAppService envApps, ITemplateEMailAppService mailApps, ITemplateSMSAppService smsApps, IPrecatorioAppService precApps, IBeneficiarioAppService beneApps, ITRFAppService trfApps)
         {
             baseApp = baseApps;
             logApp = logApps;
@@ -78,7 +79,6 @@ namespace ERP_Condominios_Solution.Controllers
             vidApp = vidApps;
             cliApp = cliApps;
             gruApp = gruApps;
-            filApp = filApps;  
             tpApp = tpApps;
             assiApp = assiApps; 
             planApp = planApps; 
@@ -88,7 +88,9 @@ namespace ERP_Condominios_Solution.Controllers
             envApp= envApps;
             mailApp = mailApps;
             smsApp = smsApps;
-            empApp = empApps;
+            precApp = precApps;
+            beneApp = beneApps;
+            trfApp = trfApps;
         }
 
         public ActionResult CarregarAdmin()
@@ -187,7 +189,6 @@ namespace ERP_Condominios_Solution.Controllers
             ViewBag.PermPesquisa = (Int32)Session["PermPesquisa"];
             ViewBag.PermAtendimento = (Int32)Session["PermAtendimentos"];
             ViewBag.PermComercial= (Int32)Session["PermComercial"];
-            ViewBag.Empresas = new SelectList(CarregaEmpresa(), "EMPR_CD_ID", "EMPR_NM_NOME");
 
             List<NOTIFICACAO> noti = new List<NOTIFICACAO>();
             USUARIO usuario = (USUARIO)Session["UserCredentials"];
@@ -218,18 +219,18 @@ namespace ERP_Condominios_Solution.Controllers
             Session["NumAgendasHoje"] = ((List<AGENDA>)Session["AgendasHoje"]).Count;
             Session["Logs"] = logApp.GetAllItensDataCorrente(idAss).Count;
 
-            Session["Planos"] = assi.ASSINANTE_PLANO;
-            Session["PlanosVencidos"] = assi.ASSINANTE_PLANO.Where(p => p.ASPL_DT_VALIDADE.Value.Date < DateTime.Today.Date).ToList();
-            Session["PlanosVencer30"] = assi.ASSINANTE_PLANO.Where(p => p.ASPL_DT_VALIDADE.Value.Date < DateTime.Today.Date.AddDays(30)).ToList();
-            Session["NumPlanos"] = assi.ASSINANTE_PLANO.Count;
-            Session["NumPlanosVencidos"] = assi.ASSINANTE_PLANO.Where(p => p.ASPL_DT_VALIDADE.Value.Date < DateTime.Today.Date).ToList().Count();
-            Session["NumPlanosVencer30"] = assi.ASSINANTE_PLANO.Where(p => p.ASPL_DT_VALIDADE.Value.Date < DateTime.Today.Date.AddDays(30)).ToList().Count();
+            //Session["Planos"] = assi.ASSINANTE_PLANO;
+            //Session["PlanosVencidos"] = assi.ASSINANTE_PLANO.Where(p => p.ASPL_DT_VALIDADE.Value.Date < DateTime.Today.Date).ToList();
+            //Session["PlanosVencer30"] = assi.ASSINANTE_PLANO.Where(p => p.ASPL_DT_VALIDADE.Value.Date < DateTime.Today.Date.AddDays(30)).ToList();
+            //Session["NumPlanos"] = assi.ASSINANTE_PLANO.Count;
+            //Session["NumPlanosVencidos"] = assi.ASSINANTE_PLANO.Where(p => p.ASPL_DT_VALIDADE.Value.Date < DateTime.Today.Date).ToList().Count();
+            //Session["NumPlanosVencer30"] = assi.ASSINANTE_PLANO.Where(p => p.ASPL_DT_VALIDADE.Value.Date < DateTime.Today.Date.AddDays(30)).ToList().Count();
 
-            List<ASSINANTE_PAGAMENTO> pags = assiApp.GetAllPagamentos();
-            pags = pags.Where(p => p.ASPA_IN_PAGO == 0 & p.ASPA_NR_ATRASO > 0 & p.ASSI_CD_ID == idAss).ToList();
-            Int32 atraso = pags.Count;
-            Session["Atrasos"] = pags;
-            Session["NumAtrasos"] = pags.Count;
+            //List<ASSINANTE_PAGAMENTO> pags = assiApp.GetAllPagamentos();
+            //pags = pags.Where(p => p.ASPA_IN_PAGO == 0 & p.ASPA_NR_ATRASO > 0 & p.ASSI_CD_ID == idAss).ToList();
+            //Int32 atraso = pags.Count;
+            //Session["Atrasos"] = pags;
+            //Session["NumAtrasos"] = pags.Count;
 
             String frase = String.Empty;
             String nome = usuario.USUA_NM_NOME.Substring(0, usuario.USUA_NM_NOME.IndexOf(" "));
@@ -256,29 +257,29 @@ namespace ERP_Condominios_Solution.Controllers
             }
 
             // Mensagens de Planos
-            if ((Int32)Session["MensEnvioLogin"] == 0)
-            {
-                if (((List<PlanoVencidoViewModel>)Session["PlanosVencidosModel"]).Count > 0)
-                {
-                    List<PlanoVencidoViewModel> plans = (List<PlanoVencidoViewModel>)Session["PlanosVencidosModel"];
-                    foreach (PlanoVencidoViewModel item in plans)
-                    {
-                        PLANO pl = planApp.GetItemById(item.Plano);
-                        DateTime? dv = item.Vencimento;
-                        if (item.Tipo == 1)
-                        {
-                            String frase1 = "O plano " + pl.PLAN_NM_NOME + " venceu em " + dv.Value.ToShortDateString() + ". Por favor reative";
-                            ModelState.AddModelError("", frase);
-                        }
-                        if (item.Tipo == 2)
-                        {
-                            String frase1 = "O plano " + pl.PLAN_NM_NOME + " vence em " + dv.Value.ToShortDateString() + ". Por favor tome as providencias para que ele não expire.";
-                            ModelState.AddModelError("", frase);
-                        }
-                    }
-                    Session["MensEnvioLogin"] = 1;
-                }
-            }
+            //if ((Int32)Session["MensEnvioLogin"] == 0)
+            //{
+            //    if (((List<PlanoVencidoViewModel>)Session["PlanosVencidosModel"]).Count > 0)
+            //    {
+            //        List<PlanoVencidoViewModel> plans = (List<PlanoVencidoViewModel>)Session["PlanosVencidosModel"];
+            //        foreach (PlanoVencidoViewModel item in plans)
+            //        {
+            //            PLANO pl = planApp.GetItemById(item.Plano);
+            //            DateTime? dv = item.Vencimento;
+            //            if (item.Tipo == 1)
+            //            {
+            //                String frase1 = "O plano " + pl.PLAN_NM_NOME + " venceu em " + dv.Value.ToShortDateString() + ". Por favor reative";
+            //                ModelState.AddModelError("", frase);
+            //            }
+            //            if (item.Tipo == 2)
+            //            {
+            //                String frase1 = "O plano " + pl.PLAN_NM_NOME + " vence em " + dv.Value.ToShortDateString() + ". Por favor tome as providencias para que ele não expire.";
+            //                ModelState.AddModelError("", frase);
+            //            }
+            //        }
+            //        Session["MensEnvioLogin"] = 1;
+            //    }
+            //}
 
             Session["MensPermissao"] = 0;
             Session["NotificacaoAlterada"] = 0;
@@ -572,7 +573,7 @@ namespace ERP_Condominios_Solution.Controllers
                     Session["Excecao"] = ex;
                     Session["ExcecaoTipo"] = ex.GetType().ToString();
                     GravaLogExcecao grava = new GravaLogExcecao(usuApp);
-                    Int32 voltaX = grava.GravarLogExcecao(ex, "Pesquisa", "CRMSys", 1, (USUARIO)Session["UserCredentials"]);
+                    Int32 voltaX = grava.GravarLogExcecao(ex, "Pesquisa", "RidolfiWeb", 1, (USUARIO)Session["UserCredentials"]);
                     return RedirectToAction("TrataExcecao", "BaseAdmin");
                 }
             }
@@ -814,19 +815,17 @@ namespace ERP_Condominios_Solution.Controllers
 
             // Carrega valores dos cadastros
             List<CLIENTE> cliente = CarregaCliente();
-            if ((String)Session["PerfilUsuario"] == "GER")
-            {
-                cliente = cliente.Where(p => p.EMPR_CD_ID == (Int32)Session["IdEmpresa"]).ToList();
-            }
             Session["ListaCliente"] = cliente;
             Int32 clientes = cliente.Count;
 
             List<GRUPO> grupo = CarregaGrupo();
-            if ((String)Session["PerfilUsuario"] == "GER")
-            {
-                grupo = grupo.Where(p => p.EMPR_CD_ID == (Int32)Session["IdEmpresa"]).ToList();
-            }
             Int32 grupos = grupo.Count;
+
+            List<PRECATORIO> prec = CarregaPrecatorios();
+            Int32 precs = prec.Count;
+
+            List<BENEFICIARIO> bene = CarregaBeneficiarios();
+            Int32 benes = prec.Count;
 
             List<TEMPLATE_PROPOSTA> temp = CarregaTemplateProposta();
             if ((String)Session["PerfilUsuario"] == "GER")
@@ -857,6 +856,8 @@ namespace ERP_Condominios_Solution.Controllers
             ViewBag.Temps = temps;
             ViewBag.TempMail= mails;
             ViewBag.TempSMS = smss;
+            ViewBag.Precatorios = precs;
+            ViewBag.Beneficiarios = benes;
 
             ViewBag.Permissoes = (Int32[])Session["Permissoes"];
             ViewBag.PermMensagem = (Int32)Session["PermMens"];
@@ -911,6 +912,24 @@ namespace ERP_Condominios_Solution.Controllers
             }
             ViewBag.ListaClienteCats = lista7;
             Session["ListaClienteCats"] = lista7;
+
+            // Recupera precatorios por TRF
+            List<ModeloViewModel> lista9 = new List<ModeloViewModel>();
+            List<TRF> trfs = CarregaTRF();
+            foreach (TRF item in trfs)
+            {
+                Int32 num = prec.Where(p => p.TRF1_CD_ID == item.TRF1_CD_ID).ToList().Count;
+                if (num > 0)
+                {
+                    ModeloViewModel mod = new ModeloViewModel();
+                    mod.Nome = item.TRF1_NM_NOME;
+                    mod.Valor = num;
+                    lista5.Add(mod);
+                }
+            }
+            ViewBag.ListaPrecTRF = lista9;
+            Session["ListaPrecTRF"] = lista9;
+
             Session["FlagAlteraCliente"] = 0;
             Session["FlagMensagensEnviadas"] = 1;
             return View(usuario);
@@ -1000,6 +1019,34 @@ namespace ERP_Condominios_Solution.Controllers
             return Json(result);
         }
 
+        public JsonResult GetDadosPrecTRF()
+        {
+            List<ModeloViewModel> lista = (List<ModeloViewModel>)Session["ListaPrecTRF"];
+            List<String> desc = new List<String>();
+            List<Int32> quant = new List<Int32>();
+            List<String> cor = new List<String>();
+            String[] cores = CrossCutting.UtilitariosGeral.GetListaCores();
+            Int32 i = 1;
+
+            foreach (ModeloViewModel item in lista)
+            {
+                desc.Add(item.Nome);
+                quant.Add(item.Valor);
+                cor.Add(cores[i]);
+                i++;
+                if (i > 10)
+                {
+                    i = 1;
+                }
+            }
+
+            Hashtable result = new Hashtable();
+            result.Add("labels", desc);
+            result.Add("valores", quant);
+            result.Add("cores", cor);
+            return Json(result);
+        }
+
         public JsonResult GetDadosClienteUFLista()
         {
             List<ModeloViewModel> lista = (List<ModeloViewModel>)Session["ListaClienteUF"];
@@ -1020,22 +1067,22 @@ namespace ERP_Condominios_Solution.Controllers
             return Json(result);
         }
 
-        public JsonResult GetDadosClienteCidadeLista()
+        public JsonResult GetDadosPrecTRFLista()
         {
-            List<ModeloViewModel> lista = (List<ModeloViewModel>)Session["ListaClienteCidade"];
-            List<String> cidade = new List<String>();
+            List<ModeloViewModel> lista = (List<ModeloViewModel>)Session["ListaPrecTRF"];
+            List<String> trf = new List<String>();
             List<Int32> valor = new List<Int32>();
-            cidade.Add(" ");
+            trf.Add(" ");
             valor.Add(0);
 
             foreach (ModeloViewModel item in lista)
             {
-                cidade.Add(item.Nome);
+                trf.Add(item.Nome);
                 valor.Add(item.Valor);
             }
 
             Hashtable result = new Hashtable();
-            result.Add("cids", cidade);
+            result.Add("cids", trf);
             result.Add("valores", valor);
             return Json(result);
         }
@@ -1047,6 +1094,16 @@ namespace ERP_Condominios_Solution.Controllers
             Session["VoltaClienteCRM"] = 99;
             Session["IncluirCliente"] = 0;
             return RedirectToAction("EditarCliente", "Cliente", new { id = id });
+        }
+
+        public ActionResult EditarPrecatorioMark(Int32 id)
+        {
+            return RedirectToAction("EditarPrecatorio", "Precatorio", new { id = id });
+        }
+
+        public ActionResult EditarBeneficiarioMark(Int32 id)
+        {
+            return RedirectToAction("EditarBeneficiario", "Beneficiario", new { id = id });
         }
 
         public ActionResult AcompanhamentoProcessoCRMMark(Int32 id)
@@ -1066,159 +1123,159 @@ namespace ERP_Condominios_Solution.Controllers
             return RedirectToAction("VerPedido", "CRM", new { id = id });
         }
 
-        [HttpGet]
-        public ActionResult MontarTelaDashboardAssinantes()
-        {
-            // Verifica se tem usuario logado
-            USUARIO usuario = new USUARIO();
-            if ((String)Session["Ativa"] == null)
-            {
-                return RedirectToAction("Login", "ControleAcesso");
-            }
-            if ((USUARIO)Session["UserCredentials"] != null)
-            {
-                usuario = (USUARIO)Session["UserCredentials"];
+        //[HttpGet]
+        //public ActionResult MontarTelaDashboardAssinantes()
+        //{
+        //    // Verifica se tem usuario logado
+        //    USUARIO usuario = new USUARIO();
+        //    if ((String)Session["Ativa"] == null)
+        //    {
+        //        return RedirectToAction("Login", "ControleAcesso");
+        //    }
+        //    if ((USUARIO)Session["UserCredentials"] != null)
+        //    {
+        //        usuario = (USUARIO)Session["UserCredentials"];
 
-                // Verfifica permissão
-                if (usuario.USUA_IN_ESPECIAL != 1)
-                {
-                    Session["MensPermissao"] = 2;
-                    return RedirectToAction("CarregarBase", "BaseAdmin");
-                }
-            }
-            else
-            {
-                return RedirectToAction("Login", "ControleAcesso");
-            }
+        //        // Verfifica permissão
+        //        if (usuario.USUA_IN_ESPECIAL != 1)
+        //        {
+        //            Session["MensPermissao"] = 2;
+        //            return RedirectToAction("CarregarBase", "BaseAdmin");
+        //        }
+        //    }
+        //    else
+        //    {
+        //        return RedirectToAction("Login", "ControleAcesso");
+        //    }
 
-            // Recupera listas 
-            List<ASSINANTE> listaTotal = CarregaAssinante();
-            List<ASSINANTE> bloqueados = listaTotal.Where(p => p.ASSI_IN_BLOQUEADO == 1).ToList();
-            List<PLANO> planos = CarregaPlano();
+        //    // Recupera listas 
+        //    List<ASSINANTE> listaTotal = CarregaAssinante();
+        //    List<ASSINANTE> bloqueados = listaTotal.Where(p => p.ASSI_IN_BLOQUEADO == 1).ToList();
+        //    List<PLANO> planos = CarregaPlano();
 
-            Int32 numAssinantes = listaTotal.Count;
-            Int32 numBloqueados = bloqueados.Count;
-            ViewBag.NumAssinantes = numAssinantes;
-            ViewBag.NumBloqueados = numBloqueados;
-            ViewBag.Planos = planos.Count;
+        //    Int32 numAssinantes = listaTotal.Count;
+        //    Int32 numBloqueados = bloqueados.Count;
+        //    ViewBag.NumAssinantes = numAssinantes;
+        //    ViewBag.NumBloqueados = numBloqueados;
+        //    ViewBag.Planos = planos.Count;
 
-            List<ASSINANTE> listaDia = listaTotal.Where(p => p.ASSI_DT_INICIO.Value.Date == DateTime.Today.Date).ToList();
-            List<ASSINANTE> listaMes = listaTotal.Where(p => p.ASSI_DT_INICIO.Value.Month == DateTime.Today.Month & p.ASSI_DT_INICIO.Value.Year == DateTime.Today.Year).ToList();
+        //    List<ASSINANTE> listaDia = listaTotal.Where(p => p.ASSI_DT_INICIO.Value.Date == DateTime.Today.Date).ToList();
+        //    List<ASSINANTE> listaMes = listaTotal.Where(p => p.ASSI_DT_INICIO.Value.Month == DateTime.Today.Month & p.ASSI_DT_INICIO.Value.Year == DateTime.Today.Year).ToList();
 
-            // Recupera vencimentos
-            List<ASSINANTE_PLANO> planosAss = assiApp.GetAllAssPlanos();
-            List<ASSINANTE_PLANO> planosVencidos = planosAss.Where(p => p.ASPL_DT_VALIDADE < DateTime.Today.Date).ToList();
-            List<ASSINANTE_PLANO> planosVencer30 = planosAss.Where(p => p.ASPL_DT_VALIDADE < DateTime.Today.Date.AddDays(30)).ToList();
-            Int32 vencidos = planosVencidos.Count;
-            Int32 vencer30 = planosVencer30.Count;
+        //    // Recupera vencimentos
+        //    List<ASSINANTE_PLANO> planosAss = assiApp.GetAllAssPlanos();
+        //    List<ASSINANTE_PLANO> planosVencidos = planosAss.Where(p => p.ASPL_DT_VALIDADE < DateTime.Today.Date).ToList();
+        //    List<ASSINANTE_PLANO> planosVencer30 = planosAss.Where(p => p.ASPL_DT_VALIDADE < DateTime.Today.Date.AddDays(30)).ToList();
+        //    Int32 vencidos = planosVencidos.Count;
+        //    Int32 vencer30 = planosVencer30.Count;
 
-            Session["PlanosVencidos"] = planosVencidos;
-            Session["PlanosVencer30"] = planosVencer30;
-            ViewBag.Vencidos = vencidos;
-            ViewBag.Vencer30 = vencer30;
-            ViewBag.Planos = planos.Count;
+        //    Session["PlanosVencidos"] = planosVencidos;
+        //    Session["PlanosVencer30"] = planosVencer30;
+        //    ViewBag.Vencidos = vencidos;
+        //    ViewBag.Vencer30 = vencer30;
+        //    ViewBag.Planos = planos.Count;
 
-            // Recupera assinantes por UF
-            List<ModeloViewModel> lista5 = new List<ModeloViewModel>();
-            List<UF> ufs = CarregaUF();
-            foreach (UF item in ufs)
-            {
-                Int32 num = listaTotal.Where(p => p.UF_CD_ID == item.UF_CD_ID).ToList().Count;
-                if (num > 0)
-                {
-                    ModeloViewModel mod = new ModeloViewModel();
-                    mod.Nome = item.UF_NM_NOME;
-                    mod.Valor = num;
-                    lista5.Add(mod);
-                }
-            }
-            ViewBag.ListaAssUF = lista5;
-            Session["ListaAssUF"] = lista5;
+        //    // Recupera assinantes por UF
+        //    List<ModeloViewModel> lista5 = new List<ModeloViewModel>();
+        //    List<UF> ufs = CarregaUF();
+        //    foreach (UF item in ufs)
+        //    {
+        //        Int32 num = listaTotal.Where(p => p.UF_CD_ID == item.UF_CD_ID).ToList().Count;
+        //        if (num > 0)
+        //        {
+        //            ModeloViewModel mod = new ModeloViewModel();
+        //            mod.Nome = item.UF_NM_NOME;
+        //            mod.Valor = num;
+        //            lista5.Add(mod);
+        //        }
+        //    }
+        //    ViewBag.ListaAssUF = lista5;
+        //    Session["ListaAssUF"] = lista5;
 
-            // Recupera assinantes por Cidade
-            List<ModeloViewModel> lista6 = new List<ModeloViewModel>();
-            List<String> cids = listaTotal.Select(p => p.ASSI_NM_CIDADE).Distinct().ToList();
-            foreach (String item in cids)
-            {
-                Int32 num = listaTotal.Where(p => p.ASSI_NM_CIDADE == item).ToList().Count;
-                ModeloViewModel mod = new ModeloViewModel();
-                mod.Nome = item;
-                mod.Valor = num;
-                lista6.Add(mod);
-            }
-            ViewBag.ListaAssCidade = lista6;
-            Session["ListaAssCidade"] = lista6;
+        //    // Recupera assinantes por Cidade
+        //    List<ModeloViewModel> lista6 = new List<ModeloViewModel>();
+        //    List<String> cids = listaTotal.Select(p => p.ASSI_NM_CIDADE).Distinct().ToList();
+        //    foreach (String item in cids)
+        //    {
+        //        Int32 num = listaTotal.Where(p => p.ASSI_NM_CIDADE == item).ToList().Count;
+        //        ModeloViewModel mod = new ModeloViewModel();
+        //        mod.Nome = item;
+        //        mod.Valor = num;
+        //        lista6.Add(mod);
+        //    }
+        //    ViewBag.ListaAssCidade = lista6;
+        //    Session["ListaAssCidade"] = lista6;
 
-            // Recupera assinantes por tipo
-            List<ModeloViewModel> lista7 = new List<ModeloViewModel>();
-            List<TIPO_PESSOA> catc = CarregaTipoPessoa();
-            foreach (TIPO_PESSOA item in catc)
-            {
-                Int32 num = listaTotal.Where(p => p.TIPE_CD_ID == item.TIPE_CD_ID).ToList().Count;
-                if (num > 0)
-                {
-                    ModeloViewModel mod = new ModeloViewModel();
-                    mod.Nome = item.TIPE_NM_NOME;
-                    mod.Valor = num;
-                    lista7.Add(mod);
-                }
-            }
-            ViewBag.ListaAssCats = lista7;
-            Session["ListaAssCats"] = lista7;
+        //    // Recupera assinantes por tipo
+        //    List<ModeloViewModel> lista7 = new List<ModeloViewModel>();
+        //    List<TIPO_PESSOA> catc = CarregaTipoPessoa();
+        //    foreach (TIPO_PESSOA item in catc)
+        //    {
+        //        Int32 num = listaTotal.Where(p => p.TIPE_CD_ID == item.TIPE_CD_ID).ToList().Count;
+        //        if (num > 0)
+        //        {
+        //            ModeloViewModel mod = new ModeloViewModel();
+        //            mod.Nome = item.TIPE_NM_NOME;
+        //            mod.Valor = num;
+        //            lista7.Add(mod);
+        //        }
+        //    }
+        //    ViewBag.ListaAssCats = lista7;
+        //    Session["ListaAssCats"] = lista7;
 
-            // Recupera assinantes por data de início
-            List<DateTime> datasCR = listaMes.Where(m => m.ASSI_DT_INICIO.Value != null).OrderBy(m => m.ASSI_DT_INICIO.Value).Select(p => p.ASSI_DT_INICIO.Value.Date).Distinct().ToList();
-            List<ModeloViewModel> listaLogDia = new List<ModeloViewModel>();
-            foreach (DateTime item in datasCR)
-            {
-                Int32 conta = listaTotal.Where(p => p.ASSI_DT_INICIO.Value.Date == item).ToList().Count;
-                ModeloViewModel mod1 = new ModeloViewModel();
-                mod1.DataEmissao = item;
-                mod1.Valor = conta;
-                listaLogDia.Add(mod1);
-            }
-            listaLogDia = listaLogDia.OrderBy(p => p.DataEmissao).ToList();
-            ViewBag.ListaLogDia = listaLogDia;
-            ViewBag.ContaLogDia = listaLogDia.Count;
-            Session["ListaDatasLog"] = datasCR;
-            Session["ListaLogResumo"] = listaLogDia;
+        //    // Recupera assinantes por data de início
+        //    List<DateTime> datasCR = listaMes.Where(m => m.ASSI_DT_INICIO.Value != null).OrderBy(m => m.ASSI_DT_INICIO.Value).Select(p => p.ASSI_DT_INICIO.Value.Date).Distinct().ToList();
+        //    List<ModeloViewModel> listaLogDia = new List<ModeloViewModel>();
+        //    foreach (DateTime item in datasCR)
+        //    {
+        //        Int32 conta = listaTotal.Where(p => p.ASSI_DT_INICIO.Value.Date == item).ToList().Count;
+        //        ModeloViewModel mod1 = new ModeloViewModel();
+        //        mod1.DataEmissao = item;
+        //        mod1.Valor = conta;
+        //        listaLogDia.Add(mod1);
+        //    }
+        //    listaLogDia = listaLogDia.OrderBy(p => p.DataEmissao).ToList();
+        //    ViewBag.ListaLogDia = listaLogDia;
+        //    ViewBag.ContaLogDia = listaLogDia.Count;
+        //    Session["ListaDatasLog"] = datasCR;
+        //    Session["ListaLogResumo"] = listaLogDia;
 
-            // Assinantes em atraso
-            List<ASSINANTE_PAGAMENTO> pags = assiApp.GetAllPagamentos().ToList();
-            pags = pags.Where(p => p.ASPA_NR_ATRASO > 0 & p.ASPA_IN_PAGO == 0).ToList();
-            List<Int32> assi = pags.Select(p => p.ASSI_CD_ID).Distinct().ToList();
-            Int32 numAtrasos = pags.Count;
-            ViewBag.NumAtrasos = numAtrasos;
-            Int32 numAssiAtrasos = assi.Count;
-            ViewBag.NumAssiAtrasos = numAssiAtrasos;
+        //    // Assinantes em atraso
+        //    List<ASSINANTE_PAGAMENTO> pags = assiApp.GetAllPagamentos().ToList();
+        //    pags = pags.Where(p => p.ASPA_NR_ATRASO > 0 & p.ASPA_IN_PAGO == 0).ToList();
+        //    List<Int32> assi = pags.Select(p => p.ASSI_CD_ID).Distinct().ToList();
+        //    Int32 numAtrasos = pags.Count;
+        //    ViewBag.NumAtrasos = numAtrasos;
+        //    Int32 numAssiAtrasos = assi.Count;
+        //    ViewBag.NumAssiAtrasos = numAssiAtrasos;
             
-            List<ModeloViewModel> lista8 = new List<ModeloViewModel>();
-            foreach (Int32 item in assi)
-            {
-                ASSINANTE ass = listaTotal.Where(p => p.ASSI_CD_ID == item).FirstOrDefault();
-                if (ass != null)
-                {
-                    String nome = ass.ASSI_NM_NOME;
-                    Int32 num = pags.Where(p => p.ASSI_CD_ID == item).Count();
-                    Decimal? valor = pags.Where(p => p.ASSI_CD_ID == item).Sum(p => p.ASPA_VL_VALOR);
-                    ModeloViewModel mod = new ModeloViewModel();
-                    mod.Nome = nome;
-                    mod.Valor = num;
-                    mod.ValorDec = valor.Value;
-                    lista8.Add(mod);
-                }
-            }
-            ViewBag.ListaAssAtraso = lista8;
-            Session["ListaAssAtraso"] = lista8;
+        //    List<ModeloViewModel> lista8 = new List<ModeloViewModel>();
+        //    foreach (Int32 item in assi)
+        //    {
+        //        ASSINANTE ass = listaTotal.Where(p => p.ASSI_CD_ID == item).FirstOrDefault();
+        //        if (ass != null)
+        //        {
+        //            String nome = ass.ASSI_NM_NOME;
+        //            Int32 num = pags.Where(p => p.ASSI_CD_ID == item).Count();
+        //            Decimal? valor = pags.Where(p => p.ASSI_CD_ID == item).Sum(p => p.ASPA_VL_VALOR);
+        //            ModeloViewModel mod = new ModeloViewModel();
+        //            mod.Nome = nome;
+        //            mod.Valor = num;
+        //            mod.ValorDec = valor.Value;
+        //            lista8.Add(mod);
+        //        }
+        //    }
+        //    ViewBag.ListaAssAtraso = lista8;
+        //    Session["ListaAssAtraso"] = lista8;
 
-            // Exibe
-            UsuarioViewModel vm = Mapper.Map<USUARIO, UsuarioViewModel>(usuario);
-            Session["TotalAssinantes"] = listaTotal.Count;
-            Session["Bloqueados"] = numBloqueados;
-            Session["VoltaDash"] = 3;
-            Session["VoltaAssinante"] = 2;
-            return View(vm);
-        }
+        //    // Exibe
+        //    UsuarioViewModel vm = Mapper.Map<USUARIO, UsuarioViewModel>(usuario);
+        //    Session["TotalAssinantes"] = listaTotal.Count;
+        //    Session["Bloqueados"] = numBloqueados;
+        //    Session["VoltaDash"] = 3;
+        //    Session["VoltaAssinante"] = 2;
+        //    return View(vm);
+        //}
 
 
         public JsonResult GetDadosUsuario()
@@ -1393,464 +1450,6 @@ namespace ERP_Condominios_Solution.Controllers
             return Json(result);
         }
 
-        [HttpGet]
-        public ActionResult MontarTelaCentralAssinante()
-        {
-            // Verifica se tem usuario logado
-            USUARIO usuario = new USUARIO();
-            if ((String)Session["Ativa"] == null)
-            {
-                return RedirectToAction("Logout", "ControleAcesso");
-            }
-            if ((USUARIO)Session["UserCredentials"] != null)
-            {
-                usuario = (USUARIO)Session["UserCredentials"];
-
-                // Verfifica permissão
-                if (usuario.PERFIL.PERF_SG_SIGLA != "ADM" || usuario.PERFIL.PERF_SG_SIGLA != "GER")
-                {
-                    Session["MensPermissao"] = 2;
-                    return RedirectToAction("CarregarBase", "BaseAdmin");
-                }
-            }
-            else
-            {
-                return RedirectToAction("Logout", "ControleAcesso");
-            }
-            Int32 idAss = (Int32)Session["IdAssinante"];
-            ASSINANTE assi = assiApp.GetItemById(idAss);
-            ViewBag.UF = new SelectList(CarregaUF(), "UF_CD_ID", "UF_SG_SIGLA");
-            Session["IdAssi"] = idAss;
-            ViewBag.Permissoes = (String[])Session["Permissoes"];
-
-            // Recupera consumo
-            Int32 numUsu = usuApp.GetAllItens(idAss).Count;
-            Int32 numCli = cliApp.GetAllItens(idAss).Count;
-            Int32 numProc = crmApp.GetAllItens(idAss).Count;
-            Int32 numAcoes = crmApp.GetAllAcoes(idAss).Count;
-            Int32 numProps = crmApp.GetAllPedidos(idAss).Count;
-            Int32 numEmail = menApp.GetAllItens(idAss).Where(p => p.MENS_IN_TIPO == 1).ToList().Count;
-            Int32 numSMS = menApp.GetAllItens(idAss).Where(p => p.MENS_IN_TIPO == 2).ToList().Count;
-
-            ViewBag.NumUsu = numUsu;
-            ViewBag.NumCli = numCli;
-            ViewBag.NumProc = numProc;
-            ViewBag.NumAcoes = numAcoes;
-            ViewBag.NumProps = numProps;
-            ViewBag.NumEmail = numEmail;
-            ViewBag.NumSMS = numSMS;
-
-            // Recupera vencimentos
-            List<ASSINANTE_PLANO> planos = assi.ASSINANTE_PLANO.Where(p => p.ASPL_IN_ATIVO == 1).ToList();
-            List<ASSINANTE_PLANO> planosVencidos = planos.Where(p => p.ASPL_DT_VALIDADE < DateTime.Today.Date).ToList();
-            List<ASSINANTE_PLANO> planosVencer30 = planos.Where(p => p.ASPL_DT_VALIDADE < DateTime.Today.Date.AddDays(30)).ToList();
-            Int32 vencidos = planosVencidos.Count;
-            Int32 vencer30 = planosVencer30.Count;
-
-            Session["PlanosVencidos"] = planosVencidos;
-            Session["PlanosVencer30"] = planosVencer30;
-            ViewBag.Vencidos = vencidos;
-            ViewBag.Vencer30 = vencer30;
-            ViewBag.Planos = planos.Count;
-            ViewBag.Usuarios = assi.USUARIO.Where(p => p.USUA_IN_ATIVO == 1).Count();
-
-            // Recupera parcelas em atraso
-            List<ASSINANTE_PAGAMENTO> pags = assiApp.GetAllPagamentos();
-            pags = pags.Where(p => p.ASPA_IN_PAGO == 0 & p.ASPA_NR_ATRASO > 0 & p.ASSI_CD_ID == idAss).ToList();
-            Int32 atraso = pags.Count;
-            ViewBag.Atrasos = pags.Count;
-
-            // Mensagens
-            if (Session["MensAssinante"] != null)
-            {
-                // Mensagem
-                if ((Int32)Session["MensAssinante"] == 5)
-                {
-                    ModelState.AddModelError("", CRMSys_Base.ResourceManager.GetString("M0019", CultureInfo.CurrentCulture));
-                }
-                if ((Int32)Session["MensAssinante"] == 6)
-                {
-                    ModelState.AddModelError("", CRMSys_Base.ResourceManager.GetString("M0024", CultureInfo.CurrentCulture));
-                }
-                if ((Int32)Session["MensAssinante"] == 21)
-                {
-                    ModelState.AddModelError("", CRMSys_Base.ResourceManager.GetString("M0204", CultureInfo.CurrentCulture));
-                }
-                if ((Int32)Session["MensAssinante"] == 22)
-                {
-                    ModelState.AddModelError("", CRMSys_Base.ResourceManager.GetString("M0205", CultureInfo.CurrentCulture));
-                }
-                if ((Int32)Session["MensAssinante"] == 23)
-                {
-                    ModelState.AddModelError("", CRMSys_Base.ResourceManager.GetString("M0206", CultureInfo.CurrentCulture));
-                }
-                if ((Int32)Session["MensAssinante"] == 99)
-                {
-                    ModelState.AddModelError("", CRMSys_Base.ResourceManager.GetString("M0216", CultureInfo.CurrentCulture));
-                    Session["Ativa"] = null;
-                }
-            }
-
-            // Indicadores
-
-            // Sessões
-            Session["MensAssinante"] = null;
-            Session["VoltaAssinante"] = 1;
-            Session["Assinante"] = assi;
-            Session["IdAssinante"] = idAss;
-            AssinanteViewModel vm = Mapper.Map<ASSINANTE, AssinanteViewModel>(assi);
-            return View(vm);
-        }
-
-        [HttpPost]
-        public ActionResult MontarTelaCentralAssinante(AssinanteViewModel vm)
-        {
-            Int32 idAss = (Int32)Session["IdAssinante"];
-            ViewBag.UF = new SelectList(assiApp.GetAllUF(), "UF_CD_ID", "UF_SG_SIGLA");
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    // Executa a operação
-                    USUARIO usuarioLogado = (USUARIO)Session["UserCredentials"];
-                    ASSINANTE item = Mapper.Map<AssinanteViewModel, ASSINANTE>(vm);
-                    Int32 volta = assiApp.ValidateEdit(item, item, usuarioLogado);
-
-                    // Verifica retorno
-
-                    // Sucesso
-                    return RedirectToAction("MontarTelaCentralAssinante");
-                }
-                catch (Exception ex)
-                {
-                    LogError(ex.Message);
-                    ViewBag.Message = ex.Message;
-                    Session["TipoVolta"] = 2;
-                    Session["VoltaExcecao"] = "Pesquisa";
-                    Session["Excecao"] = ex;
-                    Session["ExcecaoTipo"] = ex.GetType().ToString();
-                    GravaLogExcecao grava = new GravaLogExcecao(usuApp);
-                    Int32 voltaX = grava.GravarLogExcecao(ex, "Assinantes", "CRMSys", 1, (USUARIO)Session["UserCredentials"]);
-                    return RedirectToAction("TrataExcecao", "BaseAdmin");
-                }
-            }
-            else
-            {
-                return View(vm);
-            }
-        }
-
-        public ActionResult VerComparativoPlanos()
-        {
-            if ((String)Session["Ativa"] == null)
-            {
-                return RedirectToAction("Logout", "ControleAcesso");
-            }
-            Int32 idAss = (Int32)Session["IdAssinante"];
-            Session["VoltaCompPlano"] = 2;
-            return RedirectToAction("VerComparativoPlanos", "Plano");
-        }
-
-        [HttpGet]
-        public ActionResult ExcluirAssinantePlanoProprio(Int32 id)
-        {
-            if ((String)Session["Ativa"] == null)
-            {
-                return RedirectToAction("Logout", "ControleAcesso");
-            }
-            USUARIO usuario = (USUARIO)Session["UserCredentials"];
-
-            // Cancela plano
-            ASSINANTE_PLANO item = assiApp.GetPlanoById(id);
-            item.ASPL_IN_ATIVO = 0;
-            Int32 volta = assiApp.ValidateEditPlano(item);
-
-            // Desativa pagamentos
-            ASSINANTE assi = assiApp.GetItemById(item.ASSI_CD_ID);
-            PLANO plan = assiApp.GetPlanoBaseById(item.PLAN_CD_ID);
-            List<ASSINANTE_PAGAMENTO> pags = assi.ASSINANTE_PAGAMENTO.Where(p => p.PLAN_CD_ID == item.PLAN_CD_ID).ToList();
-            pags.ForEach(p => p.ASPA_IN_ATIVO = 0);
-            Int32 volta1 = assiApp.ValidateEdit(assi, assi, usuario);
-
-            // Envia e-mail para CRMSys
-            CONFIGURACAO conf = confApp.GetItemById(usuario.ASSI_CD_ID);
-            String texto = temApp.GetByCode("ASSPLANCAN").TEMP_TX_CORPO;
-            MensagemViewModel mens = new MensagemViewModel();
-            mens.NOME = usuario.USUA_NM_NOME;
-            mens.ID = assi.ASSI_CD_ID;
-            mens.MODELO = conf.CONF_EM_CRMSYS;
-            mens.MENS_NM_CAMPANHA = assi.ASSI_NM_EMAIL;
-            mens.MENS_DT_CRIACAO = DateTime.Today.Date;
-            mens.MENS_IN_TIPO = 1;
-            mens.MENS_NM_LINK = null;
-            mens.LINK = "1";
-            texto = texto.Replace("{plano}", plan.PLAN_NM_NOME);
-            texto = texto.Replace("{data}", DateTime.Today.Date.ToShortDateString());
-            texto = texto.Replace("{plano1}", plan.PLAN_NM_NOME);
-            texto = texto.Replace("{data1}", DateTime.Today.Date.ToShortDateString());
-            mens.MENS_TX_TEXTO = texto;
-            Int32 volta2 = ProcessaEnvioEMailAssinante(mens, usuario);
-            Session["MensAssinante"] = 99;
-            Session["TipoAssunto"] = 1;
-            return RedirectToAction("MontarTelaCentralAssinante");
-        }
-
-        [ValidateInput(false)]
-        public Int32 ProcessaEnvioEMailAssinante(MensagemViewModel vm, USUARIO usuario)
-        {
-            // Recupera usuario
-            Int32 idAss = (Int32)Session["IdAssinante"];
-            ASSINANTE cont = (ASSINANTE)Session["Assinante"];
-
-            // Processa e-mail
-            CONFIGURACAO conf = confApp.GetItemById(usuario.ASSI_CD_ID);
-
-            // Prepara cabeçalho
-            String cab = "Prezada <b>Administração RTi</b>";
-
-            // Prepara rodape
-            String rod = String.Empty;
-            if (vm.MENS_NM_RODAPE == null)
-            {
-                rod = "Atenciosamente <b>" + usuario.ASSINANTE.ASSI_NM_NOME + "</b>";
-            }
-
-            // Prepara corpo do e-mail
-            String corpo = vm.MENS_TX_TEXTO + "<br /><br />";
-            StringBuilder str = new StringBuilder();
-            str.AppendLine(corpo);
-
-            // Link          
-            if (!String.IsNullOrEmpty(vm.MENS_NM_LINK))
-            {
-                if (!vm.MENS_NM_LINK.Contains("www."))
-                {
-                    vm.MENS_NM_LINK = "www." + vm.MENS_NM_LINK;
-                }
-                if (!vm.MENS_NM_LINK.Contains("http://"))
-                {
-                    vm.MENS_NM_LINK = "http://" + vm.MENS_NM_LINK;
-                }
-                if (vm.LINK == "1")
-                {
-                    str.AppendLine("<a href='" + vm.MENS_NM_LINK + "'>Clique aqui para acessar o CRMSys</a>");
-                }
-                else
-                {
-                    str.AppendLine("<a href='" + vm.MENS_NM_LINK + "'>Clique aqui para maiores informações</a>");
-                }
-            }
-            String body = str.ToString();
-            body = body.Replace("\r\n", "<br />");
-            String emailBody = cab + "<br /><br />" + body + "<br /><br />" + rod;
-
-            // Monta e-mail
-            NetworkCredential net = new NetworkCredential(conf.CONF_NM_SENDGRID_LOGIN, conf.CONF_NM_SENDGRID_PWD);
-            Email mensagem = new Email();
-            if ((Int32)Session["TipoAssunto"] == 1)
-            {
-                mensagem.ASSUNTO = "Cancelamento de Plano de Assinatura";
-            }
-            else
-            {
-                mensagem.ASSUNTO = "Solicitação de Plano de Assinatura";
-            }
-            mensagem.CORPO = emailBody;
-            mensagem.DEFAULT_CREDENTIALS = false;
-            mensagem.EMAIL_TO_DESTINO = vm.MODELO;
-            mensagem.EMAIL_CC_DESTINO = vm.MENS_NM_CAMPANHA;
-            mensagem.EMAIL_EMISSOR = conf.CONF_NM_EMAIL_EMISSOO;
-            mensagem.ENABLE_SSL = true;
-            mensagem.NOME_EMISSOR = usuario.ASSINANTE.ASSI_NM_NOME;
-            mensagem.PORTA = conf.CONF_NM_PORTA_SMTP;
-            mensagem.PRIORIDADE = System.Net.Mail.MailPriority.High;
-            mensagem.SENHA_EMISSOR = conf.CONF_NM_SENDGRID_PWD;
-            mensagem.SMTP = conf.CONF_NM_HOST_SMTP;
-            mensagem.IS_HTML = true;
-            mensagem.NETWORK_CREDENTIAL = net;
-
-            // Envia mensagem
-            try
-            {
-                var voltaMail = CrossCutting.CommunicationPackage.SendEmail(mensagem);
-            }
-            catch (Exception ex)
-            {
-                LogError(ex.Message);
-                ViewBag.Message = ex.Message;
-                Session["TipoVolta"] = 2;
-                Session["VoltaExcecao"] = "Pesquisa";
-                Session["Excecao"] = ex;
-                Session["ExcecaoTipo"] = ex.GetType().ToString();
-                GravaLogExcecao grava = new GravaLogExcecao(usuApp);
-                Int32 voltaX = grava.GravarLogExcecao(ex, "Assinante", "CRMSys", 1, (USUARIO)Session["UserCredentials"]);
-            }
-            return 0;
-        }
-
-        [HttpGet]
-        public ActionResult SolicitarIncluirAssinantePlano()
-        {
-            if ((String)Session["Ativa"] == null)
-            {
-                return RedirectToAction("Login", "ControleAcesso");
-            }
-            Int32 idAss = (Int32)Session["IdAssinante"];
-            USUARIO usuario = (USUARIO)Session["UserCredentials"];
-
-            // Prepara Listas
-            ViewBag.Planos = new SelectList(CarregaPlano().OrderBy(p => p.PLAN_NM_NOME), "PLAN_CD_ID", "PLAN_NM_NOME");
-            List<SelectListItem> preco = new List<SelectListItem>();
-            preco.Add(new SelectListItem() { Text = "Parcelado", Value = "1" });
-            preco.Add(new SelectListItem() { Text = "À Vista", Value = "2" });
-            ViewBag.Precos = new SelectList(preco, "Value", "Text");
-            List<SelectListItem> tipo = new List<SelectListItem>();
-            tipo.Add(new SelectListItem() { Text = "Boleto Bancário", Value = "1" });
-            tipo.Add(new SelectListItem() { Text = "Cartão Crédito", Value = "2" });
-            ViewBag.Tipo = new SelectList(tipo, "Value", "Text");
-
-            // Mensagens
-            if (Session["MensAssinante"] != null)
-            {
-                // Mensagem
-                if ((Int32)Session["MensAssinante"] == 31)
-                {
-                    ModelState.AddModelError("", CRMSys_Base.ResourceManager.GetString("M0207", CultureInfo.CurrentCulture));
-                }
-                if ((Int32)Session["MensAssinante"] == 32)
-                {
-                    ModelState.AddModelError("", CRMSys_Base.ResourceManager.GetString("M0208", CultureInfo.CurrentCulture));
-                }
-                if ((Int32)Session["MensAssinante"] == 33)
-                {
-                    ModelState.AddModelError("", CRMSys_Base.ResourceManager.GetString("M0209", CultureInfo.CurrentCulture));
-                }
-                if ((Int32)Session["MensAssinante"] == 34)
-                {
-                    ModelState.AddModelError("", CRMSys_Base.ResourceManager.GetString("M0210", CultureInfo.CurrentCulture));
-                }
-                if ((Int32)Session["MensAssinante"] == 35)
-                {
-                    ModelState.AddModelError("", CRMSys_Base.ResourceManager.GetString("M0217", CultureInfo.CurrentCulture));
-                }
-            }
-
-            // Prepara view
-            ASSINANTE_PLANO item = new ASSINANTE_PLANO();
-            AssinantePlanoViewModel vm = Mapper.Map<ASSINANTE_PLANO, AssinantePlanoViewModel>(item);
-            vm.ASSI_CD_ID = (Int32)Session["IdAssinante"];
-            vm.ASPL_IN_ATIVO = 1;
-            vm.ASPL_DT_INICIO = DateTime.Today.Date;
-            return View(vm);
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult SolicitarIncluirAssinantePlano(AssinantePlanoViewModel vm)
-        {
-            if ((String)Session["Ativa"] == null)
-            {
-                return RedirectToAction("Login", "ControleAcesso");
-            }
-            Int32 idAss = (Int32)Session["IdAssinante"];
-            USUARIO usuario = (USUARIO)Session["UserCredentials"];
-            ASSINANTE assi = assiApp.GetItemById(idAss);
-
-            ViewBag.Planos = new SelectList(CarregaPlano().OrderBy(p => p.PLAN_NM_NOME), "PLAN_CD_ID", "PLAN_NM_NOME");
-            List<SelectListItem> preco = new List<SelectListItem>();
-            preco.Add(new SelectListItem() { Text = "Parcelado", Value = "1" });
-            preco.Add(new SelectListItem() { Text = "À Vista", Value = "2" });
-            ViewBag.Precos = new SelectList(preco, "Value", "Text");
-            List<SelectListItem> tipo = new List<SelectListItem>();
-            tipo.Add(new SelectListItem() { Text = "Boleto Bancário", Value = "1" });
-            tipo.Add(new SelectListItem() { Text = "Cartão Crédito", Value = "2" });
-            ViewBag.Tipo = new SelectList(tipo, "Value", "Text");
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    // Verifica existencia
-                    List<ASSINANTE_PLANO> plans = assi.ASSINANTE_PLANO.ToList();
-                    Int32 planEsc = plans.Where(p => p.PLAN_CD_ID == vm.PLAN_CD_ID & p.ASPL_IN_ATIVO == 1 & p.ASSI_CD_ID == idAss).ToList().Count();
-                    if (planEsc > 0)
-                    {
-                        Session["MensAssinante"] = 34;
-                        return RedirectToAction("SolicitarIncluirAssinantePlano");
-                    }
-                    planEsc = plans.Where(p => p.PLAN_CD_ID == vm.PLAN_CD_ID & p.ASPL_IN_ATIVO == 2 & p.ASSI_CD_ID == idAss).ToList().Count();
-                    if (planEsc > 0)
-                    {
-                        Session["MensAssinante"] = 35;
-                        return RedirectToAction("SolicitarIncluirAssinantePlano");
-                    }
-
-                    // Executa a operação
-                    ASSINANTE_PLANO item = Mapper.Map<AssinantePlanoViewModel, ASSINANTE_PLANO>(vm);
-                    USUARIO usuarioLogado = (USUARIO)Session["UserCredentials"];
-                    PLANO plan = assiApp.GetPlanoBaseById(item.PLAN_CD_ID);
-                    item.ASPL_DT_VALIDADE = item.ASPL_DT_INICIO.Value.AddMonths(plan.PLAN_IN_DURACAO.Value);
-                    item.ASPL_IN_ATIVO = 2;
-                    Int32 volta = assiApp.ValidateCreatePlano(item);
-
-                    // Envia e-mail para CRMSys
-                    CONFIGURACAO conf = CarregaConfiguracaoGeral();
-                    String texto = temApp.GetByCode("ASSSOLPLAN").TEMP_TX_CORPO;
-                    MensagemViewModel mens = new MensagemViewModel();
-                    mens.NOME = usuario.USUA_NM_NOME;
-                    mens.ID = assi.ASSI_CD_ID;
-                    mens.MODELO = conf.CONF_EM_CRMSYS;
-                    mens.MENS_NM_CAMPANHA = assi.ASSI_NM_EMAIL;
-                    mens.MENS_DT_CRIACAO = DateTime.Today.Date;
-                    mens.MENS_IN_TIPO = 1;
-                    mens.MENS_NM_LINK = null;
-                    mens.LINK = "1";
-                    texto = texto.Replace("{plano}", plan.PLAN_NM_NOME);
-                    texto = texto.Replace("{data}", DateTime.Today.Date.ToShortDateString());
-                    texto = texto.Replace("{plano1}", plan.PLAN_NM_NOME);
-                    texto = texto.Replace("{data1}", DateTime.Today.Date.ToShortDateString());
-                    texto = texto.Replace("{pagto}", vm.ASPL_IN_PRECO == 1 ? "Parcelado" : "À Vista");
-                    texto = texto.Replace("{preco}", vm.ASPL_IN_PRECO == 1 ? "R$ " + CrossCutting.Formatters.DecimalFormatter(plan.PLAN_VL_PRECO.Value) : "R$ " + CrossCutting.Formatters.DecimalFormatter(plan.PLAN_VL_PROMOCAO.Value));
-                    texto = texto.Replace("{forma}", vm.ASPL_IN_PAGTO == 1 ? "Boleto Bancário" : "Cartão Crédito");
-                    mens.MENS_TX_TEXTO = texto;
-                    Session["TipoAssunto"] = 2;
-                    Int32 volta1 = ProcessaEnvioEMailAssinante(mens, usuarioLogado);
-
-                    // Finaliza
-                    return RedirectToAction("MontarTelaCentralAssinante");
-                }
-                catch (Exception ex)
-                {
-                    LogError(ex.Message);
-                    ViewBag.Message = ex.Message;
-                    Session["TipoVolta"] = 2;
-                    Session["VoltaExcecao"] = "Pesquisa";
-                    Session["Excecao"] = ex;
-                    Session["ExcecaoTipo"] = ex.GetType().ToString();
-                    GravaLogExcecao grava = new GravaLogExcecao(usuApp);
-                    Int32 voltaX = grava.GravarLogExcecao(ex, "Assinante", "CRMSys", 1, (USUARIO)Session["UserCredentials"]);
-                    return RedirectToAction("TrataExcecao", "BaseAdmin");
-                }
-            }
-            else
-            {
-                return View(vm);
-            }
-        }
-
-        public JsonResult GetPlanos(Int32 id)
-        {
-            PLANO forn = assiApp.GetPlanoBaseById(id);
-            var hash = new Hashtable();
-            hash.Add("nome", forn.PLAN_NM_NOME);
-            hash.Add("periodicidade", forn.PLANO_PERIODICIDADE.PLPE_NM_NOME);
-            hash.Add("valor", CrossCutting.Formatters.DecimalFormatter(forn.PLAN_VL_PRECO.Value));
-            hash.Add("promo", CrossCutting.Formatters.DecimalFormatter(forn.PLAN_VL_PROMOCAO.Value));
-            DateTime data = DateTime.Today.Date.AddDays(Convert.ToDouble(forn.PLANO_PERIODICIDADE.PLPE_NR_DIAS));
-            hash.Add("data", data.ToShortDateString());
-            hash.Add("duracao", forn.PLAN_IN_DURACAO);
-            return Json(hash);
-        }
-
         public ActionResult TrataExcecao()
         {
             // Recupera Assinante e configuração
@@ -1962,7 +1561,7 @@ namespace ERP_Condominios_Solution.Controllers
                     Session["Excecao"] = ex;
                     Session["ExcecaoTipo"] = ex.GetType().ToString();
                     GravaLogExcecao grava = new GravaLogExcecao(usuApp);
-                    Int32 voltaX = grava.GravarLogExcecao(ex, "Suporte", "CRMSys", 1, (USUARIO)Session["UserCredentials"]);
+                    Int32 voltaX = grava.GravarLogExcecao(ex, "Suporte", "RidolfiWeb", 1, (USUARIO)Session["UserCredentials"]);
                     return RedirectToAction("TrataExcecao", "BaseAdmin");
                 }
             }
@@ -2034,7 +1633,7 @@ namespace ERP_Condominios_Solution.Controllers
             mensagem.EMAIL_TO_DESTINO = conf.CONF_EM_CRMSYS;
             mensagem.NOME_EMISSOR_AZURE = conf.CONF_NM_EMISSOR_AZURE;
             mensagem.ENABLE_SSL = true;
-            mensagem.NOME_EMISSOR = "CRMSys";
+            mensagem.NOME_EMISSOR = "RidolfiWeb";
             mensagem.PORTA = conf.CONF_NM_PORTA_SMTP;
             mensagem.PRIORIDADE = System.Net.Mail.MailPriority.High;
             mensagem.SENHA_EMISSOR = conf.CONF_NM_SENDGRID_PWD;
@@ -2063,7 +1662,7 @@ namespace ERP_Condominios_Solution.Controllers
                 Session["Excecao"] = ex;
                 Session["ExcecaoTipo"] = ex.GetType().ToString();
                 GravaLogExcecao grava = new GravaLogExcecao(usuApp);
-                Int32 voltaX = grava.GravarLogExcecao(ex, "Suporte", "CRMSys", 1, (USUARIO)Session["UserCredentials"]);
+                Int32 voltaX = grava.GravarLogExcecao(ex, "Suporte", "RidolfiWeb", 1, (USUARIO)Session["UserCredentials"]);
             }
             return 0;
         }
@@ -2192,7 +1791,7 @@ namespace ERP_Condominios_Solution.Controllers
                 String json = String.Empty;
                 using (var streamWriter = new StreamWriter(httpWebRequest.GetRequestStream()))
                 {
-                    json = String.Concat("{\"destinations\": [{\"to\": \"", listaDest, "\", \"text\": \"", smsBody, "\", \"customId\": \"" + customId + "\", \"from\": \"CRMSys\"}]}");
+                    json = String.Concat("{\"destinations\": [{\"to\": \"", listaDest, "\", \"text\": \"", smsBody, "\", \"customId\": \"" + customId + "\", \"from\": \"RidolfiWeb\"}]}");
                     streamWriter.Write(json);
                 }
 
@@ -2212,7 +1811,7 @@ namespace ERP_Condominios_Solution.Controllers
                 Session["Excecao"] = ex;
                 Session["ExcecaoTipo"] = ex.GetType().ToString();
                 GravaLogExcecao grava = new GravaLogExcecao(usuApp);
-                Int32 voltaX = grava.GravarLogExcecao(ex, "Suporte", "CRMSys", 1, (USUARIO)Session["UserCredentials"]);
+                Int32 voltaX = grava.GravarLogExcecao(ex, "Suporte", "RidolfiWeb", 1, (USUARIO)Session["UserCredentials"]);
                 throw;
             }
             return 0;
@@ -2318,7 +1917,7 @@ namespace ERP_Condominios_Solution.Controllers
         {
             Int32 idAss = (Int32)Session["IdAssinante"];
             List<TAREFA> conf = new List<TAREFA>();
-            if (Session["TarefasLista"] == null)
+            if (Session["Tarefas"] == null)
             {
                 conf = tarApp.GetByUser(usuario);
             }
@@ -2330,11 +1929,83 @@ namespace ERP_Condominios_Solution.Controllers
                 }
                 else
                 {
-                    conf = (List<TAREFA>)Session["TarefasLista"];
+                    conf = (List<TAREFA>)Session["Tarefas"];
                 }
             }
-            Session["TarefasLista"] = conf;
+            Session["Tarefas"] = conf;
             Session["TarefaAlterada"] = 0;
+            return conf;
+        }
+
+        public List<PRECATORIO> CarregaPrecatorios()
+        {
+            Int32 idAss = (Int32)Session["IdAssinante"];
+            List<PRECATORIO> conf = new List<PRECATORIO>();
+            if (Session["Precatorios"] == null)
+            {
+                conf = precApp.GetAllItens();
+            }
+            else
+            {
+                if ((Int32)Session["PrecatorioAlterada"] == 1)
+                {
+                    conf = precApp.GetAllItens();
+                }
+                else
+                {
+                    conf = (List<PRECATORIO>)Session["Precatorios"];
+                }
+            }
+            Session["Precatorios"] = conf;
+            Session["PrecatorioAlterada"] = 0;
+            return conf;
+        }
+
+        public List<BENEFICIARIO> CarregaBeneficiarios()
+        {
+            Int32 idAss = (Int32)Session["IdAssinante"];
+            List<BENEFICIARIO> conf = new List<BENEFICIARIO>();
+            if (Session["Beneficiarios"] == null)
+            {
+                conf = beneApp.GetAllItens();
+            }
+            else
+            {
+                if ((Int32)Session["BeneficiarioAlterada"] == 1)
+                {
+                    conf = beneApp.GetAllItens();
+                }
+                else
+                {
+                    conf = (List<BENEFICIARIO>)Session["Beneficiarios"];
+                }
+            }
+            Session["Beneficiarios"] = conf;
+            Session["BeneficiarioAlterada"] = 0;
+            return conf;
+        }
+
+        public List<TRF> CarregaTRF()
+        {
+            Int32 idAss = (Int32)Session["IdAssinante"];
+            List<TRF> conf = new List<TRF>();
+            if (Session["TRFs"] == null)
+            {
+                conf = trfApp.GetAllItens();
+            }
+            else
+            {
+                if ((Int32)Session["TRFAlterada"] == 1)
+                {
+                    conf = trfApp.GetAllItensAdm();
+                }
+                else
+                {
+                    conf = (List<TRF>)Session["TRFs"];
+                }
+            }
+            Session["TRFs"] = conf;
+            Session["TRFAlterada"] = 0;
             return conf;
         }
 
@@ -2737,19 +2408,12 @@ namespace ERP_Condominios_Solution.Controllers
             if ((List<MENSAGENS_ENVIADAS_SISTEMA>)Session["ListaMensagensEnviadas"] == null)
             {
                 listaMasterEnviada = CarregaMensagensEnviadasHoje();
-                if ((String)Session["PerfilUsuario"] != "ADM")
-                {
-                    listaMasterEnviada = listaMasterEnviada.Where(p => p.EMPR_CD_ID == (Int32)Session["IdEmpresa"]).ToList();
-                }
                 Session["ListaMensagensEnviadas"] = listaMasterEnviada;
             }
 
             // Monta demais listas
             List<USUARIO> listaUsu = CarregaUsuario();
             if ((String)Session["PerfilUsuario"] != "ADM")
-            {
-                listaUsu = listaUsu.Where(p => p.EMPR_CD_ID == (Int32)Session["IdEmpresa"]).ToList();
-            }
             ViewBag.Usuarios = new SelectList(listaUsu, "USUA_CD_ID", "USUA_NM_NOME");
             List<SelectListItem> tipo = new List<SelectListItem>();
             tipo.Add(new SelectListItem() { Text = "E-Mail", Value = "1" });
@@ -2758,7 +2422,6 @@ namespace ERP_Condominios_Solution.Controllers
             ViewBag.Tipos = new SelectList(tipo, "Value", "Text");
             List<SelectListItem> escopo = new List<SelectListItem>();
             escopo.Add(new SelectListItem() { Text = "Cliente", Value = "1" });
-            escopo.Add(new SelectListItem() { Text = "Empresa", Value = "2" });
             escopo.Add(new SelectListItem() { Text = "Usuário", Value = "3" });
             escopo.Add(new SelectListItem() { Text = "Processos", Value = "4" });
             ViewBag.Escopos = new SelectList(escopo, "Value", "Text");
@@ -2830,10 +2493,6 @@ namespace ERP_Condominios_Solution.Controllers
                     conf = (List<MENSAGENS_ENVIADAS_SISTEMA>)Session["MensagensEnviadas"];
                 }
             }
-            if ((String)Session["PerfilUsuario"] != "ADM")
-            {
-                conf = conf.Where(p => p.EMPR_CD_ID == (Int32)Session["IdEmpresa"]).ToList();
-            }
             if ((String)Session["PerfilUsuario"] != "GER")
             {
                 conf = conf.Where(p => p.USUA_CD_ID == usuario.USUA_CD_ID).ToList();
@@ -2864,10 +2523,6 @@ namespace ERP_Condominios_Solution.Controllers
                     conf = (List<MENSAGENS_ENVIADAS_SISTEMA>)Session["MensagensEnviadas"];
                 }
             }
-            if ((String)Session["PerfilUsuario"] != "ADM")
-            {
-                conf = conf.Where(p => p.EMPR_CD_ID == (Int32)Session["IdEmpresa"]).ToList();
-            }
             if ((String)Session["PerfilUsuario"] != "GER")
             {
                 conf = conf.Where(p => p.USUA_CD_ID == usuario.USUA_CD_ID).ToList();
@@ -2887,10 +2542,6 @@ namespace ERP_Condominios_Solution.Controllers
             USUARIO usuario = (USUARIO)Session["UserCredentials"];
             Session["MensagemEnviadaAlterada"] = 1;
             List<MENSAGENS_ENVIADAS_SISTEMA> lm = CarregaMensagensEnviadasHoje();
-            if ((String)Session["PerfilUsuario"] != "ADM")
-            {
-                lm = lm.Where(p => p.EMPR_CD_ID == (Int32)Session["IdEmpresa"]).ToList();
-            }
             if ((String)Session["PerfilUsuario"] != "GER")
             {
                 lm = lm.Where(p => p.USUA_CD_ID == usuario.USUA_CD_ID).ToList();
@@ -2910,10 +2561,6 @@ namespace ERP_Condominios_Solution.Controllers
             USUARIO usuario = (USUARIO)Session["UserCredentials"];
             Session["MensagemEnviadaAlterada"] = 1;
             List<MENSAGENS_ENVIADAS_SISTEMA> lm = CarregaMensagensEnviadas();
-            if ((String)Session["PerfilUsuario"] != "ADM")
-            {
-                lm = lm.Where(p => p.EMPR_CD_ID == (Int32)Session["IdEmpresa"]).ToList();
-            }
             if ((String)Session["PerfilUsuario"] != "GER")
             {
                 lm = lm.Where(p => p.USUA_CD_ID == usuario.USUA_CD_ID).ToList();
@@ -2949,10 +2596,6 @@ namespace ERP_Condominios_Solution.Controllers
 
                 // Sucesso
                 listaMasterEnviada = volta.Item2;
-                if ((String)Session["PerfilUsuario"] != "ADM")
-                {
-                    listaMasterEnviada = listaMasterEnviada.Where(p => p.EMPR_CD_ID == (Int32)Session["IdEmpresa"]).ToList();
-                }
                 if ((String)Session["PerfilUsuario"] != "GER")
                 {
                     listaMasterEnviada = listaMasterEnviada.Where(p => p.USUA_CD_ID == usuario.USUA_CD_ID).ToList();
@@ -2970,7 +2613,7 @@ namespace ERP_Condominios_Solution.Controllers
                 Session["Excecao"] = ex;
                 Session["ExcecaoTipo"] = ex.GetType().ToString();
                 GravaLogExcecao grava = new GravaLogExcecao(usuApp);
-                Int32 voltaX = grava.GravarLogExcecao(ex, "Mensagens Enviadas", "CRMSys", 1, (USUARIO)Session["UserCredentials"]);
+                Int32 voltaX = grava.GravarLogExcecao(ex, "Mensagens Enviadas", "RidolfiWeb", 1, (USUARIO)Session["UserCredentials"]);
                 return RedirectToAction("TrataExcecao", "BaseAdmin");
             }
         }
@@ -3200,51 +2843,5 @@ namespace ERP_Condominios_Solution.Controllers
             // Finaliza
             return RedirectToAction("CarregarBase");
         }
-
-        public List<EMPRESA> CarregaEmpresa()
-        {
-            Int32 idAss = (Int32)Session["IdAssinante"];
-            List<EMPRESA> conf = new List<EMPRESA>();
-            if (Session["Empresas"] == null)
-            {
-                conf = empApp.GetAllItens(idAss);
-            }
-            else
-            {
-                if ((Int32)Session["EmpresaAlterada"] == 1)
-                {
-                    conf = empApp.GetAllItens(idAss);
-                }
-                else
-                {
-                    conf = (List<EMPRESA>)Session["Empresas"];
-                }
-            }
-            Session["Empresas"] = conf;
-            Session["EmpresaAlterada"] = 0;
-            return conf;
-        }
-
-        public JsonResult TrocarEmpresa(String id)
-        {
-            var hash = new Hashtable();
-            if (!string.IsNullOrEmpty(id))
-            {
-                // Recupera empresa
-                EMPRESA tmp = empApp.GetItemById(Convert.ToInt32(id));
-
-                // Atualiza
-                Session["IdEmpresa"] = tmp.EMPR_CD_ID;
-                Session["Empresa"] = tmp;
-                Session["NomeEmpresa"] = tmp.EMPR_NM_NOME;
-
-                hash.Add("Nome", tmp.EMPR_NM_NOME);
-            }
-
-            // Retorna
-            return Json(hash);
-        }
-
-
     }
 }

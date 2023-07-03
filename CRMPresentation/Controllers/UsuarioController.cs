@@ -29,7 +29,6 @@ using log4net.Core;
 using Azure.Communication.Email;
 using ERP_Condominios_Solution.Classes;
 
-
 namespace ERP_Condominios_Solution.Controllers
 {
     public class UsuarioController : Controller
@@ -38,9 +37,7 @@ namespace ERP_Condominios_Solution.Controllers
         private readonly ILogAppService logApp;
         private readonly INotificacaoAppService notiApp;
         private readonly IConfiguracaoAppService confApp;
-        private readonly IFilialAppService filApp;
         private readonly IMensagemEnviadaSistemaAppService meApp;
-        private readonly IEmpresaAppService empApp;
 
         private String msg;
         private Exception exception;
@@ -52,15 +49,13 @@ namespace ERP_Condominios_Solution.Controllers
         List<LOG> listaMasterLog = new List<LOG>();
         String extensao;
 
-        public UsuarioController(IUsuarioAppService baseApps, ILogAppService logApps, INotificacaoAppService notiApps, IConfiguracaoAppService confApps, IFilialAppService filApps, IMensagemEnviadaSistemaAppService meApps, IEmpresaAppService empApps)
+        public UsuarioController(IUsuarioAppService baseApps, ILogAppService logApps, INotificacaoAppService notiApps, IConfiguracaoAppService confApps, IMensagemEnviadaSistemaAppService meApps)
         {
             baseApp = baseApps;
             logApp = logApps;
             notiApp = notiApps;
             confApp = confApps;
-            filApp = filApps;
             meApp = meApps;
-            empApp = empApps;   
         }
 
         [HttpGet]
@@ -115,10 +110,6 @@ namespace ERP_Condominios_Solution.Controllers
             if ((List<USUARIO>)Session["ListaUsuario"] == null)
             {
                 listaMaster = CarregaUsuario();
-                if ((String)Session["PerfilUsuario"] != "ADM")
-                {
-                    listaMaster = listaMaster.Where(p => p.EMPR_CD_ID == (Int32)Session["IdEmpresa"]).ToList();
-                }
                 Session["ListaUsuario"] = listaMaster;
                 Session["FiltroUsuario"] = null;
             }
@@ -255,10 +246,6 @@ namespace ERP_Condominios_Solution.Controllers
                 // Sucesso
                 Session["MensUsuario"] = 0;
                 listaMaster = volta.Item2;
-                if ((String)Session["PerfilUsuario"] != "ADM")
-                {
-                    listaMaster = listaMaster.Where(p => p.EMPR_CD_ID == (Int32)Session["IdEmpresa"]).ToList();
-                }
                 Session["ListaUsuario"] = listaMaster;
                 return RedirectToAction("MontarTelaUsuario");
             }
@@ -271,7 +258,7 @@ namespace ERP_Condominios_Solution.Controllers
                 Session["Excecao"] = ex;
                 Session["ExcecaoTipo"] = ex.GetType().ToString();
                 GravaLogExcecao grava = new GravaLogExcecao(baseApp);
-                Int32 voltaX = grava.GravarLogExcecao(ex, "Usuários", "CRMSys", 1, (USUARIO)Session["UserCredentials"]);
+                Int32 voltaX = grava.GravarLogExcecao(ex, "Usuários", "RidolfiWeb", 1, (USUARIO)Session["UserCredentials"]);
                 return RedirectToAction("TrataExcecao", "BaseAdmin");
             }
         }
@@ -296,10 +283,6 @@ namespace ERP_Condominios_Solution.Controllers
             Int32 idAss = (Int32)Session["IdAssinante"];
             USUARIO usuario = (USUARIO)Session["UserCredentials"];
             listaMaster = baseApp.GetAllUsuarios(idAss);
-            if ((String)Session["PerfilUsuario"] != "ADM")
-            {
-                listaMaster = listaMaster.Where(p => p.EMPR_CD_ID == (Int32)Session["IdEmpresa"]).ToList();
-            }
             Session["ListaUsuario"] = listaMaster;
             return RedirectToAction("MontarTelaUsuario");
         }
@@ -452,7 +435,6 @@ namespace ERP_Condominios_Solution.Controllers
             // Prepara listas
             ViewBag.Perfis = new SelectList(CarregaPerfil(), "PERF_CD_ID", "PERF_NM_NOME");
             ViewBag.Cargos = new SelectList(CarregaCargo().OrderBy(p => p.CARG_NM_NOME), "CARG_CD_ID", "CARG_NM_NOME");
-            ViewBag.Empresas = new SelectList(CarregaEmpresa(), "EMPR_CD_ID", "EMPR_NM_NOME");
 
             // Prepara view
             USUARIO item = new USUARIO();
@@ -468,7 +450,7 @@ namespace ERP_Condominios_Solution.Controllers
             vm.USUA_NR_FALHAS = 0;
             vm.CAUS_CD_ID = 1;
             vm.USUA_IN_ESPECIAL = 0;
-            vm.EMPR_CD_ID = empApp.GetItemByAssinante(idAss).EMPR_CD_ID; 
+            vm.EMPR_CD_ID = 3; 
             return View(vm);
         }
 
@@ -478,7 +460,6 @@ namespace ERP_Condominios_Solution.Controllers
             Int32 idAss = (Int32)Session["IdAssinante"];
             ViewBag.Perfis = new SelectList(CarregaPerfil(), "PERF_CD_ID", "PERF_NM_NOME");
             ViewBag.Cargos = new SelectList(CarregaCargo().OrderBy(p => p.CARG_NM_NOME), "CARG_CD_ID", "CARG_NM_NOME");
-            ViewBag.Empresas = new SelectList(CarregaEmpresa(), "EMPR_CD_ID", "EMPR_NM_NOME");
             if (ModelState.IsValid)
             {
                 try
@@ -606,7 +587,7 @@ namespace ERP_Condominios_Solution.Controllers
                     Session["Excecao"] = ex;
                     Session["ExcecaoTipo"] = ex.GetType().ToString();
                     GravaLogExcecao grava = new GravaLogExcecao(baseApp);
-                    Int32 voltaX = grava.GravarLogExcecao(ex, "Usuários", "CRMSys", 1, (USUARIO)Session["UserCredentials"]);
+                    Int32 voltaX = grava.GravarLogExcecao(ex, "Usuários", "RidolfiWeb", 1, (USUARIO)Session["UserCredentials"]);
                     return RedirectToAction("TrataExcecao", "BaseAdmin");
                 }
             }
@@ -732,7 +713,7 @@ namespace ERP_Condominios_Solution.Controllers
                     Session["Excecao"] = ex;
                     Session["ExcecaoTipo"] = ex.GetType().ToString();
                     GravaLogExcecao grava = new GravaLogExcecao(baseApp);
-                    Int32 voltaX = grava.GravarLogExcecao(ex, "Usuários", "CRMSys", 1, (USUARIO)Session["UserCredentials"]);
+                    Int32 voltaX = grava.GravarLogExcecao(ex, "Usuários", "RidolfiWeb", 1, (USUARIO)Session["UserCredentials"]);
                     return RedirectToAction("TrataExcecao", "BaseAdmin");
                 }
             }
@@ -822,7 +803,7 @@ namespace ERP_Condominios_Solution.Controllers
                 Session["Excecao"] = ex;
                 Session["ExcecaoTipo"] = ex.GetType().ToString();
                 GravaLogExcecao grava = new GravaLogExcecao(baseApp);
-                Int32 voltaX = grava.GravarLogExcecao(ex, "Usuários", "CRMSys", 1, (USUARIO)Session["UserCredentials"]);
+                Int32 voltaX = grava.GravarLogExcecao(ex, "Usuários", "RidolfiWeb", 1, (USUARIO)Session["UserCredentials"]);
                 return RedirectToAction("TrataExcecao", "BaseAdmin");
             }
         }
@@ -908,7 +889,7 @@ namespace ERP_Condominios_Solution.Controllers
                 Session["Excecao"] = ex;
                 Session["ExcecaoTipo"] = ex.GetType().ToString();
                 GravaLogExcecao grava = new GravaLogExcecao(baseApp);
-                Int32 voltaX = grava.GravarLogExcecao(ex, "Usuários", "CRMSys", 1, (USUARIO)Session["UserCredentials"]);
+                Int32 voltaX = grava.GravarLogExcecao(ex, "Usuários", "RidolfiWeb", 1, (USUARIO)Session["UserCredentials"]);
                 return RedirectToAction("TrataExcecao", "BaseAdmin");
             }
         }
@@ -992,7 +973,7 @@ namespace ERP_Condominios_Solution.Controllers
                 Session["Excecao"] = ex;
                 Session["ExcecaoTipo"] = ex.GetType().ToString();
                 GravaLogExcecao grava = new GravaLogExcecao(baseApp);
-                Int32 voltaX = grava.GravarLogExcecao(ex, "Usuários", "CRMSys", 1, (USUARIO)Session["UserCredentials"]);
+                Int32 voltaX = grava.GravarLogExcecao(ex, "Usuários", "RidolfiWeb", 1, (USUARIO)Session["UserCredentials"]);
                 return RedirectToAction("TrataExcecao", "BaseAdmin");
             }
         }
@@ -1084,7 +1065,7 @@ namespace ERP_Condominios_Solution.Controllers
                 Session["Excecao"] = ex;
                 Session["ExcecaoTipo"] = ex.GetType().ToString();
                 GravaLogExcecao grava = new GravaLogExcecao(baseApp);
-                Int32 voltaX = grava.GravarLogExcecao(ex, "Usuários", "CRMSys", 1, (USUARIO)Session["UserCredentials"]);
+                Int32 voltaX = grava.GravarLogExcecao(ex, "Usuários", "RidolfiWeb", 1, (USUARIO)Session["UserCredentials"]);
                 return RedirectToAction("TrataExcecao", "BaseAdmin");
             }
         }
@@ -1430,15 +1411,7 @@ namespace ERP_Condominios_Solution.Controllers
             PdfPCell cell = new PdfPCell();
             cell.Border = 0;
             Image image = null;
-            if (conf.CONF_IN_LOGO_EMPRESA == 1)
-            {
-                EMPRESA empresa = empApp.GetItemByAssinante(idAss);
-                image = Image.GetInstance(Server.MapPath(empresa.EMPR_AQ_LOGO));
-            }
-            else
-            {
-                image = Image.GetInstance(Server.MapPath("~/Images/CRM_Icon2.jpg"));
-            }
+            image = Image.GetInstance(Server.MapPath("~/Images/CRM_Icon2.jpg"));
             image.ScaleAbsolute(50, 50);
             cell.AddElement(image);
             table.AddCell(cell);
@@ -1460,7 +1433,7 @@ namespace ERP_Condominios_Solution.Controllers
             pdfDoc.Add(line1);
 
             // Grid
-            table = new PdfPTable(new float[] { 120f, 120f, 120f, 60f, 80f, 50f, 60f, 60f, 80f});
+            table = new PdfPTable(new float[] { 120f, 120f, 60f, 80f, 50f, 60f, 60f, 80f});
             table.WidthPercentage = 100;
             table.HorizontalAlignment = 0;
             table.SpacingBefore = 1f;
@@ -1474,13 +1447,6 @@ namespace ERP_Condominios_Solution.Controllers
             cell.BackgroundColor = BaseColor.LIGHT_GRAY;
             table.AddCell(cell);
 
-            cell = new PdfPCell(new Paragraph("Empresa/Filial", meuFont))
-            {
-                VerticalAlignment = Element.ALIGN_MIDDLE,
-                HorizontalAlignment = Element.ALIGN_LEFT
-            };
-            cell.BackgroundColor = BaseColor.LIGHT_GRAY;
-            table.AddCell(cell);
             cell = new PdfPCell(new Paragraph("Nome", meuFont))
             {
                 VerticalAlignment = Element.ALIGN_MIDDLE,
@@ -1540,12 +1506,6 @@ namespace ERP_Condominios_Solution.Controllers
 
             foreach (USUARIO item in lista)
             {
-                cell = new PdfPCell(new Paragraph(item.EMPRESA.EMPR_NM_NOME, meuFont))
-                {
-                    VerticalAlignment = Element.ALIGN_MIDDLE,
-                    HorizontalAlignment = Element.ALIGN_LEFT
-                };
-                table.AddCell(cell);
                 cell = new PdfPCell(new Paragraph(item.USUA_NM_NOME, meuFont))
                 {
                     VerticalAlignment = Element.ALIGN_MIDDLE, HorizontalAlignment = Element.ALIGN_LEFT
@@ -1722,15 +1682,7 @@ namespace ERP_Condominios_Solution.Controllers
             PdfPCell cell = new PdfPCell();
             cell.Border = 0;
             Image image = null;
-            if (conf.CONF_IN_LOGO_EMPRESA == 1)
-            {
-                EMPRESA empresa = empApp.GetItemByAssinante(idAss);
-                image = Image.GetInstance(Server.MapPath(empresa.EMPR_AQ_LOGO));
-            }
-            else
-            {
-                image = Image.GetInstance(Server.MapPath("~/Images/CRM_Icon2.jpg"));
-            }
+            image = Image.GetInstance(Server.MapPath("~/Images/CRM_Icon2.jpg"));
             image.ScaleAbsolute(50, 50);
             cell.AddElement(image);
             table.AddCell(cell);
@@ -1776,13 +1728,6 @@ namespace ERP_Condominios_Solution.Controllers
             cell = new PdfPCell(new Paragraph(" ", meuFontBold));
             cell.Border = 0;
             cell.Colspan = 3;
-            cell.VerticalAlignment = Element.ALIGN_MIDDLE;
-            cell.HorizontalAlignment = Element.ALIGN_LEFT;
-            table.AddCell(cell);
-
-            cell = new PdfPCell(new Paragraph("Empresa/Filial: " + aten.EMPRESA.EMPR_NM_NOME, meuFontGreen));
-            cell.Border = 0;
-            cell.Colspan = 4;
             cell.VerticalAlignment = Element.ALIGN_MIDDLE;
             cell.HorizontalAlignment = Element.ALIGN_LEFT;
             table.AddCell(cell);
@@ -2095,7 +2040,7 @@ namespace ERP_Condominios_Solution.Controllers
                     Session["Excecao"] = ex;
                     Session["ExcecaoTipo"] = ex.GetType().ToString();
                     GravaLogExcecao grava = new GravaLogExcecao(baseApp);
-                    Int32 voltaX = grava.GravarLogExcecao(ex, "Usuários", "CRMSys", 1, (USUARIO)Session["UserCredentials"]);
+                    Int32 voltaX = grava.GravarLogExcecao(ex, "Usuários", "RidolfiWeb", 1, (USUARIO)Session["UserCredentials"]);
                     return RedirectToAction("TrataExcecao", "BaseAdmin");
                 }
             }
@@ -2184,7 +2129,7 @@ namespace ERP_Condominios_Solution.Controllers
                 Session["Excecao"] = ex;
                 Session["ExcecaoTipo"] = ex.GetType().ToString();
                 GravaLogExcecao grava = new GravaLogExcecao(baseApp);
-                Int32 voltaX = grava.GravarLogExcecao(ex, "Usuários", "CRMSys", 1, (USUARIO)Session["UserCredentials"]);
+                Int32 voltaX = grava.GravarLogExcecao(ex, "Usuários", "RidolfiWeb", 1, (USUARIO)Session["UserCredentials"]);
                 throw;
             }
 
@@ -2278,7 +2223,7 @@ namespace ERP_Condominios_Solution.Controllers
                     Session["Excecao"] = ex;
                     Session["ExcecaoTipo"] = ex.GetType().ToString();
                     GravaLogExcecao grava = new GravaLogExcecao(baseApp);
-                    Int32 voltaX = grava.GravarLogExcecao(ex, "Usuários", "CRMSys", 1, (USUARIO)Session["UserCredentials"]);
+                    Int32 voltaX = grava.GravarLogExcecao(ex, "Usuários", "RidolfiWeb", 1, (USUARIO)Session["UserCredentials"]);
                     return RedirectToAction("TrataExcecao", "BaseAdmin");
                 }
             }
@@ -2354,7 +2299,7 @@ namespace ERP_Condominios_Solution.Controllers
                 String json = String.Empty;
                 using (var streamWriter = new StreamWriter(httpWebRequest.GetRequestStream()))
                 {
-                    json = String.Concat("{\"destinations\": [{\"to\": \"", listaDest, "\", \"text\": \"", texto, "\", \"customId\": \"" + customId + "\", \"from\": \"Precificação\"}]}");
+                    json = String.Concat("{\"destinations\": [{\"to\": \"", listaDest, "\", \"text\": \"", texto, "\", \"customId\": \"" + customId + "\", \"from\": \"RidolfiWeb\"}]}");
                     streamWriter.Write(json);
                 }
 
@@ -2374,7 +2319,7 @@ namespace ERP_Condominios_Solution.Controllers
                 Session["Excecao"] = ex;
                 Session["ExcecaoTipo"] = ex.GetType().ToString();
                 GravaLogExcecao grava = new GravaLogExcecao(baseApp);
-                Int32 voltaX = grava.GravarLogExcecao(ex, "Usuários", "CRMSys", 1, (USUARIO)Session["UserCredentials"]);
+                Int32 voltaX = grava.GravarLogExcecao(ex, "Usuários", "RidolfiWeb", 1, (USUARIO)Session["UserCredentials"]);
                 throw;
             }
 
@@ -2618,29 +2563,6 @@ namespace ERP_Condominios_Solution.Controllers
             return RedirectToAction("MontarTelaDashboardAdministracao", "BaseAdmin");
         }
 
-        public List<EMPRESA> CarregaEmpresa()
-        {
-            Int32 idAss = (Int32)Session["IdAssinante"];
-            List<EMPRESA> conf = new List<EMPRESA>();
-            if (Session["Empresas"] == null)
-            {
-                conf = empApp.GetAllItens(idAss);
-            }
-            else
-            {
-                if ((Int32)Session["EmpresaAlterada"] == 1)
-                {
-                    conf = empApp.GetAllItens(idAss);
-                }
-                else
-                {
-                    conf = (List<EMPRESA>)Session["Empresas"];
-                }
-            }
-            Session["Empresas"] = conf;
-            Session["EmpresaAlterada"] = 0;
-            return conf;
-        }
 
     }
 }

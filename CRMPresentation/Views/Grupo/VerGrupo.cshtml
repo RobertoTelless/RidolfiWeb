@@ -24,6 +24,7 @@
             </div>
         </div>
     </div>
+
     <div class="page-title">
         <h3 class="title">Grupos</h3>
         <br />
@@ -84,13 +85,6 @@
                                                     Data de Inclusão
                                                     @Html.TextBoxFor(m => m.GRUP_DT_CADASTRO, "{0:dd/MM/yyyy}", new { @class = "form-control", autofocus = true, @id = "dn", @readonly="readonly" })
                                                 </div>
-                                                @if ((String)Session["PerfilUsuario"] == "ADM")
-                                                {
-                                                    <div class="col-lg-4 col-md-4 col-xs-12">
-                                                        Empresa/Filial
-                                                        @Html.TextBoxFor(m => m.EMPRESA.EMPR_NM_NOME, new { @class = "form-control", @readonly="readonly" })
-                                                    </div>
-                                                }
                                             </div>
                                         </div>
                                         <div class="row">

@@ -21,7 +21,6 @@ namespace CRMPresentation.Controllers
         private readonly ITemplateEMailAppService _temaApp;
         private readonly IPeriodicidadeAppService _periodicidadeApp;
 
-
         public ControleCache(IMensagemAppService baseApp, ITemplateSMSAppService temApp, ITemplateEMailAppService temaApp, IGrupoAppService gruApps, IClienteAppService cliApps, IPeriodicidadeAppService periodicidadeApp)
         {
             _baseApp = baseApp;

@@ -8,23 +8,6 @@
     <div class="col-lg-12 col-md-12 col-sm-12">
         <div class="col-lg-12 col-md-12 col-sm-12">
             <div class="row">
-                <div class="form-group"> 
-                    @if (ViewBag.Perfil == "ADM")
-                    {
-                        <div class="col-lg-4 col-md-4 col-xs-12">
-                            Selecione a Empresa/Filial para Trabalhar
-                            @Html.DropDownListFor(m => m.EMPR_CD_ID, (SelectList)ViewBag.Empresas, "Selecionar", new { @class = "form-control", autofocus = true, @id ="troca", onchange = "TrocaEmpresa($(this).val())" })
-                            @Html.ValidationMessageFor(m => m.EMPR_CD_ID, "", new { @style = "color:red" })
-                        </div>
-                    }
-                    <div class="col-lg-4 col-md-4 col-xs-12">
-                        Empresa/Filial Ativa
-                        @Html.TextBox((String)Session["NomEmpresa"], new { @class = "form-control", autofocus = true, @readonly = "readonly", @id = "empresa", @style = "font-weight:bold; color: green" })
-                    </div>
-                </div>
-            </div>
-
-            <div class="row">
                 <div class="col-lg-2 col-md-2 col-sm-12">
                     <div class="ibox-content text-center">
                         <h1>@((String)Session["NomeMax"])</h1>
@@ -90,23 +73,10 @@
                             </div>
                         </div>
                     </div>
-                    @if (ViewBag.Perfil == "ADM")
-                    {
-                        @Html.ButtonLinkIndex(text: "Empresa", action: "MontarTelaEmpresaGeral", controller: "Empresa", buttonClass: "primary")    
-                    }
-                    else
-                    {
-                        @Html.ButtonLinkIndex(text: "Empresa", action: "MontarTelaEmpresa", controller: "Empresa", buttonClass: "primary")    
-                    }
                     @Html.ButtonLinkIndex(text: "Cadastros", action: "MontarTelaDashboardCadastros", controller: "BaseAdmin", buttonClass: "primary")    
-                    @if (ViewBag.PermMensagem == 1)
-                    {
-                        @Html.ButtonLinkIndex(text: "Mensageria e Marketing", action: "MontarTelaDashboardMensagens", controller: "Mensagem", buttonClass: "primary")                
-                    }
-                    @if (ViewBag.PermCRM == 1)
-                    {
-                        @Html.ButtonLinkIndex(text: "Processos - CRM", action: "MontarTelaDashboardCRMNovo", controller: "CRM", buttonClass: "primary")                
-                    }
+                    @Html.ButtonLinkIndex(text: "Contatos Telefônicos", action: "MontarTelaContato", controller: "Precatorio", buttonClass: "primary")    
+                    @Html.ButtonLinkIndex(text: "Mensageria e Marketing", action: "MontarTelaDashboardMensagens", controller: "Mensagem", buttonClass: "primary")                
+                    @Html.ButtonLinkIndex(text: "Processos - CRM", action: "MontarTelaDashboardCRMNovo", controller: "CRM", buttonClass: "primary")                
                 </div>
 
                 <div class="col-lg-4 col-md-4 col-sm-12">
@@ -149,40 +119,7 @@
                     {
                         @Html.ButtonLinkIndex(text: "Administração", action: "MontarTelaDashboardAdministracao", controller: "BaseAdmin", buttonClass: "success")                
                     }
-                </div>
-                
-                @if ((String)Session["PerfilSigla"] == "ADM")
-                {
-                    <div class="col-lg-2 col-md-2 col-sm-12">
-                        <div class="ibox float-e-margins">
-                            <div class="ibox-title" style="background-color: darkseagreen; color: darkgreen">
-                                <span class="label label-primary pull-right">Hoje</span>
-                                <h5>Planos de Assinatura</h5>
-                            </div>
-                            <div class="ibox-content">
-                                <div class="row">
-                                    <div class="col-xs-4">
-                                        <small class="stats-label">Ativos</small>
-                                        <h4>@((Int32)Session["NumPlanos"])</h4>
-                                    </div>
-                                    <div class="col-xs-8">
-                                        <small class="stats-label">Vencendo em 30 dias</small>
-                                        <h4>@((Int32)Session["NumPlanosVencer30"])</h4>
-                                    </div>                                 
-                                </div>
-                                <div class="row">
-                                    <div class="col-xs-6">
-                                        @Html.ButtonLinkIndex(text: "Central Assinante", action: "MontarTelaCentralAssinante", controller: "BaseAdmin")
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        @if (Model.USUA_IN_ESPECIAL == 1)
-                        {
-                            @Html.ButtonLinkIndex(text: "Assinantes", action: "MontarTelaDashboardAssinantes", controller: "BaseAdmin", buttonClass: "danger")                
-                        }
-                    </div>                 
-                }
+                </div>                
             </div>
 
             <div class="row">

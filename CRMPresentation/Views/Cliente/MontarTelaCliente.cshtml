@@ -25,7 +25,6 @@
             </div>
         </div>
     </div>
-
     <div class="page-title">
         <h3 class="title">Clientes</h3>
         <br />
@@ -140,13 +139,6 @@
                                 UF
                                 @Html.DropDownListFor(m => m.UF_CD_ID, (SelectList)ViewBag.UF, "Selecionar", new { @class = "form-control" })
                             </div>
-                            @if (ViewBag.Perfil == "ADM")
-                            {
-                                <div class="col-lg-3 col-md-3 col-xs-12">
-                                    Empresa/Filial
-                                    @Html.DropDownListFor(m => m.FILI_CD_ID, (SelectList)ViewBag.Empresas, "Selecionar", new { @class = "form-control" })
-                                </div>
-                            }
                         </div>
                         <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
                             <div class="col-lg-12 col-md-12 col-xs-12">
@@ -200,10 +192,6 @@
                             <table class="table table-striped table-bordered table-hover dataTables-example">
                                 <thead style="background-color:lightsteelblue">
                                     <tr>
-                                        @if (ViewBag.Perfil == "ADM")
-                                        {
-                                            <th style="width: auto">Empresa/Filial</th>
-                                        }
                                         <th style="width: auto">Nome</th>
                                         <th style="width: auto">CPF</th>
                                         <th style="width: auto">CNPJ</th>
@@ -221,10 +209,6 @@
                                         if (cond.CLIE_CD_ID == ViewBag.CodigoCliente)
                                         {
                                             <tr style="background: #c7ffc7;">
-                                                @if (ViewBag.Perfil == "ADM")
-                                                {
-                                                    <td style="width: auto">@cond.EMPRESA.EMPR_NM_NOME</td>
-                                                }
                                                 <td style="width: auto"><a href="@Url.Action("EditarCliente", "Cliente", new { id = cond.CLIE_CD_ID })" />@cond.CLIE_NM_NOME</td>
                                                 <td style="width: auto">@cond.CLIE_NR_CPF</td>
                                                 <td style="width: auto">@cond.CLIE_NR_CNPJ</td>
@@ -263,10 +247,6 @@
                                         else
                                         {
                                             <tr>
-                                                @if (ViewBag.Perfil == "ADM")
-                                                {
-                                                    <td style="width: auto">@cond.EMPRESA.EMPR_NM_NOME</td>
-                                                }
                                                 <td><a href="@Url.Action("EditarCliente", "Cliente", new { id = cond.CLIE_CD_ID })" />@cond.CLIE_NM_NOME</td>
                                                 <td style="width: auto">@cond.CLIE_NR_CPF</td>
                                                 <td>@cond.CLIE_NR_CNPJ</td>

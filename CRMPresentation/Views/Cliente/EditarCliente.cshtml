@@ -277,7 +277,7 @@
                                                             </div>
                                                         </div>
                                                         <div class="col-lg-3 col-md-3 col-xs-12">
-                                                            Vendedor
+                                                            Responsável
                                                             @Html.DropDownListFor(m => m.USUA_CD_ID, (SelectList)ViewBag.Usuarios, "Selecionar", new { @class = "form-control", autofocus = true })
                                                             @Html.ValidationMessageFor(m => m.USUA_CD_ID, "", new { @style = "color:red" })
                                                         </div>
@@ -315,10 +315,6 @@
                                                 </div>
                                             </div>
                                             <div class="row">
-                                                <div class="col-lg-3 col-md-3 col-xs-12">
-                                                    Empresa/Filial
-                                                    @Html.TextBoxFor(m => m.EMPRESA.EMPR_NM_NOME, new { @class = "form-control", autofocus = true, @readonly = "readonly" })
-                                                </div>
                                                 @if (Model.TIPE_CD_ID == 2)
                                                 {
                                                     <div class="form-group" style=" margin-left: -15px; margin-right: -15px;" id="PJ">
@@ -472,7 +468,7 @@
                                                             </div>
                                                         </div>
                                                         <div class="col-lg-3 col-md-3 col-xs-12">
-                                                            Vendedor
+                                                            Responsável
                                                             @Html.DropDownListFor(m => m.USUA_CD_ID, (SelectList)ViewBag.Usuarios, "Selecionar", new { @class = "form-control", autofocus = true })
                                                             @Html.ValidationMessageFor(m => m.USUA_CD_ID, "", new { @style = "color:red" })
                                                         </div>
@@ -586,7 +582,7 @@
                                         <div class="row">
                                             <div class="col-lg-10 col-md-10 col-xs-12">
                                                 <div class="form-group">
-                                                    <h4>Logotipo/Foto</h4>
+                                                    <h4>Fotografia</h4>
                                                     @using (Html.BeginForm("UploadFotoCliente", "Cliente", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { enctype = "multipart/form-data", @id = "pwd-container3" }))
                                                     {
                                                         <div class="form-group">
@@ -716,7 +712,7 @@
                                         <div class="row">
                                             <div class="col-lg-10 col-md-10 col-xs-12">
                                                 <div class="form-group">
-                                                    <h4>Logotipo/Foto</h4>
+                                                    <h4>Fotografia</h4>
                                                     @using (Html.BeginForm("UploadFotoCliente", "Cliente", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { enctype = "multipart/form-data", @id = "pwd-container3" }))
                                                     {
                                                         <div class="form-group">
@@ -938,55 +934,6 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="row">
-                                                <hr />
-                                                <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
-                                                    <div class="col-lg-2 col-md-2 col-xs-12">
-                                                        <h4>Endereço de Entrega</h4>
-                                                        <br />
-                                                        CEP Entrega
-                                                        <div class="input-group">
-                                                            @Html.TextBoxFor(m => m.CLIE_NR_CEP_ENTREGA, new { @class = "form-control", @id = "cep1", autofocus = true })
-                                                            @Html.ValidationMessageFor(m => m.CLIE_NR_CEP_ENTREGA, "", new { @style = "color:red" })
-                                                            <span class="input-group-btn">
-                                                                <span class="btn btn-warning btn-sm" id="btnBuscaCepEntrega" onclick="PesquisaCep($('#cep1').val(), $(this), 2)">Buscar CEP</span>
-                                                            </span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
-                                                    <div class="col-lg-3 col-md-3 col-xs-12">
-                                                        Endereço Entrega
-                                                        @Html.TextBoxFor(m => m.CLIE_NM_ENDERECO_ENTREGA, new { @class = "form-control", @id = "endEntrega", autofocus = true })
-                                                        @Html.ValidationMessageFor(m => m.CLIE_NM_ENDERECO_ENTREGA, "", new { @style = "color:red" })
-                                                    </div>
-                                                    <div class="col-lg-1 col-md-1 col-xs-12">
-                                                        Número
-                                                        @Html.TextBoxFor(m => m.CLIE_NR_NUMERO_ENTREGA, new { @class = "form-control", @id = "nmrEntrega", autofocus = true })
-                                                        @Html.ValidationMessageFor(m => m.CLIE_NR_NUMERO_ENTREGA, "", new { @style = "color:red" })
-                                                    </div>
-                                                    <div class="col-lg-2 col-md-2 col-xs-12">
-                                                        Complemento
-                                                        @Html.TextBoxFor(m => m.CLIE_NM_COMPLEMENTO_ENTREGA, new { @class = "form-control", autofocus = true, @id = "endereco" })
-                                                        @Html.ValidationMessageFor(m => m.CLIE_NM_COMPLEMENTO_ENTREGA, "", new { @style = "color:red" })
-                                                    </div>
-                                                    <div class="col-lg-2 col-md-2 col-xs-12">
-                                                        Bairro Entrega
-                                                        @Html.TextBoxFor(m => m.CLIE_NM_BAIRRO_ENTREGA, new { @class = "form-control", @id = "bairroEntrega", autofocus = true })
-                                                        @Html.ValidationMessageFor(m => m.CLIE_NM_BAIRRO_ENTREGA, "", new { @style = "color:red" })
-                                                    </div>
-                                                    <div class="col-lg-3 col-md-3 col-xs-12">
-                                                        Cidade Entrega
-                                                        @Html.TextBoxFor(m => m.CLIE_NM_CIDADE_ENTREGA, new { @class = "form-control", @id = "cidEntrega", autofocus = true })
-                                                        @Html.ValidationMessageFor(m => m.CLIE_NM_CIDADE_ENTREGA, "", new { @style = "color:red" })
-                                                    </div>
-                                                    <div class="col-lg-1 col-md-1 col-xs-12">
-                                                        UF
-                                                        @Html.TextBoxFor(m => m.CLIE_SG_UF_ENTREGA, new { @class = "form-control", @id = "ufEntrega", autofocus = true })
-                                                        @Html.ValidationMessageFor(m => m.CLIE_SG_UF_ENTREGA, "", new { @style = "color:red" })
-                                                    </div>
-                                                </div>
-                                            </div>
                                             <div class="form-group">
                                                 @Html.ButtonActionSubmit(text: "Confirma edição de Endereço", htmlAttributes: new { id = "basictoast" })
                                             </div>
@@ -1089,55 +1036,6 @@
                                                         UF
                                                         @Html.DropDownListFor(m => m.UF_CD_ID, (SelectList)ViewBag.UF, "Selecionar", new { @class = "form-control", @id = "uf", autofocus = true })
                                                         @Html.ValidationMessageFor(m => m.UF_CD_ID, "", new { @style = "color:red" })
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <hr />
-                                                <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
-                                                    <div class="col-lg-2 col-md-2 col-xs-12">
-                                                        <h4>Endereço de Entrega</h4>
-                                                        <br />
-                                                        CEP Entrega
-                                                        <div class="input-group">
-                                                            @Html.TextBoxFor(m => m.CLIE_NR_CEP_ENTREGA, new { @class = "form-control", @id = "cep1", autofocus = true })
-                                                            @Html.ValidationMessageFor(m => m.CLIE_NR_CEP_ENTREGA, "", new { @style = "color:red" })
-                                                            <span class="input-group-btn">
-                                                                <span class="btn btn-warning btn-sm" id="btnBuscaCepEntrega" onclick="PesquisaCep($('#cep1').val(), $(this), 2)">Buscar CEP</span>
-                                                            </span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
-                                                    <div class="col-lg-3 col-md-3 col-xs-12">
-                                                        Endereço Entrega
-                                                        @Html.TextBoxFor(m => m.CLIE_NM_ENDERECO_ENTREGA, new { @class = "form-control", @id = "endEntrega", autofocus = true })
-                                                        @Html.ValidationMessageFor(m => m.CLIE_NM_ENDERECO_ENTREGA, "", new { @style = "color:red" })
-                                                    </div>
-                                                    <div class="col-lg-1 col-md-1 col-xs-12">
-                                                        Número
-                                                        @Html.TextBoxFor(m => m.CLIE_NR_NUMERO_ENTREGA, new { @class = "form-control", @id = "nmrEntrega", autofocus = true })
-                                                        @Html.ValidationMessageFor(m => m.CLIE_NR_NUMERO_ENTREGA, "", new { @style = "color:red" })
-                                                    </div>
-                                                    <div class="col-lg-2 col-md-2 col-xs-12">
-                                                        Complemento
-                                                        @Html.TextBoxFor(m => m.CLIE_NM_COMPLEMENTO_ENTREGA, new { @class = "form-control", autofocus = true, @id = "endereco" })
-                                                        @Html.ValidationMessageFor(m => m.CLIE_NM_COMPLEMENTO_ENTREGA, "", new { @style = "color:red" })
-                                                    </div>
-                                                    <div class="col-lg-2 col-md-2 col-xs-12">
-                                                        Bairro Entrega
-                                                        @Html.TextBoxFor(m => m.CLIE_NM_BAIRRO_ENTREGA, new { @class = "form-control", @id = "bairroEntrega", autofocus = true })
-                                                        @Html.ValidationMessageFor(m => m.CLIE_NM_BAIRRO_ENTREGA, "", new { @style = "color:red" })
-                                                    </div>
-                                                    <div class="col-lg-3 col-md-3 col-xs-12">
-                                                        Cidade Entrega
-                                                        @Html.TextBoxFor(m => m.CLIE_NM_CIDADE_ENTREGA, new { @class = "form-control", @id = "cidEntrega", autofocus = true })
-                                                        @Html.ValidationMessageFor(m => m.CLIE_NM_CIDADE_ENTREGA, "", new { @style = "color:red" })
-                                                    </div>
-                                                    <div class="col-lg-1 col-md-1 col-xs-12">
-                                                        UF
-                                                        @Html.TextBoxFor(m => m.CLIE_SG_UF_ENTREGA, new { @class = "form-control", @id = "ufEntrega", autofocus = true })
-                                                        @Html.ValidationMessageFor(m => m.CLIE_SG_UF_ENTREGA, "", new { @style = "color:red" })
                                                     </div>
                                                 </div>
                                             </div>
@@ -2117,6 +2015,7 @@
                                                 </div>
                                             </div>
                                         </div>
+
                                         <div class="col-lg-3">
                                             <div class="ibox">
                                                 <div class="ibox-title"  style="background-color: goldenrod; color: darkgreen">

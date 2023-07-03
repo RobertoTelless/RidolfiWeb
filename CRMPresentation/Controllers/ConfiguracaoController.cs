@@ -149,7 +149,6 @@ namespace ERP_Condominios_Solution.Controllers
             }
             Int32 idAss = (Int32)Session["IdAssinante"];
 
-
             // Carrega listas
             objeto = baseApp.GetItemById(idAss);
             Session["Configuracao"] = objeto;

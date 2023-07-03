@@ -215,5 +215,6 @@ namespace ERP_Condominios_Solution.Controllers
 
             return RedirectToAction("MontarTelaLog");
         }
+
     }
 }

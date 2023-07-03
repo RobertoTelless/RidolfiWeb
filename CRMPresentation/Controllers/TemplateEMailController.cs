@@ -34,7 +34,6 @@ using log4net.Config;
 using log4net.Core;
 using Common.Logging;
 
-
 namespace ERP_Condominios_Solution.Controllers
 {
     public class TemplateEMailController : Controller
@@ -297,7 +296,7 @@ namespace ERP_Condominios_Solution.Controllers
             vm.TEEM_IN_ATIVO = 1;
             vm.TEEM_IN_FIXO = 0;
             vm.TEEM_IN_HTML = 1;
-            vm.EMPR_CD_ID = (Int32)Session["IdEmpresa"];
+            vm.EMPR_CD_ID = 3;
             return View(vm);
         }
 

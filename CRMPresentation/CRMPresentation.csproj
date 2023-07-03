@@ -447,7 +447,6 @@
     <Compile Include="ViewModels\CRMFollowViewModel.cs" />
     <Compile Include="ViewModels\EnderecoViewModel.cs" />
     <Compile Include="ViewModels\EscolaridadeViewModel.cs" />
-    <Compile Include="ViewModels\GrupoClienteViewModel.cs" />
     <Compile Include="ViewModels\HonorarioComentarioViewModel.cs" />
     <Compile Include="ViewModels\HonorarioViewModel.cs" />
     <Compile Include="ViewModels\ParentescoViewModel.cs" />
@@ -1738,6 +1737,7 @@
     <Content Include="Images\icon_vaga.png" />
     <Content Include="Images\ImagemBase_1.png" />
     <Content Include="Images\ImagemBase_2.jpg" />
+    <Content Include="Images\ImagemRidolfi.png" />
     <Content Include="Images\Imagem_Teste.jpg" />
     <Content Include="Images\Indicadores_Cliente.png" />
     <Content Include="Images\Kanban_CRM.png" />
@@ -13260,7 +13260,6 @@
     <Content Include="Views\CRM\AcompanhamentoProcessoCRM.cshtml" />
     <Content Include="Views\CRM\MontarTelaKanbanCRM_Nova.cshtml" />
     <Content Include="Views\BaseAdmin\PesquisarTudo.cshtml" />
-    <Content Include="Views\BaseAdmin\MontarTelaDashboardAssinantes.cshtml" />
     <Content Include="Views\Plano\MontarTelaPlano.cshtml" />
     <Content Include="Views\Plano\IncluirPlano.cshtml" />
     <Content Include="Views\Plano\EditarPlano.cshtml" />
@@ -13284,9 +13283,7 @@
     <Content Include="Views\TabelaAuxiliar\IncluirTipoTarefa.cshtml" />
     <Content Include="Views\TabelaAuxiliar\EditarTipoTarefa.cshtml" />
     <Content Include="Views\Assinante\VerAssinantesBloqueados.cshtml" />
-    <Content Include="Views\BaseAdmin\MontarTelaCentralAssinante.cshtml" />
     <Content Include="Views\Plano\VerComparativoPlanos.cshtml" />
-    <Content Include="Views\BaseAdmin\SolicitarIncluirAssinantePlano.cshtml" />
     <Content Include="Views\TemplateEMail\MontarTelaTemplateEMail.cshtml" />
     <Content Include="Views\TemplateEMail\IncluirTemplateEMail.cshtml" />
     <Content Include="Views\TemplateEMail\EditarTemplateEMail.cshtml" />
@@ -13312,7 +13309,6 @@
     <Content Include="Views\ControleAcesso\TrocarSenhaCodigo.cshtml" />
     <Content Include="Views\BaseAdmin\MontarTelaMensagensEnviadas.cshtml" />
     <Content Include="Views\BaseAdmin\VerMensagemEnviada.cshtml" />
-    <Content Include="Views\Cliente\EditarClienteContatos.cshtml" />
     <Content Include="Views\ControleAcesso\TrocarSenhaInicio.cshtml" />
     <Content Include="Views\ControleAcesso\TrocarSenhaCodigoInicio.cshtml" />
     <Content Include="Views\TabelaAuxiliar\MontarTelaCatAgenda.cshtml" />

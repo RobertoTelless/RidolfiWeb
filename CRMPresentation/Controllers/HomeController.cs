@@ -123,6 +123,12 @@ namespace CRMPresentation.Controllers
             Session["TipoFollowAlterada"] = 0;
             Session["Empresas"] = null;
             Session["EmpresaAlterada"] = 0;
+            Session["Precatorios"] = null;
+            Session["PrecatorioAlterada"] = 0;
+            Session["Beneficiarios"] = null;
+            Session["BeneficiarioAlterada"] = 0;
+            Session["TRFs"] = null;
+            Session["TRFAlterada"] = 0;
             return RedirectToAction("Login", "ControleAcesso");
             //return RedirectToAction("CarregarLandingPage", "BaseAdmin");
         }

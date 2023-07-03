@@ -183,6 +183,12 @@ namespace ERP_Condominios_Solution.Controllers
             Session["NacionalidadeAlterada"] = 0;
             Session["Municipios"] = null;
             Session["MunicipioAlterada"] = 0;
+            Session["Precatorios"] = null;
+            Session["PrecatorioAlterada"] = 0;
+            Session["Beneficiarios"] = null;
+            Session["BeneficiarioAlterada"] = 0;
+            Session["TRFs"] = null;
+            Session["TRFAlterada"] = 0;
         }
 
         [HttpGet]
@@ -462,74 +468,18 @@ namespace ERP_Condominios_Solution.Controllers
                     planos.Add(item.PLANO);
                     Session["NumeroEmpresas"] = item.PLANO.PLAN_NR_EMPRESA;
                     Session["NumUsuarios"] = item.PLANO.PLAN_NR_USUARIOS;
-                    if (item.PLANO.PLAN_IN_MENSAGENS == 1)
-                    {
-                        Session["PermMens"] = 1;
-                        if ((Int32)Session["NumSMS"] < item.PLANO.PLAN_NR_SMS)
-                        {
-                            Session["NumSMS"] = item.PLANO.PLAN_NR_SMS;
-                        }
-                        if ((Int32)Session["NumSMSPrior"] < item.PLANO.PLAN_NR_SMS_PRIORITARIO)
-                        {
-                            Session["NumSMSPrior"] = item.PLANO.PLAN_NR_SMS_PRIORITARIO;
-                        }
-                        if ((Int32)Session["NumEMail"] < item.PLANO.PLAN_NR_EMAIL)
-                        {
-                            Session["NumEMail"] = item.PLANO.PLAN_NR_EMAIL;
-                        }
-                        if ((Int32)Session["NumZap"] < item.PLANO.PLAN_NR_WHATSAPP)
-                        {
-                            Session["NumZap"] = item.PLANO.PLAN_NR_WHATSAPP;
-                        }
-                        if ((Int32)Session["NumClientes"] < item.PLANO.PLAN_NR_CONTATOS)
-                        {
-                            Session["NumClientes"] = item.PLANO.PLAN_NR_CONTATOS;
-                        }
-                    }
-                    if (item.PLANO.PLAN_IN_CRM == 1)
-                    {
-                        Session["PermCRM"] = 1;
-                        if ((Int32)Session["NumProcessos"] < item.PLANO.PLAN_NR_PROCESSOS)
-                        {
-                            Session["NumProcessos"] = item.PLANO.PLAN_NR_PROCESSOS;
-                        }
-                        if ((Int32)Session["NumClientes"] < item.PLANO.PLAN_NR_CONTATOS)
-                        {
-                            Session["NumClientes"] = item.PLANO.PLAN_NR_CONTATOS;
-                        }
-                        if ((Int32)Session["NumProcessosBase"] < item.PLANO.PLAN_NR_PROCESSOS)
-                        {
-                            Session["NumProcessosBase"] = item.PLANO.PLAN_NR_PROCESSOS;
-                        }
-                    }
-                    if (item.PLANO.PLAN_IN_PESQUISAS == 1)
-                    {
-                        Session["PermPesquisa"] = 1;
-                        if ((Int32)Session["NumPesquisas"] < item.PLANO.PLAN_NR_PESQUISAS)
-                        {
-                            Session["NumPesquisas"] = item.PLANO.PLAN_NR_PESQUISAS;
-                        }
-                        if ((Int32)Session["NumClientes"] < item.PLANO.PLAN_NR_CONTATOS)
-                        {
-                            Session["NumClientes"] = item.PLANO.PLAN_NR_CONTATOS;
-                        }
-                    }
-                    if (item.PLANO.PLAN_IN_ATENDIMENTOS == 1)
-                    {
-                        Session["PermAtendimentos"] = 1;
-                        if ((Int32)Session["NumAtendimentos"] < item.PLANO.PLAN_NR_ATENDIMENTOS)
-                        {
-                            Session["NumAtendimentos"] = item.PLANO.PLAN_NR_ATENDIMENTOS;
-                        }
-                        if ((Int32)Session["NumClientes"] < item.PLANO.PLAN_NR_CONTATOS)
-                        {
-                            Session["NumClientes"] = item.PLANO.PLAN_NR_CONTATOS;
-                        }
-                    }
-                    if (item.PLANO.PLAN_IN_VENDAS == 1)
-                    {
-                        Session["PermComercial"] = 1;
-                    }
+                    Session["PermMens"] = 1;
+                    Session["NumSMS"] = 100000;
+                    Session["NumSMSPrior"] = 100000;
+                    Session["NumEMail"] = 100000;
+                    Session["NumZap"] = 100000;
+                    Session["NumClientes"] = 1000000;
+                    Session["PermCRM"] = 1;
+                    Session["NumProcessos"] = 100000;
+                    Session["NumProcessosBase"] = 100000;
+                    Session["PermPesquisa"] = 1;
+                    Session["PermAtendimentos"] = 1;
+                    Session["PermComercial"] = 1;
                 }
                 Int32[] permissoes = new Int32[] { (Int32)Session["PermMens"], (Int32)Session["PermCRM"], (Int32)Session["PermPesquisa"], (Int32)Session["PermAtendimentos"], (Int32)Session["PermComercial"] };
                 Session["Permissoes"] = permissoes;
@@ -1155,6 +1105,5 @@ namespace ERP_Condominios_Solution.Controllers
                 return RedirectToAction("TrataExcecao", "BaseAdmin");
             }
         }
-
     }
 }

@@ -284,7 +284,7 @@ namespace ERP_Condominios_Solution.Controllers
             vm.ASSI_CD_ID = idAss;
             vm.TEPR_IN_ATIVO = 1;
             vm.TEPR_IN_FIXO = 0;
-            vm.EMPR_CD_ID = (Int32)Session["IdEmpresa"];
+            vm.EMPR_CD_ID = 3;
             return View(vm);
         }
 
