@@ -44,13 +44,12 @@ namespace ERP_Condominios_Solution.Controllers
         List<LOG> listaMasterLog = new List<LOG>();
         String extensao;
 
-        public NotificacaoController(INotificacaoAppService baseApps, ILogAppService logApps, IUsuarioAppService usuApps, IConfiguracaoAppService confApps, IEmpresaAppService empApps)
+        public NotificacaoController(INotificacaoAppService baseApps, ILogAppService logApps, IUsuarioAppService usuApps, IConfiguracaoAppService confApps)
         {
             baseApp = baseApps;
             logApp = logApps;
             usuApp = usuApps;
             confApp = confApps;
-            empApp = empApps;
         }
 
         /// <summary>Indexes this instance.</summary>

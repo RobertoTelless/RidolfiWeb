@@ -390,7 +390,6 @@
     <Compile Include="AutoMapper\DomainToViewModelMappingProfile.cs" />
     <Compile Include="AutoMapper\ViewModelToDomainMappingProfile.cs" />
     <Compile Include="Classes\GravaLogExcecao.cs" />
-    <Compile Include="Classes\RecalculoCustos.cs" />
     <Compile Include="Controllers\AgendaController.cs" />
     <Compile Include="Controllers\AssinanteController.cs" />
     <Compile Include="Controllers\AuditoriaController.cs" />

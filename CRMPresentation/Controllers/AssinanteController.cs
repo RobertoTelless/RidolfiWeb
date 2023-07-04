@@ -51,7 +51,6 @@ namespace ERP_Condominios_Solution.Controllers
         private readonly ICargoAppService cgApp;
         private readonly ICategoriaTelefoneAppService ctApp;
         private readonly ICRMOrigemAppService coApp;
-        private readonly IFilialAppService fiApp;
         private readonly IFunilAppService fuApp;
         private readonly IMotivoCancelamentoAppService mcApp;
         private readonly IMotivoEncerramentoAppService meApp;
@@ -72,7 +71,7 @@ namespace ERP_Condominios_Solution.Controllers
         List<ASSINANTE> listaMaster = new List<ASSINANTE>();
         String extensao;
 
-        public AssinanteController(IAssinanteAppService baseApps, ILogAppService logApps, IUsuarioAppService usuApps, IConfiguracaoAppService confApps, IAssinanteCnpjAppService ccnpjApps, IClienteAppService cliApps, ICRMAppService crmApps, IMensagemAppService menApps, ITemplateAppService temApps, ICategoriaAgendaAppService caApps, ICategoriaClienteAppService ccApps, ICargoAppService cgApps, ICategoriaTelefoneAppService ctApps, ICRMOrigemAppService coApps, IFilialAppService fiApps, IFunilAppService fuApps, IMotivoCancelamentoAppService mcApps, IMotivoEncerramentoAppService meApps, IPeriodicidadeAppService peApps, ITemplateAppService teApps, INoticiaAppService ntApps, INotificacaoAppService noApps, ITipoAcaoAppService taApps, IVideoAppService viApps, ITipoTarefaAppService ttApps, IPlanoAppService plaApps, IMensagemEnviadaSistemaAppService mevApps)
+        public AssinanteController(IAssinanteAppService baseApps, ILogAppService logApps, IUsuarioAppService usuApps, IConfiguracaoAppService confApps, IAssinanteCnpjAppService ccnpjApps, IClienteAppService cliApps, ICRMAppService crmApps, IMensagemAppService menApps, ITemplateAppService temApps, ICategoriaAgendaAppService caApps, ICategoriaClienteAppService ccApps, ICargoAppService cgApps, ICategoriaTelefoneAppService ctApps, ICRMOrigemAppService coApps, IFunilAppService fuApps, IMotivoCancelamentoAppService mcApps, IMotivoEncerramentoAppService meApps, IPeriodicidadeAppService peApps, ITemplateAppService teApps, INoticiaAppService ntApps, INotificacaoAppService noApps, ITipoAcaoAppService taApps, IVideoAppService viApps, ITipoTarefaAppService ttApps, IPlanoAppService plaApps, IMensagemEnviadaSistemaAppService mevApps)
         {
             baseApp = baseApps;
             logApp = logApps;
@@ -88,7 +87,6 @@ namespace ERP_Condominios_Solution.Controllers
             cgApp = cgApps;   
             ctApp = ctApps; 
             coApp = coApps;
-            fiApp = fiApps;
             fuApp = fuApps;
             mcApp = mcApps;
             meApp = meApps;
@@ -4681,31 +4679,31 @@ namespace ERP_Condominios_Solution.Controllers
             volta = coApp.ValidateCreate(f, null);
 
             // Filial
-            FILIAL g = new FILIAL();
-            g.ASSI_CD_ID = assi;
-            g.FILI_IN_MATRIZ = 1;
-            g.FILI_NM_NOME = item.ASSI_NM_NOME;
-            g.FILI_NM_RAZAO = item.ASSI_NM_RAZAO_SOCIAL;
-            g.FILI_NR_CPF = item.ASSI_NR_CPF;
-            g.FILI_NR_CNPJ = item.ASSI_NR_CNPJ;
-            g.FILI_NR_RG = null;
-            g.FILI_NM_EMAIL = item.ASSI_NM_EMAIL;
-            g.FILI_NM_TELEFONES = item.ASSI_NR_TELEFONE;
-            g.FILI_NR_CELULAR = item.ASSI_NR_CELULAR;
-            g.FILI_NM_ENDERECO = item.ASSI_NM_ENDERECO + " " + item.ASSI_NR_NUMERO + " " + item.ASSI_NM_COMPLEMENTO;
-            g.FILI_NM_BAIRRO = item.ASSI_NM_BAIRRO;
-            g.FILI_NM_CIDADE = item.ASSI_NM_CIDADE;
-            g.UF_CD_ID = item.UF_CD_ID;
-            g.FILI_NR_CEP = item.ASSI_NR_CEP;
-            g.FILI_IN_IE_ISENTO = 1;
-            g.FILI_DT_CADASTRO = DateTime.Today.Date;
-            g.FILI_IN_ATIVO = 1;
-            volta = fiApp.ValidateCreate(g, null);
-            FILIAL filial = fiApp.GetAllItens(assi).FirstOrDefault();
-            Int32 filId = filial.FILI_CD_ID;
+            //FILIAL g = new FILIAL();
+            //g.ASSI_CD_ID = assi;
+            //g.FILI_IN_MATRIZ = 1;
+            //g.FILI_NM_NOME = item.ASSI_NM_NOME;
+            //g.FILI_NM_RAZAO = item.ASSI_NM_RAZAO_SOCIAL;
+            //g.FILI_NR_CPF = item.ASSI_NR_CPF;
+            //g.FILI_NR_CNPJ = item.ASSI_NR_CNPJ;
+            //g.FILI_NR_RG = null;
+            //g.FILI_NM_EMAIL = item.ASSI_NM_EMAIL;
+            //g.FILI_NM_TELEFONES = item.ASSI_NR_TELEFONE;
+            //g.FILI_NR_CELULAR = item.ASSI_NR_CELULAR;
+            //g.FILI_NM_ENDERECO = item.ASSI_NM_ENDERECO + " " + item.ASSI_NR_NUMERO + " " + item.ASSI_NM_COMPLEMENTO;
+            //g.FILI_NM_BAIRRO = item.ASSI_NM_BAIRRO;
+            //g.FILI_NM_CIDADE = item.ASSI_NM_CIDADE;
+            //g.UF_CD_ID = item.UF_CD_ID;
+            //g.FILI_NR_CEP = item.ASSI_NR_CEP;
+            //g.FILI_IN_IE_ISENTO = 1;
+            //g.FILI_DT_CADASTRO = DateTime.Today.Date;
+            //g.FILI_IN_ATIVO = 1;
+            //volta = fiApp.ValidateCreate(g, null);
+            //FILIAL filial = fiApp.GetAllItens(assi).FirstOrDefault();
+            //Int32 filId = filial.FILI_CD_ID;
 
-            String caminho = "/Imagens/" + assi.ToString() + "/Filial/" + filId.ToString() + "/Logo/";
-            Directory.CreateDirectory(Server.MapPath(caminho));
+            //String caminho = "/Imagens/" + assi.ToString() + "/Filial/" + filId.ToString() + "/Logo/";
+            //Directory.CreateDirectory(Server.MapPath(caminho));
 
             // Funil
             FUNIL h = new FUNIL();
@@ -4890,9 +4888,9 @@ namespace ERP_Condominios_Solution.Controllers
             Int32 usuId = usua.USUA_CD_ID;
 
             String caminho1 = "/Imagens/" + assi.ToString() + "/Usuario/" + usuId.ToString() + "/Fotos/";
-            Directory.CreateDirectory(Server.MapPath(caminho));
+            Directory.CreateDirectory(Server.MapPath(caminho1));
             caminho1 = "/Imagens/" + assi.ToString() + "/Usuario/" + usuId.ToString() + "/Anexos/";
-            Directory.CreateDirectory(Server.MapPath(caminho));
+            Directory.CreateDirectory(Server.MapPath(caminho1));
 
             // Notificação
             NOTIFICACAO o = new NOTIFICACAO();
