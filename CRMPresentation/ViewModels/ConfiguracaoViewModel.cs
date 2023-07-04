@@ -100,6 +100,7 @@ namespace ERP_Condominios_Solution.ViewModels
         public string CONF_SG_SENHA_SMS_PRIORITARIO { get; set; }
         public string CONF_NM_ENDPOINT_AZURE { get; set; }
         public string CONF_NM_EMISSOR_AZURE { get; set; }
+        public string CONF_NM_LOCAL_AUDIO { get; set; }
 
         public bool NotifAcaoAdm
         {

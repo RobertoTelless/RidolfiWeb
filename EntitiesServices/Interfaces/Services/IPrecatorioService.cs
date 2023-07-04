@@ -31,6 +31,7 @@ namespace ModelServices.Interfaces.EntitiesServices
         List<PRECATORIO_ESTADO> GetAllEstados();
         NATUREZA CheckExistNatureza(String natureza);
         CONTATO CheckExistContato(String prot);
+        Int32 EditAnotacao(PRECATORIO_ANOTACAO item);
 
         PRECATORIO_ANEXO GetAnexoById(Int32 id);
         PRECATORIO_ANOTACAO GetComentarioById(Int32 id);

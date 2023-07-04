@@ -193,6 +193,17 @@ namespace ERP_Condominios_Solution.Controllers
             Session["VaraAlterada"] = 0;
             Session["Honorarios"] = null;
             Session["HonorarioAlterada"] = 0;
+            Session["Contatos"] = null;
+            Session["ContatoAlterada"] = 0;
+            Session["Qualificacoes"] = null;
+            Session["QualificacaoAlterada"] = 0;
+            Session["Desligas"] = null;
+            Session["DesligaAlterada"] = 0;
+            Session["Escolaridades"] = 0;
+            Session["Naturezas"] = 0;
+            Session["EstadosCivil"] = 0;
+            Session["Parentescos"] = 0;
+            Session["Sexos"] = 0;
         }
 
         [HttpGet]

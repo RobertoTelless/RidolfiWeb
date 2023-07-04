@@ -1,5 +1,5 @@
 ﻿@using Presentation.Extensions
-@model ERP_CRM_Solution.ViewModels.PrecatorioViewModel
+@model ERP_Condominios_Solution.ViewModels.PrecatorioViewModel
 @{
     Layout = "~/Views/Shared/_Layout_Admin.cshtml";
 }
@@ -40,6 +40,7 @@
                                 <li class=""><a data-toggle="tab" href="#tab-2">Beneficiário</a></li>
                                 <li class=""><a data-toggle="tab" href="#tab-3">Advogado</a></li>
                                 <li class=""><a data-toggle="tab" href="#tab-4">Anexos</a></li>
+                                <li class=""><a data-toggle="tab" href="#tab-5">Anotações</a></li>
                             </ul>
 
                             <div class="tab-content">
@@ -80,6 +81,7 @@
                                                         @Html.HiddenFor(m => m.PREC_VL_VALOR_INICIAL_PSS)
                                                         @Html.HiddenFor(m => m.HONO_CD_ID)
                                                         @Html.HiddenFor(m => m.BENE_CD_ID)
+                                                        @Html.HiddenFor(m => m.PREC_NM_NOME)
                                                         Tribunal*
                                                         @Html.DropDownListFor(m => m.TRF1_CD_ID, (SelectList)ViewBag.TRF    , "Selecionar", new { @class = "form-control", autofocus = true })
                                                         @Html.ValidationMessageFor(m => m.TRF1_CD_ID, "", new { @style = "color:red" })
@@ -492,6 +494,68 @@
                                         </div>
                                     </div>
                                 </div>
+                            
+                                @*Anotações*@                            
+                                <div id="tab-5" class="tab-pane">
+                                    <div class="panel-body">
+                                        <div class="ibox float-e-margins" style="border-bottom: solid; border-bottom-color: darkblue; border-bottom-width: 1px; border-left: solid; border-left-color: darkblue; border-left-width: 1px; border-right: solid; border-right-color: darkblue; border-right-width: 1px; border-top: solid; border-top-color: darkblue; border-top-width: 1px; height: 800px" >
+                                            <div class="ibox-title"  style="color: black">
+                                                <h5>Anotações</h5>
+                                            </div>
+                                            <div class="ibox-content" style="color: black; overflow: auto">
+                                                <div class="form-group">
+                                                    @Html.ButtonLinkIndex(text: "Incluir Nova Anotação", action: "IncluirComentario", controller: "Precatorio")
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-lg-12">
+                                                        @if (Model.PRECATORIO_ANOTACAO.Where(p => p.PRAT_IN_ATIVO == 1).ToList().Count > 0)
+                                                        {
+                                                            foreach (var item in (Model.PRECATORIO_ANOTACAO.Where(p => p.PRAT_IN_ATIVO == 1)).OrderByDescending(a => a.PRAT_DT_ANOTACAO))
+                                                            {
+                                                                <div class="social-feed-box">
+                                                                    <div class="social-avatar">
+                                                                        <a href="" class="pull-left">
+                                                                            <img src="@Url.Content(item.USUARIO.USUA_AQ_FOTO)" style="width: auto; height: auto; max-height: 110px; max-width: 90px;">
+                                                                        </a>
+                                                                        <span style="color: #337ab7; cursor:pointer;" alt="Excluir" class="tbl-link fa-lg fa fa-trash-o" onclick="ShowModalExcluirAnotacao('/Precatorio/ExcluirComentario/@item.PRAT_CD_ID')" title="Excluir"></span>
+                                                                        <div class="media-body">
+                                                                            <a href="@Url.Action("EditarComentario", "Precatorio", new { id = item.PRAT_CD_ID })">
+                                                                                @item.USUARIO.USUA_NM_NOME
+                                                                            </a>
+                                                                            <small class="text-muted">@item.PRAT_DT_ANOTACAO.ToString("dd/MM/yyyy HH:mm")</small>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="social-body">
+                                                                        <p>
+                                                                            @item.PRAT_TX_ANOTACAO
+                                                                        </p>
+                                                                    </div>
+                                                                </div>
+                                                            }
+                                                        }
+                                                        else
+                                                        {
+                                                            <div class="row">
+                                                                <div class="col-lg-4 col-md-4 col-xs-2">
+
+                                                                </div>
+                                                                <div style="border: 5px solid #F6A54A; padding: 10px; border-radius: 8px 8px; " class="col-lg-4 col-md-4 col-xs-8">
+                                                                    <h2 style="font-weight: bold">Nenhuma anotação cadastrada nesse precatório</h2>
+                                                                </div>
+                                                                <div class="col-lg-4 col-md-4 col-xs-2">
+
+                                                                </div>
+                                                            </div>
+                                                        }
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>                         
+                            
+                            
+                            
                             </div>                               
                     </div>
                 </div>

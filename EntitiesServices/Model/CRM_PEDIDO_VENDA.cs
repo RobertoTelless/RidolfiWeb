@@ -81,6 +81,7 @@ namespace EntitiesServices.Model
         public string CRPV_TX_INTRODUCAO_1 { get; set; }
         public string CRPV_TX_INFORMACOES_GERAIS_1 { get; set; }
         public string CRPV_TX_OUTROS_ITENS_1 { get; set; }
+        public Nullable<int> PREC_CD_ID { get; set; }
     
         public virtual CLIENTE CLIENTE { get; set; }
         public virtual CRM CRM { get; set; }
@@ -94,5 +95,6 @@ namespace EntitiesServices.Model
         public virtual USUARIO USUARIO { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<DIARIO_PROCESSO> DIARIO_PROCESSO { get; set; }
+        public virtual PRECATORIO PRECATORIO { get; set; }
     }
 }

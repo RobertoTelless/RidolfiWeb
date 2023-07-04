@@ -58,16 +58,11 @@
                                         <div class="row">
                                             <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
                                                 <div class="col-lg-4 col-md-4 col-xs-12">
-                                                    Nome do Cliente*
-                                                    <div class="input-group">
-                                                        <select name="CLIE_CD_ID" id="lstCliente" class="form-control" data-val="true" style="display: none;">
-                                                            @*<option>Selecionar</option>*@
-                                                        </select>
-                                                        @Html.ValidationMessageFor(m => m.CLIE_CD_ID, "", new { @style = "color:red" })
-                                                        <span class="input-group-btn">
-                                                            @Html.ButtonLinkIndex(text: "Novo Cliente", action: "IncluirCliente", controller: "CRM", buttonClass: "primary")
-                                                        </span>
-                                                    </div>
+                                                    Nome do Precatório*
+                                                    <select name="PREC_CD_ID" id="lstCliente" class="form-control" data-val="true" style="display: none;">
+                                                        @*<option>Selecionar</option>*@
+                                                    </select>
+                                                    @Html.ValidationMessageFor(m => m.PREC_CD_ID, "", new { @style = "color:red" })
                                                 </div>                                            
                                             </div>
                                             <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
@@ -225,7 +220,7 @@
         $("#lstCliente").select2({
             //data: filterSelect,
             ajax: {
-                url: '../Cliente/BuscaNomeRazao',
+                url: '../Precatorio/BuscaNumero',
                 type: 'POST',
                 data: function (params) {
                     var query = {
@@ -240,25 +235,9 @@
                     }
                 }
             },
-            placeholder: 'Busque por NOME ou RAZÃO SOCIAL',
+            placeholder: 'Busque pelo número do Precatório',
             minimumInputLength: 1
         });
-    </script>
-
-    <script>
-        function IncluirCliente() {
-            data = {
-            }
-            $(btn).attr("disabled", "disabled");
-
-            $.ajax({
-                url: '../Cliente/IncluirCliente'
-                , type: 'POST'
-                , data: data
-                , success: function (r) {
-                }
-            });
-        }
     </script>
 
     <script type="text/javascript" language="javascript">

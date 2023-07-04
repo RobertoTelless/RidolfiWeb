@@ -1132,7 +1132,7 @@ namespace CRMPresentation.App_Start {
         }
         
         /// <summary>
-        ///   Consulta uma cadeia de caracteres localizada semelhante a Cliente não especificado.
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Precatório não especificado.
         /// </summary>
         internal static string M0141 {
             get {
@@ -2334,6 +2334,15 @@ namespace CRMPresentation.App_Start {
         internal static string M0275 {
             get {
                 return ResourceManager.GetString("M0275", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Beneficiário sem e-mail informado.
+        /// </summary>
+        internal static string M0276 {
+            get {
+                return ResourceManager.GetString("M0276", resourceCulture);
             }
         }
     }

@@ -136,6 +136,43 @@ namespace ApplicationServices.Services
             }
         }
 
+        public Tuple<Int32, List<PRECATORIO>, Boolean> ExecuteFilterTuple(Int32? trf, Int32? beneficiario, Int32? advogado, Int32? natureza, Int32? estado, String nome, String ano, Int32? crm, Int32? pesquisa, Decimal? valor1, Decimal? valor2, Int32? situacao, Int32 idAss)
+        {
+            try
+            {
+                List<PRECATORIO> objeto = new List<PRECATORIO>();
+                Int32 volta = 0;
+
+                // Processa filtro
+                objeto = _baseService.ExecuteFilter(trf, beneficiario, advogado, natureza, estado, nome, ano, crm, pesquisa, valor1, valor2, situacao);
+                if (objeto.Count == 0)
+                {
+                    volta = 1;
+                }
+
+                // Monta tupla
+                var tupla = Tuple.Create(volta, objeto, true);
+                return tupla;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
+        public Int32 ValidateEditAnotacao(PRECATORIO_ANOTACAO item)
+        {
+            try
+            {
+                // Persiste
+                return _baseService.EditAnotacao(item);
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
         public Int32 ValidateCreate(PRECATORIO item, USUARIO usuario)
         {
             try

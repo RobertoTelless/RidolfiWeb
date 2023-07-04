@@ -113,7 +113,7 @@
                                 @Html.TextBoxFor(m => m.CRM1_NM_NOME, new { @class = "form-control", autofocus = true })
                             </div>
                             <div class="col-lg-4 col-md-4 col-xs-12">
-                                Cliente (Nome, Razão Social ou CPF)
+                                Precatório (Número, Assunto, Requerente)
                                 @Html.TextBoxFor(m => m.CRM1_DS_DESCRICAO, new { @class = "form-control", autofocus = true })
                             </div>
                         </div>
@@ -128,10 +128,6 @@
                                 @Html.ButtonLinkIndex(text: "Histórico", controller: "CRM", action: "MontarTelaHistoricoGeral")
                                 @Html.ButtonLinkIndex(text: "Gerar Listagem", controller: "CRM", action: "GerarRelatorioListaCRM")
                                 @Html.ButtonLinkIndex(text: "Mensagens Enviadas", action: "VerMensagensEnviadas", controller: "CRM", buttonClass: "success")
-                                @if ((Int32)Session["PermComercial"] == 1)
-                                {
-                                    @Html.ButtonLinkIndex(text: "Módulo Comercial", action: "CarregarDesenvolvimento", controller: "BaseAdmin", buttonClass: "danger")
-                                }
                                 @Html.ButtonLinkIndex(text: "Voltar", action: "MontarTelaDashboardCRMNovo", controller: "CRM")                
                             </div>
                         </div>
@@ -164,7 +160,8 @@
                                         <th class="td-one-action"></th>
                                         <th style="width: auto">Funil</th>
                                         <th style="width: auto">Etapa</th>
-                                        <th style="width: auto">Cliente</th>
+                                        <th style="width: auto">Precatório</th>
+                                        <th style="width: auto">Beneficiário</th>
                                         <th style="width: auto">Campanha</th>
                                         <th style="width: auto">Título</th>
                                         <th style="width: auto">Próxima Ação</th>
@@ -216,7 +213,8 @@
                                                     <td>Encerrado</td>
                                                 }                                                
                                                 
-                                                <td><a href="@Url.Action("EditarClienteForm", "CRM", new { id = cond.CLIE_CD_ID })" />@cond.CLIENTE.CLIE_NM_NOME</td>
+                                                <td><a href="@Url.Action("EditarPrecatorio", "Precatorio", new { id = cond.PREC_CD_ID })" />@cond.PRECATORIO.PREC_NM_PRECATORIO</td>
+                                                <td>@cond.PRECATORIO.PREC_NM_NOME</td>
                                                 
                                                 @if (cond.CRM1_NM_CAMPANHA != null)
                                                 {

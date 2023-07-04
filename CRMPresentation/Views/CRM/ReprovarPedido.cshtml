@@ -103,6 +103,7 @@
                                             @Html.HiddenFor(m => m.TEPR_CD_ID)
                                             @Html.HiddenFor(m => m.CRPV_CD_ID)
                                             @Html.HiddenFor(m => m.EMPR_CD_ID)
+                                            @Html.HiddenFor(m => m.PREC_CD_ID)
                                             @Html.ButtonActionSubmit(text: "Confirma Reprovação da Proposta", htmlAttributes: new { id = "basictoast" })
                                         </div>
 
@@ -110,29 +111,45 @@
                                             <div class="col-lg-4">
                                                 <div class="ibox float-e-margins" style="border-bottom: solid; border-bottom-color: darkblue; border-bottom-width: 1px; border-left: solid; border-left-color: darkblue; border-left-width: 1px; border-right: solid; border-right-color: darkblue; border-right-width: 1px; border-top: solid; border-top-color: darkblue; border-top-width: 1px; height: 250px" >
                                                     <div class="ibox-title"  style="color: black">
-                                                        <h5>Dados do Cliente</h5>
-                                                        <span style="float: right"><a href="@Url.Action("EnviarEMailCliente", "CRM", new { id = Model.CRM.CLIE_CD_ID})" />Enviar E-Mail</span>
+                                                        <h5>Dados do Precatório</h5>
+                                                        @if (Model.PRECATORIO.BENEFICIARIO != null)
+                                                        {
+                                                            <span style="float: right"><a href="@Url.Action("EnviarEMailBeneficiario", "CRM", new { id = Model.PRECATORIO.BENEFICIARIO.BENE_CD_ID})" />Enviar E-Mail</span>
+                                                        }
+                                                        else
+                                                        {
+                                                            <span style="float: right">Nenhum E-Mail cadastrado</span>
+                                                        }
                                                     </div>
                                                     <div class="ibox-content" style="color: black">
-                                                        <h3 style="color: green"><strong><a href="@Url.Action("EditarCliente", "Cliente", new { id = Model.CRM.CLIE_CD_ID })">@Model.CRM.CLIENTE.CLIE_NM_NOME</a></strong></h3>
-                                                        @if (Model.CRM.CLIENTE.CLIE_NM_ENDERECO != null)
+                                                        <h3 style="color: green"><strong><a href="@Url.Action("EditarPrecatorio", "Precatorio", new { id = Model.PREC_CD_ID })">@Model.PRECATORIO.PREC_NM_PRECATORIO</a></strong></h3>
+                                                        <h4 style="color: darkblue"><strong>@Model.PRECATORIO.PREC_NM_REQUERENTE</strong></h4>
+                                                        @if (Model.PRECATORIO.BENEFICIARIO != null)
                                                         {
                                                             <address>
-                                                                @Model.CRM.CLIENTE.CLIE_NM_ENDERECO @Model.CRM.CLIENTE.CLIE_NR_NUMERO @Model.CRM.CLIENTE.CLIE_NM_COMPLEMENTO<br>
-                                                                @Model.CRM.CLIENTE.CLIE_NM_BAIRRO  - @Model.CRM.CLIENTE.CLIE_NM_CIDADE - @Model.CRM.CLIENTE.UF.UF_SG_SIGLA - @Model.CRM.CLIENTE.CLIE_NR_CEP<br>
-                                                                @if (Model.CRM.CLIENTE.CLIE_NR_TELEFONE != null)
+                                                                @if (Model.PRECATORIO.BENEFICIARIO.BENE_NR_TELEFONE != null)
 	                                                            {
-                                                                    <abbr title="Fone">P:</abbr> @Model.CRM.CLIENTE.CLIE_NR_TELEFONE
+                                                                    <abbr title="Fone">P:</abbr> @Model.PRECATORIO.BENEFICIARIO.BENE_NR_TELEFONE
                                                                     <br />
 	                                                            }
-                                                                <abbr title="Cel">C:</abbr> <a href="@Url.Action("EnviarSMSCliente", "CRM", new { id = Model.CRM.CLIENTE.CLIE_CD_ID })">@Model.CRM.CLIENTE.CLIE_NR_CELULAR</a>
+                                                                @if (Model.PRECATORIO.BENEFICIARIO.BENE_NR_CELULAR != null)
+                                                                {
+                                                                    <abbr title="Cel">C:</abbr> <a href="@Url.Action("EnviarSMSBeneficiario", "CRM", new { id = Model.PRECATORIO.BENEFICIARIO.BENE_CD_ID })">@Model.PRECATORIO.BENEFICIARIO.BENE_NR_CELULAR</a>
+                                                                }
                                                             </address>
                                                         }
                                                         else
                                                         {
-                                                            <h5>Não informado</h5>
+                                                            <h5 style="color:brown; font-weight: bold">Beneficiário Não informado</h5>
                                                         }
-                                                        <p><i class="fa fa-envelope"></i><a href="@Url.Action("EnviarEMailCliente", "CRM", new { id = Model.CRM.CLIE_CD_ID})"> @Model.CRM.CLIENTE.CLIE_NM_EMAIL</a></p>
+                                                        @if (Model.PRECATORIO.BENEFICIARIO != null)
+                                                        {
+                                                            <p><i class="fa fa-envelope"></i><a href="@Url.Action("EnviarEMailBeneficiario", "CRM", new { id = Model.PRECATORIO.BENEFICIARIO.BENE_CD_ID})"> @Model.PRECATORIO.BENEFICIARIO.BENE_EM_EMAIL</a></p>
+                                                        }
+                                                        else
+                                                        {
+                                                            <p style="color:darkolivegreen; font-weight: bold"><i class="fa fa-envelope"></i>Nenhum E-Mail cadastrado</p>
+                                                        }
                                                     </div>
                                                 </div>
                                             </div>

@@ -77,6 +77,7 @@ namespace EntitiesServices.Model
         public string CONF_NM_EMISSOR_AZURE { get; set; }
         public string CONF_NM_EMISSOR_AZURE_CRIP { get; set; }
         public Nullable<int> CONF_IN_VALIDADE_CODIGO { get; set; }
+        public string CONF_NM_LOCAL_AUDIO { get; set; }
     
         public virtual ASSINANTE ASSINANTE { get; set; }
     }

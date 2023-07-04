@@ -14,6 +14,7 @@ namespace ERP_Condominios_Solution.ViewModels
         public int ASSI_CD_ID { get; set; }
         public Nullable<int> FUNI_CD_ID { get; set; }
         public int CLIE_CD_ID { get; set; }
+        public Nullable<int> PREC_CD_ID { get; set; }
         public Nullable<int> TICR_CD_ID { get; set; }
         [Required(ErrorMessage = "Campo DATA DE CRIAÇÃO obrigatorio")]
         [DataType(DataType.Date, ErrorMessage = "A DATA DE CRIAÇÃO deve ser uma data válida")]
@@ -144,7 +145,6 @@ namespace ERP_Condominios_Solution.ViewModels
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<AGENDA> AGENDA { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual CLIENTE CLIENTE { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<CRM_ACAO> CRM_ACAO { get; set; }
@@ -155,20 +155,21 @@ namespace ERP_Condominios_Solution.ViewModels
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<CRM_CONTATO> CRM_CONTATO { get; set; }
         public virtual CRM_ORIGEM CRM_ORIGEM { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<CRM_FOLLOW> CRM_FOLLOW { get; set; }
         public virtual FUNIL FUNIL { get; set; }
         public virtual MENSAGENS MENSAGENS { get; set; }
         public virtual MOTIVO_CANCELAMENTO MOTIVO_CANCELAMENTO { get; set; }
         public virtual MOTIVO_ENCERRAMENTO MOTIVO_ENCERRAMENTO { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<CRM_PEDIDO_VENDA> CRM_PEDIDO_VENDA { get; set; }
+        public virtual PRECATORIO PRECATORIO { get; set; }
         public virtual TIPO_CRM TIPO_CRM { get; set; }
         public virtual USUARIO USUARIO { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<DIARIO_PROCESSO> DIARIO_PROCESSO { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<MENSAGENS_ENVIADAS_SISTEMA> MENSAGENS_ENVIADAS_SISTEMA { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<CRM_FOLLOW> CRM_FOLLOW { get; set; }
 
     }
 }

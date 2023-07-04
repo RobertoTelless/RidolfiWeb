@@ -475,7 +475,7 @@
     <value>Impossível criar/reativar este pedido. Já existe um pedido sendo processado neste momento.</value>
   </data>
   <data name="M0141" xml:space="preserve">
-    <value>Cliente não especificado</value>
+    <value>Precatório não especificado</value>
   </data>
   <data name="M0142" xml:space="preserve">
     <value>Tipo de ação não especificado</value>
@@ -875,5 +875,8 @@
   </data>
   <data name="M0275" xml:space="preserve">
     <value>Texto da mensagem não informado</value>
+  </data>
+  <data name="M0276" xml:space="preserve">
+    <value>Beneficiário sem e-mail informado</value>
   </data>
 </root>

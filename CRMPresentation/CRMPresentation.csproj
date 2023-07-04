@@ -864,6 +864,7 @@
     <Content Include="Imagens\Base\FotoBase.jpg" />
     <Content Include="Imagens\Base\FotoOficial.jpg" />
     <Content Include="Imagens\Base\icone_imagem.jpg" />
+    <Content Include="Imagens\Base\LogoRidolfi.jpg" />
     <Content Include="Images\1.jpg" />
     <Content Include="Images\1.png" />
     <Content Include="Images\5.png" />
@@ -13367,6 +13368,8 @@
     <Content Include="Views\Vara\MontarTelaVARA.cshtml" />
     <Content Include="Views\Beneficiario\EditarComentario.cshtml" />
     <Content Include="Views\Beneficiario\VerAnexoBeneficiarioAudio.cshtml" />
+    <Content Include="Views\Precatorio\VerAnexoPrecatorioAudio.cshtml" />
+    <Content Include="Views\Precatorio\EditarComentario.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

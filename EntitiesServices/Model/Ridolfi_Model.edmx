@@ -505,6 +505,7 @@
           <Property Name="CONF_NM_EMISSOR_AZURE" Type="varchar" MaxLength="250" />
           <Property Name="CONF_NM_EMISSOR_AZURE_CRIP" Type="varchar" MaxLength="750" />
           <Property Name="CONF_IN_VALIDADE_CODIGO" Type="int" />
+          <Property Name="CONF_NM_LOCAL_AUDIO" Type="varchar" MaxLength="100" />
         </EntityType>
         <EntityType Name="CONFIGURACAO_CHAVES">
           <Key>
@@ -752,6 +753,7 @@
           <Property Name="FOFR_CD_ID" Type="int" />
           <Property Name="USUA_CD_ID" Type="int" />
           <Property Name="EMPR_CD_ID" Type="int" />
+          <Property Name="PREC_CD_ID" Type="int" />
           <Property Name="CRPV_DT_VALIDADE" Type="date" Nullable="false" />
           <Property Name="CRPV_DT_PEDIDO" Type="date" Nullable="false" />
           <Property Name="CRPV_TX_INTRODUCAO" Type="text" />
@@ -1475,6 +1477,7 @@
           <Property Name="PREC_DT_CADASTRO" Type="date" />
           <Property Name="PREC_VL_RRA" Type="decimal" Precision="18" Scale="2" />
           <Property Name="PREC_PC_RRA" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="PREC_NM_NOME" Type="varchar" MaxLength="150" />
         </EntityType>
         <EntityType Name="PRECATORIO_ANEXO">
           <Key>
@@ -2868,6 +2871,18 @@
             </Principal>
             <Dependent Role="CRM_PEDIDO_VENDA">
               <PropertyRef Name="MOCA_CD_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CRM_PEDIDO_VENDA_PRECATORIO">
+          <End Role="PRECATORIO" Type="Self.PRECATORIO" Multiplicity="0..1" />
+          <End Role="CRM_PEDIDO_VENDA" Type="Self.CRM_PEDIDO_VENDA" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PRECATORIO">
+              <PropertyRef Name="PREC_CD_ID" />
+            </Principal>
+            <Dependent Role="CRM_PEDIDO_VENDA">
+              <PropertyRef Name="PREC_CD_ID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -4665,6 +4680,10 @@
             <End Role="MOTIVO_CANCELAMENTO" EntitySet="MOTIVO_CANCELAMENTO" />
             <End Role="CRM_PEDIDO_VENDA" EntitySet="CRM_PEDIDO_VENDA" />
           </AssociationSet>
+          <AssociationSet Name="FK_CRM_PEDIDO_VENDA_PRECATORIO" Association="Self.FK_CRM_PEDIDO_VENDA_PRECATORIO">
+            <End Role="PRECATORIO" EntitySet="PRECATORIO" />
+            <End Role="CRM_PEDIDO_VENDA" EntitySet="CRM_PEDIDO_VENDA" />
+          </AssociationSet>
           <AssociationSet Name="FK_CRM_PEDIDO_VENDA_TEMPLATE_PROPOSTA" Association="Self.FK_CRM_PEDIDO_VENDA_TEMPLATE_PROPOSTA">
             <End Role="TEMPLATE_PROPOSTA" EntitySet="TEMPLATE_PROPOSTA" />
             <End Role="CRM_PEDIDO_VENDA" EntitySet="CRM_PEDIDO_VENDA" />
@@ -5725,6 +5744,7 @@
           <Property Name="CONF_NM_EMISSOR_AZURE_CRIP" Type="String" MaxLength="750" FixedLength="false" Unicode="false" />
           <Property Name="CONF_IN_VALIDADE_CODIGO" Type="Int32" />
           <NavigationProperty Name="ASSINANTE" Relationship="Self.FK_CONFIGURACAO_ASSINANTE" FromRole="CONFIGURACAO" ToRole="ASSINANTE" />
+          <Property Name="CONF_NM_LOCAL_AUDIO" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="CONFIGURACAO_CHAVES">
           <Key>
@@ -6070,6 +6090,8 @@
           <NavigationProperty Name="TEMPLATE_PROPOSTA1" Relationship="Self.FK_CRM_PEDIDO_VENDA_TEMPLATE_PROPOSTA1" FromRole="CRM_PEDIDO_VENDA" ToRole="TEMPLATE_PROPOSTA" />
           <NavigationProperty Name="USUARIO" Relationship="Self.FK_CRM_PEDIDO_VENDA_USUARIO" FromRole="CRM_PEDIDO_VENDA" ToRole="USUARIO" />
           <NavigationProperty Name="DIARIO_PROCESSO" Relationship="Self.FK_DIARIO_PROCESSO_CRM_PEDIDO_VENDA" FromRole="CRM_PEDIDO_VENDA" ToRole="DIARIO_PROCESSO" />
+          <Property Name="PREC_CD_ID" Type="Int32" />
+          <NavigationProperty Name="PRECATORIO" Relationship="RidolfiDB_WebModel.FK_CRM_PEDIDO_VENDA_PRECATORIO" FromRole="CRM_PEDIDO_VENDA" ToRole="PRECATORIO" />
         </EntityType>
         <EntityType Name="CRM_PEDIDO_VENDA_ACOMPANHAMENTO">
           <Key>
@@ -6858,6 +6880,8 @@
           <NavigationProperty Name="PRECATORIO_ESTADO" Relationship="Self.FKPRECATORIO966532" FromRole="PRECATORIO" ToRole="PRECATORIO_ESTADO" />
           <NavigationProperty Name="TRF" Relationship="Self.FKPRECATORIO966598" FromRole="PRECATORIO" ToRole="TRF" />
           <NavigationProperty Name="CLIENTE" Relationship="RidolfiDB_WebModel.FK_CLIENTE_PRECATORIO" FromRole="PRECATORIO" ToRole="CLIENTE" />
+          <Property Name="PREC_NM_NOME" Type="String" MaxLength="150" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="CRM_PEDIDO_VENDA" Relationship="RidolfiDB_WebModel.FK_CRM_PEDIDO_VENDA_PRECATORIO" FromRole="PRECATORIO" ToRole="CRM_PEDIDO_VENDA" />
         </EntityType>
         <EntityType Name="PRECATORIO_ANEXO">
           <Key>
@@ -10574,6 +10598,10 @@
             <End Role="BENEFICIARIO" EntitySet="BENEFICIARIO" />
             <End Role="MENSAGENS_ENVIADAS_SISTEMA" EntitySet="MENSAGENS_ENVIADAS_SISTEMA" />
           </AssociationSet>
+          <AssociationSet Name="FK_CRM_PEDIDO_VENDA_PRECATORIO" Association="RidolfiDB_WebModel.FK_CRM_PEDIDO_VENDA_PRECATORIO">
+            <End Role="PRECATORIO" EntitySet="PRECATORIO" />
+            <End Role="CRM_PEDIDO_VENDA" EntitySet="CRM_PEDIDO_VENDA" />
+          </AssociationSet>
         </EntityContainer>
         <Association Name="FK_CLIENTE_PRECATORIO">
           <End Type="RidolfiDB_WebModel.PRECATORIO" Role="PRECATORIO" Multiplicity="0..1" />
@@ -10620,6 +10648,18 @@
             </Principal>
             <Dependent Role="MENSAGENS_ENVIADAS_SISTEMA">
               <PropertyRef Name="BENE_CD_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CRM_PEDIDO_VENDA_PRECATORIO">
+          <End Type="RidolfiDB_WebModel.PRECATORIO" Role="PRECATORIO" Multiplicity="0..1" />
+          <End Type="RidolfiDB_WebModel.CRM_PEDIDO_VENDA" Role="CRM_PEDIDO_VENDA" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PRECATORIO">
+              <PropertyRef Name="PREC_CD_ID" />
+            </Principal>
+            <Dependent Role="CRM_PEDIDO_VENDA">
+              <PropertyRef Name="PREC_CD_ID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -11093,6 +11133,7 @@
           <EntitySetMapping Name="CONFIGURACAO">
             <EntityTypeMapping TypeName="RidolfiDB_WebModel.CONFIGURACAO">
               <MappingFragment StoreEntitySet="CONFIGURACAO">
+                <ScalarProperty Name="CONF_NM_LOCAL_AUDIO" ColumnName="CONF_NM_LOCAL_AUDIO" />
                 <ScalarProperty Name="CONF_CD_ID" ColumnName="CONF_CD_ID" />
                 <ScalarProperty Name="ASSI_CD_ID" ColumnName="ASSI_CD_ID" />
                 <ScalarProperty Name="CONF_NR_FALHAS_DIA" ColumnName="CONF_NR_FALHAS_DIA" />
@@ -11406,6 +11447,7 @@
           <EntitySetMapping Name="CRM_PEDIDO_VENDA">
             <EntityTypeMapping TypeName="RidolfiDB_WebModel.CRM_PEDIDO_VENDA">
               <MappingFragment StoreEntitySet="CRM_PEDIDO_VENDA">
+                <ScalarProperty Name="PREC_CD_ID" ColumnName="PREC_CD_ID" />
                 <ScalarProperty Name="CRPV_CD_ID" ColumnName="CRPV_CD_ID" />
                 <ScalarProperty Name="ASSI_CD_ID" ColumnName="ASSI_CD_ID" />
                 <ScalarProperty Name="CRM1_CD_ID" ColumnName="CRM1_CD_ID" />
@@ -12134,6 +12176,7 @@
           <EntitySetMapping Name="PRECATORIO">
             <EntityTypeMapping TypeName="RidolfiDB_WebModel.PRECATORIO">
               <MappingFragment StoreEntitySet="PRECATORIO">
+                <ScalarProperty Name="PREC_NM_NOME" ColumnName="PREC_NM_NOME" />
                 <ScalarProperty Name="PREC_CD_ID" ColumnName="PREC_CD_ID" />
                 <ScalarProperty Name="TRF1_CD_ID" ColumnName="TRF1_CD_ID" />
                 <ScalarProperty Name="BENE_CD_ID" ColumnName="BENE_CD_ID" />

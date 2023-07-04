@@ -89,12 +89,13 @@
                                                     @Html.HiddenFor(m => m.CRM1_NR_TEMPERATURA)
                                                     @Html.HiddenFor(m => m.FUNI_CD_ID)
                                                     @Html.HiddenFor(m => m.EMPR_CD_ID)
+                                                    @Html.HiddenFor(m => m.PREC_CD_ID)
                                                     Título do Processo
                                                     @Html.TextBoxFor(m => m.CRM1_NM_NOME, new { @class = "form-control", autofocus = true, @readonly="readonly" })
                                                 </div>
                                                 <div class="col-lg-4 col-md-4 col-xs-12">
-                                                    Cliente
-                                                    @Html.TextBoxFor(m => m.CLIENTE.CLIE_NM_NOME, new { @class = "form-control", autofocus = true, @readonly="readonly" })
+                                                    Precatório
+                                                    @Html.TextBoxFor(m => m.PRECATORIO.PREC_NM_PRECATORIO, new { @class = "form-control", autofocus = true, @readonly="readonly" })
                                                 </div>
                                                 <div class="col-lg-3 col-md-3 col-xs-12">
                                                     Origem

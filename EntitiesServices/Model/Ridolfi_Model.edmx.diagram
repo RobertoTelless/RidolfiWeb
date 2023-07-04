@@ -320,6 +320,7 @@
         <AssociationConnector Association="RidolfiDB_WebModel.FK_CLIENTE_TRF" />
         <AssociationConnector Association="RidolfiDB_WebModel.FK_CLIENTE_VARA" />
         <AssociationConnector Association="RidolfiDB_WebModel.FK_MENSAGENS_ENVIADAS_SISTEMA_BENEFICIARIO" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_CRM_PEDIDO_VENDA_PRECATORIO" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

@@ -158,6 +158,7 @@ namespace ERP_Condominios_Solution.ViewModels
         public Nullable<System.DateTime> DATA_EXP_FINAL { get; set; }
         [Required(ErrorMessage = "Campo RESPONSÁVEL obrigatorio")]
         public Nullable<int> USUA_CD_ID { get; set; }
+        public string PREC_NM_NOME { get; set; }
 
         // Filtros
         public Nullable<int> OperaTRF { get; set; }
@@ -219,6 +220,8 @@ namespace ERP_Condominios_Solution.ViewModels
         public virtual TRF TRF { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<CLIENTE> CLIENTE { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<CRM_PEDIDO_VENDA> CRM_PEDIDO_VENDA { get; set; }
 
     }
 }

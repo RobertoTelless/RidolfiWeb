@@ -1,5 +1,5 @@
 ﻿@using Presentation.Extensions
-@model ERP_CRM_Solution.ViewModels.PrecatorioViewModel
+@model ERP_Condominios_Solution.ViewModels.PrecatorioViewModel
 @{
     Layout = "~/Views/Shared/_Layout_Admin.cshtml";
 }
@@ -59,6 +59,7 @@
                                                 <div class="col-lg-3 col-md-3 col-xs-12">
                                                     @Html.HiddenFor(m => m.PREC_DT_CADASTRO)
                                                     @Html.HiddenFor(m => m.PREC_IN_ATIVO)
+                                                    @Html.HiddenFor(m => m.PREC_NM_NOME)
                                                     Tribunal*
                                                     @Html.DropDownListFor(m => m.TRF1_CD_ID, (SelectList)ViewBag.TRF, "Selecionar", new { @class = "form-control", autofocus = true })
                                                     @Html.ValidationMessageFor(m => m.TRF1_CD_ID, "", new { @style = "color:red" })

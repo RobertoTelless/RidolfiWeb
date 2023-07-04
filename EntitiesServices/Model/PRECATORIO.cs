@@ -23,6 +23,7 @@ namespace EntitiesServices.Model
             this.PRECATORIO_ANEXO = new HashSet<PRECATORIO_ANEXO>();
             this.PRECATORIO_ANOTACAO = new HashSet<PRECATORIO_ANOTACAO>();
             this.CLIENTE = new HashSet<CLIENTE>();
+            this.CRM_PEDIDO_VENDA = new HashSet<CRM_PEDIDO_VENDA>();
         }
     
         public int PREC_CD_ID { get; set; }
@@ -73,6 +74,7 @@ namespace EntitiesServices.Model
         public Nullable<System.DateTime> PREC_DT_CADASTRO { get; set; }
         public Nullable<decimal> PREC_VL_RRA { get; set; }
         public Nullable<decimal> PREC_PC_RRA { get; set; }
+        public string PREC_NM_NOME { get; set; }
     
         public virtual BANCO BANCO { get; set; }
         public virtual BENEFICIARIO BENEFICIARIO { get; set; }
@@ -93,5 +95,7 @@ namespace EntitiesServices.Model
         public virtual TRF TRF { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<CLIENTE> CLIENTE { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<CRM_PEDIDO_VENDA> CRM_PEDIDO_VENDA { get; set; }
     }
 }

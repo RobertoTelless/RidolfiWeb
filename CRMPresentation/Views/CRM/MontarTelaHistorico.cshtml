@@ -62,10 +62,6 @@
                                 Data Final
                                 @Html.TextBoxFor(m => m.DIPR_DT_DUMMY, "{0:dd/MM/yyyy}", new { @class = "form-control date-picker", autofocus = true, @id="data2" })
                             </div>
-                            @*<div class="col-lg-2 col-md-2 col-xs-12">
-                                Operação
-                                @Html.TextBoxFor(m => m.DIPR_NM_OPERACAO, new { @class = "form-control", autofocus = true })
-                            </div>*@
                             <div class="col-lg-5 col-md-5 col-xs-12">
                                 Descrição
                                 @Html.TextBoxFor(m => m.DIPR_DS_DESCRICAO, new { @class = "form-control", autofocus = true })
@@ -114,7 +110,8 @@
                                         <th style="width: auto">Data</th>
                                         <th style="width: auto">Responsável</th>
                                         <th style="width: auto">Processo</th>
-                                        <th style="width: auto">Cliente</th>
+                                        <th style="width: auto">Precatório</th>
+                                        <th style="width: auto">Beneficiário</th>
                                         <th style="width: auto">Descrição</th>
                                         <th class="td-one-action">Ações</th>
                                     </tr>
@@ -126,7 +123,9 @@
                                             <td style="width: auto">@cond.DIPR_DT_DATA.ToShortDateString()</td>
                                             <td style="width: auto">@cond.USUARIO.USUA_NM_NOME</td>
                                             <td style="width: auto"><a href="@Url.Action("VisualizarProcessoCRM", "CRM", new { id = cond.CRM1_CD_ID })" />@cond.CRM.CRM1_NM_NOME</td>
-                                            <td style="width: auto">@cond.CRM.CLIENTE.CLIE_NM_NOME</td>                                            
+                                            <td style="width: auto">@cond.CRM.CLIENTE.CLIE_NM_NOME</td>  
+                                            <td style="width: auto">@cond.CRM.PRECATORIO.PREC_NM_PRECATORIO</td> 
+                                            <td style="width: auto">@cond.CRM.PRECATORIO.PREC_NM_NOME</td> 
                                             <td style="width: auto">@cond.DIPR_DS_DESCRICAO</td>
                                             
                                             <td class="td-one-action">

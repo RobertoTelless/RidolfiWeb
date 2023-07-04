@@ -21,16 +21,17 @@
                 <a href="@Url.Action("EditarProcessoCRM", "CRM")">Processos - Acompanhamento</a>
             </li>
             <li class="active">
-                <strong>Cliente - Mensagens</strong>
+                <strong>Beneficiários - Mensagens</strong>
             </li>
         </ol>
         <br />
     </div>
+
     <div class="row">
         <div class="col-lg-12 col-md-12 col-xs-12">
             <div class="col-lg-12 col-md-12 col-xs-12 ibox float-e-margins">
                 <div class="ibox-title">
-                    <h5>Cliente - E-Mail</h5>
+                    <h5>Beneficiários - E-Mail</h5>
                 </div>
                 @using (Html.BeginForm("EnviarEMailCliente", "CRM", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", @id="pwd-container1" }))
                 {
@@ -41,7 +42,7 @@
                                     @Html.HiddenFor(m => m.ID)
                                     @Html.HiddenFor(m => m.MENS_DT_CRIACAO)
                                     @Html.HiddenFor(m => m.MENS_IN_TIPO)
-                                    Nome do Cliente
+                                    Nome do Beneficiário
                                     @Html.TextBoxFor(m => m.NOME, new { @class = "form-control", @readonly="readonly" })
                                 </div>
                                 <div class="col-lg-3 col-md-3 col-xs-12">

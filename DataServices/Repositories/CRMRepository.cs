@@ -138,7 +138,7 @@ namespace DataServices.Repositories
             }
             if (!String.IsNullOrEmpty(busca))
             {
-                query = query.Where(p => p.CLIENTE.CLIE_NM_NOME.Contains(busca) || p.CLIENTE.CLIE_NM_RAZAO.Contains(busca) || p.CLIENTE.CLIE_NR_CPF.Contains(busca));
+                query = query.Where(p => p.PRECATORIO.PREC_NM_PRECATORIO.Contains(busca) || p.PRECATORIO.PREC_NM_ASSUNTO.Contains(busca) || p.PRECATORIO.PREC_NM_REQUERENTE.Contains(busca)  || p.PRECATORIO.PREC_NM_REQUERIDO.Contains(busca));
             }
 
             if (inicio != null)

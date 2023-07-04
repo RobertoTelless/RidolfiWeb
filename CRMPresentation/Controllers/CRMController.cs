@@ -56,6 +56,7 @@ namespace ERP_Condominios_Solution.Controllers
         private readonly IFunilAppService funApp;
         private readonly ITemplatePropostaAppService tpApp;
         private readonly IMensagemEnviadaSistemaAppService meApp;
+        private readonly IBeneficiarioAppService benApp;
 
         private String msg;
         private Exception exception;
@@ -70,7 +71,7 @@ namespace ERP_Condominios_Solution.Controllers
         DIARIO_PROCESSO objetoAntesDiario = new DIARIO_PROCESSO();
         String extensao;
 
-        public CRMController(ICRMAppService baseApps, ILogAppService logApps, IUsuarioAppService usuApps, IConfiguracaoAppService confApps, IMensagemAppService menApps, IAgendaAppService ageApps, IClienteAppService cliApps, ITemplateEMailAppService temaApps, ITemplateAppService tempApps, ICRMDiarioAppService diaApps, IFunilAppService funApps, ITemplatePropostaAppService tpApps, IMensagemEnviadaSistemaAppService meApps)
+        public CRMController(ICRMAppService baseApps, ILogAppService logApps, IUsuarioAppService usuApps, IConfiguracaoAppService confApps, IMensagemAppService menApps, IAgendaAppService ageApps, IClienteAppService cliApps, ITemplateEMailAppService temaApps, ITemplateAppService tempApps, ICRMDiarioAppService diaApps, IFunilAppService funApps, ITemplatePropostaAppService tpApps, IMensagemEnviadaSistemaAppService meApps, IBeneficiarioAppService benApps)
         {
             baseApp = baseApps;
             logApp = logApps;
@@ -85,6 +86,7 @@ namespace ERP_Condominios_Solution.Controllers
             funApp = funApps;
             tpApp = tpApps;
             meApp = meApps;
+            benApp = benApps;
         }
 
         [HttpGet]
@@ -281,6 +283,18 @@ namespace ERP_Condominios_Solution.Controllers
             Session["VoltaTela"] = 0;
             ViewBag.Incluir = (Int32)Session["VoltaTela"];
             return RedirectToAction("IncluirCliente", "Cliente");
+        }
+
+        public ActionResult IncluirPrecatorio()
+        {
+            if ((String)Session["Ativa"] == null)
+            {
+                return RedirectToAction("Logout", "ControleAcesso");
+            }
+            Session["VoltaClienteCRM"] = 1;
+            Session["VoltaTela"] = 0;
+            ViewBag.Incluir = (Int32)Session["VoltaTela"];
+            return RedirectToAction("IncluirPrecatorio", "Precatorio");
         }
 
         [HttpGet]
@@ -930,7 +944,7 @@ namespace ERP_Condominios_Solution.Controllers
                 dia.CRAC_CD_ID = item.CRAC_CD_ID;
                 dia.DIPR_NM_OPERACAO = "Encerramento de Ação";
                 dia.DIPR_DS_DESCRICAO = "Encerramento de Ação " + item.CRAC_NM_TITULO + ". Processo: " + crm.CRM1_NM_NOME + ". Cliente: " + cli.CLIE_NM_NOME;
-                dia.EMPR_CD_ID = usuario.EMPR_CD_ID.Value;
+                dia.EMPR_CD_ID = 3;
                 Int32 volta3 = diaApp.ValidateCreate(dia);
                 
                 Session["VoltaTela"] = 1;
@@ -988,8 +1002,7 @@ namespace ERP_Condominios_Solution.Controllers
 
             PdfPCell cell = new PdfPCell();
             cell.Border = 0;
-            Image image = null;
-            image = Image.GetInstance(Server.MapPath("~/Images/CRM_Icon2.jpg"));
+            Image image = Image.GetInstance(Server.MapPath("~/Imagens/Base/LogoRidolfi.jpg"));
             image.ScaleAbsolute(50, 50);
             cell.AddElement(image);
             table.AddCell(cell);
@@ -1011,7 +1024,7 @@ namespace ERP_Condominios_Solution.Controllers
             pdfDoc.Add(line1);
 
             // Grid
-            table = new PdfPTable(new float[] { 70f, 150f, 160f, 100f, 80f, 150f, 80f, 80f, 80f });
+            table = new PdfPTable(new float[] { 70f, 150f, 100f, 160f, 100f, 80f, 150f, 80f, 80f, 80f });
             table.WidthPercentage = 100;
             table.HorizontalAlignment = 0;
             table.SpacingBefore = 1f;
@@ -1033,7 +1046,14 @@ namespace ERP_Condominios_Solution.Controllers
             };
             cell.BackgroundColor = BaseColor.LIGHT_GRAY;
             table.AddCell(cell);
-            cell = new PdfPCell(new Paragraph("Cliente", meuFont))
+            cell = new PdfPCell(new Paragraph("Precatório", meuFont))
+            {
+                VerticalAlignment = Element.ALIGN_MIDDLE,
+                HorizontalAlignment = Element.ALIGN_LEFT
+            };
+            cell.BackgroundColor = BaseColor.LIGHT_GRAY;
+            table.AddCell(cell);
+            cell = new PdfPCell(new Paragraph("Nome", meuFont))
             {
                 VerticalAlignment = Element.ALIGN_MIDDLE,
                 HorizontalAlignment = Element.ALIGN_LEFT
@@ -1110,7 +1130,14 @@ namespace ERP_Condominios_Solution.Controllers
                 }
                 table.AddCell(cell);
 
-                cell = new PdfPCell(new Paragraph(item.CLIENTE.CLIE_NM_NOME, meuFont))
+                cell = new PdfPCell(new Paragraph(item.PRECATORIO.PREC_NM_PRECATORIO, meuFont))
+                {
+                    VerticalAlignment = Element.ALIGN_MIDDLE,
+                    HorizontalAlignment = Element.ALIGN_LEFT
+                };
+                table.AddCell(cell);
+
+                cell = new PdfPCell(new Paragraph(item.PRECATORIO.PREC_NM_NOME, meuFont))
                 {
                     VerticalAlignment = Element.ALIGN_MIDDLE,
                     HorizontalAlignment = Element.ALIGN_LEFT
@@ -1562,10 +1589,10 @@ namespace ERP_Condominios_Solution.Controllers
                     {
                         FUNIL funil = funApp.GetAllItens(idAss).Where(p => p.FUNI_IN_FIXO == 1).FirstOrDefault();
                         vm.FUNI_CD_ID = funil.FUNI_CD_ID;
-                    }                  
-                    
+                    }
+
                     // Verifica cliente
-                    if (vm.CLIE_CD_ID == null || vm.CLIE_CD_ID == 0)
+                    if (vm.PREC_CD_ID == null || vm.PREC_CD_ID == 0)
                     {
                         ModelState.AddModelError("", CRMSys_Base.ResourceManager.GetString("M0141", CultureInfo.CurrentCulture));
                         return View(vm);
@@ -3917,6 +3944,11 @@ namespace ERP_Condominios_Solution.Controllers
                     String frase = CRMSys_Base.ResourceManager.GetString("M0256", CultureInfo.CurrentCulture) + " ID do envio: " + (String)Session["IdMail"];
                     ModelState.AddModelError("", frase);
                 }
+                if ((Int32)Session["MensCRM"] == 666)
+                {
+                    String frase = CRMSys_Base.ResourceManager.GetString("M0276", CultureInfo.CurrentCulture) + " ID do envio: " + (String)Session["IdMail"];
+                    ModelState.AddModelError("", frase);
+                }
                 if ((Int32)Session["MensCRM"] == 101)
                 {
                     String frase = CRMSys_Base.ResourceManager.GetString("M0257", CultureInfo.CurrentCulture) + " Status: " + (String)Session["StatusMail"] + ". ID do envio: " + (String)Session["IdMail"];
@@ -3994,7 +4026,7 @@ namespace ERP_Condominios_Solution.Controllers
             Session["CRM"] = item;
             Session["VoltaCRM"] = 11;
             Session["VoltaAgendaCRMCalend"] = 10;
-            Session["ClienteCRM"] = item.CLIENTE;
+            Session["ClienteCRM"] = item.PRECATORIO;
             ViewBag.Acoes = acoes;
             ViewBag.Acao = acao;
             ViewBag.Peds = peds;
@@ -4234,13 +4266,13 @@ namespace ERP_Condominios_Solution.Controllers
             }
             Int32 crm = (Int32)Session["IdCRM"];
             CRM item = baseApp.GetItemById(crm);
-            CLIENTE cont = cliApp.GetItemById(id);
+            BENEFICIARIO cont = benApp.GetItemById(id);
             Session["Cliente"] = cont;
             ViewBag.Cliente = cont;
             MensagemViewModel mens = new MensagemViewModel();
-            mens.NOME = cont.CLIE_NM_NOME;
+            mens.NOME = cont.BENE_NM_NOME;
             mens.ID = id;
-            mens.MODELO = cont.CLIE_NR_CELULAR;
+            mens.MODELO = cont.BENE_NR_CELULAR;
             mens.MENS_DT_CRIACAO = DateTime.Today.Date;
             mens.MENS_IN_TIPO = 2;
             return View(mens);
@@ -4746,7 +4778,7 @@ namespace ERP_Condominios_Solution.Controllers
                 return RedirectToAction("Logout", "ControleAcesso");
             }
             Session["VoltaClienteCRM"] = 5;
-            return RedirectToAction("EditarCliente", new { id = id });
+            return RedirectToAction("EditarPrecatorio", new { id = id });
         }
 
         [HttpGet]
@@ -4820,10 +4852,10 @@ namespace ERP_Condominios_Solution.Controllers
         public ActionResult EditarCliente(Int32 id)
         {
             Session["VoltaCRM"] = 11;
-            Session["IdCliente"] = id;
+            Session["IdPrecatorio"] = id;
             Session["VoltaTela"] = 0;
             ViewBag.Incluir = (Int32)Session["VoltaTela"];
-            return RedirectToAction("VoltarAnexoCliente", "Cliente");
+            return RedirectToAction("VoltarAnexoPrecatorio", "Precatorio");
         }
 
         [HttpGet]
@@ -5144,10 +5176,6 @@ namespace ERP_Condominios_Solution.Controllers
             Int32 idAss = (Int32)Session["IdAssinante"];
             ViewBag.Tipos = new SelectList(CarregaTipoAcao().Where(p => p.TIAC_IN_TIPO == 1).OrderBy(p => p.TIAC_NM_NOME), "TIAC_CD_ID", "TIAC_NM_NOME");
             List<USUARIO> listaTotal = CarregaUsuario();
-            if ((String)Session["PerfilUsuario"] != "ADM")
-            {
-                listaTotal = listaTotal.Where(p => p.EMPR_CD_ID == (Int32)Session["IdEmpresa"]).ToList();
-            }
             ViewBag.Usuarios = new SelectList(listaTotal.OrderBy(p => p.USUA_NM_NOME), "USUA_CD_ID", "USUA_NM_NOME");
             List<SelectListItem> agenda = new List<SelectListItem>();
             agenda.Add(new SelectListItem() { Text = "Sim", Value = "1" });
@@ -5252,7 +5280,7 @@ namespace ERP_Condominios_Solution.Controllers
             CRM_CONTATO cont = (CRM_CONTATO)Session["Contato"];
 
             // Processa SMS
-            CONFIGURACAO conf = confApp.GetItemById(usuario.ASSI_CD_ID);
+            CONFIGURACAO conf = confApp.GetItemById(1);
 
             // Recupera CRM
             CRM crm = baseApp.GetItemById((Int32)Session["IdCRM"]);
@@ -5366,10 +5394,10 @@ namespace ERP_Condominios_Solution.Controllers
         {
             // Recupera contatos
             Int32 idAss = (Int32)Session["IdAssinante"];
-            CLIENTE cont = (CLIENTE)Session["Cliente"];
+            BENEFICIARIO cont = (BENEFICIARIO)Session["Cliente"];
 
             // Processa SMS
-            CONFIGURACAO conf = confApp.GetItemById(usuario.ASSI_CD_ID);
+            CONFIGURACAO conf = confApp.GetItemById(1);
 
             // Recupera CRM
             CRM crm = baseApp.GetItemById((Int32)Session["IdCRM"]);
@@ -5413,7 +5441,7 @@ namespace ERP_Condominios_Solution.Controllers
             // Monta destinatarios
             try
             {
-                String listaDest = "55" + Regex.Replace(cont.CLIE_NR_CELULAR, "[^a-zA-Z0-9_.]+", "", RegexOptions.Compiled).ToString();
+                String listaDest = "55" + Regex.Replace(cont.BENE_NR_CELULAR, "[^a-zA-Z0-9_.]+", "", RegexOptions.Compiled).ToString();
                 var httpWebRequest = (HttpWebRequest)WebRequest.Create("https://api-v2.smsfire.com.br/sms/send/bulk");
                 httpWebRequest.Headers["Authorization"] = auth;
                 httpWebRequest.ContentType = "application/json";
@@ -5441,7 +5469,7 @@ namespace ERP_Condominios_Solution.Controllers
                 LogError(ex.Message);
                 ViewBag.Message = ex.Message;
                 Session["TipoVolta"] = 2;
-                Session["VoltaExcecao"] = "Cliente";
+                Session["VoltaExcecao"] = "CRM";
                 Session["Excecao"] = ex;
                 Session["ExcecaoTipo"] = ex.GetType().ToString();
                 GravaLogExcecao grava = new GravaLogExcecao(usuApp);
@@ -5453,12 +5481,12 @@ namespace ERP_Condominios_Solution.Controllers
             MENSAGENS_ENVIADAS_SISTEMA env = new MENSAGENS_ENVIADAS_SISTEMA();
             env.ASSI_CD_ID = idAss;
             env.USUA_CD_ID = usuario.USUA_CD_ID;
-            env.CLIE_CD_ID = cont.CLIE_CD_ID;
+            env.BENE_CD_ID = cont.BENE_CD_ID;
             env.CRM1_CD_ID = crm.CRM1_CD_ID;
             env.MEEN_IN_TIPO = 2;
             env.MEEN_DT_DATA_ENVIO = DateTime.Now;
-            env.MEEN__CELULAR_DESTINO = cont.CLIE_NR_CELULAR;
-            env.MEEN_NM_ORIGEM = "Mensagem para Cliente do Processo";
+            env.MEEN__CELULAR_DESTINO = cont.BENE_NR_CELULAR;
+            env.MEEN_NM_ORIGEM = "Mensagem para Beneficiário vinculado ao Processo";
             env.MEEN_TX_CORPO = vm.MENS_TX_SMS;
             env.MEEN_TX_CORPO_COMPLETO = texto;
             env.MEEN_IN_ANEXOS = 0;
@@ -5483,11 +5511,11 @@ namespace ERP_Condominios_Solution.Controllers
         {
             // Recupera contatos
             Int32 idAss = (Int32)Session["IdAssinante"];
-            CLIENTE cont = null;
+            BENEFICIARIO cont = null;
             USUARIO usu = null;
             if (vm.MENS_IN_TIPO == 1)
             {
-                cont = cliApp.GetItemById(vm.ID.Value);
+                cont = benApp.GetItemById(vm.ID.Value);
             }
             if (vm.MENS_IN_TIPO == 2)
             {
@@ -5495,7 +5523,7 @@ namespace ERP_Condominios_Solution.Controllers
             }
 
             // Processa SMS
-            CONFIGURACAO conf = confApp.GetItemById(usuario.ASSI_CD_ID);
+            CONFIGURACAO conf = confApp.GetItemById(1);
 
             // Recupera CRM
             CRM crm = baseApp.GetItemById((Int32)Session["IdCRM"]);
@@ -5542,7 +5570,7 @@ namespace ERP_Condominios_Solution.Controllers
                 String listaDest = null;
                 if (vm.MENS_IN_TIPO == 1)
                 {
-                    listaDest = "55" + Regex.Replace(cont.CLIE_NR_CELULAR, "[^a-zA-Z0-9_.]+", "", RegexOptions.Compiled).ToString();
+                    listaDest = "55" + Regex.Replace(cont.BENE_NR_CELULAR, "[^a-zA-Z0-9_.]+", "", RegexOptions.Compiled).ToString();
                 }
                 if (vm.MENS_IN_TIPO == 2)
                 {
@@ -5589,7 +5617,7 @@ namespace ERP_Condominios_Solution.Controllers
             env.USUA_CD_ID = usuario.USUA_CD_ID;
             if (vm.MENS_IN_TIPO == 1)
             {
-                env.CLIE_CD_ID = cont.CLIE_CD_ID;
+                env.BENE_CD_ID = cont.BENE_CD_ID;
             }
             else
             {
@@ -5600,7 +5628,7 @@ namespace ERP_Condominios_Solution.Controllers
             env.MEEN_DT_DATA_ENVIO = DateTime.Now;
             if (vm.MENS_IN_TIPO == 1)
             {
-                env.MEEN_EM_EMAIL_DESTINO = cont.CLIE_NM_EMAIL;
+                env.MEEN_EM_EMAIL_DESTINO = cont.BENE_EM_EMAIL;
             }
             else
             {
@@ -5648,7 +5676,7 @@ namespace ERP_Condominios_Solution.Controllers
             CRM crm = baseApp.GetItemById((Int32)Session["IdCRM"]);
 
             // Processa e-mail
-            CONFIGURACAO conf = confApp.GetItemById(usuario.ASSI_CD_ID);
+            CONFIGURACAO conf = confApp.GetItemById(1);
 
             // Prepara cabeçalho
             String cab = "Prezado Sr(a). <b>" + cont.CRCO_NM_NOME + "</b>";
@@ -5767,7 +5795,7 @@ namespace ERP_Condominios_Solution.Controllers
         {
             // Recupera cliente
             Int32 idAss = (Int32)Session["IdAssinante"];
-            CLIENTE cont = (CLIENTE)Session["Cliente"];
+            BENEFICIARIO cont = (BENEFICIARIO)Session["Cliente"];
             String erro = null;
             String status = "Succeeded";
             String iD = "xyz";
@@ -5776,14 +5804,14 @@ namespace ERP_Condominios_Solution.Controllers
             CRM crm = baseApp.GetItemById((Int32)Session["IdCRM"]);
 
             // Processa e-mail
-            CONFIGURACAO conf = confApp.GetItemById(usuario.ASSI_CD_ID);
+            CONFIGURACAO conf = confApp.GetItemById(1);
 
             // Prepara cabeçalho
-            String cab = "Prezado Sr(a). <b>" + cont.CLIE_NM_NOME + "</b>";
+            String cab = "Prezado Sr(a). <b>" + cont.BENE_NM_NOME + "</b>";
 
             // Prepara rodape
             ASSINANTE assi = (ASSINANTE)Session["Assinante"];
-            String rod = "<b>" + assi.ASSI_NM_NOME + "</b>";
+            String rod = "<b>" + "Ridolfi" + "</b>";
 
             // Prepara corpo do e-mail e trata link
             String corpo = vm.MENS_TX_TEXTO + "<br /><br />";
@@ -5812,10 +5840,10 @@ namespace ERP_Condominios_Solution.Controllers
             // Monta e-mail
             NetworkCredential net = new NetworkCredential(conf.CONF_NM_SENDGRID_LOGIN, conf.CONF_NM_SENDGRID_PWD);
             EmailAzure mensagem = new EmailAzure();
-            mensagem.ASSUNTO = "Contato - " + cont.CLIE_NM_NOME;
+            mensagem.ASSUNTO = "Beneficiário - " + cont.BENE_NM_NOME;
             mensagem.CORPO = emailBody;
             mensagem.DEFAULT_CREDENTIALS = false;
-            mensagem.EMAIL_TO_DESTINO = cont.CLIE_NM_EMAIL;
+            mensagem.EMAIL_TO_DESTINO = cont.BENE_EM_EMAIL;
             mensagem.NOME_EMISSOR_AZURE = emissor;
             mensagem.ENABLE_SSL = true;
             mensagem.NOME_EMISSOR = usuario.ASSINANTE.ASSI_NM_NOME;
@@ -5854,11 +5882,11 @@ namespace ERP_Condominios_Solution.Controllers
                 MENSAGENS_ENVIADAS_SISTEMA env = new MENSAGENS_ENVIADAS_SISTEMA();
                 env.ASSI_CD_ID = idAss;
                 env.USUA_CD_ID = usuario.USUA_CD_ID;
-                env.CLIE_CD_ID = cont.CLIE_CD_ID;
+                env.BENE_CD_ID = cont.BENE_CD_ID;
                 env.MEEN_IN_TIPO = 1;
                 env.MEEN_DT_DATA_ENVIO = DateTime.Now;
-                env.MEEN_EM_EMAIL_DESTINO = cont.CLIE_NM_EMAIL;
-                env.MEEN_NM_ORIGEM = "Mensagem para Cliente";
+                env.MEEN_EM_EMAIL_DESTINO = cont.BENE_EM_EMAIL;
+                env.MEEN_NM_ORIGEM = "Mensagem para Beneficiário";
                 env.MEEN_TX_CORPO = vm.MENS_TX_TEXTO;
                 env.MEEN_IN_ANEXOS = 0;
                 env.MEEN_IN_ATIVO = 1;
@@ -5895,7 +5923,7 @@ namespace ERP_Condominios_Solution.Controllers
         {
             // Recupera dados
             Int32 idAss = (Int32)Session["IdAssinante"];
-            CLIENTE cont = null;
+            BENEFICIARIO cont = null;
             USUARIO usu = null;
             String erro = null;
             String status = "Succeeded";
@@ -5903,7 +5931,7 @@ namespace ERP_Condominios_Solution.Controllers
 
             if (vm.MENS_IN_TIPO == 1)
             {
-                cont = cliApp.GetItemById(vm.ID.Value);
+                cont = benApp.GetItemById(vm.ID.Value);
             }
             if (vm.MENS_IN_TIPO == 2)
             {
@@ -5914,13 +5942,13 @@ namespace ERP_Condominios_Solution.Controllers
             CRM crm = baseApp.GetItemById((Int32)Session["IdCRM"]);
 
             // Configuração
-            CONFIGURACAO conf = confApp.GetItemById(usuario.ASSI_CD_ID);
+            CONFIGURACAO conf = confApp.GetItemById(1);
 
             // Prepara cabeçalho
             String cab = String.Empty;
             if (vm.MENS_IN_TIPO == 1)
             {
-                cab = "Prezado Sr(a). <b>" + cont.CLIE_NM_NOME + "</b>";
+                cab = "Prezado Sr(a). <b>" + cont.BENE_NM_NOME + "</b>";
             }
             if (vm.MENS_IN_TIPO == 2)
             {
@@ -5929,7 +5957,7 @@ namespace ERP_Condominios_Solution.Controllers
 
             // Prepara rodape
             ASSINANTE assi = (ASSINANTE)Session["Assinante"];
-            String rod = "<b>" + assi.ASSI_NM_NOME + "</b>";
+            String rod = "<b>" + "Ridolfi" + "</b>";
 
             // Prepara corpo do e-mail e trata link
             String corpo = vm.MENS_TX_TEXTO + "<br />";
@@ -5963,7 +5991,7 @@ namespace ERP_Condominios_Solution.Controllers
             mensagem.DEFAULT_CREDENTIALS = false;
             if (vm.MENS_IN_TIPO == 1)
             {
-                mensagem.EMAIL_TO_DESTINO = cont.CLIE_NM_EMAIL;
+                mensagem.EMAIL_TO_DESTINO = cont.BENE_EM_EMAIL;
             }
             if (vm.MENS_IN_TIPO == 2)
             {
@@ -6009,7 +6037,7 @@ namespace ERP_Condominios_Solution.Controllers
                 env.USUA_CD_ID = usuario.USUA_CD_ID;
                 if (vm.MENS_IN_TIPO == 1)
                 {
-                    env.CLIE_CD_ID = cont.CLIE_CD_ID;
+                    env.BENE_CD_ID = cont.BENE_CD_ID;
                 }
                 else
                 {
@@ -6020,7 +6048,7 @@ namespace ERP_Condominios_Solution.Controllers
                 env.MEEN_DT_DATA_ENVIO = DateTime.Now;
                 if (vm.MENS_IN_TIPO == 1)
                 {
-                    env.MEEN_EM_EMAIL_DESTINO = cont.CLIE_NM_EMAIL;
+                    env.MEEN_EM_EMAIL_DESTINO = cont.BENE_EM_EMAIL;
                 }
                 else
                 {
@@ -6239,8 +6267,7 @@ namespace ERP_Condominios_Solution.Controllers
 
             PdfPCell cell = new PdfPCell();
             cell.Border = 0;
-            Image image = null;
-            image = Image.GetInstance(Server.MapPath("~/Images/CRM_Icon2.jpg"));
+            Image image = Image.GetInstance(Server.MapPath("~/Imagens/Base/LogoRidolfi.jpg"));
             image.ScaleAbsolute(50, 50);
             cell.AddElement(image);
             table.AddCell(cell);
@@ -6269,76 +6296,76 @@ namespace ERP_Condominios_Solution.Controllers
             table.SpacingBefore = 1f;
             table.SpacingAfter = 1f;
 
-            cell = new PdfPCell(new Paragraph("Dados do Cliente", meuFontBold));
+            cell = new PdfPCell(new Paragraph("Dados do Precatório", meuFontBold));
             cell.Border = 0;
             cell.Colspan = 4;
             cell.VerticalAlignment = Element.ALIGN_MIDDLE;
             cell.HorizontalAlignment = Element.ALIGN_LEFT;
             table.AddCell(cell);
 
-            cell = new PdfPCell(new Paragraph("Nome: " + aten.CLIENTE.CLIE_NM_NOME, meuFontVerde));
+            cell = new PdfPCell(new Paragraph("Dados do Precatório", meuFontBold));
             cell.Border = 0;
             cell.Colspan = 4;
             cell.VerticalAlignment = Element.ALIGN_MIDDLE;
             cell.HorizontalAlignment = Element.ALIGN_LEFT;
             table.AddCell(cell);
 
-            if (aten.CLIENTE.CLIE_NM_ENDERECO != null)
-            {
-                cell = new PdfPCell(new Paragraph("Endereço: " + aten.CLIENTE.CLIE_NM_ENDERECO + " " + aten.CLIENTE.CLIE_NR_NUMERO + " " + aten.CLIENTE.CLIE_NM_COMPLEMENTO, meuFont));
-                cell.Border = 0;
-                cell.Colspan = 4;
-                cell.VerticalAlignment = Element.ALIGN_MIDDLE;
-                cell.HorizontalAlignment = Element.ALIGN_LEFT;
-                table.AddCell(cell);
-
-                if (aten.CLIENTE.UF != null)
-                {
-                    cell = new PdfPCell(new Paragraph("          " + aten.CLIENTE.CLIE_NM_BAIRRO + " - " + aten.CLIENTE.CLIE_NM_CIDADE + " - " + aten.CLIENTE.UF.UF_SG_SIGLA + " - " + aten.CLIENTE.CLIE_NR_CEP, meuFont));
-                    cell.Border = 0;
-                    cell.Colspan = 4;
-                    cell.VerticalAlignment = Element.ALIGN_MIDDLE;
-                    cell.HorizontalAlignment = Element.ALIGN_LEFT;
-                    table.AddCell(cell);
-                }
-                else
-                {
-                    cell = new PdfPCell(new Paragraph("          " + aten.CLIENTE.CLIE_NM_BAIRRO + " - " + aten.CLIENTE.CLIE_NM_CIDADE + " - " + aten.CLIENTE.CLIE_NR_CEP, meuFont));
-                    cell.Border = 0;
-                    cell.Colspan = 4;
-                    cell.VerticalAlignment = Element.ALIGN_MIDDLE;
-                    cell.HorizontalAlignment = Element.ALIGN_LEFT;
-                    table.AddCell(cell);
-                }
-            }
-            else
-            {
-                cell = new PdfPCell(new Paragraph("Endereço: -", meuFont));
-                cell.Border = 0;
-                cell.Colspan = 4;
-                cell.VerticalAlignment = Element.ALIGN_MIDDLE;
-                cell.HorizontalAlignment = Element.ALIGN_LEFT;
-                table.AddCell(cell);
-            }
-
-            cell = new PdfPCell(new Paragraph("Telefone: " + aten.CLIENTE.CLIE_NR_TELEFONE, meuFont));
+            cell = new PdfPCell(new Paragraph("Número: " + aten.PRECATORIO.PREC_NM_PRECATORIO, meuFontVerde));
             cell.Border = 0;
             cell.Colspan = 1;
             cell.VerticalAlignment = Element.ALIGN_MIDDLE;
             cell.HorizontalAlignment = Element.ALIGN_LEFT;
             table.AddCell(cell);
-            cell = new PdfPCell(new Paragraph("Celular: " + aten.CLIENTE.CLIE_NR_CELULAR, meuFont));
+            cell = new PdfPCell(new Paragraph("Ano: " + aten.PRECATORIO.PREC_NR_ANO, meuFont));
             cell.Border = 0;
             cell.Colspan = 1;
             cell.VerticalAlignment = Element.ALIGN_MIDDLE;
             cell.HorizontalAlignment = Element.ALIGN_LEFT;
             table.AddCell(cell);
-            cell = new PdfPCell(new Paragraph("E-Mail: " + aten.CLIENTE.CLIE_NM_EMAIL, meuFont));
+            cell = new PdfPCell(new Paragraph("Proc.Origem: " + aten.PRECATORIO.PREC_NM_PROCESSO_ORIGEM, meuFont));
+            cell.Border = 0;
+            cell.Colspan = 1;
+            cell.VerticalAlignment = Element.ALIGN_MIDDLE;
+            cell.HorizontalAlignment = Element.ALIGN_LEFT;
+            table.AddCell(cell);
+            cell = new PdfPCell(new Paragraph("Proc.Execução: " + aten.PRECATORIO.PREC_NM_PROC_EXECUCAO, meuFont));
             cell.Border = 0;
             cell.Colspan = 2;
             cell.VerticalAlignment = Element.ALIGN_MIDDLE;
             cell.HorizontalAlignment = Element.ALIGN_LEFT;
             table.AddCell(cell);
+
+            cell = new PdfPCell(new Paragraph("Requerente: " + aten.PRECATORIO.PREC_NM_REQUERENTE, meuFontVerde));
+            cell.Border = 0;
+            cell.Colspan = 2;
+            cell.VerticalAlignment = Element.ALIGN_MIDDLE;
+            cell.HorizontalAlignment = Element.ALIGN_LEFT;
+            table.AddCell(cell);
+            cell = new PdfPCell(new Paragraph("Requerido: " + aten.PRECATORIO.PREC_NM_REQUERIDO, meuFont));
+            cell.Border = 0;
+            cell.Colspan = 2;
+            cell.VerticalAlignment = Element.ALIGN_MIDDLE;
+            cell.HorizontalAlignment = Element.ALIGN_LEFT;
+            table.AddCell(cell);
+
+            if (aten.PRECATORIO.PREC_VL_BEN_VALOR_PRINCIPAL != null)
+            {
+                cell = new PdfPCell(new Paragraph("Valor (R$): " + aten.PRECATORIO.PREC_VL_BEN_VALOR_PRINCIPAL, meuFontVerde));
+                cell.Border = 0;
+                cell.Colspan = 4;
+                cell.VerticalAlignment = Element.ALIGN_MIDDLE;
+                cell.HorizontalAlignment = Element.ALIGN_LEFT;
+                table.AddCell(cell);
+            }
+            else
+            {
+                cell = new PdfPCell(new Paragraph("Valor (R$): - ", meuFontVerde));
+                cell.Border = 0;
+                cell.Colspan = 4;
+                cell.VerticalAlignment = Element.ALIGN_MIDDLE;
+                cell.HorizontalAlignment = Element.ALIGN_LEFT;
+                table.AddCell(cell);
+            }
             pdfDoc.Add(table);
 
             // Linha Horizontal
@@ -6758,9 +6785,8 @@ namespace ERP_Condominios_Solution.Controllers
             String data = DateTime.Today.Date.ToShortDateString();
             data = data.Substring(0, 2) + data.Substring(3, 2) + data.Substring(6, 4);
             String nomeRel = "CRM_Proposta_" + aten.CRPV_IN_NUMERO_GERADO.ToString() + "_" + data + ".pdf";
-            CLIENTE cliente = cliApp.GetItemById(crm.CLIE_CD_ID);
+            BENEFICIARIO cliente = benApp.GetItemById(crm.PRECATORIO.BENE_CD_ID.Value);
             Session["VoltaCRM"] = 0;
-            ASSINANTE assi = (ASSINANTE)Session["Assinante"];
 
             // Define fontes
             Font meuFont = FontFactory.GetFont("Arial", 8, iTextSharp.text.Font.NORMAL, BaseColor.BLACK);
@@ -6798,8 +6824,8 @@ namespace ERP_Condominios_Solution.Controllers
             comercial1 = comercial1.Replace("<p>", "");
             comercial1 = comercial1.Replace("</p>", "<br />");
 
-            intro1 = intro1.Replace("{Nome}", cliente.CLIE_NM_NOME);
-            rodape1 = rodape1.Replace("{Assinatura}", assi.ASSI_NM_NOME);
+            intro1 = intro1.Replace("{Nome}", cliente.BENE_NM_NOME);
+            rodape1 = rodape1.Replace("{Assinatura}", "Ridolfi");
 
             // Cria documento
             Document pdfDoc = new Document(PageSize.A4, 10, 10, 10, 10);
@@ -6819,8 +6845,7 @@ namespace ERP_Condominios_Solution.Controllers
 
             PdfPCell cell = new PdfPCell();
             cell.Border = 0;
-            Image image = null;
-            image = Image.GetInstance(Server.MapPath("~/Images/CRM_Icon2.jpg"));
+            Image image = Image.GetInstance(Server.MapPath("~/Imagens/Base/LogoRidolfi.jpg"));
             image.ScaleAbsolute(50, 50);
             cell.AddElement(image);
             table.AddCell(cell);
@@ -6856,7 +6881,7 @@ namespace ERP_Condominios_Solution.Controllers
             table.SpacingBefore = 1f;
             table.SpacingAfter = 1f;
 
-            cell = new PdfPCell(new Paragraph("Dados do Cliente", meuFontGreen));
+            cell = new PdfPCell(new Paragraph("Dados do Beneficiário", meuFontGreen));
             cell.Border = 0;
             cell.Colspan = 4;
             cell.VerticalAlignment = Element.ALIGN_MIDDLE;
@@ -6870,66 +6895,28 @@ namespace ERP_Condominios_Solution.Controllers
             cell.HorizontalAlignment = Element.ALIGN_LEFT;
             table.AddCell(cell);
 
-            cell = new PdfPCell(new Paragraph("Nome: " + cliente.CLIE_NM_NOME, meuFontGreen));
+            cell = new PdfPCell(new Paragraph("Nome: " + cliente.BENE_NM_NOME, meuFontGreen));
             cell.Border = 0;
             cell.Colspan = 4;
             cell.VerticalAlignment = Element.ALIGN_MIDDLE;
             cell.HorizontalAlignment = Element.ALIGN_LEFT;
             table.AddCell(cell);
 
-            if (cliente.CLIE_NM_ENDERECO != null)
-            {
-                cell = new PdfPCell(new Paragraph("Endereço: " + cliente.CLIE_NM_ENDERECO + " " + cliente.CLIE_NR_NUMERO + " " + cliente.CLIE_NM_COMPLEMENTO, meuFont));
-                cell.Border = 0;
-                cell.Colspan = 4;
-                cell.VerticalAlignment = Element.ALIGN_MIDDLE;
-                cell.HorizontalAlignment = Element.ALIGN_LEFT;
-                table.AddCell(cell);
-
-                if (cliente.UF != null)
-                {
-                    cell = new PdfPCell(new Paragraph("                " + cliente.CLIE_NM_BAIRRO + " - " + cliente.CLIE_NM_CIDADE + " - " + cliente.UF.UF_SG_SIGLA + " - " + cliente.CLIE_NR_CEP, meuFont));
-                    cell.Border = 0;
-                    cell.Colspan = 4;
-                    cell.VerticalAlignment = Element.ALIGN_MIDDLE;
-                    cell.HorizontalAlignment = Element.ALIGN_LEFT;
-                    table.AddCell(cell);
-                }
-                else
-                {
-                    cell = new PdfPCell(new Paragraph("                " + cliente.CLIE_NM_BAIRRO + " - " + cliente.CLIE_NM_CIDADE + " - " + cliente.CLIE_NR_CEP, meuFont));
-                    cell.Border = 0;
-                    cell.Colspan = 4;
-                    cell.VerticalAlignment = Element.ALIGN_MIDDLE;
-                    cell.HorizontalAlignment = Element.ALIGN_LEFT;
-                    table.AddCell(cell);
-                }
-            }
-            else
-            {
-                cell = new PdfPCell(new Paragraph("Endereço: -", meuFont));
-                cell.Border = 0;
-                cell.Colspan = 4;
-                cell.VerticalAlignment = Element.ALIGN_MIDDLE;
-                cell.HorizontalAlignment = Element.ALIGN_LEFT;
-                table.AddCell(cell);
-            }
-
-            cell = new PdfPCell(new Paragraph("Telefone: " + cliente.CLIE_NR_TELEFONE, meuFont));
+            cell = new PdfPCell(new Paragraph("Telefone: " + cliente.BENE_NR_TELEFONE, meuFont));
             cell.Border = 0;
-            cell.Colspan = 4;
+            cell.Colspan = 1;
             cell.VerticalAlignment = Element.ALIGN_MIDDLE;
             cell.HorizontalAlignment = Element.ALIGN_LEFT;
             table.AddCell(cell);
-            cell = new PdfPCell(new Paragraph("Celular: " + cliente.CLIE_NR_CELULAR, meuFont));
+            cell = new PdfPCell(new Paragraph("Celular: " + cliente.BENE_NR_CELULAR, meuFont));
             cell.Border = 0;
-            cell.Colspan = 4;
+            cell.Colspan = 1;
             cell.VerticalAlignment = Element.ALIGN_MIDDLE;
             cell.HorizontalAlignment = Element.ALIGN_LEFT;
             table.AddCell(cell);
-            cell = new PdfPCell(new Paragraph("E-Mail: " + cliente.CLIE_NM_EMAIL, meuFont));
+            cell = new PdfPCell(new Paragraph("E-Mail: " + cliente.BENE_EM_EMAIL, meuFont));
             cell.Border = 0;
-            cell.Colspan = 4;
+            cell.Colspan = 2;
             cell.VerticalAlignment = Element.ALIGN_MIDDLE;
             cell.HorizontalAlignment = Element.ALIGN_LEFT;
             table.AddCell(cell);
@@ -7033,18 +7020,6 @@ namespace ERP_Condominios_Solution.Controllers
             table.AddCell(cell);
 
             cell = new PdfPCell(new Paragraph("Valor Proposta (R$): " + CrossCutting.Formatters.DecimalFormatter(aten.CRPV_VL_VALOR.Value), meuFontBold));
-            cell.Border = 0;
-            cell.Colspan = 4;
-            cell.VerticalAlignment = Element.ALIGN_MIDDLE;
-            cell.HorizontalAlignment = Element.ALIGN_LEFT;
-            table.AddCell(cell);
-            cell = new PdfPCell(new Paragraph("Desconto (R$): " + CrossCutting.Formatters.DecimalFormatter(aten.CRPV_VL_DESCONTO.Value), meuFontBold));
-            cell.Border = 0;
-            cell.Colspan = 4;
-            cell.VerticalAlignment = Element.ALIGN_MIDDLE;
-            cell.HorizontalAlignment = Element.ALIGN_LEFT;
-            table.AddCell(cell);
-            cell = new PdfPCell(new Paragraph("Frete (R$): " + CrossCutting.Formatters.DecimalFormatter(aten.CRPV_VL_FRETE.Value), meuFontBold));
             cell.Border = 0;
             cell.Colspan = 4;
             cell.VerticalAlignment = Element.ALIGN_MIDDLE;
@@ -7325,28 +7300,36 @@ namespace ERP_Condominios_Solution.Controllers
 
             // recupera cliente e assinante
             Session["PontoProposta"] = 85;
-            CLIENTE cli = cliApp.GetItemById(id);
-            ASSINANTE assi = (ASSINANTE)Session["Assinante"];
+            BENEFICIARIO cli = benApp.GetItemById(id);
             Session["Cliente"] = cli;
 
+            if (cli.BENE_EM_EMAIL == null)
+            {
+                if ((Int32)Session["Mens"] == 666)
+                {
+                    ModelState.AddModelError("", CRMSys_Base.ResourceManager.GetString("M0276", CultureInfo.CurrentCulture));
+                    return RedirectToAction("VoltarAcompanhamentoCRM", "CRM");
+                }
+            }
+
             // Prepara mensagem
-            String header = "Prezado <b>" + cli.CLIE_NM_NOME + "</b>";
+            String header = "Prezado <b>" + cli.BENE_NM_NOME + "</b>";
             String body = String.Empty;
-            String footer = "<b>" + assi.ASSI_NM_NOME + "</b>";
+            String footer = "<b>" + "Ridolfi" + "</b>";
 
             // Monta vm
             MensagemViewModel vm = new MensagemViewModel();
             vm.ASSI_CD_ID = idAss;
             vm.MENS_DT_CRIACAO = DateTime.Now;
             vm.MENS_IN_ATIVO = 1;
-            vm.NOME = cli.CLIE_NM_NOME;
+            vm.NOME = cli.BENE_NM_NOME;
             vm.ID = id;
-            vm.MODELO = cli.CLIE_NM_EMAIL;
+            vm.MODELO = cli.BENE_EM_EMAIL;
             vm.USUA_CD_ID = usuario.USUA_CD_ID;
             vm.MENS_NM_CABECALHO = header;
             vm.MENS_NM_RODAPE = footer;
             vm.MENS_IN_TIPO = 1;
-            vm.ID = cli.CLIE_CD_ID;
+            vm.ID = cli.BENE_CD_ID;
             return View(vm);
         }
 
@@ -7447,7 +7430,7 @@ namespace ERP_Condominios_Solution.Controllers
             List<CRM_FOLLOW> follows = baseApp.GetAllFollow(idAss).Where(p => p.CRM.CRM1_IN_ATIVO != 2 & p.CRFL_DT_FOLLOW > limite).ToList();
             List<CRM_FOLLOW> follows_Lembra = follows.Where(p => p.TIPO_FOLLOW.TIFL_NM_NOME.ToUpper().Contains("LEMBRETE") & p.CRFL_DT_PREVISTA <= DateTime.Today.Date).ToList();
 
-            List<CLIENTE> cli = CarregaCliente();
+            List<BENEFICIARIO> cli = CarregaBeneficiario();
             List<CRM_PEDIDO_VENDA> peds = CarregaPedidoVenda().Where(p => p.CRM.CRM1_IN_ATIVO != 2).ToList();
             List<CRM_PEDIDO_VENDA> lmp1 = peds.Where(p => p.CRPV_DT_PEDIDO.Month == DateTime.Today.Date.Month & p.CRPV_DT_PEDIDO.Year == DateTime.Today.Date.Year).ToList();
 
@@ -8299,7 +8282,7 @@ namespace ERP_Condominios_Solution.Controllers
             Session["VoltaMensagem"] = 40;
             Session["VoltaTela"] = 0;
             ViewBag.Incluir = (Int32)Session["VoltaTela"];
-            return RedirectToAction("MontarTelaCliente", "Cliente");
+            return RedirectToAction("MontarTelaPrecatorio", "Precatorio");
         }
 
         public ActionResult MontarTelaCRMKanbaChama()
@@ -8328,7 +8311,7 @@ namespace ERP_Condominios_Solution.Controllers
         {
             // Prepara grid
             Session["VoltaMensagem"] = 50;
-            return RedirectToAction("MontarTelaCliente", "Cliente");
+            return RedirectToAction("MontarTelaBeneficiario", "Beneficiario");
         }
 
         public ActionResult MostrarTransportadoras()
@@ -8542,7 +8525,7 @@ namespace ERP_Condominios_Solution.Controllers
             String sigla = String.Empty;
             String siglaEM = String.Empty;
             Int32 idAss = (Int32)Session["IdAssinante"];
-            CLIENTE cliente = null;
+            BENEFICIARIO cliente = null;
             String erro = null;
             Int32 volta = 0;
             RidolfiDB_WebEntities Db = new RidolfiDB_WebEntities();
@@ -8564,10 +8547,10 @@ namespace ERP_Condominios_Solution.Controllers
             }
 
             // Recupera Cliente
-            cliente = cliApp.GetItemById(vm.ID.Value);
+            cliente = benApp.GetItemById(vm.ID.Value);
 
             // Configuração
-            CONFIGURACAO conf = confApp.GetItemById(usuario.ASSI_CD_ID);
+            CONFIGURACAO conf = confApp.GetItemById(1);
 
             // Recupera CRM
             CRM crm = baseApp.GetItemById((Int32)Session["IdCRM"]);
@@ -8620,7 +8603,7 @@ namespace ERP_Condominios_Solution.Controllers
             link = vm.MENS_NM_LINK;
 
             // Prepara cabeçalho
-            header = header.Replace("{Nome}", cliente.CLIE_NM_NOME);
+            header = header.Replace("{Nome}", cliente.BENE_NM_NOME);
 
             // Prepara rodape
             ASSINANTE assi = (ASSINANTE)Session["Assinante"];
@@ -8670,8 +8653,6 @@ namespace ERP_Condominios_Solution.Controllers
 
             info = info + "<b>Dados Financeiros</b> <br />";
             info = info + "<b>Valor (R$):</b> " + CrossCutting.Formatters.DecimalFormatter(prop.CRPV_VL_VALOR.Value) + "<br />";
-            info = info + "<b>Desconto (R$):</b> " + CrossCutting.Formatters.DecimalFormatter(prop.CRPV_VL_DESCONTO.Value) + "<br />";
-            info = info + "<b>Frete (R$):</b> " + CrossCutting.Formatters.DecimalFormatter(prop.CRPV_VL_FRETE.Value) + "<br />";
             info = info + "<b>Taxas (R$):</b> " + CrossCutting.Formatters.DecimalFormatter(prop.CRPV_VL_ICMS.Value) + "<br />";
             info = info + "<b>Total (R$):</b> " + CrossCutting.Formatters.DecimalFormatter(prop.CRPV_TOTAL_PEDIDO.Value) + "<br /><br />";
 
@@ -8724,10 +8705,10 @@ namespace ERP_Condominios_Solution.Controllers
             // Monta e-mail
             NetworkCredential net = new NetworkCredential(conf.CONF_NM_SENDGRID_LOGIN, conf.CONF_NM_SENDGRID_PWD);
             EmailAzure mensagem = new EmailAzure();
-            mensagem.ASSUNTO = "Proposta #" + item.CRPV_IN_NUMERO_GERADO + " - " + cliente.CLIE_NM_NOME;
+            mensagem.ASSUNTO = "Proposta #" + item.CRPV_IN_NUMERO_GERADO + " - " + cliente.BENE_NM_NOME;
             mensagem.CORPO = emailBody;
             mensagem.DEFAULT_CREDENTIALS = false;
-            mensagem.EMAIL_TO_DESTINO = cliente.CLIE_NM_EMAIL;
+            mensagem.EMAIL_TO_DESTINO = cliente.BENE_EM_EMAIL;
             mensagem.NOME_EMISSOR_AZURE = emissor;
             mensagem.ENABLE_SSL = true;
             mensagem.NOME_EMISSOR = usuario.ASSINANTE.ASSI_NM_NOME;
@@ -8764,12 +8745,12 @@ namespace ERP_Condominios_Solution.Controllers
             MENSAGENS_ENVIADAS_SISTEMA env = new MENSAGENS_ENVIADAS_SISTEMA();
             env.ASSI_CD_ID = idAss;
             env.USUA_CD_ID = usuario.USUA_CD_ID;
-            env.CLIE_CD_ID = cliente.CLIE_CD_ID;
+            env.BENE_CD_ID = cliente.BENE_CD_ID;
             env.CRM1_CD_ID = crm.CRM1_CD_ID;
             env.MEEN_IN_TIPO = 1;
             env.MEEN_DT_DATA_ENVIO = DateTime.Now;
-            env.MEEN_EM_EMAIL_DESTINO = cliente.CLIE_NM_EMAIL;
-            env.MEEN_NM_ORIGEM = "Mensagem para Cliente - Proposta";
+            env.MEEN_EM_EMAIL_DESTINO = cliente.BENE_EM_EMAIL;
+            env.MEEN_NM_ORIGEM = "Mensagem para Beneficiário - Proposta";
             env.MEEN_TX_CORPO = vm.MENS_TX_TEXTO;
             env.MEEN_IN_ANEXOS = 0;
             env.MEEN_IN_ATIVO = 1;
@@ -8891,7 +8872,7 @@ namespace ERP_Condominios_Solution.Controllers
             }
 
             // Prepara view
-            CONFIGURACAO conf = confApp.GetItemById(usuario.ASSI_CD_ID);
+            CONFIGURACAO conf = confApp.GetItemById(1);
             List<TEMPLATE_PROPOSTA> listaTotal = CarregaTemplateProposta();
             ViewBag.Templates = new SelectList(listaTotal.Where(p => p.TEPR_IN_TIPO != 2).OrderByDescending(p => p.TEPR_IN_FIXO), "TEPR_CD_ID", "TEPR_NM_NOME");
             List<USUARIO> listaTotal1 = CarregaUsuario();
@@ -8913,7 +8894,7 @@ namespace ERP_Condominios_Solution.Controllers
             Session["UsuarioAlterada"] = 0;
 
             CRM crm = baseApp.GetItemById((Int32)Session["IdCRM"]);
-            Session["IdCliente"] = crm.CLIE_CD_ID;
+            Session["IdCliente"] = crm.PRECATORIO.BENE_CD_ID;
             CRM_PEDIDO_VENDA item = new CRM_PEDIDO_VENDA();
             CRMPedidoViewModel vm = Mapper.Map<CRM_PEDIDO_VENDA, CRMPedidoViewModel>(item);
             vm.CRM1_CD_ID = (Int32)Session["IdCRM"];
@@ -8937,7 +8918,8 @@ namespace ERP_Condominios_Solution.Controllers
             vm.CRPV_IN_NUMERO_GERADO = num;
             vm.CLIE_CD_ID = crm.CLIE_CD_ID;
             vm.FILI_CD_ID = 1;
-            vm.CLIENTE_NOME = (CLIENTE)Session["ClienteCRM"];
+            vm.CLIENTE_NOME = (BENEFICIARIO)Session["ClienteCRM"];
+            vm.PREC_CD_ID = crm.PREC_CD_ID;
             vm.EMPR_CD_ID = 3;
             return View(vm);
         }
@@ -8963,7 +8945,7 @@ namespace ERP_Condominios_Solution.Controllers
                 listaTotal1 = listaTotal1.Where(p => p.EMPR_CD_ID == (Int32)Session["IdEmpresa"]).ToList();
             }
             ViewBag.Usuarios = new SelectList(listaTotal1.OrderBy(p => p.USUA_NM_NOME), "USUA_CD_ID", "USUA_NM_NOME");
-            vm.CLIENTE_NOME = (CLIENTE)Session["ClienteCRM"];
+            vm.CLIENTE_NOME = (BENEFICIARIO)Session["ClienteCRM"];
             if (ModelState.IsValid)
             {
                 try
@@ -8971,7 +8953,7 @@ namespace ERP_Condominios_Solution.Controllers
                     // Criticas 
                     if (vm.CRPV_NM_NOME == null)
                     {
-                        vm.CRPV_NM_NOME = "Proposta - " + vm.CLIENTE_NOME.CLIE_NM_NOME;
+                        vm.CRPV_NM_NOME = "Proposta - " + vm.CLIENTE_NOME.BENE_NM_NOME;
                     }
 
                     // Executa a operação
@@ -8989,7 +8971,6 @@ namespace ERP_Condominios_Solution.Controllers
                     if (Session["FileQueueCRM"] != null)
                     {
                         List<FileQueue> fq = (List<FileQueue>)Session["FileQueueCRM"];
-
                         foreach (var file in fq)
                         {
                             UploadFileQueueCRMPedido(file);
@@ -9180,7 +9161,7 @@ namespace ERP_Condominios_Solution.Controllers
 
                     // Atualiza status do processo
                     CRM crm = baseApp.GetItemById(item.CRM1_CD_ID.Value);
-                    Session["Cliente"] = crm.CLIENTE;
+                    Session["Cliente"] = crm.PRECATORIO;
 
                     // Gera diario
                     CRM not = baseApp.GetItemById(item.CRM1_CD_ID.Value);
@@ -9338,7 +9319,7 @@ namespace ERP_Condominios_Solution.Controllers
                     CRM crm = baseApp.GetItemById(item.CRM1_CD_ID.Value);
                     crm.CRM1_IN_STATUS = 2;
                     Int32 volta1 = baseApp.ValidateEdit(crm, crm);
-                    Session["Cliente"] = crm.CLIENTE;
+                    Session["Cliente"] = crm.PRECATORIO;
 
                     // Gera diario
                     CRM not = baseApp.GetItemById(item.CRM1_CD_ID.Value);
@@ -9515,53 +9496,6 @@ namespace ERP_Condominios_Solution.Controllers
                     dia.DIPR_DS_DESCRICAO = "Aprovação de Proposta " + item.CRPV_NM_NOME + ". Processo: " + not.CRM1_NM_NOME + ". Cliente: " + cli.CLIE_NM_NOME;
                     Int32 volta3 = diaApp.ValidateCreate(dia);
 
-                    //// Recalcula categoria
-                    //Int32 volta9 = cliApp.AtualizarCategoriaClienteCalculo(idAss, cli);
-
-                    //// Recupera configuracao
-                    //CONFIGURACAO conf = CarregaConfiguracaoGeral();
-
-                    // Calcula proximo numero
-                    //Int32 num = 0;
-                    //List<PEDIDO_VENDA> ped1 = CarregaVenda();
-                    //if (ped1.Count == 0)
-                    //{
-                    //    num = conf.CONF_IN_NUMERO_INICIAL_PEDIDO.Value;
-                    //}
-                    //else
-                    //{
-                    //    num = ped1.OrderByDescending(p => p.PEVE_NR_NUMERO_GERADO).ToList().First().PEVE_NR_NUMERO_GERADO.Value;
-                    //    num++;
-                    //}
-
-                    //// Grava venda
-                    //if (venda)
-                    //{
-                    //    PEDIDO_VENDA ven = new PEDIDO_VENDA();
-                    //    ven.ASSI_CD_ID = idAss;
-                    //    ven.EMPR_CD_ID = vm.EMPR_CD_ID;
-                    //    ven.USUA_CD_ID = usuario.USUA_CD_ID;
-                    //    ven.CLIE_CD_ID = vm.CLIE_CD_ID.Value;
-                    //    ven.PEVE_NM_NOME = "Pedido de Venda - Processo " + vm.CRM.CRM1_NM_NOME;
-                    //    ven.PEVE_DT_DATA = DateTime.Today.Date;
-                    //    ven.PEVE_IN_STATUS = 1;
-                    //    ven.PEVE_DS_DESCRICAO = "Pedido de Venda - Processo " + vm.CRM.CRM1_NM_NOME;
-                    //    ven.PEVE_DT_VALIDADE = DateTime.Today.Date.AddDays(30);
-                    //    ven.PEVE_IN_ATIVO = 1;
-                    //    ven.PEVE_NR_NUMERO_GERADO = num;
-                    //    ven.PEVE_VL_VALOR = vm.CRPV_VL_VALOR;
-                    //    ven.PEVE_DT_CRIACAO = DateTime.Today.Date;
-                    //    ven.PEVE_VL_FRETE = vm.CRPV_VL_FRETE;
-                    //    ven.PEVE_VL_DESCONTO = vm.CRPV_VL_DESCONTO;
-                    //    ven.PEVE_IN_PARCELAS = 0;
-                    //    ven.PEVE_IN_NUMERO_PARCELAS = 0;
-                    //    ven.EMPR_CD_ID = usuario.EMPR_CD_ID.Value;
-                    //    Int32 grava = baseApp.ValidateCreatePedidoVenda(ven);
-
-                    //    crm.PEVE_CD_ID = ven.PEVE_CD_ID;
-                    //    grava = baseApp.ValidateEdit(crm, crm);
-                    //}
-
                     // Listas
                     Session["PedidoVendaAlterada"] = 1;
                     Session["CRMAlterada"] = 1;
@@ -9723,7 +9657,7 @@ namespace ERP_Condominios_Solution.Controllers
                     mens.MENS_DT_CRIACAO = DateTime.Now;
                     mens.MENS_IN_ATIVO = 1;
                     mens.MENS_IN_TIPO = 1;
-                    mens.ID = crm.CLIE_CD_ID;
+                    mens.ID = crm.PREC_CD_ID;
                     mens.TEPR_CD_ID = item.CRPC_IN_EMAIL;
                     mens.MENS_NM_LINK = item.CRPV_LK_LINK;
                     Int32 retGrava = ProcessarEnvioPedidoEMail(mens, item, usuario);
@@ -9737,7 +9671,7 @@ namespace ERP_Condominios_Solution.Controllers
 
                     // Gera diario
                     CRM not = baseApp.GetItemById(item.CRM1_CD_ID.Value);
-                    CLIENTE cli = cliApp.GetItemById(not.CLIE_CD_ID);
+                    BENEFICIARIO cli = benApp.GetItemById(not.PRECATORIO.BENE_CD_ID.Value);
                     DIARIO_PROCESSO dia = new DIARIO_PROCESSO();
                     dia.ASSI_CD_ID = usuario.ASSI_CD_ID;
                     dia.USUA_CD_ID = usuario.USUA_CD_ID;
@@ -9746,7 +9680,7 @@ namespace ERP_Condominios_Solution.Controllers
                     dia.CRPV_CD_ID = item.CRPV_CD_ID;
                     dia.EMPR_CD_ID = 3;
                     dia.DIPR_NM_OPERACAO = "Envio de Proposta";
-                    dia.DIPR_DS_DESCRICAO = "Envio de Proposta " + item.CRPV_NM_NOME + ". Processo: " + not.CRM1_NM_NOME + ". Cliente: " + cli.CLIE_NM_NOME;
+                    dia.DIPR_DS_DESCRICAO = "Envio de Proposta " + item.CRPV_NM_NOME + ". Processo: " + not.CRM1_NM_NOME + ". Beneficiário: " + cli.BENE_NM_NOME;
                     Int32 volta3 = diaApp.ValidateCreate(dia);
 
                     // Retorno
@@ -9827,7 +9761,7 @@ namespace ERP_Condominios_Solution.Controllers
             objetoAntes = (CRM)Session["CRM"];
             CRMPedidoViewModel vm = Mapper.Map<CRM_PEDIDO_VENDA, CRMPedidoViewModel>(item);
             CRM proc = baseApp.GetItemById(item.CRM1_CD_ID.Value);
-            CLIENTE cli = cliApp.GetItemById(proc.CLIE_CD_ID);
+            BENEFICIARIO cli = benApp.GetItemById(proc.PRECATORIO.BENE_CD_ID.Value);
             vm.CLIENTE_NOME = cli;
             return View(vm);
         }
@@ -9868,7 +9802,7 @@ namespace ERP_Condominios_Solution.Controllers
 
                     // Gera diario
                     CRM not = baseApp.GetItemById(item.CRM1_CD_ID.Value);
-                    CLIENTE cli = cliApp.GetItemById(not.CLIE_CD_ID);
+                    BENEFICIARIO cli = benApp.GetItemById(not.PRECATORIO.BENE_CD_ID.Value);
                     DIARIO_PROCESSO dia = new DIARIO_PROCESSO();
                     dia.ASSI_CD_ID = usuarioLogado.ASSI_CD_ID;
                     dia.USUA_CD_ID = usuarioLogado.USUA_CD_ID;
@@ -9877,7 +9811,7 @@ namespace ERP_Condominios_Solution.Controllers
                     dia.CRPV_CD_ID = item.CRPV_CD_ID;
                     dia.EMPR_CD_ID = 3;
                     dia.DIPR_NM_OPERACAO = "Alteração de Proposta";
-                    dia.DIPR_DS_DESCRICAO = "Alteração de Proposta " + item.CRPV_NM_NOME + ". Processo: " + not.CRM1_NM_NOME + ". Cliente: " + cli.CLIE_NM_NOME;
+                    dia.DIPR_DS_DESCRICAO = "Alteração de Proposta " + item.CRPV_NM_NOME + ". Processo: " + not.CRM1_NM_NOME + ". Beneficiário: " + cli.BENE_NM_NOME;
                     Int32 volta3 = diaApp.ValidateCreate(dia);
 
                     // Verifica retorno
@@ -9942,7 +9876,7 @@ namespace ERP_Condominios_Solution.Controllers
 
                 // Gera diario
                 CRM not = baseApp.GetItemById(item.CRM1_CD_ID.Value);
-                CLIENTE cli = cliApp.GetItemById(not.CLIE_CD_ID);
+                BENEFICIARIO cli = benApp.GetItemById(not.PRECATORIO.BENE_CD_ID.Value);
                 DIARIO_PROCESSO dia = new DIARIO_PROCESSO();
                 dia.ASSI_CD_ID = usuario.ASSI_CD_ID;
                 dia.USUA_CD_ID = usuario.USUA_CD_ID;
@@ -9951,7 +9885,7 @@ namespace ERP_Condominios_Solution.Controllers
                 dia.CRPV_CD_ID = item.CRPV_CD_ID;
                 dia.EMPR_CD_ID = 3;
                 dia.DIPR_NM_OPERACAO = "Exclusão de Proposta";
-                dia.DIPR_DS_DESCRICAO = "Exclusão de Proposta " + item.CRPV_NM_NOME + ". Processo: " + not.CRM1_NM_NOME + ". Cliente: " + cli.CLIE_NM_NOME;
+                dia.DIPR_DS_DESCRICAO = "Exclusão de Proposta " + item.CRPV_NM_NOME + ". Processo: " + not.CRM1_NM_NOME + ". Beneficiário: " + cli.BENE_NM_NOME;
                 Int32 volta3 = diaApp.ValidateCreate(dia);
                 Session["PedidoVendaAlterada"] = 1;
                 Session["VoltaTela"] = 6;
@@ -10007,7 +9941,7 @@ namespace ERP_Condominios_Solution.Controllers
 
                 // Gera diario
                 CRM not = baseApp.GetItemById(item.CRM1_CD_ID.Value);
-                CLIENTE cli = cliApp.GetItemById(not.CLIE_CD_ID);
+                BENEFICIARIO cli = benApp.GetItemById(not.PRECATORIO.BENE_CD_ID.Value);
                 DIARIO_PROCESSO dia = new DIARIO_PROCESSO();
                 dia.ASSI_CD_ID = usuario.ASSI_CD_ID;
                 dia.USUA_CD_ID = usuario.USUA_CD_ID;
@@ -10016,7 +9950,7 @@ namespace ERP_Condominios_Solution.Controllers
                 dia.CRPV_CD_ID = item.CRPV_CD_ID;
                 dia.EMPR_CD_ID = 3;
                 dia.DIPR_NM_OPERACAO = "Reativação de Proposta";
-                dia.DIPR_DS_DESCRICAO = "Reativação de Proposta " + item.CRPV_NM_NOME + ". Processo: " + not.CRM1_NM_NOME + ". Cliente: " + cli.CLIE_NM_NOME;
+                dia.DIPR_DS_DESCRICAO = "Reativação de Proposta " + item.CRPV_NM_NOME + ". Processo: " + not.CRM1_NM_NOME + ". Beneficiário: " + cli.BENE_NM_NOME;
                 Int32 volta3 = diaApp.ValidateCreate(dia);
                 Session["PedidoVendaAlterada"] = 1;
                 Session["VoltaTela"] = 6;
@@ -10085,7 +10019,7 @@ namespace ERP_Condominios_Solution.Controllers
 
                 // Gera diario
                 CRM not = baseApp.GetItemById(item.CRM1_CD_ID.Value);
-                CLIENTE cli = cliApp.GetItemById(not.CLIE_CD_ID);
+                BENEFICIARIO cli = benApp.GetItemById(not.PRECATORIO.BENE_CD_ID.Value);
                 DIARIO_PROCESSO dia = new DIARIO_PROCESSO();
                 dia.ASSI_CD_ID = usuario.ASSI_CD_ID;
                 dia.USUA_CD_ID = usuario.USUA_CD_ID;
@@ -10094,7 +10028,7 @@ namespace ERP_Condominios_Solution.Controllers
                 dia.CRPV_CD_ID = item.CRPV_CD_ID;
                 dia.EMPR_CD_ID = 3;
                 dia.DIPR_NM_OPERACAO = "Alteração de Status de Proposta";
-                dia.DIPR_DS_DESCRICAO = "Alteração de Status de Proposta " + item.CRPV_NM_NOME + ". Processo: " + not.CRM1_NM_NOME + ". Cliente: " + cli.CLIE_NM_NOME;
+                dia.DIPR_DS_DESCRICAO = "Alteração de Status de Proposta " + item.CRPV_NM_NOME + ". Processo: " + not.CRM1_NM_NOME + ". Beneficiário: " + cli.BENE_NM_NOME;
                 Int32 volta3 = diaApp.ValidateCreate(dia);
                 Session["PedidoVendaAlterada"] = 1;
                 Session["VoltaTela"] = 6;
@@ -10152,7 +10086,7 @@ namespace ERP_Condominios_Solution.Controllers
             CRMPedidoViewModel vm = Mapper.Map<CRM_PEDIDO_VENDA, CRMPedidoViewModel>(item);
             CRM proc = baseApp.GetItemById(item.CRM1_CD_ID.Value);
             ViewBag.Template = item.TEMPLATE_PROPOSTA.TEPR_SG_SIGLA;
-            CLIENTE cli = cliApp.GetItemById(proc.CLIE_CD_ID);
+            BENEFICIARIO cli = benApp.GetItemById(proc.PRECATORIO.BENE_CD_ID.Value);
             vm.CLIENTE_NOME = cli;
             return View(vm);
         }
@@ -10850,7 +10784,7 @@ namespace ERP_Condominios_Solution.Controllers
                     Int32 volta = baseApp.ValidateEdit(not, objetoAntes);
 
                     // Gera diario
-                    CLIENTE cli = cliApp.GetItemById(not.CLIE_CD_ID);
+                    BENEFICIARIO cli = benApp.GetItemById(not.PRECATORIO.BENE_CD_ID.Value);
                     DIARIO_PROCESSO dia = new DIARIO_PROCESSO();
                     dia.ASSI_CD_ID = usuarioLogado.ASSI_CD_ID;
                     dia.USUA_CD_ID = usuarioLogado.USUA_CD_ID;
@@ -10859,7 +10793,7 @@ namespace ERP_Condominios_Solution.Controllers
                     dia.CRFL_CD_ID = item.CRFL_CD_ID;
                     dia.EMPR_CD_ID = 3;
                     dia.DIPR_NM_OPERACAO = "Follow-Up de Processo";
-                    dia.DIPR_DS_DESCRICAO = "Follow-Up de Processo " + not.CRM1_NM_NOME + ". Cliente: " + cli.CLIE_NM_NOME;
+                    dia.DIPR_DS_DESCRICAO = "Follow-Up de Processo " + not.CRM1_NM_NOME + ". Beneficiário: " + cli.BENE_NM_NOME;
                     Int32 volta3 = diaApp.ValidateCreate(dia);
 
                     // Verifica retorno
@@ -11011,6 +10945,29 @@ namespace ERP_Condominios_Solution.Controllers
             return View(vm);
         }
 
+        public List<BENEFICIARIO> CarregaBeneficiario()
+        {
+            Int32 idAss = (Int32)Session["IdAssinante"];
+            List<BENEFICIARIO> conf = new List<BENEFICIARIO>();
+            if (Session["Beneficiarios"] == null)
+            {
+                conf = benApp.GetAllItens();
+            }
+            else
+            {
+                if ((Int32)Session["BeneficiarioAlterada"] == 1)
+                {
+                    conf = benApp.GetAllItens();
+                }
+                else
+                {
+                    conf = (List<BENEFICIARIO>)Session["Beneficiarios"];
+                }
+            }
+            Session["Beneficiarios"] = conf;
+            Session["BeneficiarioAlterada"] = 0;
+            return conf;
+        }
 
     }
 }

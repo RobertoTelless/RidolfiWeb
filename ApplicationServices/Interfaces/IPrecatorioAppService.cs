@@ -21,6 +21,7 @@ namespace ApplicationServices.Interfaces
         List<PRECATORIO> GetAllItens();
         List<PRECATORIO> GetAllItensAdm();
         Int32 ExecuteFilter(Int32? trf, Int32? beneficiario, Int32? advogado, Int32? natureza, Int32? estado, String nome, String ano, Int32? crm, Int32? pesquisa, Decimal? valor1, Decimal? valor2, Int32? situacao, out List<PRECATORIO> objeto);
+        Tuple<Int32, List<PRECATORIO>, Boolean> ExecuteFilterTuple(Int32? trf, Int32? beneficiario, Int32? advogado, Int32? natureza, Int32? estado, String nome, String ano, Int32? crm, Int32? pesquisa, Decimal? valor1, Decimal? valor2, Int32? situacao, Int32 idAss);
 
         List<TRF> GetAllTRF();
         List<BENEFICIARIO> GetAllBeneficiarios();
@@ -35,6 +36,7 @@ namespace ApplicationServices.Interfaces
         PRECATORIO_ANOTACAO GetComentarioById(Int32 id);
         Int32 ValidateCreateFalha(PRECATORIO_FALHA item);
         Int32 ValidateCreateFalhaContato(CONTATO_FALHA item);
+        Int32 ValidateEditAnotacao(PRECATORIO_ANOTACAO item);
 
         List<VOLTA_PESQUISA> PesquisarTudo(String parm, Int32 idAss);
 
