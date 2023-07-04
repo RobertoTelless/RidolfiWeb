@@ -1185,6 +1185,7 @@
           <Property Name="MEEN_CD_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="ASSI_CD_ID" Type="int" Nullable="false" />
           <Property Name="EMPR_CD_ID" Type="int" />
+          <Property Name="BENE_CD_ID" Type="int" />
           <Property Name="USUA_CD_ID" Type="int" />
           <Property Name="CLIE_CD_ID" Type="int" />
           <Property Name="FILI_CD_ID" Type="int" />
@@ -3374,6 +3375,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_MENSAGENS_ENVIADAS_SISTEMA_BENEFICIARIO">
+          <End Role="BENEFICIARIO" Type="Self.BENEFICIARIO" Multiplicity="0..1" />
+          <End Role="MENSAGENS_ENVIADAS_SISTEMA" Type="Self.MENSAGENS_ENVIADAS_SISTEMA" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="BENEFICIARIO">
+              <PropertyRef Name="BENE_CD_ID" />
+            </Principal>
+            <Dependent Role="MENSAGENS_ENVIADAS_SISTEMA">
+              <PropertyRef Name="BENE_CD_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_MENSAGENS_ENVIADAS_SISTEMA_CLIENTE">
           <End Role="CLIENTE" Type="Self.CLIENTE" Multiplicity="0..1" />
           <End Role="MENSAGENS_ENVIADAS_SISTEMA" Type="Self.MENSAGENS_ENVIADAS_SISTEMA" Multiplicity="*" />
@@ -4820,6 +4833,10 @@
             <End Role="ASSINANTE" EntitySet="ASSINANTE" />
             <End Role="MENSAGENS_ENVIADAS_SISTEMA" EntitySet="MENSAGENS_ENVIADAS_SISTEMA" />
           </AssociationSet>
+          <AssociationSet Name="FK_MENSAGENS_ENVIADAS_SISTEMA_BENEFICIARIO" Association="Self.FK_MENSAGENS_ENVIADAS_SISTEMA_BENEFICIARIO">
+            <End Role="BENEFICIARIO" EntitySet="BENEFICIARIO" />
+            <End Role="MENSAGENS_ENVIADAS_SISTEMA" EntitySet="MENSAGENS_ENVIADAS_SISTEMA" />
+          </AssociationSet>
           <AssociationSet Name="FK_MENSAGENS_ENVIADAS_SISTEMA_CLIENTE" Association="Self.FK_MENSAGENS_ENVIADAS_SISTEMA_CLIENTE">
             <End Role="CLIENTE" EntitySet="CLIENTE" />
             <End Role="MENSAGENS_ENVIADAS_SISTEMA" EntitySet="MENSAGENS_ENVIADAS_SISTEMA" />
@@ -5355,6 +5372,7 @@
           <NavigationProperty Name="ESCOLARIDADE" Relationship="Self.FKBENEFICIAR821804" FromRole="BENEFICIARIO" ToRole="ESCOLARIDADE" />
           <NavigationProperty Name="TIPO_PESSOA" Relationship="Self.FKBENEFICIAR947372" FromRole="BENEFICIARIO" ToRole="TIPO_PESSOA" />
           <NavigationProperty Name="PRECATORIO" Relationship="Self.FKPRECATORIO759277" FromRole="BENEFICIARIO" ToRole="PRECATORIO" />
+          <NavigationProperty Name="MENSAGENS_ENVIADAS_SISTEMA" Relationship="RidolfiDB_WebModel.FK_MENSAGENS_ENVIADAS_SISTEMA_BENEFICIARIO" FromRole="BENEFICIARIO" ToRole="MENSAGENS_ENVIADAS_SISTEMA" />
         </EntityType>
         <EntityType Name="BENEFICIARIO_ANEXO">
           <Key>
@@ -6535,6 +6553,8 @@
           <NavigationProperty Name="CRM_CONTATO" Relationship="Self.FK_MENSAGENS_ENVIADAS_SISTEMA_CRM_CONTATO" FromRole="MENSAGENS_ENVIADAS_SISTEMA" ToRole="CRM_CONTATO" />
           <NavigationProperty Name="USUARIO" Relationship="Self.FK_MENSAGENS_ENVIADAS_SISTEMA_USUARIO" FromRole="MENSAGENS_ENVIADAS_SISTEMA" ToRole="USUARIO" />
           <NavigationProperty Name="USUARIO1" Relationship="Self.FK_MENSAGENS_ENVIADAS_SISTEMA_USUARIO1" FromRole="MENSAGENS_ENVIADAS_SISTEMA" ToRole="USUARIO" />
+          <Property Name="BENE_CD_ID" Type="Int32" />
+          <NavigationProperty Name="BENEFICIARIO" Relationship="RidolfiDB_WebModel.FK_MENSAGENS_ENVIADAS_SISTEMA_BENEFICIARIO" FromRole="MENSAGENS_ENVIADAS_SISTEMA" ToRole="BENEFICIARIO" />
         </EntityType>
         <EntityType Name="MOTIVO_CANCELAMENTO">
           <Key>
@@ -10550,6 +10570,10 @@
             <End Role="VARA" EntitySet="VARA" />
             <End Role="CLIENTE" EntitySet="CLIENTE" />
           </AssociationSet>
+          <AssociationSet Name="FK_MENSAGENS_ENVIADAS_SISTEMA_BENEFICIARIO" Association="RidolfiDB_WebModel.FK_MENSAGENS_ENVIADAS_SISTEMA_BENEFICIARIO">
+            <End Role="BENEFICIARIO" EntitySet="BENEFICIARIO" />
+            <End Role="MENSAGENS_ENVIADAS_SISTEMA" EntitySet="MENSAGENS_ENVIADAS_SISTEMA" />
+          </AssociationSet>
         </EntityContainer>
         <Association Name="FK_CLIENTE_PRECATORIO">
           <End Type="RidolfiDB_WebModel.PRECATORIO" Role="PRECATORIO" Multiplicity="0..1" />
@@ -10584,6 +10608,18 @@
             </Principal>
             <Dependent Role="CLIENTE">
               <PropertyRef Name="VARA_CD_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_MENSAGENS_ENVIADAS_SISTEMA_BENEFICIARIO">
+          <End Type="RidolfiDB_WebModel.BENEFICIARIO" Role="BENEFICIARIO" Multiplicity="0..1" />
+          <End Type="RidolfiDB_WebModel.MENSAGENS_ENVIADAS_SISTEMA" Role="MENSAGENS_ENVIADAS_SISTEMA" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="BENEFICIARIO">
+              <PropertyRef Name="BENE_CD_ID" />
+            </Principal>
+            <Dependent Role="MENSAGENS_ENVIADAS_SISTEMA">
+              <PropertyRef Name="BENE_CD_ID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -11836,6 +11872,7 @@
           <EntitySetMapping Name="MENSAGENS_ENVIADAS_SISTEMA">
             <EntityTypeMapping TypeName="RidolfiDB_WebModel.MENSAGENS_ENVIADAS_SISTEMA">
               <MappingFragment StoreEntitySet="MENSAGENS_ENVIADAS_SISTEMA">
+                <ScalarProperty Name="BENE_CD_ID" ColumnName="BENE_CD_ID" />
                 <ScalarProperty Name="MEEN_CD_ID" ColumnName="MEEN_CD_ID" />
                 <ScalarProperty Name="ASSI_CD_ID" ColumnName="ASSI_CD_ID" />
                 <ScalarProperty Name="EMPR_CD_ID" ColumnName="EMPR_CD_ID" />

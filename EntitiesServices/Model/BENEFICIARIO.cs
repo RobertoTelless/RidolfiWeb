@@ -23,6 +23,7 @@ namespace EntitiesServices.Model
             this.ENDERECO = new HashSet<ENDERECO>();
             this.TELEFONE = new HashSet<TELEFONE>();
             this.PRECATORIO = new HashSet<PRECATORIO>();
+            this.MENSAGENS_ENVIADAS_SISTEMA = new HashSet<MENSAGENS_ENVIADAS_SISTEMA>();
         }
     
         public int BENE_CD_ID { get; set; }
@@ -69,5 +70,7 @@ namespace EntitiesServices.Model
         public virtual TIPO_PESSOA TIPO_PESSOA { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<PRECATORIO> PRECATORIO { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<MENSAGENS_ENVIADAS_SISTEMA> MENSAGENS_ENVIADAS_SISTEMA { get; set; }
     }
 }

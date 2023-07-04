@@ -133,6 +133,27 @@ namespace ModelServices.EntitiesServices
             return _baseRepository.ExecuteFilter(tipo, sexo, estado, escolaridade, parentesco, razao, nome, dataNasc, cpf, cnpj, parente);
         }
 
+        public Int32 EditAnotacao(BENEFICIARIO_ANOTACOES item)
+        {
+            using (DbContextTransaction transaction = Db.Database.BeginTransaction(IsolationLevel.ReadCommitted))
+            {
+                try
+                {
+                    item.USUARIO = null;
+                    BENEFICIARIO_ANOTACOES obj = _comRepository.GetById(item.BECO_CD_ID);
+                    _comRepository.Detach(obj);
+                    _comRepository.Update(item);
+                    transaction.Commit();
+                    return 0;
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                    throw ex;
+                }
+            }
+        }
+
         public Int32 Create(BENEFICIARIO item, LOG log)
         {
             using (DbContextTransaction transaction = Db.Database.BeginTransaction(IsolationLevel.ReadCommitted))

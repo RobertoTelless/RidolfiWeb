@@ -1,5 +1,5 @@
 ﻿@using Presentation.Extensions
-@model ERP_CRM_Solution.ViewModels.BeneficiarioViewModel
+@model ERP_Condominios_Solution.ViewModels.BeneficiarioViewModel
 @{
     Layout = "~/Views/Shared/_Layout_Admin.cshtml";
 }
@@ -210,7 +210,19 @@
                                                                             <td>@cond.BEAN_DT_ANEXO.Value.ToShortDateString()</td>
                                                                             @if (cond.BEAN_IN_TIPO == 1)
 	                                                                        {
-                                                                                <td><span class="badge badge-success">Imagem/Vídeo</span></td>
+                                                                                <td><span class="badge badge-success">Imagem</span></td>
+                                                                            }
+                                                                            else if (cond.BEAN_IN_TIPO == 2)
+                                                                            {
+                                                                                <td><span class="badge badge-primary">Vídeo</span></td>
+                                                                            }
+                                                                            else if (cond.BEAN_IN_TIPO == 3)
+                                                                            {
+                                                                                <td><span class="badge badge-primary">PDF</span></td>
+                                                                            }
+                                                                            else if (cond.BEAN_IN_TIPO == 4)
+                                                                            {
+                                                                                <td><span class="badge badge-primary">Audio</span></td>
                                                                             }
                                                                             else
                                                                             {
@@ -221,6 +233,10 @@
                                                                                 {
                                                                                     @Html.TableLinkDetails(cond.BEAN_CD_ID, "VerAnexoBeneficiario", "fa-camera", "Visualizar")
                                                                                 }
+                                                                                @if (cond.BEAN_IN_TIPO == 4)
+	                                                                            {
+                                                                                    @Html.TableLinkDetails(cond.BEAN_IN_TIPO.Value, "VerAnexoBeneficiarioAudio","fa-volume-up", "Visualizar")
+	                                                                            }
                                                                                 @if (cond.BEAN_IN_TIPO == 3)
                                                                                 {
                                                                                     <a title="Visualizar" class="fa fa-camera fa-lg" href="~/PdfViewer/web/viewer.html?file=@(cond.BEAN_AQ_ARQUIVO.Replace("~", ""))&ReturnUrl=@Request.Url.AbsolutePath" target="_blank"></a>
@@ -232,11 +248,6 @@
                                                                 </tbody>
                                                             </table>
                                                         }
-                                                        <input type="file" name="file" id="file" class="btn btn-sm btn-warning"/>
-                                                        <br />
-                                                        <div class="form-group">
-                                                            <input type="submit" value="Incluir Anexo" class="btn btn-sm btn-success" />
-                                                        </div>
                                                     </div>
                                                 }
                                             </div>
@@ -257,15 +268,16 @@
                                                 <div class="col-lg-12">
                                                     @if (Model.BENEFICIARIO_ANOTACOES.Count > 0)
                                                     {
-                                                        foreach (var item in (Model.BENEFICIARIO_ANOTACOES))
+                                                        foreach (var item in (Model.BENEFICIARIO_ANOTACOES.Where(p => p.BECO_IN_ATIVO == 1)).OrderByDescending(a => a.BECO_DT_COMENTARIO))
                                                         {
                                                             <div class="social-feed-box">
                                                                 <div class="social-avatar">
                                                                     <a href="" class="pull-left">
                                                                         <img src="@Url.Content(item.USUARIO.USUA_AQ_FOTO)" style="width: auto; height: auto; max-height: 110px; max-width: 90px;">
                                                                     </a>
+                                                                    <span style="color: #337ab7; cursor:pointer;" alt="Excluir" class="tbl-link fa-lg fa fa-trash-o" onclick="ShowModalExcluirAnotacao('/Beneficiario/ExcluirComentario/@item.BECO_CD_ID')" title="Excluir"></span>
                                                                     <div class="media-body">
-                                                                        <a href="#">
+                                                                        <a href="@Url.Action("EditarComentario", "Beneficiario", new { id = item.BECO_CD_ID })">
                                                                             @item.USUARIO.USUA_NM_NOME
                                                                         </a>
                                                                         <small class="text-muted">@item.BECO_DT_COMENTARIO.Value.ToString("dd/MM/yyyy HH:mm")</small>
@@ -326,15 +338,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.maskedinput/1.4.1/jquery.maskedinput.js"></script>
     <script src="~/Scripts/uploadAnexo.js"></script>
 
-    <script type="text/javascript">
-        $(function () {
-            $("#cpf").mask("999.999.999-99");
-            $("#cnpj").mask("99.999.999/9999-99");
-            $("#cep").mask("99999-999");
-            $('#tel').mask('(99)9999-9999');
-            $('#dn').mask('99/99/9999');
-        });
-    </script>
     <script type="text/javascript">
         $(document).ready(function () {
 

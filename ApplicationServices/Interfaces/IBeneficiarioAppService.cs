@@ -21,6 +21,7 @@ namespace ApplicationServices.Interfaces
         List<BENEFICIARIO> GetAllItens();
         List<BENEFICIARIO> GetAllItensAdm();
         Int32 ExecuteFilter(Int32? tipo, Int32? sexo, Int32? estado, Int32? escolaridade, Int32? parentesco, String razao, String nome, DateTime? dataNasc, String cpf, String cnpj, String parente, out List<BENEFICIARIO> objeto);
+        Tuple<Int32, List<BENEFICIARIO>, Boolean> ExecuteFilterTuple(Int32? tipo, Int32? sexo, Int32? estado, Int32? escolaridade, Int32? parentesco, String razao, String nome, DateTime? dataNasc, String cpf, String cnpj, String parente, Int32 idAss);
 
         List<ESCOLARIDADE> GetAllEscolaridade();
         List<PARENTESCO> GetAllParentesco();
@@ -37,6 +38,7 @@ namespace ApplicationServices.Interfaces
         CONTATO GetContatoById(Int32 id);
         Int32 ValidateEditContato(CONTATO item);
         Int32 ValidateCreateContato(CONTATO item);
+        Int32 ValidateEditAnotacao(BENEFICIARIO_ANOTACOES item);
 
         ENDERECO GetEnderecoById(Int32 id);
         Int32 ValidateEditEndereco(ENDERECO item);

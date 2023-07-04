@@ -1,5 +1,5 @@
 ﻿@using Presentation.Extensions
-@model ERP_CRM_Solution.ViewModels.BeneficiarioViewModel
+@model ERP_Condominios_Solution.ViewModels.BeneficiarioViewModel
 @{
     Layout = "~/Views/Shared/_Layout_Admin.cshtml";
 }
@@ -66,8 +66,6 @@
                             <li class=""><a data-toggle="tab" href="#tab-2">Anexos</a></li>
                             <li class=""><a data-toggle="tab" href="#tab-3">Anotações</a></li>
                             <li class=""><a data-toggle="tab" href="#tab-5">Endereços</a></li>
-                            <li class=""><a data-toggle="tab" href="#tab-6">E-Mails</a></li>
-                            <li class=""><a data-toggle="tab" href="#tab-7">Telefones</a></li>
                             <li class=""><a data-toggle="tab" href="#tab-8">Contatos Telefônicos</a></li>
                         </ul>
 
@@ -216,7 +214,19 @@
                                                                             <td>@cond.BEAN_DT_ANEXO.Value.ToShortDateString()</td>
                                                                             @if (cond.BEAN_IN_TIPO == 1)
 	                                                                        {
-                                                                                <td><span class="badge badge-success">Imagem/Vídeo</span></td>
+                                                                                <td><span class="badge badge-success">Imagem</span></td>
+                                                                            }
+                                                                            else if (cond.BEAN_IN_TIPO == 2)
+                                                                            {
+                                                                                <td><span class="badge badge-primary">Vídeo</span></td>
+                                                                            }
+                                                                            else if (cond.BEAN_IN_TIPO == 3)
+                                                                            {
+                                                                                <td><span class="badge badge-primary">PDF</span></td>
+                                                                            }
+                                                                            else if (cond.BEAN_IN_TIPO == 4)
+                                                                            {
+                                                                                <td><span class="badge badge-primary">Audio</span></td>
                                                                             }
                                                                             else
                                                                             {
@@ -227,6 +237,10 @@
                                                                                 {
                                                                                     @Html.TableLinkDetails(cond.BEAN_CD_ID, "VerAnexoBeneficiario", "fa-camera", "Visualizar")
                                                                                 }
+                                                                                @if (cond.BEAN_IN_TIPO == 4)
+	                                                                            {
+                                                                                    @Html.TableLinkDetails(cond.BEAN_IN_TIPO.Value, "VerAnexoBeneficiarioAudio","fa-volume-up", "Visualizar")
+	                                                                            }
                                                                                 @if (cond.BEAN_IN_TIPO == 3)
                                                                                 {
                                                                                     <a title="Visualizar" class="fa fa-camera fa-lg" href="~/PdfViewer/web/viewer.html?file=@(cond.BEAN_AQ_ARQUIVO.Replace("~", ""))&ReturnUrl=@Request.Url.AbsolutePath" target="_blank"></a>
@@ -256,22 +270,23 @@
                                 <div class="panel-body">
                                     <div class="ibox float-e-margins" style="border-bottom: solid; border-bottom-color: darkblue; border-bottom-width: 1px; border-left: solid; border-left-color: darkblue; border-left-width: 1px; border-right: solid; border-right-color: darkblue; border-right-width: 1px; border-top: solid; border-top-color: darkblue; border-top-width: 1px; height: 800px" >
                                         <div class="ibox-title"  style="color: black">
-                                            <h5>Anotações - Follow-Up</h5>
+                                            <h5>Anotações</h5>
                                         </div>
                                         <div class="ibox-content" style="color: black; overflow: auto">
                                             <div class="row">
                                                 <div class="col-lg-12">
                                                     @if (Model.BENEFICIARIO_ANOTACOES.Count > 0)
                                                     {
-                                                        foreach (var item in (Model.BENEFICIARIO_ANOTACOES))
+                                                        foreach (var item in (Model.BENEFICIARIO_ANOTACOES.Where(p => p.BECO_IN_ATIVO == 1)).OrderByDescending(a => a.BECO_DT_COMENTARIO))
                                                         {
                                                             <div class="social-feed-box">
                                                                 <div class="social-avatar">
                                                                     <a href="" class="pull-left">
                                                                         <img src="@Url.Content(item.USUARIO.USUA_AQ_FOTO)" style="width: auto; height: auto; max-height: 110px; max-width: 90px;">
                                                                     </a>
+                                                                    <span style="color: #337ab7; cursor:pointer;" alt="Excluir" class="tbl-link fa-lg fa fa-trash-o" onclick="ShowModalExcluirAnotacao('/Beneficiario/ExcluirComentario/@item.BECO_CD_ID')" title="Excluir"></span>
                                                                     <div class="media-body">
-                                                                        <a href="#">
+                                                                        <a href="@Url.Action("EditarComentario", "Beneficiario", new { id = item.BECO_CD_ID })">
                                                                             @item.USUARIO.USUA_NM_NOME
                                                                         </a>
                                                                         <small class="text-muted">@item.BECO_DT_COMENTARIO.Value.ToString("dd/MM/yyyy HH:mm")</small>
@@ -365,111 +380,13 @@
                                 </div>
                             </div>
                         
-                             @*E-MAILS*@
-                            <div id="tab-6" class="tab-pane">
-                                <div class="panel-body">
-                                    <div class="row">
-                                        <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
-                                            <div class="col-lg-12 col-md-12 col-xs-12">
-                                                <h4>E-Mails</h4>
-                                                <br />
-                                                @if (Model.EMAIL.Count > 0)
-                                                {
-                                                    <table class="table table-striped table-bordered table-hover dataTables-example">
-                                                        <thead style="background-color:lightsteelblue">
-                                                            <tr>
-                                                                <th>E-Mail</th>
-                                                                <th class="td-one-action">Ações</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            @foreach (var cond in (Model.EMAIL))
-                                                            {
-                                                                <tr>
-                                                                    <td>@cond.EMAI_NM_EMAIL</td>
-                                                                    <td class="td-one-action">
-                                                                        @Html.TableLinkDetails(cond.EMAI_CD_ID, "EditarEMail", "fa-edit", "Editar/Consultar")
-                                                                        @if (cond.EMAI_IN_ATIVO == 1)
-                                                                        {
-                                                                            <span style="color: #337ab7; cursor:pointer;" alt="Desativar" class="tbl-link fa-lg fa fa-trash-o" onclick="ShowModalExcluirEMail('/Beneficiario/ExcluirEMail/@cond.EMAI_CD_ID')" title="Excluir"></span>
-                                                                        }
-                                                                        else
-                                                                        {   
-                                                                            <span style="color: #337ab7; cursor:pointer;" alt="Reativar" class="tbl-link fa-lg fa fa-refresh" onclick="ShowModalReativarEMail('/Beneficiario/ReativarEMail/@cond.EMAI_CD_ID')" title="Reativar"></span>
-                                                                        }
-                                                                    </td>
-                                                                </tr>
-                                                            }
-                                                        </tbody>
-                                                    </table>
-                                                }
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        @Html.ButtonLinkIndex(text: "Incluir Novo E-Mail", action: "IncluirEMail", controller: "Beneficiario")
-                                    </div>
-                                </div>
-                            </div>
-                       
-                            @*Telefones*@
-                            <div id="tab-7" class="tab-pane">
-                                <div class="panel-body">
-                                    <div class="row">
-                                        <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
-                                            <div class="col-lg-12 col-md-12 col-xs-12">
-                                                <h4>Telefones</h4>
-                                                <br />
-                                                @if (Model.TELEFONE.Count > 0)
-                                                {
-                                                    <table class="table table-striped table-bordered table-hover dataTables-example">
-                                                        <thead style="background-color:lightsteelblue">
-                                                            <tr>
-                                                                <th>Tipo</th>
-                                                                <th>Número</th>
-                                                                <th>Celular</th>
-                                                                <th class="td-one-action">Ações</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            @foreach (var cond in (Model.TELEFONE))
-                                                            {
-                                                                <tr>
-                                                                    <td>@cond.TIPO_TELEFONE_BASE.TITE_NM_NOME</td>
-                                                                    <td>@cond.TELE_NR_NUMERO</td>
-                                                                    <td>@cond.TELE_NR_CELULAR</td>
-                                                                    <td class="td-one-action">
-                                                                        @Html.TableLinkDetails(cond.TELE_CD_ID, "EditarTelefone", "fa-edit", "Editar/Consultar")
-                                                                        @if (cond.TELE_IN_ATIVO == 1)
-                                                                        {
-                                                                            <span style="color: #337ab7; cursor:pointer;" alt="Desativar" class="tbl-link fa-lg fa fa-trash-o" onclick="ShowModalExcluirTelefone('/Beneficiario/ExcluirTelefone/@cond.TELE_CD_ID')" title="Excluir"></span>
-                                                                        }
-                                                                        else
-                                                                        {   
-                                                                            <span style="color: #337ab7; cursor:pointer;" alt="Reativar" class="tbl-link fa-lg fa fa-refresh" onclick="ShowModalReativarTelefone('/Beneficiario/ReativarTelefone/@cond.TELE_CD_ID')" title="Reativar"></span>
-                                                                        }
-                                                                    </td>
-                                                                </tr>
-                                                            }
-                                                        </tbody>
-                                                    </table>
-                                                }
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        @Html.ButtonLinkIndex(text: "Incluir Novo Telefone", action: "IncluirTelefone", controller: "Beneficiario")
-                                    </div>
-                                </div>
-                            </div>
-                        
                             @*Contatos*@
                             <div id="tab-8" class="tab-pane">
                                 <div class="panel-body">
                                     <div class="row">
                                         <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
                                             <div class="col-lg-12 col-md-12 col-xs-12">
-                                                <h4>Contatos</h4>
+                                                <h4>Contatos telefônicos</h4>
                                                 <br />
                                                 @if (Model.CONTATO.Count > 0)
                                                 {

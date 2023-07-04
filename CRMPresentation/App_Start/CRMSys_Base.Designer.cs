@@ -2318,5 +2318,23 @@ namespace CRMPresentation.App_Start {
                 return ResourceManager.GetString("M0273", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Impossível excluir esse Beneficiário. Existem registros vinculados a ele.
+        /// </summary>
+        internal static string M0274 {
+            get {
+                return ResourceManager.GetString("M0274", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Texto da mensagem não informado.
+        /// </summary>
+        internal static string M0275 {
+            get {
+                return ResourceManager.GetString("M0275", resourceCulture);
+            }
+        }
     }
 }

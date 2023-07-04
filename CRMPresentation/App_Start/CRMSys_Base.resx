@@ -870,4 +870,10 @@
   <data name="M0273" xml:space="preserve">
     <value>Impossível excluir essa Vara. Existem registros vinculados a ela</value>
   </data>
+  <data name="M0274" xml:space="preserve">
+    <value>Impossível excluir esse Beneficiário. Existem registros vinculados a ele</value>
+  </data>
+  <data name="M0275" xml:space="preserve">
+    <value>Texto da mensagem não informado</value>
+  </data>
 </root>

@@ -73,7 +73,7 @@
                             </div>
                             <div class="col-lg-2 col-md-2 col-xs-12">
                                 Data Nasc.
-                                @Html.TextBoxFor(m => m.BENE_DT_NASCIMENTO, "{0:dd/MM/yyyy}", new { @class = "form-control date-picker", autofocus = true })
+                                @Html.TextBoxFor(m => m.BENE_DT_NASCIMENTO, "{0:dd/MM/yyyy}", new { @class = "form-control date-picker", autofocus = true, @id = "dn" })
                             </div>
                         </div>
                         <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
@@ -87,11 +87,11 @@
                             </div>
                             <div class="col-lg-2 col-md-2 col-xs-12">
                                 CPF
-                                @Html.TextBoxFor(m => m.BENE_NR_CPF, new { @class = "form-control", autofocus = true })
+                                @Html.TextBoxFor(m => m.BENE_NR_CPF, new { @class = "form-control", autofocus = true, @id = "cpf" })
                             </div>
                             <div class="col-lg-2 col-md-2 col-xs-12">
                                 CNPJ
-                                @Html.TextBoxFor(m => m.BENE_NR_CNPJ, new { @class = "form-control", autofocus = true })
+                                @Html.TextBoxFor(m => m.BENE_NR_CNPJ, new { @class = "form-control", autofocus = true, @id = "cnpj" })
                             </div>
                             <div class="col-lg-2 col-md-2 col-xs-12">
                                 Nome Parente
@@ -102,10 +102,10 @@
                             <div class="col-lg-12 col-md-12 col-xs-12">
                                 @Html.ButtonActionSubmit(text: "Filtrar")
                                 @Html.ButtonLinkIndex(text: "Retirar Filtro", controller: "Beneficiario", action: "RetirarFiltroBeneficiario")
-                                @Html.ButtonLinkIndex(text: "Exibir Todos", controller: "Beneficiario", action: "MostrarTudoBeneficiario")
-                                @Html.ButtonLinkIndex(text: "Novo Beneficiário", controller: "Beneficiario", action: "IncluirBeneficiario")
+                                @Html.ButtonLinkIndex(text: "Exibir Inativos", controller: "Beneficiario", action: "MostrarTudoBeneficiario")
+                                @Html.ButtonLinkIndex(text: "Incluir Novo Beneficiário", controller: "Beneficiario", action: "IncluirBeneficiario")
                                 @Html.ButtonLinkIndex(text: "Gerar Relatório", controller: "Beneficiario", action: "GerarRelatorioLista")
-                                @Html.ButtonLinkIndex(text: "Dashboard", controller: "Beneficiario", action: "Voltar")
+                                @Html.ButtonLinkIndex(text: "Voltar", controller: "Beneficiario", action: "Voltar")
                             </div>
                         </div>
                     </div>
@@ -140,6 +140,8 @@
                                         <th>CNPJ</th>
                                         <th>CPF</th>
                                         <th>RG</th>
+                                        <th>E-Mail</th>
+                                        <th>Celular</th>
                                         <th class="td-one-action">Ações</th>
                                     </tr>
                                 </thead>
@@ -153,6 +155,8 @@
                                             <td>@cond.BENE_NR_CNPJ</td>
                                             <td>@cond.BENE_NR_CPF</td>
                                             <td>@cond.BENE_NR_RG</td>
+                                            <td style="width: auto"><a href="@Url.Action("EnviarEMailBeneficiario", "Beneficiario", new { id = cond.BENE_CD_ID })" />@cond.BENE_EM_EMAIL</td>
+                                            <td style="width: auto"><a href="@Url.Action("EnviarSMSBeneficiario", "Beneficiario", new { id = cond.BENE_CD_ID })" />@cond.BENE_NR_CELULAR</td>
                                             <td class="td-one-action">
                                                 @if (ViewBag.Perfil != "VIS")
                                                 {
@@ -228,8 +232,8 @@
                 pageLength: 25,
                 dom: '<"html5buttons"B>lTfgitp',
                 buttons: [
-                    { extend: 'excel', title: 'ExampleFile' },
-                    { extend: 'pdf', title: 'ExampleFile' },
+                    { extend: 'excel', title: 'Beneficiario_Planilha' },
+                    { extend: 'pdf', title: 'Beneficiario_PDF' },
 
                     {
                         extend: 'print',
@@ -255,14 +259,10 @@
         $(function () {
             $("#cpf").mask("999.999.999-99");
             $("#cnpj").mask("99.999.999/9999-99");
+            $("#dn").mask("99/99/9999");
         });
     </script>
 
-     <script>
-        function MudaIdTrans(id) {
-            $('#idTrans').val(id);
-        }
-    </script>
 
 }
 

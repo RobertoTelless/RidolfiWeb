@@ -42,6 +42,7 @@ namespace EntitiesServices.Model
         public Nullable<System.DateTime> MEEN_DT_DUMMY { get; set; }
         public string MEEN_SG_STATUS { get; set; }
         public string MEEN_GU_ID_MENSAGEM { get; set; }
+        public Nullable<int> BENE_CD_ID { get; set; }
     
         public virtual ASSINANTE ASSINANTE { get; set; }
         public virtual ASSINANTE ASSINANTE1 { get; set; }
@@ -50,5 +51,6 @@ namespace EntitiesServices.Model
         public virtual CRM_CONTATO CRM_CONTATO { get; set; }
         public virtual USUARIO USUARIO { get; set; }
         public virtual USUARIO USUARIO1 { get; set; }
+        public virtual BENEFICIARIO BENEFICIARIO { get; set; }
     }
 }

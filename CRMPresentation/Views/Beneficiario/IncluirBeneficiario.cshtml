@@ -1,5 +1,5 @@
 ﻿@using Presentation.Extensions
-@model ERP_CRM_Solution.ViewModels.BeneficiarioViewModel
+@model ERP_Condominios_Solution.ViewModels.BeneficiarioViewModel
 @{
     Layout = "~/Views/Shared/_Layout_Admin.cshtml";
 }
@@ -359,39 +359,6 @@
                     label: "Selecione uma data",
                     text: false
                 });
-        });
-    </script>
-    <script type="text/javascript">
-        function ValidaDiv(valPessoa) {
-            if (valPessoa == '2') {
-                $("#PF").hide();
-                $("#PF1").hide();
-                $("#PF4").hide();
-                $("#PF5").hide();
-                $("#PJ").show();
-                $("#PJ1").show();
-                $("#PJ2").show();
-            } else if (valPessoa == '1') { //Se o tempo for mé igual a 2 mostra a divCpf
-                $("#PJ").hide();
-                $("#PJ1").hide();
-                $("#PJ2").hide();
-                $("#PF").show();
-                $("#PF1").show();
-                $("#PF4").show();
-                $("#PF5").show();
-            } else { //Se não for 1, 2 ou 4 esconde as duas
-                $("#PJ").hide();
-                $("#PJ1").hide();
-                $("#PJ2").hide();
-                $("#PF").hide();
-                $("#PF1").hide();
-                $("#PF4").hide();
-                $("#PF5").hide();
-            }
-        }
-
-        $(document).ready(function () {
-            ValidaDiv($('#pessoa').val());
         });
     </script>
     @if (ViewBag.Message != null)

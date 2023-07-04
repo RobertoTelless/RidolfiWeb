@@ -38,6 +38,7 @@ namespace ModelServices.Interfaces.EntitiesServices
         CONTATO GetContatoById(Int32 id);
         Int32 EditContato(CONTATO item);
         Int32 CreateContato(CONTATO item);
+        Int32 EditAnotacao(BENEFICIARIO_ANOTACOES item);
 
         ENDERECO GetEnderecoById(Int32 id);
         Int32 EditEndereco(ENDERECO item);

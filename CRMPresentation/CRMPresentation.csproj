@@ -13331,18 +13331,12 @@
     <Content Include="Views\CRM\VerLembrete.cshtml" />
     <Content Include="Views\Cliente\EnviarMailAniversario.cshtml" />
     <Content Include="Views\Beneficiario\EditarBeneficiario.cshtml" />
-    <Content Include="Views\Beneficiario\EditarContato.cshtml" />
-    <Content Include="Views\Beneficiario\EditarEMail.cshtml" />
     <Content Include="Views\Beneficiario\EditarEndereco.cshtml" />
-    <Content Include="Views\Beneficiario\EditarTelefone.cshtml" />
     <Content Include="Views\Beneficiario\EnviarEMailBeneficiario.cshtml" />
     <Content Include="Views\Beneficiario\EnviarSMSBeneficiario.cshtml" />
     <Content Include="Views\Beneficiario\IncluirBeneficiario.cshtml" />
     <Content Include="Views\Beneficiario\IncluirComentario.cshtml" />
-    <Content Include="Views\Beneficiario\IncluirContato.cshtml" />
-    <Content Include="Views\Beneficiario\IncluirEMail.cshtml" />
     <Content Include="Views\Beneficiario\IncluirEndereco.cshtml" />
-    <Content Include="Views\Beneficiario\IncluirTelefone.cshtml" />
     <Content Include="Views\Beneficiario\MontarTelaBeneficiario.cshtml" />
     <Content Include="Views\Beneficiario\VerAnexoBeneficiario.cshtml" />
     <Content Include="Views\Beneficiario\VerBeneficiario.cshtml" />
@@ -13371,6 +13365,8 @@
     <Content Include="Views\Vara\EditarVara.cshtml" />
     <Content Include="Views\Vara\IncluirVara.cshtml" />
     <Content Include="Views\Vara\MontarTelaVARA.cshtml" />
+    <Content Include="Views\Beneficiario\EditarComentario.cshtml" />
+    <Content Include="Views\Beneficiario\VerAnexoBeneficiarioAudio.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

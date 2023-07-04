@@ -319,6 +319,7 @@
         <AssociationConnector Association="RidolfiDB_WebModel.FK_CLIENTE_PRECATORIO" />
         <AssociationConnector Association="RidolfiDB_WebModel.FK_CLIENTE_TRF" />
         <AssociationConnector Association="RidolfiDB_WebModel.FK_CLIENTE_VARA" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_MENSAGENS_ENVIADAS_SISTEMA_BENEFICIARIO" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

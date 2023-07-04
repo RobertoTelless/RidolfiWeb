@@ -279,6 +279,19 @@ namespace ApplicationServices.Services
             }
         }
 
+        public Int32 ValidateEditAnotacao(BENEFICIARIO_ANOTACOES item)
+        {
+            try
+            {
+                // Persiste
+                return _baseService.EditAnotacao(item);
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
         public CONTATO GetContatoById(Int32 id)
         {
             CONTATO lista = _baseService.GetContatoById(id);
@@ -348,5 +361,30 @@ namespace ApplicationServices.Services
                 throw;
             }
         }
+
+        public Tuple<Int32, List<BENEFICIARIO>, Boolean> ExecuteFilterTuple(Int32? tipo, Int32? sexo, Int32? estado, Int32? escolaridade, Int32? parentesco, String razao, String nome, DateTime? dataNasc, String cpf, String cnpj, String parente, Int32 idAss)
+        {
+            try
+            {
+                List<BENEFICIARIO> objeto = new List<BENEFICIARIO>();
+                Int32 volta = 0;
+
+                // Processa filtro
+                objeto = _baseService.ExecuteFilter(tipo, sexo, estado, escolaridade, parentesco, razao, nome, dataNasc, cpf, cnpj, parente);
+                if (objeto.Count == 0)
+                {
+                    volta = 1;
+                }
+
+                // Monta tupla
+                var tupla = Tuple.Create(volta, objeto, true);
+                return tupla;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
     }
 }
