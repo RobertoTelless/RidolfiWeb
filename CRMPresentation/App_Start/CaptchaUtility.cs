@@ -42,7 +42,7 @@ public class CaptchaUtility
 
     public byte[] VerificationTextGenerator()
     {
-        String randomCode = CrossCutting.Cryptography.GenerateRandomPasswordNumero(6);
+        String randomCode = CrossCutting.Cryptography.GenerateRandomPasswordNumero(4);
         HttpContext.Current.Session["Captcha"] = randomCode;
         return GetCaptchaImage(randomCode);
     }

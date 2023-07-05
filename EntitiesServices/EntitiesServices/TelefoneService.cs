@@ -16,13 +16,13 @@ using System.Data;
 
 namespace ModelServices.EntitiesServices
 {
-    public class TelefoneService : ServiceBase<TELEFONES>, ITelefoneService
+    public class TelefoneService : ServiceBase<TELEFONE>, ITelefoneService
     {
         private readonly ITelefoneRepository _baseRepository;
         private readonly ILogRepository _logRepository;
         private readonly ICategoriaTelefoneRepository _tipoRepository;
         private readonly IUFRepository _ufRepository;
-        protected DB_RidolfiEntities Db = new DB_RidolfiEntities();
+        protected RidolfiDB_WebEntities Db = new RidolfiDB_WebEntities();
 
         public TelefoneService(ITelefoneRepository baseRepository, ILogRepository logRepository, ICategoriaTelefoneRepository tipoRepository, IUFRepository ufRepository) : base(baseRepository)
         {
@@ -32,15 +32,15 @@ namespace ModelServices.EntitiesServices
             _ufRepository = ufRepository;
         }
 
-        public TELEFONES CheckExist(TELEFONES conta, Int32 idAss)
+        public TELEFONE CheckExist(TELEFONE conta, Int32 idAss)
         {
-            TELEFONES item = _baseRepository.CheckExist(conta, idAss);
+            TELEFONE item = _baseRepository.CheckExist(conta, idAss);
             return item;
         }
 
-        public TELEFONES GetItemById(Int32 id)
+        public TELEFONE GetItemById(Int32 id)
         {
-            TELEFONES item = _baseRepository.GetItemById(id);
+            TELEFONE item = _baseRepository.GetItemById(id);
             return item;
         }
 
@@ -49,7 +49,7 @@ namespace ModelServices.EntitiesServices
             return _ufRepository.GetItemBySigla(sigla);
         }
 
-        public List<TELEFONES> GetAllItens(Int32 idAss)
+        public List<TELEFONE> GetAllItens(Int32 idAss)
         {
             return _baseRepository.GetAllItens(idAss);
         }
@@ -59,7 +59,7 @@ namespace ModelServices.EntitiesServices
             return _ufRepository.GetAllItens();
         }
 
-        public List<TELEFONES> GetAllItensAdm(Int32 idAss)
+        public List<TELEFONE> GetAllItensAdm(Int32 idAss)
         {
             return _baseRepository.GetAllItensAdm(idAss);
         }
@@ -69,13 +69,13 @@ namespace ModelServices.EntitiesServices
             return _tipoRepository.GetAllItens(idAss);
         }
 
-        public List<TELEFONES> ExecuteFilter(Int32? catId, String nome, String telefone, String cidade, Int32? uf, String celular, String email, Int32 idAss)
+        public List<TELEFONE> ExecuteFilter(Int32? catId, String nome, String telefone, String cidade, Int32? uf, String celular, String email, Int32 idAss)
         {
             return _baseRepository.ExecuteFilter(catId, nome, telefone, cidade, uf, celular, email, idAss);
 
         }
 
-        public Int32 Create(TELEFONES item, LOG log)
+        public Int32 Create(TELEFONE item, LOG log)
         {
             using (DbContextTransaction transaction = Db.Database.BeginTransaction(IsolationLevel.ReadCommitted))
             {
@@ -94,7 +94,7 @@ namespace ModelServices.EntitiesServices
             }
         }
 
-        public Int32 Create(TELEFONES item)
+        public Int32 Create(TELEFONE item)
         {
             using (DbContextTransaction transaction = Db.Database.BeginTransaction(IsolationLevel.ReadCommitted))
             {
@@ -113,13 +113,13 @@ namespace ModelServices.EntitiesServices
         }
 
 
-        public Int32 Edit(TELEFONES item, LOG log)
+        public Int32 Edit(TELEFONE item, LOG log)
         {
             using (DbContextTransaction transaction = Db.Database.BeginTransaction(IsolationLevel.ReadCommitted))
             {
                 try
                 {
-                    TELEFONES obj = _baseRepository.GetById(item.TELE_CD_ID);
+                    TELEFONE obj = _baseRepository.GetById(item.TELE_CD_ID);
                     _baseRepository.Detach(obj);
                     _logRepository.Add(log);
                     _baseRepository.Update(item);
@@ -134,13 +134,13 @@ namespace ModelServices.EntitiesServices
             }
         }
 
-        public Int32 Edit(TELEFONES item)
+        public Int32 Edit(TELEFONE item)
         {
             using (DbContextTransaction transaction = Db.Database.BeginTransaction(IsolationLevel.ReadCommitted))
             {
                 try
                 {
-                    TELEFONES obj = _baseRepository.GetById(item.TELE_CD_ID);
+                    TELEFONE obj = _baseRepository.GetById(item.TELE_CD_ID);
                     _baseRepository.Detach(obj);
                     _baseRepository.Update(item);
                     transaction.Commit();
@@ -154,7 +154,7 @@ namespace ModelServices.EntitiesServices
             }
         }
 
-        public Int32 Delete(TELEFONES item, LOG log)
+        public Int32 Delete(TELEFONE item, LOG log)
         {
             using (DbContextTransaction transaction = Db.Database.BeginTransaction(IsolationLevel.ReadCommitted))
             {

@@ -39,6 +39,7 @@ using ERP_Condominios_Solution.Classes;
 using iText.IO.Util;
 using System.Threading;
 using System.Web.ModelBinding;
+using Microsoft.Office.Interop.Word;
 
 namespace ERP_Condominios_Solution.Controllers
 {
@@ -1299,17 +1300,17 @@ namespace ERP_Condominios_Solution.Controllers
             String nomeRel = "PrecatorioLista" + "_" + data + ".pdf";
             List<PRECATORIO> lista = (List<PRECATORIO>)Session["ListaPrecatorio"];
             PRECATORIO filtro = (PRECATORIO)Session["FiltroPrecatorio"];
-            Font meuFont = FontFactory.GetFont("Arial", 8, iTextSharp.text.Font.NORMAL, BaseColor.BLACK);
-            Font meuFont1 = FontFactory.GetFont("Arial", 9, iTextSharp.text.Font.NORMAL, BaseColor.BLACK);
-            Font meuFont2 = FontFactory.GetFont("Arial", 12, iTextSharp.text.Font.NORMAL, BaseColor.BLACK);
+            iTextSharp.text.Font meuFont = FontFactory.GetFont("Arial", 8, iTextSharp.text.Font.NORMAL, BaseColor.BLACK);
+            iTextSharp.text.Font meuFont1 = FontFactory.GetFont("Arial", 9, iTextSharp.text.Font.NORMAL, BaseColor.BLACK);
+            iTextSharp.text.Font meuFont2 = FontFactory.GetFont("Arial", 12, iTextSharp.text.Font.NORMAL, BaseColor.BLACK);
 
             // Cria documento
-            Document pdfDoc = new Document(PageSize.A4.Rotate(), 10, 10, 10, 10);
+            iTextSharp.text.Document pdfDoc = new iTextSharp.text.Document(PageSize.A4.Rotate(), 10, 10, 10, 10);
             PdfWriter pdfWriter = PdfWriter.GetInstance(pdfDoc, Response.OutputStream);
             pdfDoc.Open();
 
             // Linha horizontal
-            Paragraph line = new Paragraph(new Chunk(new iTextSharp.text.pdf.draw.LineSeparator(0.0F, 100.0F, BaseColor.BLUE, Element.ALIGN_LEFT, 1)));
+            iTextSharp.text.Paragraph line = new iTextSharp.text.Paragraph(new Chunk(new iTextSharp.text.pdf.draw.LineSeparator(0.0F, 100.0F, BaseColor.BLUE, Element.ALIGN_LEFT, 1)));
             pdfDoc.Add(line);
 
             // Cabeçalho
@@ -1326,7 +1327,7 @@ namespace ERP_Condominios_Solution.Controllers
             cell.AddElement(image);
             table.AddCell(cell);
 
-            cell = new PdfPCell(new Paragraph("Precatórios - Listagem", meuFont2))
+            cell = new PdfPCell(new iTextSharp.text.Paragraph("Precatórios - Listagem", meuFont2))
             {
                 VerticalAlignment = Element.ALIGN_MIDDLE,
                 HorizontalAlignment = Element.ALIGN_CENTER
@@ -1337,9 +1338,9 @@ namespace ERP_Condominios_Solution.Controllers
             pdfDoc.Add(table);
 
             // Linha Horizontal
-            Paragraph line1 = new Paragraph(new Chunk(new iTextSharp.text.pdf.draw.LineSeparator(0.0F, 100.0F, BaseColor.GREEN, Element.ALIGN_LEFT, 1)));
+            iTextSharp.text.Paragraph line1 = new iTextSharp.text.Paragraph(new Chunk(new iTextSharp.text.pdf.draw.LineSeparator(0.0F, 100.0F, BaseColor.GREEN, Element.ALIGN_LEFT, 1)));
             pdfDoc.Add(line1);
-            line1 = new Paragraph("  ");
+            line1 = new iTextSharp.text.Paragraph("  ");
             pdfDoc.Add(line1);
 
             // Grid
@@ -1349,7 +1350,7 @@ namespace ERP_Condominios_Solution.Controllers
             table.SpacingBefore = 1f;
             table.SpacingAfter = 1f;
 
-            cell = new PdfPCell(new Paragraph("Precatórios selecionados pelos parametros de filtro abaixo", meuFont1))
+            cell = new PdfPCell(new iTextSharp.text.Paragraph("Precatórios selecionados pelos parametros de filtro abaixo", meuFont1))
             {
                 VerticalAlignment = Element.ALIGN_MIDDLE, HorizontalAlignment = Element.ALIGN_LEFT
             };
@@ -1357,77 +1358,77 @@ namespace ERP_Condominios_Solution.Controllers
             cell.BackgroundColor = BaseColor.LIGHT_GRAY;
             table.AddCell(cell);
 
-            cell = new PdfPCell(new Paragraph("Tribunal", meuFont))
+            cell = new PdfPCell(new iTextSharp.text.Paragraph("Tribunal", meuFont))
             {
                 VerticalAlignment = Element.ALIGN_MIDDLE,
                 HorizontalAlignment = Element.ALIGN_LEFT
             };
             cell.BackgroundColor = BaseColor.LIGHT_GRAY;
             table.AddCell(cell);
-            cell = new PdfPCell(new Paragraph("Precatório", meuFont))
+            cell = new PdfPCell(new iTextSharp.text.Paragraph("Precatório", meuFont))
             {
                 VerticalAlignment = Element.ALIGN_MIDDLE,
                 HorizontalAlignment = Element.ALIGN_LEFT
             };
             cell.BackgroundColor = BaseColor.LIGHT_GRAY;
             table.AddCell(cell);
-            cell = new PdfPCell(new Paragraph("Proc.Execução", meuFont))
+            cell = new PdfPCell(new iTextSharp.text.Paragraph("Proc.Execução", meuFont))
             {
                 VerticalAlignment = Element.ALIGN_MIDDLE,
                 HorizontalAlignment = Element.ALIGN_LEFT
             };
             cell.BackgroundColor = BaseColor.LIGHT_GRAY;
             table.AddCell(cell);
-            cell = new PdfPCell(new Paragraph("Proc.Original", meuFont))
+            cell = new PdfPCell(new iTextSharp.text.Paragraph("Proc.Original", meuFont))
             {
                 VerticalAlignment = Element.ALIGN_MIDDLE,
                 HorizontalAlignment = Element.ALIGN_LEFT
             };
             cell.BackgroundColor = BaseColor.LIGHT_GRAY;
             table.AddCell(cell);
-            cell = new PdfPCell(new Paragraph("Procedimento", meuFont))
+            cell = new PdfPCell(new iTextSharp.text.Paragraph("Procedimento", meuFont))
             {
                 VerticalAlignment = Element.ALIGN_MIDDLE,
                 HorizontalAlignment = Element.ALIGN_LEFT
             };
             cell.BackgroundColor = BaseColor.LIGHT_GRAY;
             table.AddCell(cell);
-            cell = new PdfPCell(new Paragraph("Requerente", meuFont))
+            cell = new PdfPCell(new iTextSharp.text.Paragraph("Requerente", meuFont))
             {
                 VerticalAlignment = Element.ALIGN_MIDDLE,
                 HorizontalAlignment = Element.ALIGN_LEFT
             };
             cell.BackgroundColor = BaseColor.LIGHT_GRAY;
             table.AddCell(cell);
-            cell = new PdfPCell(new Paragraph("Requerido", meuFont))
+            cell = new PdfPCell(new iTextSharp.text.Paragraph("Requerido", meuFont))
             {
                 VerticalAlignment = Element.ALIGN_MIDDLE,
                 HorizontalAlignment = Element.ALIGN_LEFT
             };
             cell.BackgroundColor = BaseColor.LIGHT_GRAY;
             table.AddCell(cell);
-            cell = new PdfPCell(new Paragraph("Beneficiário", meuFont))
+            cell = new PdfPCell(new iTextSharp.text.Paragraph("Beneficiário", meuFont))
             {
                 VerticalAlignment = Element.ALIGN_MIDDLE,
                 HorizontalAlignment = Element.ALIGN_LEFT
             };
             cell.BackgroundColor = BaseColor.LIGHT_GRAY;
             table.AddCell(cell);
-            cell = new PdfPCell(new Paragraph("Ano", meuFont))
+            cell = new PdfPCell(new iTextSharp.text.Paragraph("Ano", meuFont))
             {
                 VerticalAlignment = Element.ALIGN_MIDDLE,
                 HorizontalAlignment = Element.ALIGN_LEFT
             };
             cell.BackgroundColor = BaseColor.LIGHT_GRAY;
             table.AddCell(cell);
-            cell = new PdfPCell(new Paragraph("Valor (R$)", meuFont))
+            cell = new PdfPCell(new iTextSharp.text.Paragraph("Valor (R$)", meuFont))
             {
                 VerticalAlignment = Element.ALIGN_MIDDLE,
                 HorizontalAlignment = Element.ALIGN_LEFT
             };
             cell.BackgroundColor = BaseColor.LIGHT_GRAY;
             table.AddCell(cell);
-            cell = new PdfPCell(new Paragraph("Situação", meuFont))
+            cell = new PdfPCell(new iTextSharp.text.Paragraph("Situação", meuFont))
             {
                 VerticalAlignment = Element.ALIGN_MIDDLE,
                 HorizontalAlignment = Element.ALIGN_LEFT
@@ -1437,42 +1438,42 @@ namespace ERP_Condominios_Solution.Controllers
 
             foreach (PRECATORIO item in lista)
             {
-                cell = new PdfPCell(new Paragraph(item.TRF.TRF1_NM_NOME, meuFont))
+                cell = new PdfPCell(new iTextSharp.text.Paragraph(item.TRF.TRF1_NM_NOME, meuFont))
                 {
                     VerticalAlignment = Element.ALIGN_MIDDLE, HorizontalAlignment = Element.ALIGN_LEFT
                 };
                 table.AddCell(cell);
-                cell = new PdfPCell(new Paragraph(item.PREC_NM_PRECATORIO, meuFont))
+                cell = new PdfPCell(new iTextSharp.text.Paragraph(item.PREC_NM_PRECATORIO, meuFont))
                 {
                     VerticalAlignment = Element.ALIGN_MIDDLE,
                     HorizontalAlignment = Element.ALIGN_LEFT
                 };
                 table.AddCell(cell);
-                cell = new PdfPCell(new Paragraph(item.PREC_NM_PROC_EXECUCAO, meuFont))
+                cell = new PdfPCell(new iTextSharp.text.Paragraph(item.PREC_NM_PROC_EXECUCAO, meuFont))
                 {
                     VerticalAlignment = Element.ALIGN_MIDDLE,
                     HorizontalAlignment = Element.ALIGN_LEFT
                 };
                 table.AddCell(cell);
-                cell = new PdfPCell(new Paragraph(item.PREC_NM_PROCESSO_ORIGEM, meuFont))
+                cell = new PdfPCell(new iTextSharp.text.Paragraph(item.PREC_NM_PROCESSO_ORIGEM, meuFont))
                 {
                     VerticalAlignment = Element.ALIGN_MIDDLE,
                     HorizontalAlignment = Element.ALIGN_LEFT
                 };
                 table.AddCell(cell);
-                cell = new PdfPCell(new Paragraph(item.PREC_SG_PROCEDIMENTO, meuFont))
+                cell = new PdfPCell(new iTextSharp.text.Paragraph(item.PREC_SG_PROCEDIMENTO, meuFont))
                 {
                     VerticalAlignment = Element.ALIGN_MIDDLE,
                     HorizontalAlignment = Element.ALIGN_LEFT
                 };
                 table.AddCell(cell);
-                cell = new PdfPCell(new Paragraph(item.PREC_NM_REQUERENTE, meuFont))
+                cell = new PdfPCell(new iTextSharp.text.Paragraph(item.PREC_NM_REQUERENTE, meuFont))
                 {
                     VerticalAlignment = Element.ALIGN_MIDDLE,
                     HorizontalAlignment = Element.ALIGN_LEFT
                 };
                 table.AddCell(cell);
-                cell = new PdfPCell(new Paragraph(item.PREC_NM_REQUERIDO, meuFont))
+                cell = new PdfPCell(new iTextSharp.text.Paragraph(item.PREC_NM_REQUERIDO, meuFont))
                 {
                     VerticalAlignment = Element.ALIGN_MIDDLE,
                     HorizontalAlignment = Element.ALIGN_LEFT
@@ -1480,7 +1481,7 @@ namespace ERP_Condominios_Solution.Controllers
                 table.AddCell(cell);
                 if (item.BENEFICIARIO != null)
                 {
-                    cell = new PdfPCell(new Paragraph(item.BENEFICIARIO.BENE_NM_NOME, meuFont))
+                    cell = new PdfPCell(new iTextSharp.text.Paragraph(item.BENEFICIARIO.BENE_NM_NOME, meuFont))
                     {
                         VerticalAlignment = Element.ALIGN_MIDDLE,
                         HorizontalAlignment = Element.ALIGN_LEFT
@@ -1489,14 +1490,14 @@ namespace ERP_Condominios_Solution.Controllers
                 }
                 else
                 {
-                    cell = new PdfPCell(new Paragraph("-", meuFont))
+                    cell = new PdfPCell(new iTextSharp.text.Paragraph("-", meuFont))
                     {
                         VerticalAlignment = Element.ALIGN_MIDDLE,
                         HorizontalAlignment = Element.ALIGN_LEFT
                     };
                     table.AddCell(cell);
                 }
-                cell = new PdfPCell(new Paragraph(item.PREC_NR_ANO, meuFont))
+                cell = new PdfPCell(new iTextSharp.text.Paragraph(item.PREC_NR_ANO, meuFont))
                 {
                     VerticalAlignment = Element.ALIGN_MIDDLE,
                     HorizontalAlignment = Element.ALIGN_LEFT
@@ -1504,7 +1505,7 @@ namespace ERP_Condominios_Solution.Controllers
                 table.AddCell(cell);
                 if (item.PREC_VL_BEN_VALOR_REQUISITADO != null)
                 {
-                    cell = new PdfPCell(new Paragraph(CrossCutting.Formatters.DecimalFormatter(item.PREC_VL_BEN_VALOR_REQUISITADO.Value), meuFont))
+                    cell = new PdfPCell(new iTextSharp.text.Paragraph(CrossCutting.Formatters.DecimalFormatter(item.PREC_VL_BEN_VALOR_REQUISITADO.Value), meuFont))
                     {
                         VerticalAlignment = Element.ALIGN_MIDDLE,
                         HorizontalAlignment = Element.ALIGN_LEFT
@@ -1512,7 +1513,7 @@ namespace ERP_Condominios_Solution.Controllers
                 }
                 else
                 {
-                    cell = new PdfPCell(new Paragraph("-", meuFont))
+                    cell = new PdfPCell(new iTextSharp.text.Paragraph("-", meuFont))
                     {
                         VerticalAlignment = Element.ALIGN_MIDDLE,
                         HorizontalAlignment = Element.ALIGN_LEFT
@@ -1521,7 +1522,7 @@ namespace ERP_Condominios_Solution.Controllers
                 table.AddCell(cell);
                 if (item.PREC_IN_SITUACAO_ATUAL == 1)
                 {
-                    cell = new PdfPCell(new Paragraph("Pago", meuFont))
+                    cell = new PdfPCell(new iTextSharp.text.Paragraph("Pago", meuFont))
                     {
                         VerticalAlignment = Element.ALIGN_MIDDLE,
                         HorizontalAlignment = Element.ALIGN_LEFT
@@ -1529,7 +1530,7 @@ namespace ERP_Condominios_Solution.Controllers
                 }
                 else if (item.PREC_IN_SITUACAO_ATUAL == 3)
                 {
-                    cell = new PdfPCell(new Paragraph("Parcial", meuFont))
+                    cell = new PdfPCell(new iTextSharp.text.Paragraph("Parcial", meuFont))
                     {
                         VerticalAlignment = Element.ALIGN_MIDDLE,
                         HorizontalAlignment = Element.ALIGN_LEFT
@@ -1537,7 +1538,7 @@ namespace ERP_Condominios_Solution.Controllers
                 }
                 else 
                 {
-                    cell = new PdfPCell(new Paragraph("Não Pago", meuFont))
+                    cell = new PdfPCell(new iTextSharp.text.Paragraph("Não Pago", meuFont))
                     {
                         VerticalAlignment = Element.ALIGN_MIDDLE,
                         HorizontalAlignment = Element.ALIGN_LEFT
@@ -1548,11 +1549,11 @@ namespace ERP_Condominios_Solution.Controllers
             pdfDoc.Add(table);
 
             // Linha Horizontal
-            Paragraph line2 = new Paragraph(new Chunk(new iTextSharp.text.pdf.draw.LineSeparator(0.0F, 100.0F, BaseColor.BLUE, Element.ALIGN_LEFT, 1)));
+            iTextSharp.text.Paragraph line2 = new iTextSharp.text.Paragraph(new Chunk(new iTextSharp.text.pdf.draw.LineSeparator(0.0F, 100.0F, BaseColor.BLUE, Element.ALIGN_LEFT, 1)));
             pdfDoc.Add(line2);
 
             // Rodapé
-            Chunk chunk1 = new Chunk("Parâmetros de filtro: ", FontFactory.GetFont("Arial", 10, Font.NORMAL, BaseColor.BLACK));
+            Chunk chunk1 = new Chunk("Parâmetros de filtro: ", FontFactory.GetFont("Arial", 10, iTextSharp.text.Font.NORMAL, BaseColor.BLACK));
             pdfDoc.Add(chunk1);
 
             String parametros = String.Empty;
@@ -1645,11 +1646,11 @@ namespace ERP_Condominios_Solution.Controllers
             {
                 parametros = "Nenhum filtro definido.";
             }
-            Chunk chunk = new Chunk(parametros, FontFactory.GetFont("Arial", 9, Font.NORMAL, BaseColor.BLACK));
+            Chunk chunk = new Chunk(parametros, FontFactory.GetFont("Arial", 9, iTextSharp.text.Font.NORMAL, BaseColor.BLACK));
             pdfDoc.Add(chunk);
 
             // Linha Horizontal
-            Paragraph line3 = new Paragraph(new Chunk(new iTextSharp.text.pdf.draw.LineSeparator(0.0F, 100.0F, BaseColor.BLUE, Element.ALIGN_LEFT, 1)));
+            iTextSharp.text.Paragraph line3 = new iTextSharp.text.Paragraph(new Chunk(new iTextSharp.text.pdf.draw.LineSeparator(0.0F, 100.0F, BaseColor.BLUE, Element.ALIGN_LEFT, 1)));
             pdfDoc.Add(line3);
 
             // Finaliza
@@ -1672,21 +1673,21 @@ namespace ERP_Condominios_Solution.Controllers
             String data = DateTime.Today.Date.ToShortDateString();
             data = data.Substring(0, 2) + data.Substring(3, 2) + data.Substring(6, 4);
             String nomeRel = "Precatorio_" + tran.PREC_CD_ID.ToString() + "_" + data + ".pdf";
-            Font meuFont = FontFactory.GetFont("Arial", 8, iTextSharp.text.Font.NORMAL, BaseColor.BLACK);
-            Font meuFont1 = FontFactory.GetFont("Arial", 9, iTextSharp.text.Font.NORMAL, BaseColor.BLACK);
-            Font meuFont2 = FontFactory.GetFont("Arial", 12, iTextSharp.text.Font.NORMAL, BaseColor.BLACK);
-            Font meuFontBold = FontFactory.GetFont("Arial", 8, iTextSharp.text.Font.BOLD, BaseColor.BLACK);
-            Font meuFont3 = FontFactory.GetFont("Arial", 8, iTextSharp.text.Font.BOLD, BaseColor.GREEN);
-            Font meuFont4 = FontFactory.GetFont("Arial", 8, iTextSharp.text.Font.BOLD, BaseColor.RED);
-            Font meuFont5 = FontFactory.GetFont("Arial", 8, iTextSharp.text.Font.BOLD, BaseColor.BLUE);
+            iTextSharp.text.Font meuFont = FontFactory.GetFont("Arial", 8, iTextSharp.text.Font.NORMAL, BaseColor.BLACK);
+            iTextSharp.text.Font meuFont1 = FontFactory.GetFont("Arial", 9, iTextSharp.text.Font.NORMAL, BaseColor.BLACK);
+            iTextSharp.text.Font meuFont2 = FontFactory.GetFont("Arial", 12, iTextSharp.text.Font.NORMAL, BaseColor.BLACK);
+            iTextSharp.text.Font meuFontBold = FontFactory.GetFont("Arial", 8, iTextSharp.text.Font.BOLD, BaseColor.BLACK);
+            iTextSharp.text.Font meuFont3 = FontFactory.GetFont("Arial", 8, iTextSharp.text.Font.BOLD, BaseColor.GREEN);
+            iTextSharp.text.Font meuFont4 = FontFactory.GetFont("Arial", 8, iTextSharp.text.Font.BOLD, BaseColor.RED);
+            iTextSharp.text.Font meuFont5 = FontFactory.GetFont("Arial", 8, iTextSharp.text.Font.BOLD, BaseColor.BLUE);
 
             // Cria documento
-            Document pdfDoc = new Document(PageSize.A4, 10, 10, 10, 10);
+            iTextSharp.text.Document pdfDoc = new iTextSharp.text.Document(PageSize.A4, 10, 10, 10, 10);
             PdfWriter pdfWriter = PdfWriter.GetInstance(pdfDoc, Response.OutputStream);
             pdfDoc.Open();
 
             // Linha horizontal
-            Paragraph line1 = new Paragraph(new Chunk(new iTextSharp.text.pdf.draw.LineSeparator(0.0F, 100.0F, BaseColor.BLUE, Element.ALIGN_LEFT, 1)));
+            iTextSharp.text.Paragraph line1 = new iTextSharp.text.Paragraph(new Chunk(new iTextSharp.text.pdf.draw.LineSeparator(0.0F, 100.0F, BaseColor.BLUE, Element.ALIGN_LEFT, 1)));
             pdfDoc.Add(line1);
 
             // Cabeçalho
@@ -1703,7 +1704,7 @@ namespace ERP_Condominios_Solution.Controllers
             cell.AddElement(image);
             table.AddCell(cell);
 
-            cell = new PdfPCell(new Paragraph("Precatório - Detalhes", meuFont2))
+            cell = new PdfPCell(new iTextSharp.text.Paragraph("Precatório - Detalhes", meuFont2))
             {
                 VerticalAlignment = Element.ALIGN_MIDDLE,
                 HorizontalAlignment = Element.ALIGN_CENTER
@@ -1714,9 +1715,9 @@ namespace ERP_Condominios_Solution.Controllers
             pdfDoc.Add(table);
 
             // Linha Horizontal
-            line1 = new Paragraph(new Chunk(new iTextSharp.text.pdf.draw.LineSeparator(0.0F, 100.0F, BaseColor.BLUE, Element.ALIGN_LEFT, 1)));
+            line1 = new iTextSharp.text.Paragraph(new Chunk(new iTextSharp.text.pdf.draw.LineSeparator(0.0F, 100.0F, BaseColor.BLUE, Element.ALIGN_LEFT, 1)));
             pdfDoc.Add(line1);
-            line1 = new Paragraph("  ");
+            line1 = new iTextSharp.text.Paragraph("  ");
             pdfDoc.Add(line1);
 
             // Dados Gerais
@@ -1726,7 +1727,7 @@ namespace ERP_Condominios_Solution.Controllers
             table.SpacingBefore = 1f;
             table.SpacingAfter = 1f;
 
-            cell = new PdfPCell(new Paragraph("Dados Gerais", meuFontBold));
+            cell = new PdfPCell(new iTextSharp.text.Paragraph("Dados Gerais", meuFontBold));
             cell.Border = 0;
             cell.Colspan = 6;
             cell.VerticalAlignment = Element.ALIGN_MIDDLE;
@@ -1735,7 +1736,7 @@ namespace ERP_Condominios_Solution.Controllers
 
             if (tran.PREC_IN_SITUACAO_ATUAL == 1)
             {
-                cell = new PdfPCell(new Paragraph("Situação Atual: Pago", meuFont3));
+                cell = new PdfPCell(new iTextSharp.text.Paragraph("Situação Atual: Pago", meuFont3));
                 cell.Border = 0;
                 cell.Colspan = 6;
                 cell.VerticalAlignment = Element.ALIGN_MIDDLE;
@@ -1744,7 +1745,7 @@ namespace ERP_Condominios_Solution.Controllers
             }
             else if (tran.PREC_IN_SITUACAO_ATUAL == 3)
             {
-                cell = new PdfPCell(new Paragraph("Situação Atual: Pago Parcial", meuFont5));
+                cell = new PdfPCell(new iTextSharp.text.Paragraph("Situação Atual: Pago Parcial", meuFont5));
                 cell.Border = 0;
                 cell.Colspan = 6;
                 cell.VerticalAlignment = Element.ALIGN_MIDDLE;
@@ -1753,7 +1754,7 @@ namespace ERP_Condominios_Solution.Controllers
             }
             else
             {
-                cell = new PdfPCell(new Paragraph("Situação Atual: Não Pago", meuFont4));
+                cell = new PdfPCell(new iTextSharp.text.Paragraph("Situação Atual: Não Pago", meuFont4));
                 cell.Border = 0;
                 cell.Colspan = 6;
                 cell.VerticalAlignment = Element.ALIGN_MIDDLE;
@@ -1761,25 +1762,25 @@ namespace ERP_Condominios_Solution.Controllers
                 table.AddCell(cell);
             }
 
-            cell = new PdfPCell(new Paragraph("Tribunal: " + tran.TRF.TRF1_NM_NOME, meuFont));
+            cell = new PdfPCell(new iTextSharp.text.Paragraph("Tribunal: " + tran.TRF.TRF1_NM_NOME, meuFont));
             cell.Border = 0;
             cell.Colspan = 1;
             cell.VerticalAlignment = Element.ALIGN_MIDDLE;
             cell.HorizontalAlignment = Element.ALIGN_LEFT;
             table.AddCell(cell);
-            cell = new PdfPCell(new Paragraph("Número: " + tran.PREC_NM_PRECATORIO, meuFont));
+            cell = new PdfPCell(new iTextSharp.text.Paragraph("Número: " + tran.PREC_NM_PRECATORIO, meuFont));
             cell.Border = 0;
             cell.Colspan = 1;
             cell.VerticalAlignment = Element.ALIGN_MIDDLE;
             cell.HorizontalAlignment = Element.ALIGN_LEFT;
             table.AddCell(cell);
-            cell = new PdfPCell(new Paragraph("Processo Origem: " + tran.PREC_NM_PROCESSO_ORIGEM, meuFont));
+            cell = new PdfPCell(new iTextSharp.text.Paragraph("Processo Origem: " + tran.PREC_NM_PROCESSO_ORIGEM, meuFont));
             cell.Border = 0;
             cell.Colspan = 2;
             cell.VerticalAlignment = Element.ALIGN_MIDDLE;
             cell.HorizontalAlignment = Element.ALIGN_LEFT;
             table.AddCell(cell);
-            cell = new PdfPCell(new Paragraph("Ano: " + tran.PREC_NR_ANO, meuFont));
+            cell = new PdfPCell(new iTextSharp.text.Paragraph("Ano: " + tran.PREC_NR_ANO, meuFont));
             cell.Border = 0;
             cell.Colspan = 1;
             cell.VerticalAlignment = Element.ALIGN_MIDDLE;
@@ -1787,7 +1788,7 @@ namespace ERP_Condominios_Solution.Controllers
             table.AddCell(cell);
             if (tran.NATUREZA != null)
             {
-                cell = new PdfPCell(new Paragraph("Natureza: " + tran.NATUREZA.NATU_NM_NOME, meuFont));
+                cell = new PdfPCell(new iTextSharp.text.Paragraph("Natureza: " + tran.NATUREZA.NATU_NM_NOME, meuFont));
                 cell.Border = 0;
                 cell.Colspan = 1;
                 cell.VerticalAlignment = Element.ALIGN_MIDDLE;
@@ -1796,7 +1797,7 @@ namespace ERP_Condominios_Solution.Controllers
             }
             else
             {
-                cell = new PdfPCell(new Paragraph("Natureza: -", meuFont));
+                cell = new PdfPCell(new iTextSharp.text.Paragraph("Natureza: -", meuFont));
                 cell.Border = 0;
                 cell.Colspan = 1;
                 cell.VerticalAlignment = Element.ALIGN_MIDDLE;
@@ -1804,38 +1805,38 @@ namespace ERP_Condominios_Solution.Controllers
                 table.AddCell(cell);
             }
 
-            cell = new PdfPCell(new Paragraph("Requerente: " + tran.PREC_NM_REQUERENTE, meuFont));
+            cell = new PdfPCell(new iTextSharp.text.Paragraph("Requerente: " + tran.PREC_NM_REQUERENTE, meuFont));
             cell.Border = 0;
             cell.Colspan = 2;
             cell.VerticalAlignment = Element.ALIGN_MIDDLE;
             cell.HorizontalAlignment = Element.ALIGN_LEFT;
             table.AddCell(cell);
-            cell = new PdfPCell(new Paragraph("Requerido: " + tran.PREC_NM_REQUERIDO, meuFont));
+            cell = new PdfPCell(new iTextSharp.text.Paragraph("Requerido: " + tran.PREC_NM_REQUERIDO, meuFont));
             cell.Border = 0;
             cell.Colspan = 2;
             cell.VerticalAlignment = Element.ALIGN_MIDDLE;
             cell.HorizontalAlignment = Element.ALIGN_LEFT;
             table.AddCell(cell);
-            cell = new PdfPCell(new Paragraph("Advogado: " + tran.PREC_NM_ADVOGADO, meuFont));
+            cell = new PdfPCell(new iTextSharp.text.Paragraph("Advogado: " + tran.PREC_NM_ADVOGADO, meuFont));
             cell.Border = 0;
             cell.Colspan = 2;
             cell.VerticalAlignment = Element.ALIGN_MIDDLE;
             cell.HorizontalAlignment = Element.ALIGN_LEFT;
             table.AddCell(cell);
 
-            cell = new PdfPCell(new Paragraph("Deprecante: " + tran.PREC_NM_DEPRECANTE, meuFont));
+            cell = new PdfPCell(new iTextSharp.text.Paragraph("Deprecante: " + tran.PREC_NM_DEPRECANTE, meuFont));
             cell.Border = 0;
             cell.Colspan = 2;
             cell.VerticalAlignment = Element.ALIGN_MIDDLE;
             cell.HorizontalAlignment = Element.ALIGN_LEFT;
             table.AddCell(cell);
-            cell = new PdfPCell(new Paragraph("Situação Requisição: " + tran.PREC_NM_SITUACAO_REQUISICAO, meuFont));
+            cell = new PdfPCell(new iTextSharp.text.Paragraph("Situação Requisição: " + tran.PREC_NM_SITUACAO_REQUISICAO, meuFont));
             cell.Border = 0;
             cell.Colspan = 2;
             cell.VerticalAlignment = Element.ALIGN_MIDDLE;
             cell.HorizontalAlignment = Element.ALIGN_LEFT;
             table.AddCell(cell);
-            cell = new PdfPCell(new Paragraph("Procedimento: " + tran.PREC_SG_PROCEDIMENTO, meuFont));
+            cell = new PdfPCell(new iTextSharp.text.Paragraph("Procedimento: " + tran.PREC_SG_PROCEDIMENTO, meuFont));
             cell.Border = 0;
             cell.Colspan = 2;
             cell.VerticalAlignment = Element.ALIGN_MIDDLE;
@@ -1844,7 +1845,7 @@ namespace ERP_Condominios_Solution.Controllers
 
             if (tran.PREC_VL_VALOR_INSCRITO_PROPOSTA != null)
             {
-                cell = new PdfPCell(new Paragraph("Valor Insc.Proposta (R$): " + CrossCutting.Formatters.DecimalFormatter(tran.PREC_VL_VALOR_INSCRITO_PROPOSTA.Value), meuFont));
+                cell = new PdfPCell(new iTextSharp.text.Paragraph("Valor Insc.Proposta (R$): " + CrossCutting.Formatters.DecimalFormatter(tran.PREC_VL_VALOR_INSCRITO_PROPOSTA.Value), meuFont));
                 cell.Border = 0;
                 cell.Colspan = 2;
                 cell.VerticalAlignment = Element.ALIGN_MIDDLE;
@@ -1853,34 +1854,34 @@ namespace ERP_Condominios_Solution.Controllers
             }
             else
             {
-                cell = new PdfPCell(new Paragraph("Valor Insc.Proposta (R$): -", meuFont));
+                cell = new PdfPCell(new iTextSharp.text.Paragraph("Valor Insc.Proposta (R$): -", meuFont));
                 cell.Border = 0;
                 cell.Colspan = 2;
                 cell.VerticalAlignment = Element.ALIGN_MIDDLE;
                 cell.HorizontalAlignment = Element.ALIGN_LEFT;
                 table.AddCell(cell);
             }
-            cell = new PdfPCell(new Paragraph("Processo Execução: " + tran.PREC_NM_PROC_EXECUCAO, meuFont));
+            cell = new PdfPCell(new iTextSharp.text.Paragraph("Processo Execução: " + tran.PREC_NM_PROC_EXECUCAO, meuFont));
             cell.Border = 0;
             cell.Colspan = 2;
             cell.VerticalAlignment = Element.ALIGN_MIDDLE;
             cell.HorizontalAlignment = Element.ALIGN_LEFT;
             table.AddCell(cell);
-            cell = new PdfPCell(new Paragraph("Ofício Requisitório: " + tran.PREC_NM_OFICIO_REQUISITORIO, meuFont));
+            cell = new PdfPCell(new iTextSharp.text.Paragraph("Ofício Requisitório: " + tran.PREC_NM_OFICIO_REQUISITORIO, meuFont));
             cell.Border = 0;
             cell.Colspan = 2;
             cell.VerticalAlignment = Element.ALIGN_MIDDLE;
             cell.HorizontalAlignment = Element.ALIGN_LEFT;
             table.AddCell(cell);
 
-            cell = new PdfPCell(new Paragraph("Assunto: " + tran.PREC_NM_ASSUNTO, meuFont));
+            cell = new PdfPCell(new iTextSharp.text.Paragraph("Assunto: " + tran.PREC_NM_ASSUNTO, meuFont));
             cell.Border = 0;
             cell.Colspan = 6;
             cell.VerticalAlignment = Element.ALIGN_MIDDLE;
             cell.HorizontalAlignment = Element.ALIGN_LEFT;
             table.AddCell(cell);
 
-            cell = new PdfPCell(new Paragraph("Beneficiário", meuFontBold));
+            cell = new PdfPCell(new iTextSharp.text.Paragraph("Beneficiário", meuFontBold));
             cell.Border = 0;
             cell.Colspan = 6;
             cell.VerticalAlignment = Element.ALIGN_MIDDLE;
@@ -1889,25 +1890,25 @@ namespace ERP_Condominios_Solution.Controllers
 
             if (tran.BENEFICIARIO != null)
             {
-                cell = new PdfPCell(new Paragraph("Nome: " + tran.BENEFICIARIO.BENE_NM_NOME, meuFont));
+                cell = new PdfPCell(new iTextSharp.text.Paragraph("Nome: " + tran.BENEFICIARIO.BENE_NM_NOME, meuFont));
                 cell.Border = 0;
                 cell.Colspan = 2;
                 cell.VerticalAlignment = Element.ALIGN_MIDDLE;
                 cell.HorizontalAlignment = Element.ALIGN_LEFT;
                 table.AddCell(cell);
-                cell = new PdfPCell(new Paragraph("CPF: " + tran.BENEFICIARIO.BENE_NR_CPF, meuFont));
+                cell = new PdfPCell(new iTextSharp.text.Paragraph("CPF: " + tran.BENEFICIARIO.BENE_NR_CPF, meuFont));
                 cell.Border = 0;
                 cell.Colspan = 1;
                 cell.VerticalAlignment = Element.ALIGN_MIDDLE;
                 cell.HorizontalAlignment = Element.ALIGN_LEFT;
                 table.AddCell(cell);
-                cell = new PdfPCell(new Paragraph("CNPJ: " + tran.BENEFICIARIO.BENE_NR_CNPJ, meuFont));
+                cell = new PdfPCell(new iTextSharp.text.Paragraph("CNPJ: " + tran.BENEFICIARIO.BENE_NR_CNPJ, meuFont));
                 cell.Border = 0;
                 cell.Colspan = 1;
                 cell.VerticalAlignment = Element.ALIGN_MIDDLE;
                 cell.HorizontalAlignment = Element.ALIGN_LEFT;
                 table.AddCell(cell);
-                cell = new PdfPCell(new Paragraph("E-Mail: " + tran.BENEFICIARIO.BENE_EM_EMAIL, meuFont));
+                cell = new PdfPCell(new iTextSharp.text.Paragraph("E-Mail: " + tran.BENEFICIARIO.BENE_EM_EMAIL, meuFont));
                 cell.Border = 0;
                 cell.Colspan = 2;
                 cell.VerticalAlignment = Element.ALIGN_MIDDLE;
@@ -1916,25 +1917,25 @@ namespace ERP_Condominios_Solution.Controllers
             }
             else
             {
-                cell = new PdfPCell(new Paragraph("Nome: -", meuFont));
+                cell = new PdfPCell(new iTextSharp.text.Paragraph("Nome: -", meuFont));
                 cell.Border = 0;
                 cell.Colspan = 2;
                 cell.VerticalAlignment = Element.ALIGN_MIDDLE;
                 cell.HorizontalAlignment = Element.ALIGN_LEFT;
                 table.AddCell(cell);
-                cell = new PdfPCell(new Paragraph("CPF: -", meuFont));
+                cell = new PdfPCell(new iTextSharp.text.Paragraph("CPF: -", meuFont));
                 cell.Border = 0;
                 cell.Colspan = 1;
                 cell.VerticalAlignment = Element.ALIGN_MIDDLE;
                 cell.HorizontalAlignment = Element.ALIGN_LEFT;
                 table.AddCell(cell);
-                cell = new PdfPCell(new Paragraph("CNPJ: -", meuFont));
+                cell = new PdfPCell(new iTextSharp.text.Paragraph("CNPJ: -", meuFont));
                 cell.Border = 0;
                 cell.Colspan = 1;
                 cell.VerticalAlignment = Element.ALIGN_MIDDLE;
                 cell.HorizontalAlignment = Element.ALIGN_LEFT;
                 table.AddCell(cell);
-                cell = new PdfPCell(new Paragraph("E-Mail: -", meuFont));
+                cell = new PdfPCell(new iTextSharp.text.Paragraph("E-Mail: -", meuFont));
                 cell.Border = 0;
                 cell.Colspan = 2;
                 cell.VerticalAlignment = Element.ALIGN_MIDDLE;
@@ -1944,7 +1945,7 @@ namespace ERP_Condominios_Solution.Controllers
 
             if (tran.PREC_DT_BEN_DATABASE != null)
             {
-                cell = new PdfPCell(new Paragraph("Data: " + tran.PREC_DT_BEN_DATABASE.Value.ToShortDateString(), meuFont));
+                cell = new PdfPCell(new iTextSharp.text.Paragraph("Data: " + tran.PREC_DT_BEN_DATABASE.Value.ToShortDateString(), meuFont));
                 cell.Border = 0;
                 cell.Colspan = 1;
                 cell.VerticalAlignment = Element.ALIGN_MIDDLE;
@@ -1953,7 +1954,7 @@ namespace ERP_Condominios_Solution.Controllers
             }
             else
             {
-                cell = new PdfPCell(new Paragraph("Data: -", meuFont));
+                cell = new PdfPCell(new iTextSharp.text.Paragraph("Data: -", meuFont));
                 cell.Border = 0;
                 cell.Colspan = 1;
                 cell.VerticalAlignment = Element.ALIGN_MIDDLE;
@@ -1962,7 +1963,7 @@ namespace ERP_Condominios_Solution.Controllers
             }
             if (tran.PREC_VL_BEN_VALOR_PRINCIPAL != null)
             {
-                cell = new PdfPCell(new Paragraph("Valor Principal (R$): " + CrossCutting.Formatters.DecimalFormatter(tran.PREC_VL_BEN_VALOR_PRINCIPAL.Value), meuFont));
+                cell = new PdfPCell(new iTextSharp.text.Paragraph("Valor Principal (R$): " + CrossCutting.Formatters.DecimalFormatter(tran.PREC_VL_BEN_VALOR_PRINCIPAL.Value), meuFont));
                 cell.Border = 0;
                 cell.Colspan = 2;
                 cell.VerticalAlignment = Element.ALIGN_MIDDLE;
@@ -1971,7 +1972,7 @@ namespace ERP_Condominios_Solution.Controllers
             }
             else
             {
-                cell = new PdfPCell(new Paragraph("Valor Principal (R$): -", meuFont));
+                cell = new PdfPCell(new iTextSharp.text.Paragraph("Valor Principal (R$): -", meuFont));
                 cell.Border = 0;
                 cell.Colspan = 2;
                 cell.VerticalAlignment = Element.ALIGN_MIDDLE;
@@ -1980,7 +1981,7 @@ namespace ERP_Condominios_Solution.Controllers
             }
             if (tran.PREC_VL_JUROS != null)
             {
-                cell = new PdfPCell(new Paragraph("Juros (R$): " + CrossCutting.Formatters.DecimalFormatter(tran.PREC_VL_JUROS.Value), meuFont));
+                cell = new PdfPCell(new iTextSharp.text.Paragraph("Juros (R$): " + CrossCutting.Formatters.DecimalFormatter(tran.PREC_VL_JUROS.Value), meuFont));
                 cell.Border = 0;
                 cell.Colspan = 2;
                 cell.VerticalAlignment = Element.ALIGN_MIDDLE;
@@ -1989,14 +1990,14 @@ namespace ERP_Condominios_Solution.Controllers
             }
             else
             {
-                cell = new PdfPCell(new Paragraph("Juros (R$): -", meuFont));
+                cell = new PdfPCell(new iTextSharp.text.Paragraph("Juros (R$): -", meuFont));
                 cell.Border = 0;
                 cell.Colspan = 2;
                 cell.VerticalAlignment = Element.ALIGN_MIDDLE;
                 cell.HorizontalAlignment = Element.ALIGN_LEFT;
                 table.AddCell(cell);
             }
-            cell = new PdfPCell(new Paragraph("IR RRA: " + tran.PREC_SG_BEN_IR_RRA, meuFont));
+            cell = new PdfPCell(new iTextSharp.text.Paragraph("IR RRA: " + tran.PREC_SG_BEN_IR_RRA, meuFont));
             cell.Border = 0;
             cell.Colspan = 1;
             cell.VerticalAlignment = Element.ALIGN_MIDDLE;
@@ -2005,7 +2006,7 @@ namespace ERP_Condominios_Solution.Controllers
 
             if (tran.PREC_VL_VALOR_INICIAL_PSS != null)
             {
-                cell = new PdfPCell(new Paragraph("Valor Inic. PSS   (R$): " + CrossCutting.Formatters.DecimalFormatter(tran.PREC_VL_VALOR_INICIAL_PSS.Value), meuFont));
+                cell = new PdfPCell(new iTextSharp.text.Paragraph("Valor Inic. PSS   (R$): " + CrossCutting.Formatters.DecimalFormatter(tran.PREC_VL_VALOR_INICIAL_PSS.Value), meuFont));
                 cell.Border = 0;
                 cell.Colspan = 2;
                 cell.VerticalAlignment = Element.ALIGN_MIDDLE;
@@ -2014,7 +2015,7 @@ namespace ERP_Condominios_Solution.Controllers
             }
             else
             {
-                cell = new PdfPCell(new Paragraph("Valor Inic. PSS (R$): -", meuFont));
+                cell = new PdfPCell(new iTextSharp.text.Paragraph("Valor Inic. PSS (R$): -", meuFont));
                 cell.Border = 0;
                 cell.Colspan = 2;
                 cell.VerticalAlignment = Element.ALIGN_MIDDLE;
@@ -2023,7 +2024,7 @@ namespace ERP_Condominios_Solution.Controllers
             }
             if (tran.PREC_BEN_MESES_EXE_ANTERIOR != null)
             {
-                cell = new PdfPCell(new Paragraph("Meses Execução Anterior: " + tran.PREC_BEN_MESES_EXE_ANTERIOR.Value.ToString(), meuFont));
+                cell = new PdfPCell(new iTextSharp.text.Paragraph("Meses Execução Anterior: " + tran.PREC_BEN_MESES_EXE_ANTERIOR.Value.ToString(), meuFont));
                 cell.Border = 0;
                 cell.Colspan = 4;
                 cell.VerticalAlignment = Element.ALIGN_MIDDLE;
@@ -2032,7 +2033,7 @@ namespace ERP_Condominios_Solution.Controllers
             }
             else
             {
-                cell = new PdfPCell(new Paragraph("Meses Execução Anterior: -", meuFont));
+                cell = new PdfPCell(new iTextSharp.text.Paragraph("Meses Execução Anterior: -", meuFont));
                 cell.Border = 0;
                 cell.Colspan = 4;
                 cell.VerticalAlignment = Element.ALIGN_MIDDLE;
@@ -2040,7 +2041,7 @@ namespace ERP_Condominios_Solution.Controllers
                 table.AddCell(cell);
             }
 
-            cell = new PdfPCell(new Paragraph("Advogado - Honorários", meuFontBold));
+            cell = new PdfPCell(new iTextSharp.text.Paragraph("Advogado - Honorários", meuFontBold));
             cell.Border = 0;
             cell.Colspan = 6;
             cell.VerticalAlignment = Element.ALIGN_MIDDLE;
@@ -2049,25 +2050,25 @@ namespace ERP_Condominios_Solution.Controllers
 
             if (tran.HONORARIO != null)
             {
-                cell = new PdfPCell(new Paragraph("Nome: " + tran.HONORARIO.HONO_NM_NOME, meuFont));
+                cell = new PdfPCell(new iTextSharp.text.Paragraph("Nome: " + tran.HONORARIO.HONO_NM_NOME, meuFont));
                 cell.Border = 0;
                 cell.Colspan = 2;
                 cell.VerticalAlignment = Element.ALIGN_MIDDLE;
                 cell.HorizontalAlignment = Element.ALIGN_LEFT;
                 table.AddCell(cell);
-                cell = new PdfPCell(new Paragraph("CPF: " + tran.HONORARIO.HONO_NR_CPF, meuFont));
+                cell = new PdfPCell(new iTextSharp.text.Paragraph("CPF: " + tran.HONORARIO.HONO_NR_CPF, meuFont));
                 cell.Border = 0;
                 cell.Colspan = 1;
                 cell.VerticalAlignment = Element.ALIGN_MIDDLE;
                 cell.HorizontalAlignment = Element.ALIGN_LEFT;
                 table.AddCell(cell);
-                cell = new PdfPCell(new Paragraph("CNPJ: " + tran.HONORARIO.HONO_NR_CNPJ, meuFont));
+                cell = new PdfPCell(new iTextSharp.text.Paragraph("CNPJ: " + tran.HONORARIO.HONO_NR_CNPJ, meuFont));
                 cell.Border = 0;
                 cell.Colspan = 1;
                 cell.VerticalAlignment = Element.ALIGN_MIDDLE;
                 cell.HorizontalAlignment = Element.ALIGN_LEFT;
                 table.AddCell(cell);
-                cell = new PdfPCell(new Paragraph("OAB: " + tran.HONORARIO.HONO_NR_OAB, meuFont));
+                cell = new PdfPCell(new iTextSharp.text.Paragraph("OAB: " + tran.HONORARIO.HONO_NR_OAB, meuFont));
                 cell.Border = 0;
                 cell.Colspan = 2;
                 cell.VerticalAlignment = Element.ALIGN_MIDDLE;
@@ -2076,25 +2077,25 @@ namespace ERP_Condominios_Solution.Controllers
             }
             else
             {
-                cell = new PdfPCell(new Paragraph("Nome: -", meuFont));
+                cell = new PdfPCell(new iTextSharp.text.Paragraph("Nome: -", meuFont));
                 cell.Border = 0;
                 cell.Colspan = 2;
                 cell.VerticalAlignment = Element.ALIGN_MIDDLE;
                 cell.HorizontalAlignment = Element.ALIGN_LEFT;
                 table.AddCell(cell);
-                cell = new PdfPCell(new Paragraph("CPF: -", meuFont));
+                cell = new PdfPCell(new iTextSharp.text.Paragraph("CPF: -", meuFont));
                 cell.Border = 0;
                 cell.Colspan = 1;
                 cell.VerticalAlignment = Element.ALIGN_MIDDLE;
                 cell.HorizontalAlignment = Element.ALIGN_LEFT;
                 table.AddCell(cell);
-                cell = new PdfPCell(new Paragraph("CNPJ: -", meuFont));
+                cell = new PdfPCell(new iTextSharp.text.Paragraph("CNPJ: -", meuFont));
                 cell.Border = 0;
                 cell.Colspan = 1;
                 cell.VerticalAlignment = Element.ALIGN_MIDDLE;
                 cell.HorizontalAlignment = Element.ALIGN_LEFT;
                 table.AddCell(cell);
-                cell = new PdfPCell(new Paragraph("OAB: -", meuFont));
+                cell = new PdfPCell(new iTextSharp.text.Paragraph("OAB: -", meuFont));
                 cell.Border = 0;
                 cell.Colspan = 2;
                 cell.VerticalAlignment = Element.ALIGN_MIDDLE;
@@ -2104,7 +2105,7 @@ namespace ERP_Condominios_Solution.Controllers
 
             if (tran.PREC_DT_HON_DATABASE != null)
             {
-                cell = new PdfPCell(new Paragraph("Data: " + tran.PREC_DT_HON_DATABASE.Value.ToShortDateString(), meuFont));
+                cell = new PdfPCell(new iTextSharp.text.Paragraph("Data: " + tran.PREC_DT_HON_DATABASE.Value.ToShortDateString(), meuFont));
                 cell.Border = 0;
                 cell.Colspan = 1;
                 cell.VerticalAlignment = Element.ALIGN_MIDDLE;
@@ -2113,7 +2114,7 @@ namespace ERP_Condominios_Solution.Controllers
             }
             else
             {
-                cell = new PdfPCell(new Paragraph("Data: -", meuFont));
+                cell = new PdfPCell(new iTextSharp.text.Paragraph("Data: -", meuFont));
                 cell.Border = 0;
                 cell.Colspan = 1;
                 cell.VerticalAlignment = Element.ALIGN_MIDDLE;
@@ -2122,7 +2123,7 @@ namespace ERP_Condominios_Solution.Controllers
             }
             if (tran.PREC_VL_HON_VALOR_PRINCIPAL != null)
             {
-                cell = new PdfPCell(new Paragraph("Valor Principal (R$): " + CrossCutting.Formatters.DecimalFormatter(tran.PREC_VL_HON_VALOR_PRINCIPAL.Value), meuFont));
+                cell = new PdfPCell(new iTextSharp.text.Paragraph("Valor Principal (R$): " + CrossCutting.Formatters.DecimalFormatter(tran.PREC_VL_HON_VALOR_PRINCIPAL.Value), meuFont));
                 cell.Border = 0;
                 cell.Colspan = 2;
                 cell.VerticalAlignment = Element.ALIGN_MIDDLE;
@@ -2131,7 +2132,7 @@ namespace ERP_Condominios_Solution.Controllers
             }
             else
             {
-                cell = new PdfPCell(new Paragraph("Valor Principal (R$): -", meuFont));
+                cell = new PdfPCell(new iTextSharp.text.Paragraph("Valor Principal (R$): -", meuFont));
                 cell.Border = 0;
                 cell.Colspan = 2;
                 cell.VerticalAlignment = Element.ALIGN_MIDDLE;
@@ -2140,7 +2141,7 @@ namespace ERP_Condominios_Solution.Controllers
             }
             if (tran.PREC_VL_HON_JUROS != null)
             {
-                cell = new PdfPCell(new Paragraph("Juros (R$): " + CrossCutting.Formatters.DecimalFormatter(tran.PREC_VL_HON_JUROS.Value), meuFont));
+                cell = new PdfPCell(new iTextSharp.text.Paragraph("Juros (R$): " + CrossCutting.Formatters.DecimalFormatter(tran.PREC_VL_HON_JUROS.Value), meuFont));
                 cell.Border = 0;
                 cell.Colspan = 2;
                 cell.VerticalAlignment = Element.ALIGN_MIDDLE;
@@ -2149,14 +2150,14 @@ namespace ERP_Condominios_Solution.Controllers
             }
             else
             {
-                cell = new PdfPCell(new Paragraph("Juros (R$): -", meuFont));
+                cell = new PdfPCell(new iTextSharp.text.Paragraph("Juros (R$): -", meuFont));
                 cell.Border = 0;
                 cell.Colspan = 2;
                 cell.VerticalAlignment = Element.ALIGN_MIDDLE;
                 cell.HorizontalAlignment = Element.ALIGN_LEFT;
                 table.AddCell(cell);
             }
-            cell = new PdfPCell(new Paragraph("IR RRA: " + tran.PREC_SG_HON_IR_RRA, meuFont));
+            cell = new PdfPCell(new iTextSharp.text.Paragraph("IR RRA: " + tran.PREC_SG_HON_IR_RRA, meuFont));
             cell.Border = 0;
             cell.Colspan = 1;
             cell.VerticalAlignment = Element.ALIGN_MIDDLE;
@@ -2165,7 +2166,7 @@ namespace ERP_Condominios_Solution.Controllers
 
             if (tran.PREC_VL_HON_VALOR_INICIAL_PSS != null)
             {
-                cell = new PdfPCell(new Paragraph("Valor Inic. PSS   (R$): " + CrossCutting.Formatters.DecimalFormatter(tran.PREC_VL_HON_VALOR_INICIAL_PSS.Value), meuFont));
+                cell = new PdfPCell(new iTextSharp.text.Paragraph("Valor Inic. PSS   (R$): " + CrossCutting.Formatters.DecimalFormatter(tran.PREC_VL_HON_VALOR_INICIAL_PSS.Value), meuFont));
                 cell.Border = 0;
                 cell.Colspan = 2;
                 cell.VerticalAlignment = Element.ALIGN_MIDDLE;
@@ -2174,7 +2175,7 @@ namespace ERP_Condominios_Solution.Controllers
             }
             else
             {
-                cell = new PdfPCell(new Paragraph("Valor Inic. PSS (R$): -", meuFont));
+                cell = new PdfPCell(new iTextSharp.text.Paragraph("Valor Inic. PSS (R$): -", meuFont));
                 cell.Border = 0;
                 cell.Colspan = 2;
                 cell.VerticalAlignment = Element.ALIGN_MIDDLE;
@@ -2183,7 +2184,7 @@ namespace ERP_Condominios_Solution.Controllers
             }
             if (tran.PREC_IN_HON_MESES_EXE_ANTERIOR != null)
             {
-                cell = new PdfPCell(new Paragraph("Meses Execução Anterior: " + tran.PREC_IN_HON_MESES_EXE_ANTERIOR .Value.ToString(), meuFont));
+                cell = new PdfPCell(new iTextSharp.text.Paragraph("Meses Execução Anterior: " + tran.PREC_IN_HON_MESES_EXE_ANTERIOR .Value.ToString(), meuFont));
                 cell.Border = 0;
                 cell.Colspan = 4;
                 cell.VerticalAlignment = Element.ALIGN_MIDDLE;
@@ -2192,7 +2193,7 @@ namespace ERP_Condominios_Solution.Controllers
             }
             else
             {
-                cell = new PdfPCell(new Paragraph("Meses Execução Anterior: -", meuFont));
+                cell = new PdfPCell(new iTextSharp.text.Paragraph("Meses Execução Anterior: -", meuFont));
                 cell.Border = 0;
                 cell.Colspan = 4;
                 cell.VerticalAlignment = Element.ALIGN_MIDDLE;
@@ -2202,7 +2203,7 @@ namespace ERP_Condominios_Solution.Controllers
             pdfDoc.Add(table);
 
             // Linha Horizontal
-            line1 = new Paragraph(new Chunk(new iTextSharp.text.pdf.draw.LineSeparator(0.0F, 100.0F, BaseColor.BLUE, Element.ALIGN_LEFT, 1)));
+            line1 = new iTextSharp.text.Paragraph(new Chunk(new iTextSharp.text.pdf.draw.LineSeparator(0.0F, 100.0F, BaseColor.BLUE, Element.ALIGN_LEFT, 1)));
             pdfDoc.Add(line1);
 
             // Finaliza
@@ -3227,73 +3228,142 @@ namespace ERP_Condominios_Solution.Controllers
                         {
                             Int32 check = 0;
                             PRECATORIO prec = new PRECATORIO();
-                            if (wsGeral.Cells[row, 1].Value.ToString() == null)
+                            if (wsGeral.Cells[row, 1].Value == null)
                             {
-                                PRECATORIO_FALHA fal = new PRECATORIO_FALHA();
-                                fal.PRFA_NM_TRF = wsGeral.Cells[2, 1].Value.ToString();
-                                fal.PRFA_NM_PRECATORIO = "Não informado";
-                                fal.PRFA_DT_DATA = DateTime.Now;
-                                fal.PRFA_DS_MOTIVO = "Erro na inclusão do Precatório. Tribunal não informado";
-                                Int32 volta2 = tranApp.ValidateCreateFalha(fal);
-                                falha++;
-                                continue;
+                                if (wsGeral.Cells[row, 1].Value.ToString() == null)
+                                {
+                                    PRECATORIO_FALHA fal = new PRECATORIO_FALHA();
+                                    fal.PRFA_NM_TRF = wsGeral.Cells[2, 1].Value.ToString();
+                                    fal.PRFA_NM_PRECATORIO = "Não informado";
+                                    fal.PRFA_DT_DATA = DateTime.Now;
+                                    fal.PRFA_DS_MOTIVO = "Erro na inclusão do Precatório. Tribunal não informado";
+                                    Int32 volta2 = tranApp.ValidateCreateFalha(fal);
+                                    falha++;
+                                    continue;
+                                }
                             }
 
                             // Verifica existencia
-                            String numPrec = wsGeral.Cells[row, 2].Value.ToString();
-                            if (numPrec == null)
+                            String numPrec = String.Empty;
+                            if (wsGeral.Cells[row, 2].Value != null)
                             {
-                                PRECATORIO_FALHA fal = new PRECATORIO_FALHA();
-                                fal.PRFA_NM_TRF = wsGeral.Cells[2, 1].Value.ToString();
-                                fal.PRFA_NM_PRECATORIO = "Não informado";
-                                fal.PRFA_DT_DATA = DateTime.Now;
-                                fal.PRFA_DS_MOTIVO = "Erro na inclusão do Precatório. Número não informado";
-                                Int32 volta2 = tranApp.ValidateCreateFalha(fal);
-                                falha++;
-                                continue;
-                            }
-                            numPrec = CrossCutting.ValidarNumerosDocumentos.RemoveNaoNumericos(numPrec);
-                            precCheca = tranApp.CheckExist(numPrec);
-                            if (precCheca != null)
-                            {
-                                PRECATORIO_FALHA fal = new PRECATORIO_FALHA();
-                                fal.PRFA_NM_TRF = wsGeral.Cells[2, 1].Value.ToString();
-                                fal.PRFA_NM_PRECATORIO = numPrec;
-                                fal.PRFA_DT_DATA = DateTime.Now;
-                                fal.PRFA_DS_MOTIVO = "Precatório já incluído para o " + trfx.TRF1_NM_NOME;
-                                Int32 volta2 = tranApp.ValidateCreateFalha(fal);
-                                falha++;
-                                continue;
-                            }
-
-                            // Monta objeto
-                            prec.TRF1_CD_ID = idTRF;
-                            prec.PREC_NM_PRECATORIO = numPrec;
-                            prec.PREC_NM_PROC_EXECUCAO = wsGeral.Cells[row, 3].Value.ToString();
-                            prec.PREC_NM_PROCESSO_ORIGEM = wsGeral.Cells[row, 4].Value.ToString();
-                            prec.PREC_NM_REQUERENTE = wsGeral.Cells[row, 6].Value.ToString();
-                            prec.PREC_NM_ADVOGADO = wsGeral.Cells[row, 7].Value.ToString();
-                            prec.PREC_NM_DEPRECANTE = wsGeral.Cells[row, 8].Value.ToString();
-                            prec.PREC_NM_ASSUNTO = wsGeral.Cells[row, 9].Value.ToString();
-                            prec.PREC_NM_REQUERIDO = wsGeral.Cells[row, 10].Value.ToString();
-
-                            String valPrinc = wsGeral.Cells[row, 13].Value.ToString();
-                            if (valPrinc != null)
-                            {
-                                if (Regex.IsMatch(valPrinc, @"^\d+$"))
+                                numPrec = wsGeral.Cells[row, 2].Value.ToString();
+                                if (numPrec == null)
                                 {
-                                    prec.PREC_VL_BEN_VALOR_PRINCIPAL = Convert.ToDecimal(wsGeral.Cells[row, 13].Value.ToString());
+                                    PRECATORIO_FALHA fal = new PRECATORIO_FALHA();
+                                    fal.PRFA_NM_TRF = wsGeral.Cells[2, 1].Value.ToString();
+                                    fal.PRFA_NM_PRECATORIO = "Não informado";
+                                    fal.PRFA_DT_DATA = DateTime.Now;
+                                    fal.PRFA_DS_MOTIVO = "Erro na inclusão do Precatório. Número não informado";
+                                    Int32 volta2 = tranApp.ValidateCreateFalha(fal);
+                                    falha++;
+                                    continue;
                                 }
-                                else
+                                numPrec = CrossCutting.ValidarNumerosDocumentos.RemoveNaoNumericos(numPrec);
+                                precCheca = tranApp.CheckExist(numPrec);
+                                if (precCheca != null)
                                 {
                                     PRECATORIO_FALHA fal = new PRECATORIO_FALHA();
                                     fal.PRFA_NM_TRF = wsGeral.Cells[2, 1].Value.ToString();
                                     fal.PRFA_NM_PRECATORIO = numPrec;
                                     fal.PRFA_DT_DATA = DateTime.Now;
-                                    fal.PRFA_DS_MOTIVO = "Valor não numérico informado para BENEFICARIO VALOR PRINCIPAL" + valPrinc;
+                                    fal.PRFA_DS_MOTIVO = "Precatório já incluído para o " + trfx.TRF1_NM_NOME;
                                     Int32 volta2 = tranApp.ValidateCreateFalha(fal);
                                     falha++;
                                     continue;
+                                }
+                            }
+
+                            // Monta objeto
+                            prec.TRF1_CD_ID = idTRF;
+                            prec.PREC_NM_PRECATORIO = numPrec;
+                            if (wsGeral.Cells[row, 3].Value != null)
+                            {
+                                prec.PREC_NM_PROC_EXECUCAO = wsGeral.Cells[row, 3].Value.ToString();
+                            }
+                            else
+                            {
+                                prec.PREC_NM_PROC_EXECUCAO = String.Empty;
+                            }
+
+                            if (wsGeral.Cells[row, 4].Value != null)
+                            {
+                                prec.PREC_NM_PROCESSO_ORIGEM = wsGeral.Cells[row, 4].Value.ToString();
+                            }
+                            else
+                            {
+                                prec.PREC_NM_PROCESSO_ORIGEM = String.Empty;
+                            }
+
+                            if (wsGeral.Cells[row, 6].Value != null)
+                            {
+                                prec.PREC_NM_REQUERENTE = wsGeral.Cells[row, 6].Value.ToString();
+                            }
+                            else
+                            {
+                                prec.PREC_NM_REQUERENTE = String.Empty;
+                            }
+
+                            if (wsGeral.Cells[row, 7].Value != null)
+                            {
+                                prec.PREC_NM_ADVOGADO = wsGeral.Cells[row, 7].Value.ToString();
+                            }
+                            else
+                            {
+                                prec.PREC_NM_ADVOGADO = String.Empty;
+                            }
+
+                            if (wsGeral.Cells[row, 5].Value != null)
+                            {
+                                prec.PREC_NM_DEPRECANTE = wsGeral.Cells[row, 8].Value.ToString();
+                            }
+                            else
+                            {
+                                prec.PREC_NM_DEPRECANTE = String.Empty;
+                            }
+
+                            if (wsGeral.Cells[row, 9].Value != null)
+                            {
+                                prec.PREC_NM_ASSUNTO = wsGeral.Cells[row, 9].Value.ToString();
+                            }
+                            else
+                            {
+                                prec.PREC_NM_ASSUNTO = String.Empty;
+                            }
+
+                            if (wsGeral.Cells[row, 10].Value != null)
+                            {
+                                prec.PREC_NM_REQUERIDO = wsGeral.Cells[row, 10].Value.ToString();
+                            }
+                            else
+                            {
+                                prec.PREC_NM_REQUERIDO = String.Empty;
+                            }
+
+                            if (wsGeral.Cells[row, 13].Value != null)
+                            {
+                                String valPrinc = wsGeral.Cells[row, 13].Value.ToString();
+                                if (valPrinc != null)
+                                {
+                                    if (Regex.IsMatch(valPrinc, @"\d"))
+                                    {
+                                        prec.PREC_VL_BEN_VALOR_PRINCIPAL = Convert.ToDecimal(wsGeral.Cells[row, 13].Value.ToString());
+                                    }
+                                    else
+                                    {
+                                        PRECATORIO_FALHA fal = new PRECATORIO_FALHA();
+                                        fal.PRFA_NM_TRF = wsGeral.Cells[2, 1].Value.ToString();
+                                        fal.PRFA_NM_PRECATORIO = numPrec;
+                                        fal.PRFA_DT_DATA = DateTime.Now;
+                                        fal.PRFA_DS_MOTIVO = "Valor não numérico informado para BENEFICARIO VALOR PRINCIPAL" + valPrinc;
+                                        Int32 volta2 = tranApp.ValidateCreateFalha(fal);
+                                        falha++;
+                                        continue;
+                                    }
+                                }
+                                else
+                                {
+                                    prec.PREC_VL_BEN_VALOR_PRINCIPAL = 0;
                                 }
                             }
                             else
@@ -3301,82 +3371,112 @@ namespace ERP_Condominios_Solution.Controllers
                                 prec.PREC_VL_BEN_VALOR_PRINCIPAL = 0;
                             }
 
-                            String juroBen = wsGeral.Cells[row, 14].Value.ToString();
-                            if (juroBen != null)
+                            if ( wsGeral.Cells[row, 14].Value != null)
                             {
-                                if (Regex.IsMatch(juroBen, @"^\d+$"))
+                                String juroBen = wsGeral.Cells[row, 14].Value.ToString();
+                                if (juroBen != null)
                                 {
-                                    prec.PREC_VL_JUROS = Convert.ToDecimal(wsGeral.Cells[row, 14].Value.ToString());
+                                    if (Regex.IsMatch(juroBen, @"\d"))
+                                    {
+                                        prec.PREC_VL_JUROS = Convert.ToDecimal(wsGeral.Cells[row, 14].Value.ToString());
+                                    }
+                                    else
+                                    {
+                                        PRECATORIO_FALHA fal = new PRECATORIO_FALHA();
+                                        fal.PRFA_NM_TRF = wsGeral.Cells[2, 1].Value.ToString();
+                                        fal.PRFA_NM_PRECATORIO = numPrec;
+                                        fal.PRFA_DT_DATA = DateTime.Now;
+                                        fal.PRFA_DS_MOTIVO = "Valor não numérico informado para BENEFICARIO JUROS " + juroBen;
+                                        Int32 volta2 = tranApp.ValidateCreateFalha(fal);
+                                        falha++;
+                                        continue;
+                                    }
                                 }
                                 else
                                 {
-                                    PRECATORIO_FALHA fal = new PRECATORIO_FALHA();
-                                    fal.PRFA_NM_TRF = wsGeral.Cells[2, 1].Value.ToString();
-                                    fal.PRFA_NM_PRECATORIO = numPrec;
-                                    fal.PRFA_DT_DATA = DateTime.Now;
-                                    fal.PRFA_DS_MOTIVO = "Valor não numérico informado para BENEFICARIO JUROS " + juroBen;
-                                    Int32 volta2 = tranApp.ValidateCreateFalha(fal);
-                                    falha++;
-                                    continue;
+                                    prec.PREC_VL_JUROS = 0;
                                 }
+
                             }
                             else
                             {
                                 prec.PREC_VL_JUROS = 0;
                             }
 
-                            if (wsGeral.Cells[row, 15].Value.ToString() == "Sim" || wsGeral.Cells[row, 15].Value.ToString() == "S")
+                            if (wsGeral.Cells[row, 15].Value != null)
                             {
-                                prec.PREC_SG_BEN_IR_RRA = "1";
+                                if (wsGeral.Cells[row, 15].Value.ToString() == "Sim" || wsGeral.Cells[row, 15].Value.ToString() == "S")
+                                {
+                                    prec.PREC_SG_BEN_IR_RRA = "1";
+                                }
+                                else
+                                {
+                                    prec.PREC_SG_BEN_IR_RRA = "0";
+                                }
                             }
                             else
                             {
                                 prec.PREC_SG_BEN_IR_RRA = "0";
                             }
 
-                            String mesAnt = wsGeral.Cells[row, 16].Value.ToString();
-                            if (mesAnt != null)
+                            if (wsGeral.Cells[row, 16].Value != null)
                             {
-                                if (Regex.IsMatch(mesAnt, @"^\d+$"))
+                                String mesAnt = wsGeral.Cells[row, 16].Value.ToString();
+                                if (mesAnt != null)
                                 {
-                                    prec.PREC_BEN_MESES_EXE_ANTERIOR = Convert.ToInt32(wsGeral.Cells[row, 16].Value.ToString());
+                                    if (Regex.IsMatch(mesAnt, @"\d"))
+                                    {
+                                        prec.PREC_BEN_MESES_EXE_ANTERIOR = Convert.ToInt32(wsGeral.Cells[row, 16].Value.ToString());
+                                    }
+                                    else
+                                    {
+                                        PRECATORIO_FALHA fal = new PRECATORIO_FALHA();
+                                        fal.PRFA_NM_TRF = wsGeral.Cells[2, 1].Value.ToString();
+                                        fal.PRFA_NM_PRECATORIO = numPrec;
+                                        fal.PRFA_DT_DATA = DateTime.Now;
+                                        fal.PRFA_DS_MOTIVO = "Valor não numérico informado para BENEFICARIO MESES EXE ANTERIOR " + mesAnt;
+                                        Int32 volta2 = tranApp.ValidateCreateFalha(fal);
+                                        falha++;
+                                        continue;
+                                    }
                                 }
                                 else
                                 {
-                                    PRECATORIO_FALHA fal = new PRECATORIO_FALHA();
-                                    fal.PRFA_NM_TRF = wsGeral.Cells[2, 1].Value.ToString();
-                                    fal.PRFA_NM_PRECATORIO = numPrec;
-                                    fal.PRFA_DT_DATA = DateTime.Now;
-                                    fal.PRFA_DS_MOTIVO = "Valor não numérico informado para BENEFICARIO MESES EXE ANTERIOR " + mesAnt;
-                                    Int32 volta2 = tranApp.ValidateCreateFalha(fal);
-                                    falha++;
-                                    continue;
+                                    prec.PREC_BEN_MESES_EXE_ANTERIOR = 0;
                                 }
+
                             }
                             else
                             {
                                 prec.PREC_BEN_MESES_EXE_ANTERIOR = 0;
                             }
 
-                            if (wsGeral.Cells[row, 17].Value.ToString() != null)
+                            if (wsGeral.Cells[row, 17].Value != null)
                             {
-                                String datx = wsGeral.Cells[row, 17].Value.ToString();
-                                DateTime outData = new DateTime();
-                                if (DateTime.TryParse(datx, out outData))
+                                if (wsGeral.Cells[row, 17].Value.ToString() != null)
                                 {
-                                    prec.PREC_DT_BEN_DATABASE = Convert.ToDateTime(wsGeral.Cells[row, 17].Value.ToString());
-                                }
-                                else
-                                {
-                                    DateTime dat = DateTime.FromOADate(Convert.ToDouble(wsGeral.Cells[row, 17].Value));
-                                    if (dat == DateTime.MinValue)
+                                    String datx = wsGeral.Cells[row, 17].Value.ToString();
+                                    DateTime outData = new DateTime();
+                                    if (DateTime.TryParse(datx, out outData))
                                     {
-                                        prec.PREC_DT_BEN_DATABASE = null;
+                                        prec.PREC_DT_BEN_DATABASE = Convert.ToDateTime(wsGeral.Cells[row, 17].Value.ToString());
                                     }
                                     else
                                     {
-                                        prec.PREC_DT_BEN_DATABASE = dat;
+                                        DateTime dat = DateTime.FromOADate(Convert.ToDouble(wsGeral.Cells[row, 17].Value));
+                                        if (dat == DateTime.MinValue)
+                                        {
+                                            prec.PREC_DT_BEN_DATABASE = null;
+                                        }
+                                        else
+                                        {
+                                            prec.PREC_DT_BEN_DATABASE = dat;
+                                        }
                                     }
+                                }
+                                else
+                                {
+                                    prec.PREC_DT_BEN_DATABASE = null;
                                 }
                             }
                             else
@@ -3384,23 +3484,30 @@ namespace ERP_Condominios_Solution.Controllers
                                 prec.PREC_DT_BEN_DATABASE = null;
                             }
 
-                            String iniPSS = wsGeral.Cells[row, 18].Value.ToString();
-                            if (iniPSS != null)
+                            if (wsGeral.Cells[row, 18].Value != null)
                             {
-                                if (Regex.IsMatch(iniPSS, @"^\d+$"))
+                                String iniPSS = wsGeral.Cells[row, 18].Value.ToString();
+                                if (iniPSS != null)
                                 {
-                                    prec.PREC_VL_VALOR_INICIAL_PSS = Convert.ToDecimal(wsGeral.Cells[row, 18].Value.ToString());
+                                    if (Regex.IsMatch(iniPSS, @"\d"))
+                                    {
+                                        prec.PREC_VL_VALOR_INICIAL_PSS = Convert.ToDecimal(wsGeral.Cells[row, 18].Value.ToString());
+                                    }
+                                    else
+                                    {
+                                        PRECATORIO_FALHA fal = new PRECATORIO_FALHA();
+                                        fal.PRFA_NM_TRF = wsGeral.Cells[2, 1].Value.ToString();
+                                        fal.PRFA_NM_PRECATORIO = numPrec;
+                                        fal.PRFA_DT_DATA = DateTime.Now;
+                                        fal.PRFA_DS_MOTIVO = "Valor não numérico informado para VALOR INICIAL PSS" + iniPSS;
+                                        Int32 volta2 = tranApp.ValidateCreateFalha(fal);
+                                        falha++;
+                                        continue;
+                                    }
                                 }
                                 else
                                 {
-                                    PRECATORIO_FALHA fal = new PRECATORIO_FALHA();
-                                    fal.PRFA_NM_TRF = wsGeral.Cells[2, 1].Value.ToString();
-                                    fal.PRFA_NM_PRECATORIO = numPrec;
-                                    fal.PRFA_DT_DATA = DateTime.Now;
-                                    fal.PRFA_DS_MOTIVO = "Valor não numérico informado para VALOR INICIAL PSS" + iniPSS;
-                                    Int32 volta2 = tranApp.ValidateCreateFalha(fal);
-                                    falha++;
-                                    continue;
+                                    prec.PREC_VL_VALOR_INICIAL_PSS = 0;
                                 }
                             }
                             else
@@ -3408,23 +3515,30 @@ namespace ERP_Condominios_Solution.Controllers
                                 prec.PREC_VL_VALOR_INICIAL_PSS = 0;
                             }
 
-                            String valReq = wsGeral.Cells[row, 19].Value.ToString();
-                            if (valReq != null)
+                            if (wsGeral.Cells[row, 19].Value != null)
                             {
-                                if (Regex.IsMatch(valReq, @"^\d+$"))
+                                String valReq = wsGeral.Cells[row, 19].Value.ToString();
+                                if (valReq != null)
                                 {
-                                    prec.PREC_VL_BEN_VALOR_REQUISITADO = Convert.ToDecimal(wsGeral.Cells[row, 19].Value.ToString());
+                                    if (Regex.IsMatch(valReq, @"\d"))
+                                    {
+                                        prec.PREC_VL_BEN_VALOR_REQUISITADO = Convert.ToDecimal(wsGeral.Cells[row, 19].Value.ToString());
+                                    }
+                                    else
+                                    {
+                                        PRECATORIO_FALHA fal = new PRECATORIO_FALHA();
+                                        fal.PRFA_NM_TRF = wsGeral.Cells[2, 1].Value.ToString();
+                                        fal.PRFA_NM_PRECATORIO = numPrec;
+                                        fal.PRFA_DT_DATA = DateTime.Now;
+                                        fal.PRFA_DS_MOTIVO = "Valor não numérico informado para VALOR REQUISITADO" + valReq;
+                                        Int32 volta2 = tranApp.ValidateCreateFalha(fal);
+                                        falha++;
+                                        continue;
+                                    }
                                 }
                                 else
                                 {
-                                    PRECATORIO_FALHA fal = new PRECATORIO_FALHA();
-                                    fal.PRFA_NM_TRF = wsGeral.Cells[2, 1].Value.ToString();
-                                    fal.PRFA_NM_PRECATORIO = numPrec;
-                                    fal.PRFA_DT_DATA = DateTime.Now;
-                                    fal.PRFA_DS_MOTIVO = "Valor não numérico informado para VALOR REQUISITADO" + valReq;
-                                    Int32 volta2 = tranApp.ValidateCreateFalha(fal);
-                                    falha++;
-                                    continue;
+                                    prec.PREC_VL_BEN_VALOR_REQUISITADO = 0;
                                 }
                             }
                             else
@@ -3433,8 +3547,27 @@ namespace ERP_Condominios_Solution.Controllers
                             }
 
                             Int32 honoFlag = 1;
-                            String honoNome = wsGeral.Cells[row, 20].Value.ToString();
-                            String honoCPF = wsGeral.Cells[row, 21].Value.ToString();
+                            String honoNome = null;
+                            String honoCPF = null;
+
+                            if ( wsGeral.Cells[row, 20].Value != null)
+                            {
+                                honoNome = wsGeral.Cells[row, 20].Value.ToString();
+                            }
+                            else
+                            {
+                                honoNome = null;
+                            }
+                            if (wsGeral.Cells[row, 21].Value != null)
+                            {
+                                honoCPF = wsGeral.Cells[row, 21].Value.ToString();
+                            }
+                            else
+                            {
+                                honoCPF = null;
+                                honoFlag = 0;
+                            }
+
                             if ((honoCPF != null & honoNome == null) || (honoCPF == null & honoNome != null))
                             {
                                 PRECATORIO_FALHA fal = new PRECATORIO_FALHA();
@@ -3446,44 +3579,47 @@ namespace ERP_Condominios_Solution.Controllers
                                 falha++;
                                 honoFlag = 0;
                             }
-                            if (honoCPF.Length == 14)
+                            if (honoCPF != null)
                             {
-                                if (!CrossCutting.ValidarNumerosDocumentos.IsCFPValid(honoCPF))
+                                if (honoCPF.Length == 14)
+                                {
+                                    if (!CrossCutting.ValidarNumerosDocumentos.IsCFPValid(honoCPF))
+                                    {
+                                        PRECATORIO_FALHA fal = new PRECATORIO_FALHA();
+                                        fal.PRFA_NM_TRF = wsGeral.Cells[2, 1].Value.ToString();
+                                        fal.PRFA_NM_PRECATORIO = numPrec;
+                                        fal.PRFA_DT_DATA = DateTime.Now;
+                                        fal.PRFA_DS_MOTIVO = "CPF do ADVOGADO inválido. " + honoCPF;
+                                        Int32 volta2 = tranApp.ValidateCreateFalha(fal);
+                                        falha++;
+                                        honoFlag = 0;
+                                    }
+                                }
+                                else if (honoCPF.Length == 18)
+                                {
+                                    if (!CrossCutting.ValidarNumerosDocumentos.IsCnpjValid(honoCPF))
+                                    {
+                                        PRECATORIO_FALHA fal = new PRECATORIO_FALHA();
+                                        fal.PRFA_NM_TRF = wsGeral.Cells[2, 1].Value.ToString();
+                                        fal.PRFA_NM_PRECATORIO = numPrec;
+                                        fal.PRFA_DT_DATA = DateTime.Now;
+                                        fal.PRFA_DS_MOTIVO = "CNPJ do ADVOGADO inválido. " + honoCPF;
+                                        Int32 volta2 = tranApp.ValidateCreateFalha(fal);
+                                        falha++;
+                                        honoFlag = 0;
+                                    }
+                                }
+                                else
                                 {
                                     PRECATORIO_FALHA fal = new PRECATORIO_FALHA();
                                     fal.PRFA_NM_TRF = wsGeral.Cells[2, 1].Value.ToString();
                                     fal.PRFA_NM_PRECATORIO = numPrec;
                                     fal.PRFA_DT_DATA = DateTime.Now;
-                                    fal.PRFA_DS_MOTIVO = "CPF do ADVOGADO inválido. " + honoCPF;
+                                    fal.PRFA_DS_MOTIVO = "CPF ou CNPJ do ADVOGADO inválido. " + honoCPF;
                                     Int32 volta2 = tranApp.ValidateCreateFalha(fal);
                                     falha++;
                                     honoFlag = 0;
                                 }
-                            }
-                            else if (honoCPF.Length == 18)
-                            {
-                                if (!CrossCutting.ValidarNumerosDocumentos.IsCnpjValid(honoCPF))
-                                {
-                                    PRECATORIO_FALHA fal = new PRECATORIO_FALHA();
-                                    fal.PRFA_NM_TRF = wsGeral.Cells[2, 1].Value.ToString();
-                                    fal.PRFA_NM_PRECATORIO = numPrec;
-                                    fal.PRFA_DT_DATA = DateTime.Now;
-                                    fal.PRFA_DS_MOTIVO = "CNPJ do ADVOGADO inválido. " + honoCPF;
-                                    Int32 volta2 = tranApp.ValidateCreateFalha(fal);
-                                    falha++;
-                                    honoFlag = 0;
-                                }
-                            }
-                            else
-                            {
-                                PRECATORIO_FALHA fal = new PRECATORIO_FALHA();
-                                fal.PRFA_NM_TRF = wsGeral.Cells[2, 1].Value.ToString();
-                                fal.PRFA_NM_PRECATORIO = numPrec;
-                                fal.PRFA_DT_DATA = DateTime.Now;
-                                fal.PRFA_DS_MOTIVO = "CPF ou CNPJ do ADVOGADO inválido. " + honoCPF;
-                                Int32 volta2 = tranApp.ValidateCreateFalha(fal);
-                                falha++;
-                                honoFlag = 0;
                             }
 
                             if (honoFlag == 1)
@@ -3519,32 +3655,46 @@ namespace ERP_Condominios_Solution.Controllers
                                 }
                             }
 
-                            if (wsGeral.Cells[row, 24].Value.ToString() == "Sim" || wsGeral.Cells[row, 24].Value.ToString() == "S")
+                            if (wsGeral.Cells[row, 24].Value != null)
                             {
-                                prec.PREC_SG_HON_IR_RRA = "1";
+                                if (wsGeral.Cells[row, 24].Value.ToString() == "Sim" || wsGeral.Cells[row, 24].Value.ToString() == "S")
+                                {
+                                    prec.PREC_SG_HON_IR_RRA = "1";
+                                }
+                                else
+                                {
+                                    prec.PREC_SG_HON_IR_RRA = "0";
+                                }
                             }
                             else
                             {
                                 prec.PREC_SG_HON_IR_RRA = "0";
                             }
 
-                            String honoMes = wsGeral.Cells[row, 25].Value.ToString();
-                            if (honoMes != null)
+                            if (wsGeral.Cells[row, 25].Value != null)
                             {
-                                if (Regex.IsMatch(honoMes, @"^\d+$"))
+                                String honoMes = wsGeral.Cells[row, 25].Value.ToString();
+                                if (honoMes != null)
                                 {
-                                    prec.PREC_IN_HON_MESES_EXE_ANTERIOR = Convert.ToInt32(wsGeral.Cells[row, 25].Value.ToString());
+                                    if (Regex.IsMatch(honoMes, @"\d"))
+                                    {
+                                        prec.PREC_IN_HON_MESES_EXE_ANTERIOR = Convert.ToInt32(wsGeral.Cells[row, 25].Value.ToString());
+                                    }
+                                    else
+                                    {
+                                        PRECATORIO_FALHA fal = new PRECATORIO_FALHA();
+                                        fal.PRFA_NM_TRF = wsGeral.Cells[2, 1].Value.ToString();
+                                        fal.PRFA_NM_PRECATORIO = numPrec;
+                                        fal.PRFA_DT_DATA = DateTime.Now;
+                                        fal.PRFA_DS_MOTIVO = "Valor não numérico informado para HONORARIO MES ANTERIOR" + honoMes;
+                                        Int32 volta2 = tranApp.ValidateCreateFalha(fal);
+                                        falha++;
+                                        continue;
+                                    }
                                 }
                                 else
                                 {
-                                    PRECATORIO_FALHA fal = new PRECATORIO_FALHA();
-                                    fal.PRFA_NM_TRF = wsGeral.Cells[2, 1].Value.ToString();
-                                    fal.PRFA_NM_PRECATORIO = numPrec;
-                                    fal.PRFA_DT_DATA = DateTime.Now;
-                                    fal.PRFA_DS_MOTIVO = "Valor não numérico informado para HONORARIO MES ANTERIOR" + honoMes;
-                                    Int32 volta2 = tranApp.ValidateCreateFalha(fal);
-                                    falha++;
-                                    continue;
+                                    prec.PREC_IN_HON_MESES_EXE_ANTERIOR = 0;
                                 }
                             }
                             else
@@ -3552,25 +3702,32 @@ namespace ERP_Condominios_Solution.Controllers
                                 prec.PREC_IN_HON_MESES_EXE_ANTERIOR = 0;
                             }
 
-                            if (wsGeral.Cells[row, 26].Value.ToString() != null)
+                            if (wsGeral.Cells[row, 26].Value != null)
                             {
-                                String datx = wsGeral.Cells[row, 26].Value.ToString();
-                                DateTime outData = new DateTime();
-                                if (DateTime.TryParse(datx, out outData))
+                                if (wsGeral.Cells[row, 26].Value.ToString() != null)
                                 {
-                                    prec.PREC_DT_HON_DATABASE = Convert.ToDateTime(wsGeral.Cells[row, 26].Value.ToString());
-                                }
-                                else
-                                {
-                                    DateTime dat = DateTime.FromOADate(Convert.ToDouble(wsGeral.Cells[row, 26].Value));
-                                    if (dat == DateTime.MinValue)
+                                    String datx = wsGeral.Cells[row, 26].Value.ToString();
+                                    DateTime outData = new DateTime();
+                                    if (DateTime.TryParse(datx, out outData))
                                     {
-                                        prec.PREC_DT_HON_DATABASE = null;
+                                        prec.PREC_DT_HON_DATABASE = Convert.ToDateTime(wsGeral.Cells[row, 26].Value.ToString());
                                     }
                                     else
                                     {
-                                        prec.PREC_DT_HON_DATABASE = dat;
+                                        DateTime dat = DateTime.FromOADate(Convert.ToDouble(wsGeral.Cells[row, 26].Value));
+                                        if (dat == DateTime.MinValue)
+                                        {
+                                            prec.PREC_DT_HON_DATABASE = null;
+                                        }
+                                        else
+                                        {
+                                            prec.PREC_DT_HON_DATABASE = dat;
+                                        }
                                     }
+                                }
+                                else
+                                {
+                                    prec.PREC_DT_HON_DATABASE = null;
                                 }
                             }
                             else
@@ -3578,23 +3735,30 @@ namespace ERP_Condominios_Solution.Controllers
                                 prec.PREC_DT_HON_DATABASE = null;
                             }
 
-                            String valPSS = wsGeral.Cells[row, 27].Value.ToString();
-                            if (valPSS != null)
+                            if (wsGeral.Cells[row, 27].Value != null)
                             {
-                                if (Regex.IsMatch(valPSS, @"^\d+$"))
+                                String valPSS = wsGeral.Cells[row, 27].Value.ToString();
+                                if (valPSS != null)
                                 {
-                                    prec.PREC_VL_HON_VALOR_INICIAL_PSS = Convert.ToDecimal(wsGeral.Cells[row, 27].Value.ToString());
+                                    if (Regex.IsMatch(valPSS, @"\d"))
+                                    {
+                                        prec.PREC_VL_HON_VALOR_INICIAL_PSS = Convert.ToDecimal(wsGeral.Cells[row, 27].Value.ToString());
+                                    }
+                                    else
+                                    {
+                                        PRECATORIO_FALHA fal = new PRECATORIO_FALHA();
+                                        fal.PRFA_NM_TRF = wsGeral.Cells[2, 1].Value.ToString();
+                                        fal.PRFA_NM_PRECATORIO = numPrec;
+                                        fal.PRFA_DT_DATA = DateTime.Now;
+                                        fal.PRFA_DS_MOTIVO = "Valor não numérico informado para VALOR HONORARIO INICIAL PSS" + valPSS;
+                                        Int32 volta2 = tranApp.ValidateCreateFalha(fal);
+                                        falha++;
+                                        continue;
+                                    }
                                 }
                                 else
                                 {
-                                    PRECATORIO_FALHA fal = new PRECATORIO_FALHA();
-                                    fal.PRFA_NM_TRF = wsGeral.Cells[2, 1].Value.ToString();
-                                    fal.PRFA_NM_PRECATORIO = numPrec;
-                                    fal.PRFA_DT_DATA = DateTime.Now;
-                                    fal.PRFA_DS_MOTIVO = "Valor não numérico informado para VALOR HONORARIO INICIAL PSS" + valPSS;
-                                    Int32 volta2 = tranApp.ValidateCreateFalha(fal);
-                                    falha++;
-                                    continue;
+                                    prec.PREC_VL_HON_VALOR_INICIAL_PSS = 0;
                                 }
                             }
                             else
@@ -3602,23 +3766,30 @@ namespace ERP_Condominios_Solution.Controllers
                                 prec.PREC_VL_HON_VALOR_INICIAL_PSS = 0;
                             }
 
-                            String honReq = wsGeral.Cells[row, 28].Value.ToString();
-                            if (honReq != null)
+                            if (wsGeral.Cells[row, 28].Value != null)
                             {
-                                if (Regex.IsMatch(honReq, @"^\d+$"))
+                                String honReq = wsGeral.Cells[row, 28].Value.ToString();
+                                if (honReq != null)
                                 {
-                                    prec.PREC_VL_BEN_VALOR_REQUISITADO = Convert.ToDecimal(wsGeral.Cells[row, 28].Value.ToString());
+                                    if (Regex.IsMatch(honReq, @"\d"))
+                                    {
+                                        prec.PREC_VL_BEN_VALOR_REQUISITADO = Convert.ToDecimal(wsGeral.Cells[row, 28].Value.ToString());
+                                    }
+                                    else
+                                    {
+                                        PRECATORIO_FALHA fal = new PRECATORIO_FALHA();
+                                        fal.PRFA_NM_TRF = wsGeral.Cells[2, 1].Value.ToString();
+                                        fal.PRFA_NM_PRECATORIO = numPrec;
+                                        fal.PRFA_DT_DATA = DateTime.Now;
+                                        fal.PRFA_DS_MOTIVO = "Valor não numérico informado para VALOR HONORARIO REQUISITADO" + honReq;
+                                        Int32 volta2 = tranApp.ValidateCreateFalha(fal);
+                                        falha++;
+                                        continue;
+                                    }
                                 }
                                 else
                                 {
-                                    PRECATORIO_FALHA fal = new PRECATORIO_FALHA();
-                                    fal.PRFA_NM_TRF = wsGeral.Cells[2, 1].Value.ToString();
-                                    fal.PRFA_NM_PRECATORIO = numPrec;
-                                    fal.PRFA_DT_DATA = DateTime.Now;
-                                    fal.PRFA_DS_MOTIVO = "Valor não numérico informado para VALOR HONORARIO REQUISITADO" + honReq;
-                                    Int32 volta2 = tranApp.ValidateCreateFalha(fal);
-                                    falha++;
-                                    continue;
+                                    prec.PREC_VL_BEN_VALOR_REQUISITADO = 0;
                                 }
                             }
                             else
@@ -3626,22 +3797,29 @@ namespace ERP_Condominios_Solution.Controllers
                                 prec.PREC_VL_BEN_VALOR_REQUISITADO = 0;
                             }
 
-                            String anoProp = wsGeral.Cells[row, 35].Value.ToString();
-                            if (anoProp != null)
+                            if (wsGeral.Cells[row, 35].Value != null)
                             {
-                                if (Regex.IsMatch(anoProp, @"\d{4}"))
+                                String anoProp = wsGeral.Cells[row, 35].Value.ToString();
+                                if (anoProp != null)
                                 {
-                                    prec.PREC_NR_ANO = anoProp;
+                                    if (Regex.IsMatch(anoProp, @"\d{4}"))
+                                    {
+                                        prec.PREC_NR_ANO = anoProp;
+                                    }
+                                    else
+                                    {
+                                        PRECATORIO_FALHA fal = new PRECATORIO_FALHA();
+                                        fal.PRFA_NM_TRF = wsGeral.Cells[2, 1].Value.ToString();
+                                        fal.PRFA_NM_PRECATORIO = numPrec;
+                                        fal.PRFA_DT_DATA = DateTime.Now;
+                                        fal.PRFA_DS_MOTIVO = "Valor não inválido informado para ANO DA PROPOSTA " + anoProp;
+                                        Int32 volta2 = tranApp.ValidateCreateFalha(fal);
+                                        falha++;
+                                        prec.PREC_NR_ANO = String.Empty;
+                                    }
                                 }
                                 else
                                 {
-                                    PRECATORIO_FALHA fal = new PRECATORIO_FALHA();
-                                    fal.PRFA_NM_TRF = wsGeral.Cells[2, 1].Value.ToString();
-                                    fal.PRFA_NM_PRECATORIO = numPrec;
-                                    fal.PRFA_DT_DATA = DateTime.Now;
-                                    fal.PRFA_DS_MOTIVO = "Valor não inválido informado para ANO DA PROPOSTA " + anoProp;
-                                    Int32 volta2 = tranApp.ValidateCreateFalha(fal);
-                                    falha++;
                                     prec.PREC_NR_ANO = String.Empty;
                                 }
                             }
@@ -3650,24 +3828,38 @@ namespace ERP_Condominios_Solution.Controllers
                                 prec.PREC_NR_ANO = String.Empty;
                             }
 
-                            prec.PREC_NM_TIPO_DESPESA = wsGeral.Cells[row, 36].Value.ToString();
-
-                            String valRRA = wsGeral.Cells[row, 37].Value.ToString();
-                            if (valRRA != null)
+                            if (wsGeral.Cells[row, 36].Value != null)
                             {
-                                if (Regex.IsMatch(valRRA, @"^\d+$"))
+                                prec.PREC_NM_TIPO_DESPESA = wsGeral.Cells[row, 36].Value.ToString();
+                            }
+                            else
+                            {
+                                prec.PREC_NM_TIPO_DESPESA = String.Empty;
+                            }
+
+                            if (wsGeral.Cells[row, 37].Value != null)
+                            {
+                                String valRRA = wsGeral.Cells[row, 37].Value.ToString();
+                                if (valRRA != null)
                                 {
-                                    prec.PREC_VL_RRA = Convert.ToDecimal(wsGeral.Cells[row, 37].Value.ToString());
+                                    if (Regex.IsMatch(valRRA, @"\d"))
+                                    {
+                                        prec.PREC_VL_RRA = Convert.ToDecimal(wsGeral.Cells[row, 37].Value.ToString());
+                                    }
+                                    else
+                                    {
+                                        PRECATORIO_FALHA fal = new PRECATORIO_FALHA();
+                                        fal.PRFA_NM_TRF = wsGeral.Cells[2, 1].Value.ToString();
+                                        fal.PRFA_NM_PRECATORIO = numPrec;
+                                        fal.PRFA_DT_DATA = DateTime.Now;
+                                        fal.PRFA_DS_MOTIVO = "Valor não numérico informado para VALOR RRA. Assumido 0. " + valRRA;
+                                        Int32 volta2 = tranApp.ValidateCreateFalha(fal);
+                                        falha++;
+                                        prec.PREC_VL_RRA = 0;
+                                    }
                                 }
                                 else
                                 {
-                                    PRECATORIO_FALHA fal = new PRECATORIO_FALHA();
-                                    fal.PRFA_NM_TRF = wsGeral.Cells[2, 1].Value.ToString();
-                                    fal.PRFA_NM_PRECATORIO = numPrec;
-                                    fal.PRFA_DT_DATA = DateTime.Now;
-                                    fal.PRFA_DS_MOTIVO = "Valor não numérico informado para VALOR RRA. Assumido 0. " + valRRA;
-                                    Int32 volta2 = tranApp.ValidateCreateFalha(fal);
-                                    falha++;
                                     prec.PREC_VL_RRA = 0;
                                 }
                             }
@@ -3676,22 +3868,29 @@ namespace ERP_Condominios_Solution.Controllers
                                 prec.PREC_VL_RRA = 0;
                             }
 
-                            String percRRA = wsGeral.Cells[row, 38].Value.ToString();
-                            if (percRRA != null)
+                            if (wsGeral.Cells[row, 38].Value != null)
                             {
-                                if (Regex.IsMatch(percRRA, @"^\d+$"))
+                                String percRRA = wsGeral.Cells[row, 38].Value.ToString();
+                                if (percRRA != null)
                                 {
-                                    prec.PREC_PC_RRA = Convert.ToDecimal(wsGeral.Cells[row, 38].Value.ToString());
+                                    if (Regex.IsMatch(percRRA, @"\d"))
+                                    {
+                                        prec.PREC_PC_RRA = Convert.ToDecimal(wsGeral.Cells[row, 38].Value.ToString());
+                                    }
+                                    else
+                                    {
+                                        PRECATORIO_FALHA fal = new PRECATORIO_FALHA();
+                                        fal.PRFA_NM_TRF = wsGeral.Cells[2, 1].Value.ToString();
+                                        fal.PRFA_NM_PRECATORIO = numPrec;
+                                        fal.PRFA_DT_DATA = DateTime.Now;
+                                        fal.PRFA_DS_MOTIVO = "Valor não numérico informado para PERCENTAGEM RRA. Assumido 0. " + percRRA;
+                                        Int32 volta2 = tranApp.ValidateCreateFalha(fal);
+                                        falha++;
+                                        prec.PREC_PC_RRA = 0;
+                                    }
                                 }
                                 else
                                 {
-                                    PRECATORIO_FALHA fal = new PRECATORIO_FALHA();
-                                    fal.PRFA_NM_TRF = wsGeral.Cells[2, 1].Value.ToString();
-                                    fal.PRFA_NM_PRECATORIO = numPrec;
-                                    fal.PRFA_DT_DATA = DateTime.Now;
-                                    fal.PRFA_DS_MOTIVO = "Valor não numérico informado para PERCENTAGEM RRA. Assumido 0. " + percRRA;
-                                    Int32 volta2 = tranApp.ValidateCreateFalha(fal);
-                                    falha++;
                                     prec.PREC_PC_RRA = 0;
                                 }
                             }
@@ -3700,15 +3899,47 @@ namespace ERP_Condominios_Solution.Controllers
                                 prec.PREC_PC_RRA = 0;
                             }
 
-                            prec.PREC_NM_PREFERENCIA = wsGeral.Cells[row, 40].Value.ToString();
+                            if (wsGeral.Cells[row, 40].Value != null)
+                            {
+                                prec.PREC_NM_PREFERENCIA = wsGeral.Cells[row, 40].Value.ToString();
+                            }
+                            else
+                            {
+                                prec.PREC_NM_PREFERENCIA = String.Empty;
+                            }
                             
                             Int32 flagBene = 1;
-                            String nome = wsGeral.Cells[row, 29].Value.ToString();
-                            String cpf = wsGeral.Cells[row, 30].Value.ToString();
-                            String sexo = wsGeral.Cells[row, 31].Value.ToString();
-                            String nasc = wsGeral.Cells[row, 32].Value.ToString();
-                            String cel1 = wsGeral.Cells[row, 33].Value.ToString();
-                            String cel2 = wsGeral.Cells[row, 34].Value.ToString();
+                            String nome = null;
+                            String cpf = null;
+                            String sexo = null;
+                            String nasc = null;
+                            String cel1 = null;
+                            String cel2 = null;
+
+                            if ( wsGeral.Cells[row, 29].Value != null)
+                            {
+                                nome = wsGeral.Cells[row, 29].Value.ToString();
+                            }
+                            if (wsGeral.Cells[row, 30].Value != null)
+                            {
+                                cpf = wsGeral.Cells[row, 30].Value.ToString();
+                            }
+                            if (wsGeral.Cells[row, 31].Value != null)
+                            {
+                                sexo = wsGeral.Cells[row, 31].Value.ToString();
+                            }
+                            if (wsGeral.Cells[row, 32].Value != null)
+                            {
+                                nasc = wsGeral.Cells[row, 32].Value.ToString();
+                            }
+                            if (wsGeral.Cells[row, 33].Value != null)
+                            {
+                                cel1 = wsGeral.Cells[row, 33].Value.ToString();
+                            }
+                            if (wsGeral.Cells[row, 34].Value != null)
+                            {
+                                cel2 = wsGeral.Cells[row, 34].Value.ToString();
+                            }
 
                             if (nome == null || cpf == null)
                             {
@@ -3787,6 +4018,7 @@ namespace ERP_Condominios_Solution.Controllers
                                 cliNovo.CLIE_NR_WHATSAPP = cel2;
                                 cliNovo.CLIE_DT_NASCIMENTO = dataNasc;
                                 cliNovo.CLIE_IN_ATIVO = 1;
+                                cliNovo.CLIE_NM_EMAIL = String.Empty;
                                 Int32 voltaCli = cliApp.ValidateCreate(cliNovo, user);
                                 if (voltaCli > 0)
                                 {
@@ -3802,7 +4034,12 @@ namespace ERP_Condominios_Solution.Controllers
 
                             // Processa usuário
                             Int32 flagUsu = 1;
-                            String usu = wsGeral.Cells[row, 39].Value.ToString();
+                            String usu = null;
+                            if (wsGeral.Cells[row, 39].Value != null)
+                            {
+                                usu = wsGeral.Cells[row, 39].Value.ToString();
+                            }
+
                             if (usu == null)
                             {
                                 PRECATORIO_FALHA fal = new PRECATORIO_FALHA();
@@ -4399,17 +4636,17 @@ namespace ERP_Condominios_Solution.Controllers
             String nomeRel = "ContatoLista" + "_" + data + ".pdf";
             List<CONTATO> lista = (List<CONTATO>)Session["ListaContato"];
             CONTATO filtro = (CONTATO)Session["FiltroContato"];
-            Font meuFont = FontFactory.GetFont("Arial", 8, iTextSharp.text.Font.NORMAL, BaseColor.BLACK);
-            Font meuFont1 = FontFactory.GetFont("Arial", 9, iTextSharp.text.Font.NORMAL, BaseColor.BLACK);
-            Font meuFont2 = FontFactory.GetFont("Arial", 12, iTextSharp.text.Font.NORMAL, BaseColor.BLACK);
+            iTextSharp.text.Font meuFont = FontFactory.GetFont("Arial", 8, iTextSharp.text.Font.NORMAL, BaseColor.BLACK);
+            iTextSharp.text.Font meuFont1 = FontFactory.GetFont("Arial", 9, iTextSharp.text.Font.NORMAL, BaseColor.BLACK);
+            iTextSharp.text.Font meuFont2 = FontFactory.GetFont("Arial", 12, iTextSharp.text.Font.NORMAL, BaseColor.BLACK);
 
             // Cria documento
-            Document pdfDoc = new Document(PageSize.A4.Rotate(), 10, 10, 10, 10);
+            iTextSharp.text.Document pdfDoc = new iTextSharp.text.Document(PageSize.A4.Rotate(), 10, 10, 10, 10);
             PdfWriter pdfWriter = PdfWriter.GetInstance(pdfDoc, Response.OutputStream);
             pdfDoc.Open();
 
             // Linha horizontal
-            Paragraph line = new Paragraph(new Chunk(new iTextSharp.text.pdf.draw.LineSeparator(0.0F, 100.0F, BaseColor.BLUE, Element.ALIGN_LEFT, 1)));
+            iTextSharp.text.Paragraph line = new iTextSharp.text.Paragraph(new Chunk(new iTextSharp.text.pdf.draw.LineSeparator(0.0F, 100.0F, BaseColor.BLUE, Element.ALIGN_LEFT, 1)));
             pdfDoc.Add(line);
 
             // Cabeçalho
@@ -4426,7 +4663,7 @@ namespace ERP_Condominios_Solution.Controllers
             cell.AddElement(image);
             table.AddCell(cell);
 
-            cell = new PdfPCell(new Paragraph("Contatos Telefônicos - Listagem", meuFont2))
+            cell = new PdfPCell(new iTextSharp.text.Paragraph("Contatos Telefônicos - Listagem", meuFont2))
             {
                 VerticalAlignment = Element.ALIGN_MIDDLE,
                 HorizontalAlignment = Element.ALIGN_CENTER
@@ -4437,9 +4674,9 @@ namespace ERP_Condominios_Solution.Controllers
             pdfDoc.Add(table);
 
             // Linha Horizontal
-            Paragraph line1 = new Paragraph(new Chunk(new iTextSharp.text.pdf.draw.LineSeparator(0.0F, 100.0F, BaseColor.GREEN, Element.ALIGN_LEFT, 1)));
+            iTextSharp.text.Paragraph line1 = new iTextSharp.text.Paragraph(new Chunk(new iTextSharp.text.pdf.draw.LineSeparator(0.0F, 100.0F, BaseColor.GREEN, Element.ALIGN_LEFT, 1)));
             pdfDoc.Add(line1);
-            line1 = new Paragraph("  ");
+            line1 = new iTextSharp.text.Paragraph("  ");
             pdfDoc.Add(line1);
 
             // Grid
@@ -4449,7 +4686,7 @@ namespace ERP_Condominios_Solution.Controllers
             table.SpacingBefore = 1f;
             table.SpacingAfter = 1f;
 
-            cell = new PdfPCell(new Paragraph("Contatos selecionados pelos parametros de filtro abaixo", meuFont1))
+            cell = new PdfPCell(new iTextSharp.text.Paragraph("Contatos selecionados pelos parametros de filtro abaixo", meuFont1))
             {
                 VerticalAlignment = Element.ALIGN_MIDDLE, HorizontalAlignment = Element.ALIGN_LEFT
             };
@@ -4457,70 +4694,70 @@ namespace ERP_Condominios_Solution.Controllers
             cell.BackgroundColor = BaseColor.LIGHT_GRAY;
             table.AddCell(cell);
 
-            cell = new PdfPCell(new Paragraph("Data", meuFont))
+            cell = new PdfPCell(new iTextSharp.text.Paragraph("Data", meuFont))
             {
                 VerticalAlignment = Element.ALIGN_MIDDLE,
                 HorizontalAlignment = Element.ALIGN_LEFT
             };
             cell.BackgroundColor = BaseColor.LIGHT_GRAY;
             table.AddCell(cell);
-            cell = new PdfPCell(new Paragraph("Precatório", meuFont))
+            cell = new PdfPCell(new iTextSharp.text.Paragraph("Precatório", meuFont))
             {
                 VerticalAlignment = Element.ALIGN_MIDDLE,
                 HorizontalAlignment = Element.ALIGN_LEFT
             };
             cell.BackgroundColor = BaseColor.LIGHT_GRAY;
             table.AddCell(cell);
-            cell = new PdfPCell(new Paragraph("Beneficiário", meuFont))
+            cell = new PdfPCell(new iTextSharp.text.Paragraph("Beneficiário", meuFont))
             {
                 VerticalAlignment = Element.ALIGN_MIDDLE,
                 HorizontalAlignment = Element.ALIGN_LEFT
             };
             cell.BackgroundColor = BaseColor.LIGHT_GRAY;
             table.AddCell(cell);
-            cell = new PdfPCell(new Paragraph("Qualificação", meuFont))
+            cell = new PdfPCell(new iTextSharp.text.Paragraph("Qualificação", meuFont))
             {
                 VerticalAlignment = Element.ALIGN_MIDDLE,
                 HorizontalAlignment = Element.ALIGN_LEFT
             };
             cell.BackgroundColor = BaseColor.LIGHT_GRAY;
             table.AddCell(cell);
-            cell = new PdfPCell(new Paragraph("Quem Desligou", meuFont))
+            cell = new PdfPCell(new iTextSharp.text.Paragraph("Quem Desligou", meuFont))
             {
                 VerticalAlignment = Element.ALIGN_MIDDLE,
                 HorizontalAlignment = Element.ALIGN_LEFT
             };
             cell.BackgroundColor = BaseColor.LIGHT_GRAY;
             table.AddCell(cell);
-            cell = new PdfPCell(new Paragraph("Protocolo", meuFont))
+            cell = new PdfPCell(new iTextSharp.text.Paragraph("Protocolo", meuFont))
             {
                 VerticalAlignment = Element.ALIGN_MIDDLE,
                 HorizontalAlignment = Element.ALIGN_LEFT
             };
             cell.BackgroundColor = BaseColor.LIGHT_GRAY;
             table.AddCell(cell);
-            cell = new PdfPCell(new Paragraph("Telefone", meuFont))
+            cell = new PdfPCell(new iTextSharp.text.Paragraph("Telefone", meuFont))
             {
                 VerticalAlignment = Element.ALIGN_MIDDLE,
                 HorizontalAlignment = Element.ALIGN_LEFT
             };
             cell.BackgroundColor = BaseColor.LIGHT_GRAY;
             table.AddCell(cell);
-            cell = new PdfPCell(new Paragraph("Agente", meuFont))
+            cell = new PdfPCell(new iTextSharp.text.Paragraph("Agente", meuFont))
             {
                 VerticalAlignment = Element.ALIGN_MIDDLE,
                 HorizontalAlignment = Element.ALIGN_LEFT
             };
             cell.BackgroundColor = BaseColor.LIGHT_GRAY;
             table.AddCell(cell);
-            cell = new PdfPCell(new Paragraph("Campanha", meuFont))
+            cell = new PdfPCell(new iTextSharp.text.Paragraph("Campanha", meuFont))
             {
                 VerticalAlignment = Element.ALIGN_MIDDLE,
                 HorizontalAlignment = Element.ALIGN_LEFT
             };
             cell.BackgroundColor = BaseColor.LIGHT_GRAY;
             table.AddCell(cell);
-            cell = new PdfPCell(new Paragraph("Assunto", meuFont))
+            cell = new PdfPCell(new iTextSharp.text.Paragraph("Assunto", meuFont))
             {
                 VerticalAlignment = Element.ALIGN_MIDDLE,
                 HorizontalAlignment = Element.ALIGN_LEFT
@@ -4530,60 +4767,60 @@ namespace ERP_Condominios_Solution.Controllers
 
             foreach (CONTATO item in lista)
             {
-                cell = new PdfPCell(new Paragraph(item.CONT_DT_CONTATO.Value.ToShortDateString(), meuFont))
+                cell = new PdfPCell(new iTextSharp.text.Paragraph(item.CONT_DT_CONTATO.Value.ToShortDateString(), meuFont))
                 {
                     VerticalAlignment = Element.ALIGN_MIDDLE, HorizontalAlignment = Element.ALIGN_LEFT
                 };
                 table.AddCell(cell);
-                cell = new PdfPCell(new Paragraph(item.PRECATORIO.PREC_NM_PRECATORIO, meuFont))
+                cell = new PdfPCell(new iTextSharp.text.Paragraph(item.PRECATORIO.PREC_NM_PRECATORIO, meuFont))
                 {
                     VerticalAlignment = Element.ALIGN_MIDDLE,
                     HorizontalAlignment = Element.ALIGN_LEFT
                 };
                 table.AddCell(cell);
-                cell = new PdfPCell(new Paragraph(item.BENEFICIARIO.BENE_NM_NOME, meuFont))
+                cell = new PdfPCell(new iTextSharp.text.Paragraph(item.BENEFICIARIO.BENE_NM_NOME, meuFont))
                 {
                     VerticalAlignment = Element.ALIGN_MIDDLE,
                     HorizontalAlignment = Element.ALIGN_LEFT
                 };
                 table.AddCell(cell);
-                cell = new PdfPCell(new Paragraph(item.QUALIFICACAO.QUAL_NM_NOME, meuFont))
+                cell = new PdfPCell(new iTextSharp.text.Paragraph(item.QUALIFICACAO.QUAL_NM_NOME, meuFont))
                 {
                     VerticalAlignment = Element.ALIGN_MIDDLE,
                     HorizontalAlignment = Element.ALIGN_LEFT
                 };
                 table.AddCell(cell);
-                cell = new PdfPCell(new Paragraph(item.QUEM_DESLIGOU.QUDE_NM_NOME, meuFont))
+                cell = new PdfPCell(new iTextSharp.text.Paragraph(item.QUEM_DESLIGOU.QUDE_NM_NOME, meuFont))
                 {
                     VerticalAlignment = Element.ALIGN_MIDDLE,
                     HorizontalAlignment = Element.ALIGN_LEFT
                 };
                 table.AddCell(cell);
-                cell = new PdfPCell(new Paragraph(item.CONT_NR_PROTOCOLO, meuFont))
+                cell = new PdfPCell(new iTextSharp.text.Paragraph(item.CONT_NR_PROTOCOLO, meuFont))
                 {
                     VerticalAlignment = Element.ALIGN_MIDDLE,
                     HorizontalAlignment = Element.ALIGN_LEFT
                 };
                 table.AddCell(cell);
-                cell = new PdfPCell(new Paragraph(item.CONT_NR_TELEFONE, meuFont))
+                cell = new PdfPCell(new iTextSharp.text.Paragraph(item.CONT_NR_TELEFONE, meuFont))
                 {
                     VerticalAlignment = Element.ALIGN_MIDDLE,
                     HorizontalAlignment = Element.ALIGN_LEFT
                 };
                 table.AddCell(cell);
-                cell = new PdfPCell(new Paragraph(item.CONT_NM_AGENTE, meuFont))
+                cell = new PdfPCell(new iTextSharp.text.Paragraph(item.CONT_NM_AGENTE, meuFont))
                 {
                     VerticalAlignment = Element.ALIGN_MIDDLE,
                     HorizontalAlignment = Element.ALIGN_LEFT
                 };
                 table.AddCell(cell);
-                cell = new PdfPCell(new Paragraph(item.CONT_NM_CAMPANHA, meuFont))
+                cell = new PdfPCell(new iTextSharp.text.Paragraph(item.CONT_NM_CAMPANHA, meuFont))
                 {
                     VerticalAlignment = Element.ALIGN_MIDDLE,
                     HorizontalAlignment = Element.ALIGN_LEFT
                 };
                 table.AddCell(cell);
-                cell = new PdfPCell(new Paragraph(item.CONT_NM_ASSUNTO, meuFont))
+                cell = new PdfPCell(new iTextSharp.text.Paragraph(item.CONT_NM_ASSUNTO, meuFont))
                 {
                     VerticalAlignment = Element.ALIGN_MIDDLE,
                     HorizontalAlignment = Element.ALIGN_LEFT
@@ -4593,11 +4830,11 @@ namespace ERP_Condominios_Solution.Controllers
             pdfDoc.Add(table);
 
             // Linha Horizontal
-            Paragraph line2 = new Paragraph(new Chunk(new iTextSharp.text.pdf.draw.LineSeparator(0.0F, 100.0F, BaseColor.BLUE, Element.ALIGN_LEFT, 1)));
+            iTextSharp.text.Paragraph line2 = new iTextSharp.text.Paragraph(new Chunk(new iTextSharp.text.pdf.draw.LineSeparator(0.0F, 100.0F, BaseColor.BLUE, Element.ALIGN_LEFT, 1)));
             pdfDoc.Add(line2);
 
             // Rodapé
-            Chunk chunk1 = new Chunk("Parâmetros de filtro: ", FontFactory.GetFont("Arial", 10, Font.NORMAL, BaseColor.BLACK));
+            Chunk chunk1 = new Chunk("Parâmetros de filtro: ", FontFactory.GetFont("Arial", 10, iTextSharp.text.Font.NORMAL, BaseColor.BLACK));
             pdfDoc.Add(chunk1);
 
             String parametros = String.Empty;
@@ -4726,11 +4963,11 @@ namespace ERP_Condominios_Solution.Controllers
             {
                 parametros = "Nenhum filtro definido.";
             }
-            Chunk chunk = new Chunk(parametros, FontFactory.GetFont("Arial", 9, Font.NORMAL, BaseColor.BLACK));
+            Chunk chunk = new Chunk(parametros, FontFactory.GetFont("Arial", 9, iTextSharp.text.Font.NORMAL, BaseColor.BLACK));
             pdfDoc.Add(chunk);
 
             // Linha Horizontal
-            Paragraph line3 = new Paragraph(new Chunk(new iTextSharp.text.pdf.draw.LineSeparator(0.0F, 100.0F, BaseColor.BLUE, Element.ALIGN_LEFT, 1)));
+            iTextSharp.text.Paragraph line3 = new iTextSharp.text.Paragraph(new Chunk(new iTextSharp.text.pdf.draw.LineSeparator(0.0F, 100.0F, BaseColor.BLUE, Element.ALIGN_LEFT, 1)));
             pdfDoc.Add(line3);
 
             // Finaliza

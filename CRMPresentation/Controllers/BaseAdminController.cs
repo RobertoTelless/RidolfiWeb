@@ -1917,7 +1917,7 @@ namespace ERP_Condominios_Solution.Controllers
         {
             Int32 idAss = (Int32)Session["IdAssinante"];
             List<TAREFA> conf = new List<TAREFA>();
-            if (Session["Tarefas"] == null)
+            if (Session["Tarefas1"] == null)
             {
                 conf = tarApp.GetByUser(usuario);
             }
@@ -1929,10 +1929,10 @@ namespace ERP_Condominios_Solution.Controllers
                 }
                 else
                 {
-                    conf = (List<TAREFA>)Session["Tarefas"];
+                    conf = (List<TAREFA>)Session["Tarefas1"];
                 }
             }
-            Session["Tarefas"] = conf;
+            Session["Tarefas1"] = conf;
             Session["TarefaAlterada"] = 0;
             return conf;
         }

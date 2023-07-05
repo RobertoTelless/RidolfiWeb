@@ -242,6 +242,7 @@
     <Compile Include="EntitiesServices\TabelaIPCAService.cs" />
     <Compile Include="EntitiesServices\TabelaIRRFService.cs" />
     <Compile Include="EntitiesServices\TarefaService.cs" />
+    <Compile Include="EntitiesServices\TelefoneService.cs" />
     <Compile Include="EntitiesServices\TemplatePropostaService.cs" />
     <Compile Include="EntitiesServices\TemplateEMailService.cs" />
     <Compile Include="EntitiesServices\TemplateService.cs" />
@@ -411,6 +412,7 @@
     <Compile Include="Interfaces\Services\ITabelaIPCAService.cs" />
     <Compile Include="Interfaces\Services\ITabelaIRRFService.cs" />
     <Compile Include="Interfaces\Services\ITarefaService.cs" />
+    <Compile Include="Interfaces\Services\ITelefoneService.cs" />
     <Compile Include="Interfaces\Services\ITemplatePropostaService.cs" />
     <Compile Include="Interfaces\Services\ITemplateEMailService.cs" />
     <Compile Include="Interfaces\Services\ITemplateService.cs" />
@@ -423,6 +425,786 @@
     <Compile Include="Interfaces\Services\IUsuarioService.cs" />
     <Compile Include="Interfaces\Services\IVaraService.cs" />
     <Compile Include="Interfaces\Services\IVideoService.cs" />
+    <Compile Include="Model\AGENDA.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\AGENDA_ANEXO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\AGENDA_VINCULO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\ASSINANTE.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\ASSINANTE_ANEXO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\ASSINANTE_ANOTACAO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\ASSINANTE_CONSUMO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\ASSINANTE_PAGAMENTO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\ASSINANTE_PLANO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\ASSINANTE_QUADRO_SOCIETARIO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\ATENDIMENTO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\ATENDIMENTO_ACAO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\ATENDIMENTO_ACOMPANHAMENTO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\ATENDIMENTO_AGENDA.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\ATENDIMENTO_ANEXO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\ATENDIMENTO_CRM.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\ATENDIMENTO_PROPOSTA.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\ATENDIMENTO_PROPOSTA_ACOMPANHAMENTO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\ATENDIMENTO_PROPOSTA_ANEXO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\ATENDIMENTO_PROPOSTA_PECA.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\ATENDIMENTO_PROPOSTA_SERVICO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\BANCO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\BENEFICIARIO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\BENEFICIARIO_ANEXO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\BENEFICIARIO_ANOTACOES.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\CARGO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\CARGO_TESTE.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\CATEGORIA_AGENDA.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\CATEGORIA_ATENDIMENTO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\CATEGORIA_CLIENTE.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\CATEGORIA_CUSTO_FIXO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\CATEGORIA_FORNECEDOR.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\CATEGORIA_NOTIFICACAO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\CATEGORIA_ORDEM_SERVICO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\CATEGORIA_PRODUTO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\CATEGORIA_SERVICO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\CATEGORIA_TELEFONE.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\CATEGORIA_USUARIO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\CENTRO_CUSTO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\CLIENTE.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\CLIENTE_ANEXO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\CLIENTE_ANOTACAO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\CLIENTE_CONTATO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\CLIENTE_FALHA.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\CLIENTE_QUADRO_SOCIETARIO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\CLIENTE_REFERENCIA.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\CLIENTE_TAG.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\COMISSAO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\COMISSAO_CARGO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\CONFIGURACAO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\CONFIGURACAO_CHAVES.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\CONFIGURACAO_CRIPT.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\CONTATO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\CONTATO_FALHA.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\CONTA_BANCO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\CONTA_BANCO_CONTATO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\CONTA_BANCO_LANCAMENTO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\CONTA_PAGAR.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\CONTA_PAGAR_ANEXO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\CONTA_PAGAR_PARCELA.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\CONTA_PAGAR_RATEIO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\CONTA_RECEBER.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\CONTA_RECEBER_ANEXO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\CONTA_RECEBER_PARCELA.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\CONTA_RECEBER_RATEIO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\CONVENIO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\COR.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\CRM.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\CRM_ACAO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\CRM_ANEXO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\CRM_COMENTARIO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\CRM_CONTATO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\CRM_FOLLOW.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\CRM_ORIGEM.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\CRM_PEDIDO_VENDA.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\CRM_PEDIDO_VENDA_ACOMPANHAMENTO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\CRM_PEDIDO_VENDA_ANEXO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\CUSTO_FIXO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\CUSTO_FIXO_CALENDARIO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\CUSTO_HISTORICO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\CUSTO_VARIAVEL.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\CUSTO_VARIAVEL_ANTECIPACAO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\CUSTO_VARIAVEL_CALCULO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\CUSTO_VARIAVEL_HISTORICO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\DEPARTAMENTO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\DIARIO_PROCESSO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\EMAIL_AGENDAMENTO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\EMPRESA.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\EMPRESA_ANEXO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\EMPRESA_CUSTO_VARIAVEL.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\EMPRESA_CUSTO_VARIAVEL_NORMAL.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\EMPRESA_MAQUINA.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\EMPRESA_PLATAFORMA.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\EMPRESA_TICKET.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\ENDERECO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\ESCOLARIDADE.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\ESTADO_CIVIL.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\FICHA_TECNICA.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\FICHA_TECNICA_DETALHE.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\FILIAL.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\FORMA_ENVIO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\FORMA_FRETE.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\FORMA_PAGAMENTO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\FORNECEDOR.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\FORNECEDOR_ANEXO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\FORNECEDOR_ANOTACOES.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\FORNECEDOR_CONTATO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\FORNECEDOR_QUADRO_SOCIETARIO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\FUNIL.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\FUNIL_ETAPA.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\GRAU_INSTRUCAO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\GRUPO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\GRUPO_CC.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\GRUPO_CLIENTE.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\HONORARIO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\HONORARIO_ANEXO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\HONORARIO_ANOTACOES.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\LINGUA.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\LOAS.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\LOG.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\LOG_EXCECAO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\LOG_EXCECAO_NOVO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\MAQUINA.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\MENSAGEM_ANEXO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\MENSAGEM_AUTOMACAO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\MENSAGEM_AUTOMACAO_DATAS.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\MENSAGENS.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\MENSAGENS_DESTINOS.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\MENSAGENS_ENVIADAS_SISTEMA.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\META.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\META_ANEXO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\META_ANOTACAO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\MOTIVO_CANCELAMENTO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\MOTIVO_ENCERRAMENTO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\MOVIMENTO_ESTOQUE_PRODUTO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\MUNICIPIO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\NACIONALIDADE.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\NATUREZA.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\NOMENCLATURA_BRAS_SERVICOS.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\NOTICIA.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\NOTICIA_COMENTARIO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\NOTIFICACAO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\NOTIFICACAO_ANEXO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\ORDEM_SERVICO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\ORDEM_SERVICO_ACOMPANHAMENTO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\ORDEM_SERVICO_AGENDA.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\ORDEM_SERVICO_ANEXO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\ORDEM_SERVICO_COMENTARIOS.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\ORDEM_SERVICO_PRODUTO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\ORDEM_SERVICO_SERVICO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\OUTRO_CUSTO_VARIAVEL.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\PACIENTE.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\PACIENTE_ANAMNESE.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\PACIENTE_ANEXO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\PACIENTE_ANOTACAO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\PACIENTE_CONSULTA.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\PACIENTE_PRESCRICAO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\PARENTESCO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\PECA.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\PECA_ANEXO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\PECA_ANOTACAO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\PEDIDO_VENDA.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\PEDIDO_VENDA_ACOMPANHAMENTO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\PEDIDO_VENDA_ANEXO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\PERFIL.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\PERIODICIDADE.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\PERIODICIDADE_TAREFA.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\PESQUISA.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\PESQUISA_ANEXO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\PESQUISA_ANOTACAO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\PESQUISA_ENVIO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\PESQUISA_ITEM.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\PESQUISA_ITEM_OPCAO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\PESQUISA_RESPOSTA.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\PESQUISA_RESPOSTA_ITEM.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\PLANO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\PLANO_PERIODICIDADE.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\PLATAFORMA_ENTREGA.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\PRECATORIO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\PRECATORIO_ANEXO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\PRECATORIO_ANOTACAO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\PRECATORIO_ESTADO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\PRECATORIO_FALHA.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\PRECIFICACAO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\PRODUTO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\PRODUTO_ANEXO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\PRODUTO_ANOTACAO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\PRODUTO_CONCORRENTE.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\PRODUTO_CUSTO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\PRODUTO_EMPRESA.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\PRODUTO_ESTOQUE_FILIAL.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\PRODUTO_FALHA.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\PRODUTO_KIT.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\PRODUTO_ORIGEM.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\PRODUTO_PRECO_VENDA.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\QUALIFICACAO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\QUEM_DESLIGOU.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\RECURSIVIDADE.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\RECURSIVIDADE_DATA.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\RECURSIVIDADE_DESTINO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\REGIME_TRIBUTARIO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\RESULTADO_ROBOT.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\Ridolfi_Model.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Ridolfi_Model.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\Ridolfi_Model.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\Ridolfi_Model.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Ridolfi_Model.edmx</DependentUpon>
+    </Compile>
+    <Compile Include="Model\SERVICO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\SERVICO_ANEXO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\SERVICO_EMPRESA.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\SERVICO_TABELA_PRECO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\SEXO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\SUBCATEGORIA_PRODUTO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\SUBGRUPO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\sysdiagrams.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\TABELA_IMPORTACAO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\TABELA_IPCA.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\TABELA_IRRF.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\TAREFA.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\TAREFA_ACOMPANHAMENTO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\TAREFA_ANEXO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\TAREFA_NOTIFICACAO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\TAREFA_VINCULO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\TELEFONE.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\TEMPLATE.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\TEMPLATE_EMAIL.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\TEMPLATE_PROPOSTA.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\TEMPLATE_SMS.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\TICKET_ALIMENTACAO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\TIPO_ACAO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\TIPO_CONTA.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\TIPO_CONTRIBUINTE.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\TIPO_CRM.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\TIPO_EMBALAGEM.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\TIPO_FOLLOW.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\TIPO_GRUPO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\TIPO_ITEM_PESQUISA.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\TIPO_PACIENTE.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\TIPO_PESQUISA.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\TIPO_PESSOA.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\TIPO_TAREFA.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\TIPO_TELEFONE.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\TIPO_TELEFONE_BASE.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\TITULARIDADE.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\TRF.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\UF.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\UNIDADE.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\USUARIO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\USUARIO_ANEXO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\USUARIO_ANOTACAO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\VARA.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\VENDA_MENSAL.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\VENDA_MENSAL_ANEXO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\VENDA_MENSAL_ANOTACAO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\VENDA_MENSAL_CALCULO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\VENDA_MENSAL_COMISSAO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\VENDA_MENSAL_PARTES.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\VIDEO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\VIDEO_COMENTARIO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\VOLTA_PESQUISA.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="WorkClasses\AttachmentCRM.cs" />
     <Compile Include="WorkClasses\AttachmentForn.cs" />
@@ -436,6 +1218,13 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.Config" />
+    <EntityDeploy Include="Model\Ridolfi_Model.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>Ridolfi_Model.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <None Include="Model\Ridolfi_Model.edmx.diagram">
+      <DependentUpon>Ridolfi_Model.edmx</DependentUpon>
+    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
@@ -447,8 +1236,18 @@
       <Name>CrossCutting</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
-    <Folder Include="Model\" />
+    <Content Include="Model\Ridolfi_Model.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>Ridolfi_Model.edmx</DependentUpon>
+      <LastGenOutput>Ridolfi_Model.Context.cs</LastGenOutput>
+    </Content>
+    <Content Include="Model\Ridolfi_Model.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>Ridolfi_Model.edmx</DependentUpon>
+      <LastGenOutput>Ridolfi_Model.cs</LastGenOutput>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

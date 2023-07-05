@@ -8,21 +8,21 @@ using EntitiesServices.Work_Classes;
 
 namespace ModelServices.Interfaces.EntitiesServices
 {
-    public interface ITelefoneService : IServiceBase<TELEFONES>
+    public interface ITelefoneService : IServiceBase<TELEFONE>
     {
-        Int32 Create(TELEFONES perfil, LOG log);
-        Int32 Create(TELEFONES perfil);
-        Int32 Edit(TELEFONES perfil, LOG log);
-        Int32 Edit(TELEFONES perfil);
-        Int32 Delete(TELEFONES perfil, LOG log);
+        Int32 Create(TELEFONE perfil, LOG log);
+        Int32 Create(TELEFONE perfil);
+        Int32 Edit(TELEFONE perfil, LOG log);
+        Int32 Edit(TELEFONE perfil);
+        Int32 Delete(TELEFONE perfil, LOG log);
 
-        TELEFONES CheckExist(TELEFONES conta, Int32 idAss);
-        TELEFONES GetItemById(Int32 id);
-        List<TELEFONES> GetAllItens(Int32 idAss);
-        List<TELEFONES> GetAllItensAdm(Int32 idAss);
+        TELEFONE CheckExist(TELEFONE conta, Int32 idAss);
+        TELEFONE GetItemById(Int32 id);
+        List<TELEFONE> GetAllItens(Int32 idAss);
+        List<TELEFONE> GetAllItensAdm(Int32 idAss);
 
         List<CATEGORIA_TELEFONE> GetAllTipos(Int32 idAss);
-        List<TELEFONES> ExecuteFilter(Int32? catId, String nome, String telefone, String cidade, Int32? uf, String celular, String email, Int32 idAss);
+        List<TELEFONE> ExecuteFilter(Int32? catId, String nome, String telefone, String cidade, Int32? uf, String celular, String email, Int32 idAss);
         List<UF> GetAllUF();
         UF GetUFbySigla(String sigla);
     }

@@ -235,6 +235,7 @@
     <Compile Include="Interfaces\ITabelaIPCAAppService.cs" />
     <Compile Include="Interfaces\ITabelaIRRFAppService.cs" />
     <Compile Include="Interfaces\ITarefaAppService.cs" />
+    <Compile Include="Interfaces\ITelefoneAppService.cs" />
     <Compile Include="Interfaces\ITemplateAppService.cs" />
     <Compile Include="Interfaces\ITemplatePropostalAppService.cs" />
     <Compile Include="Interfaces\ITemplateEMailAppService.cs" />
@@ -290,6 +291,7 @@
     <Compile Include="Services\TabelaIPCAAppService.cs" />
     <Compile Include="Services\TabelaIRRFAppService.cs" />
     <Compile Include="Services\TarefaAppService.cs" />
+    <Compile Include="Services\TelefoneAppService.cs" />
     <Compile Include="Services\TemplateAppService.cs" />
     <Compile Include="Services\TemplatePropostaAppService.cs" />
     <Compile Include="Services\TemplateEMailAppService.cs" />

@@ -12,6 +12,7 @@ using ApplicationServices.Services;
 using ModelServices.EntitiesServices;
 using DataServices.Repositories;
 using Ninject.Web.Common.WebHost;
+using DateTimeExtensions.NaturalText;
 
 [assembly: WebActivatorEx.PreApplicationStartMethod(typeof(Presentation.Start.NinjectWebCommons), "Start")]
 [assembly: WebActivatorEx.ApplicationShutdownMethodAttribute(typeof(Presentation.Start.NinjectWebCommons), "Stop")]
@@ -118,6 +119,7 @@ namespace Presentation.Start
             kernel.Bind<IVaraAppService>().To<VaraAppService>();
             kernel.Bind<IPrecatorioAppService>().To<PrecatorioAppService>();
             kernel.Bind<IContatoAppService>().To<ContatoAppService>();
+            kernel.Bind<INaturezaAppService>().To<NaturezaAppService>();
 
             kernel.Bind(typeof(IServiceBase<>)).To(typeof(ServiceBase<>));
             kernel.Bind<IUsuarioService>().To<UsuarioService>();
@@ -169,6 +171,7 @@ namespace Presentation.Start
             kernel.Bind<IVaraService>().To<VaraService>();
             kernel.Bind<IPrecatorioService>().To<PrecatorioService>();
             kernel.Bind<IContatoService>().To<ContatoService>();
+            kernel.Bind<INaturezaService>().To<NaturezaService>();
 
             kernel.Bind(typeof(IRepositoryBase<>)).To(typeof(RepositoryBase<>));
             kernel.Bind<IConfiguracaoRepository>().To<ConfiguracaoRepository>();

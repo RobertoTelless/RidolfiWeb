@@ -86,7 +86,7 @@ namespace ERP_Condominios_Solution.Controllers
             Session["MensLog"] = 0;
             Session["Agendas"] = null;
             Session["AgendaAlterada"] = 0;
-            Session["Tarefas"] = null;
+            Session["Tarefas1"] = null;
             Session["TarefaAlterada"] = 0;
             Session["Noticias"] = null;
             Session["NoticiaGeral"] = null;
@@ -198,12 +198,12 @@ namespace ERP_Condominios_Solution.Controllers
             Session["Qualificacoes"] = null;
             Session["QualificacaoAlterada"] = 0;
             Session["Desligas"] = null;
-            Session["DesligaAlterada"] = 0;
-            Session["Escolaridades"] = 0;
-            Session["Naturezas"] = 0;
-            Session["EstadosCivil"] = 0;
-            Session["Parentescos"] = 0;
-            Session["Sexos"] = 0;
+            Session["DesligaAlterada"] = null;
+            Session["Escolaridades"] = null;
+            Session["Naturezas"] = null;
+            Session["EstadosCivil"] = null;
+            Session["Parentescos"] = null;
+            Session["Sexos"] = null;
         }
 
         [HttpGet]

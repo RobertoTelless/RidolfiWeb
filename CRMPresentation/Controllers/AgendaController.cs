@@ -242,7 +242,7 @@ namespace ERP_Condominios_Solution.Controllers
                 Session["VoltaAgenda"] = 1;
                 Session["VoltaDashAgenda"] = 1;
                 Session["FiltroAgendaCalendario"] = 1;
-                Session["VoltaMensagem"] = 99;
+                Session["VoltaMensagem"] = 999;
                 return View(objeto);
             }
             catch (Exception ex)

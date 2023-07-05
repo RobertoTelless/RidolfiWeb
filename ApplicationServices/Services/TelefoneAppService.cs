@@ -12,7 +12,7 @@ using System.Text.RegularExpressions;
 
 namespace ApplicationServices.Services
 {
-    public class TelefoneAppService : AppServiceBase<TELEFONES>, ITelefoneAppService
+    public class TelefoneAppService : AppServiceBase<TELEFONE>, ITelefoneAppService
     {
         private readonly ITelefoneService _baseService;
 
@@ -21,9 +21,9 @@ namespace ApplicationServices.Services
             _baseService = baseService;
         }
 
-        public List<TELEFONES> GetAllItens(Int32 idAss)
+        public List<TELEFONE> GetAllItens(Int32 idAss)
         {
-            List<TELEFONES> lista = _baseService.GetAllItens(idAss);
+            List<TELEFONE> lista = _baseService.GetAllItens(idAss);
             return lista;
         }
 
@@ -38,21 +38,21 @@ namespace ApplicationServices.Services
             return _baseService.GetUFbySigla(sigla);
         }
 
-        public List<TELEFONES> GetAllItensAdm(Int32 idAss)
+        public List<TELEFONE> GetAllItensAdm(Int32 idAss)
         {
-            List<TELEFONES> lista = _baseService.GetAllItensAdm(idAss);
+            List<TELEFONE> lista = _baseService.GetAllItensAdm(idAss);
             return lista;
         }
 
-        public TELEFONES GetItemById(Int32 id)
+        public TELEFONE GetItemById(Int32 id)
         {
-            TELEFONES item = _baseService.GetItemById(id);
+            TELEFONE item = _baseService.GetItemById(id);
             return item;
         }
 
-        public TELEFONES CheckExist(TELEFONES conta, Int32 idAss)
+        public TELEFONE CheckExist(TELEFONE conta, Int32 idAss)
         {
-            TELEFONES item = _baseService.CheckExist(conta, idAss);
+            TELEFONE item = _baseService.CheckExist(conta, idAss);
             return item;
         }
 
@@ -62,11 +62,11 @@ namespace ApplicationServices.Services
             return lista;
         }
 
-        public Int32 ExecuteFilter(Int32? catId, String nome, String telefone, String cidade, Int32? uf, String celular, String email, Int32 idAss, out List<TELEFONES> objeto)
+        public Int32 ExecuteFilter(Int32? catId, String nome, String telefone, String cidade, Int32? uf, String celular, String email, Int32 idAss, out List<TELEFONE> objeto)
         {
             try
             {
-                objeto = new List<TELEFONES>();
+                objeto = new List<TELEFONE>();
                 Int32 volta = 0;
 
                 // Processa filtro
@@ -83,12 +83,12 @@ namespace ApplicationServices.Services
             }
         }
 
-        public Int32 ValidateCreate(TELEFONES item, USUARIO usuario)
+        public Int32 ValidateCreate(TELEFONE item, USUARIO usuario)
         {
             try
             {
                 // Verifica existencia prévia
-                if (_baseService.CheckExist(item, usuario.ASSI_CD_ID.Value) != null)
+                if (_baseService.CheckExist(item, usuario.ASSI_CD_ID) != null)
                 {
                     return 1;
                 }
@@ -97,27 +97,6 @@ namespace ApplicationServices.Services
                 item.TELE_IN_ATIVO = 1;
 
                 // Checa endereço
-                if (String.IsNullOrEmpty(item.TELE_NM_ENDERECO))
-                {
-                    item.TELE_NM_ENDERECO = "-";
-                }
-                if (String.IsNullOrEmpty(item.TELE_NM_BAIRRO))
-                {
-                    item.TELE_NM_BAIRRO = "-";
-                }
-                if (String.IsNullOrEmpty(item.TELE_NM_CIDADE))
-                {
-                    item.TELE_NM_CIDADE = "-";
-                }
-                if (String.IsNullOrEmpty(item.TELE_NR_CEP))
-                {
-                    item.TELE_NR_CEP = "-";
-                }
-                if (item.UF_CD_ID == null)
-                {
-                    item.UF_CD_ID = 18;
-                }
-
                 // Monta Log
                 LOG log = new LOG
                 {
@@ -125,7 +104,7 @@ namespace ApplicationServices.Services
                     USUA_CD_ID = usuario.USUA_CD_ID,
                     LOG_NM_OPERACAO = "AddTELE",
                     LOG_IN_ATIVO = 1,
-                    LOG_TX_REGISTRO = Serialization.SerializeJSON<TELEFONES>(item)
+                    LOG_TX_REGISTRO = Serialization.SerializeJSON<TELEFONE>(item)
                 };
 
                 // Persiste
@@ -139,31 +118,10 @@ namespace ApplicationServices.Services
         }
 
 
-        public Int32 ValidateEdit(TELEFONES item, TELEFONES itemAntes, USUARIO usuario)
+        public Int32 ValidateEdit(TELEFONE item, TELEFONE itemAntes, USUARIO usuario)
         {
             try
             {
-                // Checa endereço
-                if (String.IsNullOrEmpty(item.TELE_NM_ENDERECO))
-                {
-                    item.TELE_NM_ENDERECO = "-";
-                }
-                if (String.IsNullOrEmpty(item.TELE_NM_BAIRRO))
-                {
-                    item.TELE_NM_BAIRRO = "-";
-                }
-                if (String.IsNullOrEmpty(item.TELE_NM_CIDADE))
-                {
-                    item.TELE_NM_CIDADE = "-";
-                }
-                if (String.IsNullOrEmpty(item.TELE_NR_CEP))
-                {
-                    item.TELE_NR_CEP = "-";
-                }
-                if (item.UF_CD_ID == null)
-                {
-                    item.UF_CD_ID = 28;
-                }
 
                 // Monta Log
                 LOG log = new LOG
@@ -172,8 +130,8 @@ namespace ApplicationServices.Services
                     USUA_CD_ID = usuario.USUA_CD_ID,
                     LOG_NM_OPERACAO = "EditTELE",
                     LOG_IN_ATIVO = 1,
-                    LOG_TX_REGISTRO = Serialization.SerializeJSON<TELEFONES>(item),
-                    LOG_TX_REGISTRO_ANTES = Serialization.SerializeJSON<TELEFONES>(itemAntes)
+                    LOG_TX_REGISTRO = Serialization.SerializeJSON<TELEFONE>(item),
+                    LOG_TX_REGISTRO_ANTES = Serialization.SerializeJSON<TELEFONE>(itemAntes)
                 };
 
                 // Persiste
@@ -185,31 +143,10 @@ namespace ApplicationServices.Services
             }
         }
 
-        public Int32 ValidateEdit(TELEFONES item, TELEFONES itemAntes)
+        public Int32 ValidateEdit(TELEFONE item, TELEFONE itemAntes)
         {
             try
             {
-                // Checa endereço
-                if (String.IsNullOrEmpty(item.TELE_NM_ENDERECO))
-                {
-                    item.TELE_NM_ENDERECO = "-";
-                }
-                if (String.IsNullOrEmpty(item.TELE_NM_BAIRRO))
-                {
-                    item.TELE_NM_BAIRRO = "-";
-                }
-                if (String.IsNullOrEmpty(item.TELE_NM_CIDADE))
-                {
-                    item.TELE_NM_CIDADE = "-";
-                }
-                if (String.IsNullOrEmpty(item.TELE_NR_CEP))
-                {
-                    item.TELE_NR_CEP = "-";
-                }
-                if (item.UF_CD_ID == null)
-                {
-                    item.UF_CD_ID = 28;
-                }
 
                 // Persiste
                 return _baseService.Edit(item);
@@ -220,7 +157,7 @@ namespace ApplicationServices.Services
             }
         }
 
-        public Int32 ValidateDelete(TELEFONES item, USUARIO usuario)
+        public Int32 ValidateDelete(TELEFONE item, USUARIO usuario)
         {
             try
             {
@@ -235,7 +172,7 @@ namespace ApplicationServices.Services
                     USUA_CD_ID = usuario.USUA_CD_ID,
                     LOG_IN_ATIVO = 1,
                     LOG_NM_OPERACAO = "DelTELE",
-                    LOG_TX_REGISTRO = "Nome : " + item.TELE_NM_NOME
+                    LOG_TX_REGISTRO = "Nome : "
                 };
 
                 // Persiste
@@ -247,7 +184,7 @@ namespace ApplicationServices.Services
             }
         }
 
-        public Int32 ValidateReativar(TELEFONES item, USUARIO usuario)
+        public Int32 ValidateReativar(TELEFONE item, USUARIO usuario)
         {
             try
             {
@@ -263,7 +200,7 @@ namespace ApplicationServices.Services
                     USUA_CD_ID = usuario.USUA_CD_ID,
                     LOG_IN_ATIVO = 1,
                     LOG_NM_OPERACAO = "ReatTELE",
-                    LOG_TX_REGISTRO = "Nome : " + item.TELE_NM_NOME
+                    LOG_TX_REGISTRO = "Nome : "
                 };
 
                 // Persiste
