@@ -2345,5 +2345,14 @@ namespace CRMPresentation.App_Start {
                 return ResourceManager.GetString("M0276", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Tribunal não informado na planilha.
+        /// </summary>
+        internal static string M0277 {
+            get {
+                return ResourceManager.GetString("M0277", resourceCulture);
+            }
+        }
     }
 }

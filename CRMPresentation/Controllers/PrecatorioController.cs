@@ -38,6 +38,7 @@ using System.Net.Mime;
 using ERP_Condominios_Solution.Classes;
 using iText.IO.Util;
 using System.Threading;
+using System.Web.ModelBinding;
 
 namespace ERP_Condominios_Solution.Controllers
 {
@@ -230,6 +231,10 @@ namespace ERP_Condominios_Solution.Controllers
                 {
                     ModelState.AddModelError("", CRMSys_Base.ResourceManager.GetString("M0016", CultureInfo.CurrentCulture));
                 }
+                if ((Int32)Session["MensPrecatorio"] == 999)
+                {
+                    ModelState.AddModelError("", CRMSys_Base.ResourceManager.GetString("M0277", CultureInfo.CurrentCulture));
+                }
             }
 
             // Abre view
@@ -417,6 +422,8 @@ namespace ERP_Condominios_Solution.Controllers
             vm.PREC_VL_HON_JUROS = 0;
             vm.PREC_VL_HON_VALOR_INICIAL_PSS = 0;
             vm.PREC_VL_HON_VALOR_REQUISITADO = 0;
+            vm.PREC_VL_RRA = 0;
+            vm.PREC_PC_RRA = 0;
             vm.PREC_NM_NOME = "-";
             return View(vm);
         }
@@ -2274,6 +2281,11 @@ namespace ERP_Condominios_Solution.Controllers
                 USUARIO usuCheca = new USUARIO();
 
                 // Checa planilha
+                if (wsGeral.Cells[2, 1].Value.ToString() == null)
+                {
+                    Session["MensPrecatorio"] = 999;
+                    return RedirectToAction("MontarTelaPrecatorio");
+                }
                 if (wsGeral.Cells[2, 1].Value.ToString() == "TRF3")
                 {
                     // Prcessa TRF
@@ -2281,7 +2293,7 @@ namespace ERP_Condominios_Solution.Controllers
                     trfx = trfs.Where(m => m.TRF1_NM_NOME == "TRF-3").FirstOrDefault();
                     idTRF = trfx.TRF1_CD_ID;
                 }
-                    if (wsGeral.Cells[2, 1].Value.ToString() == "TRF5")
+                if (wsGeral.Cells[2, 1].Value.ToString() == "TRF5")
                 {
                     // Prcessa TRF
                     trf = 5;
@@ -2335,6 +2347,10 @@ namespace ERP_Condominios_Solution.Controllers
                             }
 
                             // Monta objeto
+                            if (true)
+                            {
+
+                            }
                             prec.TRF1_CD_ID = idTRF;
                             prec.PREC_NM_PRECATORIO = numPrec;
                             prec.PREC_NM_PROC_EXECUCAO = wsGeral.Cells[row, 3].Value.ToString();
@@ -3211,9 +3227,31 @@ namespace ERP_Condominios_Solution.Controllers
                         {
                             Int32 check = 0;
                             PRECATORIO prec = new PRECATORIO();
+                            if (wsGeral.Cells[row, 1].Value.ToString() == null)
+                            {
+                                PRECATORIO_FALHA fal = new PRECATORIO_FALHA();
+                                fal.PRFA_NM_TRF = wsGeral.Cells[2, 1].Value.ToString();
+                                fal.PRFA_NM_PRECATORIO = "Não informado";
+                                fal.PRFA_DT_DATA = DateTime.Now;
+                                fal.PRFA_DS_MOTIVO = "Erro na inclusão do Precatório. Tribunal não informado";
+                                Int32 volta2 = tranApp.ValidateCreateFalha(fal);
+                                falha++;
+                                continue;
+                            }
 
                             // Verifica existencia
                             String numPrec = wsGeral.Cells[row, 2].Value.ToString();
+                            if (numPrec == null)
+                            {
+                                PRECATORIO_FALHA fal = new PRECATORIO_FALHA();
+                                fal.PRFA_NM_TRF = wsGeral.Cells[2, 1].Value.ToString();
+                                fal.PRFA_NM_PRECATORIO = "Não informado";
+                                fal.PRFA_DT_DATA = DateTime.Now;
+                                fal.PRFA_DS_MOTIVO = "Erro na inclusão do Precatório. Número não informado";
+                                Int32 volta2 = tranApp.ValidateCreateFalha(fal);
+                                falha++;
+                                continue;
+                            }
                             numPrec = CrossCutting.ValidarNumerosDocumentos.RemoveNaoNumericos(numPrec);
                             precCheca = tranApp.CheckExist(numPrec);
                             if (precCheca != null)
@@ -3239,9 +3277,55 @@ namespace ERP_Condominios_Solution.Controllers
                             prec.PREC_NM_ASSUNTO = wsGeral.Cells[row, 9].Value.ToString();
                             prec.PREC_NM_REQUERIDO = wsGeral.Cells[row, 10].Value.ToString();
 
-                            prec.PREC_VL_BEN_VALOR_PRINCIPAL = Convert.ToDecimal(wsGeral.Cells[row, 13].Value.ToString());
-                            prec.PREC_VL_JUROS = Convert.ToDecimal(wsGeral.Cells[row, 14].Value.ToString());
-                            if (wsGeral.Cells[row, 15].Value.ToString() == "Sim")
+                            String valPrinc = wsGeral.Cells[row, 13].Value.ToString();
+                            if (valPrinc != null)
+                            {
+                                if (Regex.IsMatch(valPrinc, @"^\d+$"))
+                                {
+                                    prec.PREC_VL_BEN_VALOR_PRINCIPAL = Convert.ToDecimal(wsGeral.Cells[row, 13].Value.ToString());
+                                }
+                                else
+                                {
+                                    PRECATORIO_FALHA fal = new PRECATORIO_FALHA();
+                                    fal.PRFA_NM_TRF = wsGeral.Cells[2, 1].Value.ToString();
+                                    fal.PRFA_NM_PRECATORIO = numPrec;
+                                    fal.PRFA_DT_DATA = DateTime.Now;
+                                    fal.PRFA_DS_MOTIVO = "Valor não numérico informado para BENEFICARIO VALOR PRINCIPAL" + valPrinc;
+                                    Int32 volta2 = tranApp.ValidateCreateFalha(fal);
+                                    falha++;
+                                    continue;
+                                }
+                            }
+                            else
+                            {
+                                prec.PREC_VL_BEN_VALOR_PRINCIPAL = 0;
+                            }
+
+                            String juroBen = wsGeral.Cells[row, 14].Value.ToString();
+                            if (juroBen != null)
+                            {
+                                if (Regex.IsMatch(juroBen, @"^\d+$"))
+                                {
+                                    prec.PREC_VL_JUROS = Convert.ToDecimal(wsGeral.Cells[row, 14].Value.ToString());
+                                }
+                                else
+                                {
+                                    PRECATORIO_FALHA fal = new PRECATORIO_FALHA();
+                                    fal.PRFA_NM_TRF = wsGeral.Cells[2, 1].Value.ToString();
+                                    fal.PRFA_NM_PRECATORIO = numPrec;
+                                    fal.PRFA_DT_DATA = DateTime.Now;
+                                    fal.PRFA_DS_MOTIVO = "Valor não numérico informado para BENEFICARIO JUROS " + juroBen;
+                                    Int32 volta2 = tranApp.ValidateCreateFalha(fal);
+                                    falha++;
+                                    continue;
+                                }
+                            }
+                            else
+                            {
+                                prec.PREC_VL_JUROS = 0;
+                            }
+
+                            if (wsGeral.Cells[row, 15].Value.ToString() == "Sim" || wsGeral.Cells[row, 15].Value.ToString() == "S")
                             {
                                 prec.PREC_SG_BEN_IR_RRA = "1";
                             }
@@ -3249,13 +3333,29 @@ namespace ERP_Condominios_Solution.Controllers
                             {
                                 prec.PREC_SG_BEN_IR_RRA = "0";
                             }
-                            if (wsGeral.Cells[row, 16].Value.ToString() == "-")
+
+                            String mesAnt = wsGeral.Cells[row, 16].Value.ToString();
+                            if (mesAnt != null)
                             {
-                                prec.PREC_BEN_MESES_EXE_ANTERIOR = 0;
+                                if (Regex.IsMatch(mesAnt, @"^\d+$"))
+                                {
+                                    prec.PREC_BEN_MESES_EXE_ANTERIOR = Convert.ToInt32(wsGeral.Cells[row, 16].Value.ToString());
+                                }
+                                else
+                                {
+                                    PRECATORIO_FALHA fal = new PRECATORIO_FALHA();
+                                    fal.PRFA_NM_TRF = wsGeral.Cells[2, 1].Value.ToString();
+                                    fal.PRFA_NM_PRECATORIO = numPrec;
+                                    fal.PRFA_DT_DATA = DateTime.Now;
+                                    fal.PRFA_DS_MOTIVO = "Valor não numérico informado para BENEFICARIO MESES EXE ANTERIOR " + mesAnt;
+                                    Int32 volta2 = tranApp.ValidateCreateFalha(fal);
+                                    falha++;
+                                    continue;
+                                }
                             }
                             else
                             {
-                                prec.PREC_BEN_MESES_EXE_ANTERIOR = Convert.ToInt32(wsGeral.Cells[row, 16].Value.ToString());
+                                prec.PREC_BEN_MESES_EXE_ANTERIOR = 0;
                             }
 
                             if (wsGeral.Cells[row, 17].Value.ToString() != null)
@@ -3284,37 +3384,142 @@ namespace ERP_Condominios_Solution.Controllers
                                 prec.PREC_DT_BEN_DATABASE = null;
                             }
 
-                            if (wsGeral.Cells[row, 18].Value.ToString() == "-")
+                            String iniPSS = wsGeral.Cells[row, 18].Value.ToString();
+                            if (iniPSS != null)
+                            {
+                                if (Regex.IsMatch(iniPSS, @"^\d+$"))
+                                {
+                                    prec.PREC_VL_VALOR_INICIAL_PSS = Convert.ToDecimal(wsGeral.Cells[row, 18].Value.ToString());
+                                }
+                                else
+                                {
+                                    PRECATORIO_FALHA fal = new PRECATORIO_FALHA();
+                                    fal.PRFA_NM_TRF = wsGeral.Cells[2, 1].Value.ToString();
+                                    fal.PRFA_NM_PRECATORIO = numPrec;
+                                    fal.PRFA_DT_DATA = DateTime.Now;
+                                    fal.PRFA_DS_MOTIVO = "Valor não numérico informado para VALOR INICIAL PSS" + iniPSS;
+                                    Int32 volta2 = tranApp.ValidateCreateFalha(fal);
+                                    falha++;
+                                    continue;
+                                }
+                            }
+                            else
                             {
                                 prec.PREC_VL_VALOR_INICIAL_PSS = 0;
                             }
+
+                            String valReq = wsGeral.Cells[row, 19].Value.ToString();
+                            if (valReq != null)
+                            {
+                                if (Regex.IsMatch(valReq, @"^\d+$"))
+                                {
+                                    prec.PREC_VL_BEN_VALOR_REQUISITADO = Convert.ToDecimal(wsGeral.Cells[row, 19].Value.ToString());
+                                }
+                                else
+                                {
+                                    PRECATORIO_FALHA fal = new PRECATORIO_FALHA();
+                                    fal.PRFA_NM_TRF = wsGeral.Cells[2, 1].Value.ToString();
+                                    fal.PRFA_NM_PRECATORIO = numPrec;
+                                    fal.PRFA_DT_DATA = DateTime.Now;
+                                    fal.PRFA_DS_MOTIVO = "Valor não numérico informado para VALOR REQUISITADO" + valReq;
+                                    Int32 volta2 = tranApp.ValidateCreateFalha(fal);
+                                    falha++;
+                                    continue;
+                                }
+                            }
                             else
                             {
-                                prec.PREC_VL_VALOR_INICIAL_PSS = Convert.ToDecimal(wsGeral.Cells[row, 18].Value.ToString());
+                                prec.PREC_VL_BEN_VALOR_REQUISITADO = 0;
                             }
-                            prec.PREC_VL_BEN_VALOR_REQUISITADO = Convert.ToDecimal(wsGeral.Cells[row, 19].Value.ToString());
 
+                            Int32 honoFlag = 1;
                             String honoNome = wsGeral.Cells[row, 20].Value.ToString();
                             String honoCPF = wsGeral.Cells[row, 21].Value.ToString();
-                            honoCheca = honoApp.CheckExist(honoNome, honoCPF);
-                            if (honoCheca != null)
+                            if ((honoCPF != null & honoNome == null) || (honoCPF == null & honoNome != null))
                             {
-                                prec.HONO_CD_ID = honoCheca.HONO_CD_ID;
+                                PRECATORIO_FALHA fal = new PRECATORIO_FALHA();
+                                fal.PRFA_NM_TRF = wsGeral.Cells[2, 1].Value.ToString();
+                                fal.PRFA_NM_PRECATORIO = numPrec;
+                                fal.PRFA_DT_DATA = DateTime.Now;
+                                fal.PRFA_DS_MOTIVO = "Informações incompletas do ADVOGADO. Precatório: " + numPrec;
+                                Int32 volta2 = tranApp.ValidateCreateFalha(fal);
+                                falha++;
+                                honoFlag = 0;
+                            }
+                            if (honoCPF.Length == 14)
+                            {
+                                if (!CrossCutting.ValidarNumerosDocumentos.IsCFPValid(honoCPF))
+                                {
+                                    PRECATORIO_FALHA fal = new PRECATORIO_FALHA();
+                                    fal.PRFA_NM_TRF = wsGeral.Cells[2, 1].Value.ToString();
+                                    fal.PRFA_NM_PRECATORIO = numPrec;
+                                    fal.PRFA_DT_DATA = DateTime.Now;
+                                    fal.PRFA_DS_MOTIVO = "CPF do ADVOGADO inválido. " + honoCPF;
+                                    Int32 volta2 = tranApp.ValidateCreateFalha(fal);
+                                    falha++;
+                                    honoFlag = 0;
+                                }
+                            }
+                            else if (honoCPF.Length == 18)
+                            {
+                                if (!CrossCutting.ValidarNumerosDocumentos.IsCnpjValid(honoCPF))
+                                {
+                                    PRECATORIO_FALHA fal = new PRECATORIO_FALHA();
+                                    fal.PRFA_NM_TRF = wsGeral.Cells[2, 1].Value.ToString();
+                                    fal.PRFA_NM_PRECATORIO = numPrec;
+                                    fal.PRFA_DT_DATA = DateTime.Now;
+                                    fal.PRFA_DS_MOTIVO = "CNPJ do ADVOGADO inválido. " + honoCPF;
+                                    Int32 volta2 = tranApp.ValidateCreateFalha(fal);
+                                    falha++;
+                                    honoFlag = 0;
+                                }
                             }
                             else
                             {
-                                HONORARIO hono = new HONORARIO();
-                                hono.HONO_DT_CADASTRO = DateTime.Today.Date;
-                                hono.HONO_IN_ATIVO = 1;
-                                hono.HONO_NM_NOME = wsGeral.Cells[row, 20].Value.ToString();
-                                hono.HONO_NR_CPF = wsGeral.Cells[row, 21].Value.ToString();
-                                hono.TIPE_CD_ID = 1;
-                                Int32 volta3 = honoApp.ValidateCreate(hono, user);
-                                prec.HONO_CD_ID = hono.HONO_CD_ID;
+                                PRECATORIO_FALHA fal = new PRECATORIO_FALHA();
+                                fal.PRFA_NM_TRF = wsGeral.Cells[2, 1].Value.ToString();
+                                fal.PRFA_NM_PRECATORIO = numPrec;
+                                fal.PRFA_DT_DATA = DateTime.Now;
+                                fal.PRFA_DS_MOTIVO = "CPF ou CNPJ do ADVOGADO inválido. " + honoCPF;
+                                Int32 volta2 = tranApp.ValidateCreateFalha(fal);
+                                falha++;
+                                honoFlag = 0;
                             }
-                            prec.PREC_VL_HON_VALOR_PRINCIPAL = Convert.ToDecimal(wsGeral.Cells[row, 22].Value.ToString());
-                            prec.PREC_VL_HON_JUROS = Convert.ToDecimal(wsGeral.Cells[row, 23].Value.ToString());
-                            if (wsGeral.Cells[row, 24].Value.ToString() == "Sim")
+
+                            if (honoFlag == 1)
+                            {
+                                honoCheca = honoApp.CheckExist(honoNome, honoCPF);
+                                if (honoCheca != null)
+                                {
+                                    prec.HONO_CD_ID = honoCheca.HONO_CD_ID;
+                                    prec.PREC_VL_HON_VALOR_PRINCIPAL = Convert.ToDecimal(wsGeral.Cells[row, 22].Value.ToString());
+                                    prec.PREC_VL_HON_JUROS = Convert.ToDecimal(wsGeral.Cells[row, 23].Value.ToString());
+                                }
+                                else
+                                {
+                                    HONORARIO hono = new HONORARIO();
+                                    hono.HONO_DT_CADASTRO = DateTime.Today.Date;
+                                    hono.HONO_IN_ATIVO = 1;
+                                    hono.HONO_NM_NOME = honoNome;
+                                    String cpfCNPJ = honoCPF;
+                                    if (cpfCNPJ.Length == 14)
+                                    {
+                                        hono.HONO_NR_CPF = cpfCNPJ;
+                                        hono.TIPE_CD_ID = 1;
+                                    }
+                                    else
+                                    {
+                                        hono.HONO_NR_CNPJ = cpfCNPJ;
+                                        hono.TIPE_CD_ID = 2;
+                                    }
+                                    Int32 volta3 = honoApp.ValidateCreate(hono, user);
+                                    prec.HONO_CD_ID = hono.HONO_CD_ID;
+                                    prec.PREC_VL_HON_VALOR_PRINCIPAL = Convert.ToDecimal(wsGeral.Cells[row, 22].Value.ToString());
+                                    prec.PREC_VL_HON_JUROS = Convert.ToDecimal(wsGeral.Cells[row, 23].Value.ToString());
+                                }
+                            }
+
+                            if (wsGeral.Cells[row, 24].Value.ToString() == "Sim" || wsGeral.Cells[row, 24].Value.ToString() == "S")
                             {
                                 prec.PREC_SG_HON_IR_RRA = "1";
                             }
@@ -3322,13 +3527,29 @@ namespace ERP_Condominios_Solution.Controllers
                             {
                                 prec.PREC_SG_HON_IR_RRA = "0";
                             }
-                            if (wsGeral.Cells[row, 25].Value.ToString() == "-")
+
+                            String honoMes = wsGeral.Cells[row, 25].Value.ToString();
+                            if (honoMes != null)
                             {
-                                prec.PREC_IN_HON_MESES_EXE_ANTERIOR = 0;
+                                if (Regex.IsMatch(honoMes, @"^\d+$"))
+                                {
+                                    prec.PREC_IN_HON_MESES_EXE_ANTERIOR = Convert.ToInt32(wsGeral.Cells[row, 25].Value.ToString());
+                                }
+                                else
+                                {
+                                    PRECATORIO_FALHA fal = new PRECATORIO_FALHA();
+                                    fal.PRFA_NM_TRF = wsGeral.Cells[2, 1].Value.ToString();
+                                    fal.PRFA_NM_PRECATORIO = numPrec;
+                                    fal.PRFA_DT_DATA = DateTime.Now;
+                                    fal.PRFA_DS_MOTIVO = "Valor não numérico informado para HONORARIO MES ANTERIOR" + honoMes;
+                                    Int32 volta2 = tranApp.ValidateCreateFalha(fal);
+                                    falha++;
+                                    continue;
+                                }
                             }
                             else
                             {
-                                prec.PREC_IN_HON_MESES_EXE_ANTERIOR = Convert.ToInt32(wsGeral.Cells[row, 25].Value.ToString());
+                                prec.PREC_IN_HON_MESES_EXE_ANTERIOR = 0;
                             }
 
                             if (wsGeral.Cells[row, 26].Value.ToString() != null)
@@ -3357,125 +3578,262 @@ namespace ERP_Condominios_Solution.Controllers
                                 prec.PREC_DT_HON_DATABASE = null;
                             }
 
-                            if (wsGeral.Cells[row, 27].Value.ToString() == "-")
+                            String valPSS = wsGeral.Cells[row, 27].Value.ToString();
+                            if (valPSS != null)
                             {
-                                prec.PREC_VL_HON_VALOR_INICIAL_PSS = 0;
+                                if (Regex.IsMatch(valPSS, @"^\d+$"))
+                                {
+                                    prec.PREC_VL_HON_VALOR_INICIAL_PSS = Convert.ToDecimal(wsGeral.Cells[row, 27].Value.ToString());
+                                }
+                                else
+                                {
+                                    PRECATORIO_FALHA fal = new PRECATORIO_FALHA();
+                                    fal.PRFA_NM_TRF = wsGeral.Cells[2, 1].Value.ToString();
+                                    fal.PRFA_NM_PRECATORIO = numPrec;
+                                    fal.PRFA_DT_DATA = DateTime.Now;
+                                    fal.PRFA_DS_MOTIVO = "Valor não numérico informado para VALOR HONORARIO INICIAL PSS" + valPSS;
+                                    Int32 volta2 = tranApp.ValidateCreateFalha(fal);
+                                    falha++;
+                                    continue;
+                                }
                             }
                             else
                             {
-                                prec.PREC_VL_HON_VALOR_INICIAL_PSS = Convert.ToDecimal(wsGeral.Cells[row, 27].Value.ToString());
+                                prec.PREC_VL_HON_VALOR_INICIAL_PSS = 0;
                             }
-                            prec.PREC_VL_BEN_VALOR_REQUISITADO = Convert.ToDecimal(wsGeral.Cells[row, 28].Value.ToString());
 
+                            String honReq = wsGeral.Cells[row, 28].Value.ToString();
+                            if (honReq != null)
+                            {
+                                if (Regex.IsMatch(honReq, @"^\d+$"))
+                                {
+                                    prec.PREC_VL_BEN_VALOR_REQUISITADO = Convert.ToDecimal(wsGeral.Cells[row, 28].Value.ToString());
+                                }
+                                else
+                                {
+                                    PRECATORIO_FALHA fal = new PRECATORIO_FALHA();
+                                    fal.PRFA_NM_TRF = wsGeral.Cells[2, 1].Value.ToString();
+                                    fal.PRFA_NM_PRECATORIO = numPrec;
+                                    fal.PRFA_DT_DATA = DateTime.Now;
+                                    fal.PRFA_DS_MOTIVO = "Valor não numérico informado para VALOR HONORARIO REQUISITADO" + honReq;
+                                    Int32 volta2 = tranApp.ValidateCreateFalha(fal);
+                                    falha++;
+                                    continue;
+                                }
+                            }
+                            else
+                            {
+                                prec.PREC_VL_BEN_VALOR_REQUISITADO = 0;
+                            }
+
+                            String anoProp = wsGeral.Cells[row, 35].Value.ToString();
+                            if (anoProp != null)
+                            {
+                                if (Regex.IsMatch(anoProp, @"\d{4}"))
+                                {
+                                    prec.PREC_NR_ANO = anoProp;
+                                }
+                                else
+                                {
+                                    PRECATORIO_FALHA fal = new PRECATORIO_FALHA();
+                                    fal.PRFA_NM_TRF = wsGeral.Cells[2, 1].Value.ToString();
+                                    fal.PRFA_NM_PRECATORIO = numPrec;
+                                    fal.PRFA_DT_DATA = DateTime.Now;
+                                    fal.PRFA_DS_MOTIVO = "Valor não inválido informado para ANO DA PROPOSTA " + anoProp;
+                                    Int32 volta2 = tranApp.ValidateCreateFalha(fal);
+                                    falha++;
+                                    prec.PREC_NR_ANO = String.Empty;
+                                }
+                            }
+                            else
+                            {
+                                prec.PREC_NR_ANO = String.Empty;
+                            }
+
+                            prec.PREC_NM_TIPO_DESPESA = wsGeral.Cells[row, 36].Value.ToString();
+
+                            String valRRA = wsGeral.Cells[row, 37].Value.ToString();
+                            if (valRRA != null)
+                            {
+                                if (Regex.IsMatch(valRRA, @"^\d+$"))
+                                {
+                                    prec.PREC_VL_RRA = Convert.ToDecimal(wsGeral.Cells[row, 37].Value.ToString());
+                                }
+                                else
+                                {
+                                    PRECATORIO_FALHA fal = new PRECATORIO_FALHA();
+                                    fal.PRFA_NM_TRF = wsGeral.Cells[2, 1].Value.ToString();
+                                    fal.PRFA_NM_PRECATORIO = numPrec;
+                                    fal.PRFA_DT_DATA = DateTime.Now;
+                                    fal.PRFA_DS_MOTIVO = "Valor não numérico informado para VALOR RRA. Assumido 0. " + valRRA;
+                                    Int32 volta2 = tranApp.ValidateCreateFalha(fal);
+                                    falha++;
+                                    prec.PREC_VL_RRA = 0;
+                                }
+                            }
+                            else
+                            {
+                                prec.PREC_VL_RRA = 0;
+                            }
+
+                            String percRRA = wsGeral.Cells[row, 38].Value.ToString();
+                            if (percRRA != null)
+                            {
+                                if (Regex.IsMatch(percRRA, @"^\d+$"))
+                                {
+                                    prec.PREC_PC_RRA = Convert.ToDecimal(wsGeral.Cells[row, 38].Value.ToString());
+                                }
+                                else
+                                {
+                                    PRECATORIO_FALHA fal = new PRECATORIO_FALHA();
+                                    fal.PRFA_NM_TRF = wsGeral.Cells[2, 1].Value.ToString();
+                                    fal.PRFA_NM_PRECATORIO = numPrec;
+                                    fal.PRFA_DT_DATA = DateTime.Now;
+                                    fal.PRFA_DS_MOTIVO = "Valor não numérico informado para PERCENTAGEM RRA. Assumido 0. " + percRRA;
+                                    Int32 volta2 = tranApp.ValidateCreateFalha(fal);
+                                    falha++;
+                                    prec.PREC_PC_RRA = 0;
+                                }
+                            }
+                            else
+                            {
+                                prec.PREC_PC_RRA = 0;
+                            }
+
+                            prec.PREC_NM_PREFERENCIA = wsGeral.Cells[row, 40].Value.ToString();
+                            
+                            Int32 flagBene = 1;
                             String nome = wsGeral.Cells[row, 29].Value.ToString();
                             String cpf = wsGeral.Cells[row, 30].Value.ToString();
                             String sexo = wsGeral.Cells[row, 31].Value.ToString();
                             String nasc = wsGeral.Cells[row, 32].Value.ToString();
                             String cel1 = wsGeral.Cells[row, 33].Value.ToString();
                             String cel2 = wsGeral.Cells[row, 34].Value.ToString();
-                            String tel = wsGeral.Cells[row, 35].Value.ToString();
+
+                            if (nome == null || cpf == null)
+                            {
+                                PRECATORIO_FALHA fal = new PRECATORIO_FALHA();
+                                fal.PRFA_NM_TRF = wsGeral.Cells[2, 1].Value.ToString();
+                                fal.PRFA_NM_PRECATORIO = numPrec;
+                                fal.PRFA_DT_DATA = DateTime.Now;
+                                fal.PRFA_DS_MOTIVO = "Beneficiário: Nome e CPF não informados";
+                                Int32 volta2 = tranApp.ValidateCreateFalha(fal);
+                                falha++;
+                                flagBene = 0;
+                            }
+
+                            DateTime checaNasc;
                             DateTime? dataNasc = null;
                             if (nasc != null)
                             {
+                                Boolean data = DateTime.TryParse(nasc, out checaNasc);
+                                if (!data)
+                                {
+                                    PRECATORIO_FALHA fal = new PRECATORIO_FALHA();
+                                    fal.PRFA_NM_TRF = wsGeral.Cells[2, 1].Value.ToString();
+                                    fal.PRFA_NM_PRECATORIO = numPrec;
+                                    fal.PRFA_DT_DATA = DateTime.Now;
+                                    fal.PRFA_DS_MOTIVO = "Data de nascimento inválida. Beneficiário: " + nome + ". " + nasc;
+                                    Int32 volta2 = tranApp.ValidateCreateFalha(fal);
+                                    falha++;
+                                }
                                 String x = nasc.ToString();
                                 dataNasc = Convert.ToDateTime(x);
                             }
 
                             BENEFICIARIO beneNovo = new BENEFICIARIO();
-                            if (nome != null && cpf != null)
+                            BENEFICIARIO bene = listaBene.Where(p => p.BENE_NM_NOME == nome & p.BENE_NR_CPF == cpf).FirstOrDefault();
+                            if (bene == null)
                             {
-                                BENEFICIARIO bene = listaBene.Where(p => p.BENE_NM_NOME == nome & p.BENE_NR_CPF == cpf).FirstOrDefault();
-                                if (bene == null)
+                                beneNovo.TIPE_CD_ID = 1;
+                                if (sexo == "M" || sexo == "F")
                                 {
-                                    beneNovo.TIPE_CD_ID = 1;
-                                    if (sexo == "1" || sexo == "2")
-                                    {
-                                        beneNovo.SEXO_CD_ID = Convert.ToInt32(sexo);
-                                    }
-                                    beneNovo.BENE_NM_NOME = nome;
-                                    beneNovo.BENE_NR_CPF = cpf;
-                                    beneNovo.BENE_NR_TELEFONE2 = tel;
-                                    beneNovo.BENE_DT_CADASTRO = DateTime.Today.Date;
-                                    beneNovo.BENE_NR_CELULAR = cel1;
-                                    beneNovo.BENE_NR_CELULAR2 = cel2;
-                                    beneNovo.BENE_DT_NASCIMENTO = dataNasc;
-                                    beneNovo.BENE_IN_ATIVO = 1;
-                                    Int32 voltaBene = beneApp.ValidateCreate(beneNovo, user);
-                                    if (voltaBene > 0)
-                                    {
-                                        PRECATORIO_FALHA fal = new PRECATORIO_FALHA();
-                                        fal.PRFA_NM_TRF = wsGeral.Cells[2, 1].Value.ToString();
-                                        fal.PRFA_NM_PRECATORIO = numPrec;
-                                        fal.PRFA_DT_DATA = DateTime.Now;
-                                        fal.PRFA_DS_MOTIVO = "Erro na inclusão do beneficiário " + nome;
-                                        Int32 volta2 = tranApp.ValidateCreateFalha(fal);
-                                        falha++;
-                                    }
-                                    prec.BENE_CD_ID = beneNovo.BENE_CD_ID;
+                                    beneNovo.SEXO_CD_ID = sexo == "M" ? 1 : 0;
                                 }
+                                beneNovo.BENE_NM_NOME = nome;
+                                beneNovo.BENE_NR_CPF = cpf;
+                                beneNovo.BENE_DT_CADASTRO = DateTime.Today.Date;
+                                beneNovo.BENE_NR_CELULAR = cel1;
+                                beneNovo.BENE_NR_CELULAR2 = cel2;
+                                beneNovo.BENE_DT_NASCIMENTO = dataNasc;
+                                beneNovo.BENE_IN_ATIVO = 1;
+                                Int32 voltaBene = beneApp.ValidateCreate(beneNovo, user);
+                                if (voltaBene > 0)
+                                {
+                                    PRECATORIO_FALHA fal = new PRECATORIO_FALHA();
+                                    fal.PRFA_NM_TRF = wsGeral.Cells[2, 1].Value.ToString();
+                                    fal.PRFA_NM_PRECATORIO = numPrec;
+                                    fal.PRFA_DT_DATA = DateTime.Now;
+                                    fal.PRFA_DS_MOTIVO = "Erro na inclusão do beneficiário " + nome;
+                                    Int32 volta2 = tranApp.ValidateCreateFalha(fal);
+                                    falha++;
+                                }
+                                prec.BENE_CD_ID = beneNovo.BENE_CD_ID;
                             }
 
                             CLIENTE cliNovo = new CLIENTE();
-                            if (nome != null && cpf != null)
+                            CLIENTE cli = listaCli.Where(p => p.CLIE_NM_NOME == nome & p.CLIE_NR_CPF == cpf).FirstOrDefault();
+                            if (cli == null)
                             {
-                                CLIENTE cli = listaCli.Where(p => p.CLIE_NM_NOME == nome & p.CLIE_NR_CPF == cpf).FirstOrDefault();
-                                if (cli == null)
+                                cliNovo.TIPE_CD_ID = 1;
+                                if (sexo == "M" || sexo == "F")
                                 {
-                                    cliNovo.TIPE_CD_ID = 1;
-                                    if (sexo == "1" || sexo == "2")
-                                    {
-                                        cliNovo.SEXO_CD_ID = Convert.ToInt32(sexo);
-                                    }
-                                    cliNovo.CLIE_NM_NOME = nome;
-                                    cliNovo.CLIE_NR_CPF = cpf;
-                                    cliNovo.CLIE_NR_TELEFONE = tel;
-                                    cliNovo.CLIE_DT_CADASTRO = DateTime.Today.Date;
-                                    cliNovo.CLIE_NR_CELULAR = cel1;
-                                    cliNovo.CLIE_NR_WHATSAPP = cel2;
-                                    cliNovo.CLIE_DT_NASCIMENTO = dataNasc;
-                                    cliNovo.CLIE_IN_ATIVO = 1;
-                                    Int32 voltaCli = cliApp.ValidateCreate(cliNovo, user);
-                                    if (voltaCli > 0)
-                                    {
-                                        PRECATORIO_FALHA fal = new PRECATORIO_FALHA();
-                                        fal.PRFA_NM_TRF = wsGeral.Cells[2, 1].Value.ToString();
-                                        fal.PRFA_NM_PRECATORIO = numPrec;
-                                        fal.PRFA_DT_DATA = DateTime.Now;
-                                        fal.PRFA_DS_MOTIVO = "Erro na inclusão do cliente " + nome;
-                                        Int32 volta2 = tranApp.ValidateCreateFalha(fal);
-                                        falha++;
-                                    }
+                                    cliNovo.SEXO_CD_ID = sexo == "M" ? 1 : 0;
+                                }
+                                cliNovo.CLIE_NM_NOME = nome;
+                                cliNovo.CLIE_NR_CPF = cpf;
+                                cliNovo.CLIE_DT_CADASTRO = DateTime.Today.Date;
+                                cliNovo.CLIE_NR_CELULAR = cel1;
+                                cliNovo.CLIE_NR_WHATSAPP = cel2;
+                                cliNovo.CLIE_DT_NASCIMENTO = dataNasc;
+                                cliNovo.CLIE_IN_ATIVO = 1;
+                                Int32 voltaCli = cliApp.ValidateCreate(cliNovo, user);
+                                if (voltaCli > 0)
+                                {
+                                    PRECATORIO_FALHA fal = new PRECATORIO_FALHA();
+                                    fal.PRFA_NM_TRF = wsGeral.Cells[2, 1].Value.ToString();
+                                    fal.PRFA_NM_PRECATORIO = numPrec;
+                                    fal.PRFA_DT_DATA = DateTime.Now;
+                                    fal.PRFA_DS_MOTIVO = "Erro na inclusão do cliente " + nome;
+                                    Int32 volta2 = tranApp.ValidateCreateFalha(fal);
+                                    falha++;
                                 }
                             }
 
-
                             // Processa usuário
-                            String usu = wsGeral.Cells[row, 36].Value.ToString();
+                            Int32 flagUsu = 1;
+                            String usu = wsGeral.Cells[row, 39].Value.ToString();
                             if (usu == null)
                             {
                                 PRECATORIO_FALHA fal = new PRECATORIO_FALHA();
                                 fal.PRFA_NM_TRF = wsGeral.Cells[2, 1].Value.ToString();
                                 fal.PRFA_NM_PRECATORIO = numPrec;
                                 fal.PRFA_DT_DATA = DateTime.Now;
-                                fal.PRFA_DS_MOTIVO = "Usuário responsável não definido " + trfx.TRF1_NM_NOME;
+                                fal.PRFA_DS_MOTIVO = "Usuário responsável não definido. Precatório " + numPrec;
                                 Int32 volta2 = tranApp.ValidateCreateFalha(fal);
                                 falha++;
-                                continue;
+                                flagUsu = 0;
                             }
 
-                            usuCheca = usuApp.GetItemById(Convert.ToInt32(usu));
-                            if (usuCheca == null)
+                            if (flagUsu == 1)
                             {
-                                PRECATORIO_FALHA fal = new PRECATORIO_FALHA();
-                                fal.PRFA_NM_TRF = wsGeral.Cells[2, 1].Value.ToString();
-                                fal.PRFA_NM_PRECATORIO = numPrec;
-                                fal.PRFA_DT_DATA = DateTime.Now;
-                                fal.PRFA_DS_MOTIVO = "Usuário responsável não cadastrado " + trfx.TRF1_NM_NOME;
-                                Int32 volta2 = tranApp.ValidateCreateFalha(fal);
-                                falha++;
-                                continue;
+                                usuCheca = usuApp.GetItemById(Convert.ToInt32(usu));
+                                if (usuCheca == null)
+                                {
+                                    PRECATORIO_FALHA fal = new PRECATORIO_FALHA();
+                                    fal.PRFA_NM_TRF = wsGeral.Cells[2, 1].Value.ToString();
+                                    fal.PRFA_NM_PRECATORIO = numPrec;
+                                    fal.PRFA_DT_DATA = DateTime.Now;
+                                    fal.PRFA_DS_MOTIVO = "Usuário responsável não cadastrado. Precatório " + numPrec;
+                                    Int32 volta2 = tranApp.ValidateCreateFalha(fal);
+                                    falha++;
+                                    prec.USUA_CD_ID = null;
+                                }
+                                else
+                                {
+                                    prec.USUA_CD_ID = Convert.ToInt32(usu);
+                                }
                             }
-                            prec.USUA_CD_ID = Convert.ToInt32(usu);
 
                             // Grava objeto
                             prec.PREC_NM_NOME = nome;

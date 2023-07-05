@@ -42,7 +42,7 @@ namespace ERP_Condominios_Solution.Classes
         {
             // Monta log
             LOG_EXCECAO_NOVO log = new LOG_EXCECAO_NOVO();
-            log.ASSI_CD_ID = usuario.ASSI_CD_ID;
+            log.ASSI_CD_ID = 1;
             log.USUA_CD_ID = usuario.USUA_CD_ID;
             log.LOEX_NM_APLICACAO = aplicacao;
             log.LOEX_DT_DATA = DateTime.Now;

@@ -159,6 +159,12 @@ namespace ERP_Condominios_Solution.ViewModels
         [Required(ErrorMessage = "Campo RESPONSÁVEL obrigatorio")]
         public Nullable<int> USUA_CD_ID { get; set; }
         public string PREC_NM_NOME { get; set; }
+        [StringLength(500, ErrorMessage = "PREFERÊNCIA deve conter no máximo 500 caracteres.")]
+        public string PREC_NM_PREFERENCIA { get; set; }
+        [StringLength(4, ErrorMessage = "O ANO DA PROPOSTA deve conter no máximo 4 caracteres.")]
+        public string PREC_NR_ANO_PROPOSTA { get; set; }
+        [StringLength(150, ErrorMessage = "O TIPO DE DESPESA deve conter no máximo 150 caracteres.")]
+        public string PREC_NM_TIPO_DESPESA { get; set; }
 
         // Filtros
         public Nullable<int> OperaTRF { get; set; }

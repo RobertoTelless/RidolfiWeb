@@ -879,4 +879,7 @@
   <data name="M0276" xml:space="preserve">
     <value>Beneficiário sem e-mail informado</value>
   </data>
+  <data name="M0277" xml:space="preserve">
+    <value>Tribunal não informado na planilha</value>
+  </data>
 </root>
