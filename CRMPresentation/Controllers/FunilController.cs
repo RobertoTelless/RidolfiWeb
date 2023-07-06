@@ -121,12 +121,12 @@ namespace ERP_Condominios_Solution.Controllers
             Int32 idAss = (Int32)Session["IdAssinante"];
 
             // Carrega listas
-            if ((List<FUNIL>)Session["ListaFunil"] == null)
+            if ((List<FUNIL>)Session["ListaFunilX"] == null)
             {
                 listaMaster = CarregaFunil();
-                Session["ListaFunil"] = listaMaster;
+                Session["ListaFunilX"] = listaMaster;
             }
-            ViewBag.Listas = (List<FUNIL>)Session["ListaFunil"];
+            ViewBag.Listas = (List<FUNIL>)Session["ListaFunilX"];
             ViewBag.Title = "Funil";
 
             // Mensagens
@@ -251,7 +251,7 @@ namespace ERP_Condominios_Solution.Controllers
 
                     // Sucesso
                     listaMaster = new List<FUNIL>();
-                    Session["ListaFunil"] = null;
+                    Session["ListaFunilX"] = null;
                     Session["IdFunil"] = item.FUNI_CD_ID;
                     Session["FunilAlterada"] = 1;
                     return RedirectToAction("VoltarAnexoFunil");
@@ -348,7 +348,7 @@ namespace ERP_Condominios_Solution.Controllers
 
                     // Sucesso
                     listaMaster = new List<FUNIL>();
-                    Session["ListaFunil"] = null;
+                    Session["ListaFunilX"] = null;
                     Session["FunilAlterada"] = 1;
                     return RedirectToAction("MontarTelaFunil");
                 }

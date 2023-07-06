@@ -5505,18 +5505,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_CRM_CLIENTE">
-          <End Role="CLIENTE" Type="Self.CLIENTE" Multiplicity="1" />
-          <End Role="CRM" Type="Self.CRM" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="CLIENTE">
-              <PropertyRef Name="CLIE_CD_ID" />
-            </Principal>
-            <Dependent Role="CRM">
-              <PropertyRef Name="CLIE_CD_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_CRM_COMENTARIO_CRM">
           <End Role="CRM" Type="Self.CRM" Multiplicity="1" />
           <End Role="CRM_COMENTARIO" Type="Self.CRM_COMENTARIO" Multiplicity="*" />
@@ -10140,10 +10128,6 @@
           <AssociationSet Name="FK_CRM_ANEXO_CRM" Association="Self.FK_CRM_ANEXO_CRM">
             <End Role="CRM" EntitySet="CRM" />
             <End Role="CRM_ANEXO" EntitySet="CRM_ANEXO" />
-          </AssociationSet>
-          <AssociationSet Name="FK_CRM_CLIENTE" Association="Self.FK_CRM_CLIENTE">
-            <End Role="CLIENTE" EntitySet="CLIENTE" />
-            <End Role="CRM" EntitySet="CRM" />
           </AssociationSet>
           <AssociationSet Name="FK_CRM_COMENTARIO_CRM" Association="Self.FK_CRM_COMENTARIO_CRM">
             <End Role="CRM" EntitySet="CRM" />

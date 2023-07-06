@@ -18,12 +18,14 @@ namespace ApplicationServices.Services
         private readonly ICRMService _baseService;
         private readonly INotificacaoService _notiService;
         private readonly IClienteService _cliService;
+        private readonly IPrecatorioService _preService;
 
-        public CRMAppService(ICRMService baseService, INotificacaoService notiService, IClienteService cliService): base(baseService)
+        public CRMAppService(ICRMService baseService, INotificacaoService notiService, IClienteService cliService, IPrecatorioService preService) : base(baseService)
         {
             _baseService = baseService;
             _notiService = notiService;
             _cliService = cliService;
+            _preService = preService;
         }
 
         public List<CRM> GetAllItens(Int32 idAss)
@@ -275,8 +277,11 @@ namespace ApplicationServices.Services
                 item.CRM1_IN_ATIVO = 1;
 
                 // Serializa registro
-                CLIENTE cli = _cliService.GetItemById(item.CLIE_CD_ID);
-                String serial = item.ASSI_CD_ID.ToString() + "|" + cli.CLIE_NM_NOME + "|" + item.CRM1_DS_DESCRICAO + "|" + item.CRM1_DT_CRIACAO.Value.ToShortDateString() + "|" + item.CRM1_IN_ATIVO.ToString() + "|" + item.CRM1_IN_STATUS.ToString() + "|" + item.CRM1_NM_NOME;
+                PRECATORIO cli = _preService.GetItemById(item.PREC_CD_ID.Value);
+                String serial = item.ASSI_CD_ID.ToString() + "|" + cli.PREC_NM_PRECATORIO + "|" + item.CRM1_DS_DESCRICAO + "|" + item.CRM1_DT_CRIACAO.Value.ToShortDateString() + "|" + item.CRM1_IN_ATIVO.ToString() + "|" + item.CRM1_IN_STATUS.ToString() + "|" + item.CRM1_NM_NOME;
+
+                item.USUA_CD_ID = cli.USUA_CD_ID;
+
 
                 // Monta Log
                 LOG log = new LOG
@@ -299,7 +304,7 @@ namespace ApplicationServices.Services
                 dia.DIPR_DT_DATA = DateTime.Today.Date;
                 dia.CRM1_CD_ID = item.CRM1_CD_ID;
                 dia.DIPR_NM_OPERACAO = "Criação de Processo";
-                dia.DIPR_DS_DESCRICAO = "Criação do Processo " + item.CRM1_NM_NOME + ". Cliente: " + cli.CLIE_NM_NOME;
+                dia.DIPR_DS_DESCRICAO = "Criação do Processo " + item.CRM1_NM_NOME + ". Precatório: " + cli.PREC_NM_PRECATORIO;
                 Int32 volta1 = _baseService.CreateDiario(dia);
 
                 // Gera Notificação
@@ -311,7 +316,7 @@ namespace ApplicationServices.Services
                 noti.NOTI_IN_VISTA = 0;
                 noti.NOTI_NM_TITULO = "Atribuição de Processo CRM";
                 noti.NOTI_IN_ATIVO = 1;
-                noti.NOTI_TX_TEXTO = "ATENÇÃO: O Processo CRM " + item.CRM1_NM_NOME + " do cliente " + cli.CLIE_NM_NOME + " foi colocado sob sua responsabilidade em "  + DateTime.Today.Date.ToLongDateString() + ".";
+                noti.NOTI_TX_TEXTO = "ATENÇÃO: O Processo CRM " + item.CRM1_NM_NOME + " do cliente " + cli.PREC_NM_PRECATORIO + " foi colocado sob sua responsabilidade em "  + DateTime.Today.Date.ToLongDateString() + ".";
                 noti.USUA_CD_ID = item.USUA_CD_ID.Value;
                 noti.NOTI_IN_STATUS = 1;
                 noti.NOTI_IN_NIVEL = 1;

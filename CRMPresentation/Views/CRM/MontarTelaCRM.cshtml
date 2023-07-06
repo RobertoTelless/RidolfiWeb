@@ -122,7 +122,7 @@
                                 @Html.ButtonActionSubmit(text: "Filtrar")
                                 @Html.ButtonLinkIndex(text: "Incluir Novo Processo", controller: "CRM", action: "IncluirProcessoCRM", buttonClass: "primary")
                                 @Html.ButtonLinkIndex(text: "Retirar Filtro", controller: "CRM", action: "RetirarFiltroCRM")
-                                @Html.ButtonLinkIndex(text: "Visualização Kanban", controller: "CRM", action: "MontarTelaKanbanCRM")
+                                @Html.ButtonLinkIndex(text: "Visualização Kanban", controller: "CRM", action: "MontarTelaKanbanCRM_Nova")
                                 @Html.ButtonLinkIndex(text: "Ações do Usuário", controller: "CRM", action: "VerAcoesUsuarioCRMPrevia1")
                                 @Html.ButtonLinkIndex(text: "Propostas", action: "VerPedidosUsuarioCRMPrevia", controller: "CRM")
                                 @Html.ButtonLinkIndex(text: "Histórico", controller: "CRM", action: "MontarTelaHistoricoGeral")
@@ -162,7 +162,6 @@
                                         <th style="width: auto">Etapa</th>
                                         <th style="width: auto">Precatório</th>
                                         <th style="width: auto">Beneficiário</th>
-                                        <th style="width: auto">Campanha</th>
                                         <th style="width: auto">Título</th>
                                         <th style="width: auto">Próxima Ação</th>
                                         <th style="width: auto">Data Prevista</th>
@@ -214,16 +213,7 @@
                                                 }                                                
                                                 
                                                 <td><a href="@Url.Action("EditarPrecatorio", "Precatorio", new { id = cond.PREC_CD_ID })" />@cond.PRECATORIO.PREC_NM_PRECATORIO</td>
-                                                <td>@cond.PRECATORIO.PREC_NM_NOME</td>
-                                                
-                                                @if (cond.CRM1_NM_CAMPANHA != null)
-                                                {
-                                                    <td><span class="badge badge-success">@cond.CRM1_NM_CAMPANHA</span></td>
-                                                }
-                                                else
-                                                {
-                                                    <td><span class="badge badge-warning">Não Definida</span></td>
-                                                }
+                                                <td>@cond.PRECATORIO.PREC_NM_NOME</td>                                                
 
 
                                                 @if (cond.CRM1_IN_ATIVO == 3 || cond.CRM1_IN_ATIVO == 4 || cond.CRM1_IN_ATIVO == 8)
@@ -411,16 +401,10 @@
                                                         <td>Encerrado</td>
                                                     }                                                
                                                 
-                                                    <td><a href="@Url.Action("EditarClienteForm", "CRM", new { id = cond.CLIE_CD_ID })" />@cond.CLIENTE.CLIE_NM_NOME</td>
-                                                
-                                                    @if (cond.CRM1_NM_CAMPANHA != null)
-                                                    {
-                                                        <td><span class="badge badge-success">@cond.CRM1_NM_CAMPANHA</span></td>
-                                                    }
-                                                    else
-                                                    {
-                                                        <td><span class="badge badge-warning">Não Definida</span></td>
-                                                    }
+                                                    <td><a href="@Url.Action("EditarPrecatorio", "Precatorio", new { id = cond.PREC_CD_ID })" />@cond.PRECATORIO.PREC_NM_PRECATORIO</td>
+                                                    <td>@cond.PRECATORIO.PREC_NM_NOME</td>                                                
+
+
                                                     @if (cond.CRM1_IN_ATIVO == 3 || cond.CRM1_IN_ATIVO == 4 || cond.CRM1_IN_ATIVO == 8)
                                                     {
                                                         <td><a href="@Url.Action("VisualizarProcessoCRM", "CRM", new { id = cond.CRM1_CD_ID })" />@cond.CRM1_NM_NOME</td>
@@ -539,7 +523,7 @@
                                                         else if (cond.CRM1_IN_ATIVO == 2)
                                                         {
                                                             @Html.TableLinkDetails(cond.CRM1_CD_ID, "VisualizarProcessoCRM", "fa-search", "Consultar")
-                                                            <span style="color: #337ab7; cursor:pointer;" alt="Reativar" class="tbl-link fa-lg fa fa-refresh" onclick="ShowModalReativar('/CRM/ReativarProcesso/@cond.CRM1_CD_ID')" title="Reativar"></span>
+                                                            @*<span style="color: #337ab7; cursor:pointer;" alt="Reativar" class="tbl-link fa-lg fa fa-refresh" onclick="ShowModalReativar('/CRM/ReativarProcesso/@cond.CRM1_CD_ID')" title="Reativar"></span>*@
                                                         }                                             
                                                         else
                                                         {
@@ -603,16 +587,11 @@
                                                     {
                                                         <td>Encerrado</td>
                                                     }                                                
-                                                    <td><a href="@Url.Action("EditarClienteForm", "CRM", new { id = cond.CLIE_CD_ID })" />@cond.CLIENTE.CLIE_NM_NOME</td>
-                                                    @if (cond.CRM1_NM_CAMPANHA != null)
-                                                    {
-                                                        <td><span class="badge badge-success">@cond.CRM1_NM_CAMPANHA</span></td>
-                                                    }
-                                                    else
-                                                    {
-                                                        <td><span class="badge badge-warning">Não Definida</span></td>
-                                                    }
                                                 
+                                                    <td><a href="@Url.Action("EditarPrecatorio", "Precatorio", new { id = cond.PREC_CD_ID })" />@cond.PRECATORIO.PREC_NM_PRECATORIO</td>
+                                                    <td>@cond.PRECATORIO.PREC_NM_NOME</td>                                                
+
+
                                                     @if (cond.CRM1_IN_ATIVO == 3 || cond.CRM1_IN_ATIVO == 4 || cond.CRM1_IN_ATIVO == 8)
                                                     {
                                                         <td><a href="@Url.Action("VisualizarProcessoCRM", "CRM", new { id = cond.CRM1_CD_ID })" />@cond.CRM1_NM_NOME</td>
@@ -625,7 +604,7 @@
                                                     {
                                                         if (ViewBag.Perfil == "ADM" || ViewBag.Perfil == "GER"  || ViewBag.Perfil == "OPR" )
                                                         {
-                                                            if (cond.CRM1_DT_ENCERRAMENTO != null)
+                                                            if (cond.CRM1_DT_ENCERRAMENTO == null)
                                                             {
                                                                 <td><a href="@Url.Action("AcompanhamentoProcessoCRM", "CRM", new { id = cond.CRM1_CD_ID })" />@cond.CRM1_NM_NOME</td>
                                                             }
@@ -731,7 +710,7 @@
                                                         else if (cond.CRM1_IN_ATIVO == 2)
                                                         {
                                                             @Html.TableLinkDetails(cond.CRM1_CD_ID, "VisualizarProcessoCRM", "fa-search", "Consultar")
-                                                            <span style="color: #337ab7; cursor:pointer;" alt="Reativar" class="tbl-link fa-lg fa fa-refresh" onclick="ShowModalReativar('/CRM/ReativarProcesso/@cond.CRM1_CD_ID')" title="Reativar"></span>
+                                                            @*<span style="color: #337ab7; cursor:pointer;" alt="Reativar" class="tbl-link fa-lg fa fa-refresh" onclick="ShowModalReativar('/CRM/ReativarProcesso/@cond.CRM1_CD_ID')" title="Reativar"></span>*@
                                                         }                                             
                                                         else
                                                         {
@@ -740,9 +719,9 @@
                                                                 if (cond.CRM1_DT_ENCERRAMENTO == null)
                                                                 {
                                                                     @Html.TableLinkDetails(cond.CRM1_CD_ID, "AcompanhamentoProcessoCRM", "fa-cubes", "Acompanhar")
-                                                                    <span style="color: #337ab7; cursor:pointer;" alt="Desativar" class="tbl-link fa-lg fa fa-folder-open-o" onclick="ShowModalExcluir('/CRM/ExcluirProcesso/@cond.CRM1_CD_ID')" title="Arquivar"></span>
+                                                                    <span style="color: #337ab7; cursor:pointer;" alt="Desativar" class="tbl-link fa-lg fa fa-trash-o" onclick="ShowModalExcluir('/CRM/ExcluirProcesso/@cond.CRM1_CD_ID')" title="Arquivar"></span>
                                                                     @Html.TableLinkDetails(cond.CRM1_CD_ID, "CancelarProcessoCRM", "fa-times", "Cancelar")
-                                                                    @Html.TableLinkDetails(cond.CRM1_CD_ID, "EncerrarProcessoCRM", "fa-check", "Encerrar")
+                                                                    @*@Html.TableLinkDetails(cond.CRM1_CD_ID, "EncerrarProcessoCRM", "fa-check", "Encerrar")*@
                                                                 }
                                                                 else
                                                                 {

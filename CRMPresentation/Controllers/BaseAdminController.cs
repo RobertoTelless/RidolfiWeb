@@ -183,6 +183,7 @@ namespace ERP_Condominios_Solution.Controllers
             Session["TipoCarga"] = 1;
             Session["TipoCargaMsgInt"] = 1;
             Session["ListaEmpresa"] = null;
+            Session["ListaFunil"] = null;
 
             ViewBag.PermMensagem = (Int32)Session["PermMens"];
             ViewBag.PermCRM = (Int32)Session["PermCRM"];

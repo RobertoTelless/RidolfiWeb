@@ -312,7 +312,15 @@
                                                             <h5>Dados do Precatório</h5>
                                                             @if (Model.PRECATORIO.BENEFICIARIO != null)
                                                             {
-                                                                <span style="float: right"><a href="@Url.Action("EnviarEMailBeneficiario", "CRM", new { id = Model.PRECATORIO.BENEFICIARIO.BENE_CD_ID})" />Enviar E-Mail</span>
+                                                                if (Model.PRECATORIO.BENEFICIARIO.BENE_EM_EMAIL != null)
+                                                                {
+                                                                    <span style="float: right"><a href="@Url.Action("EnviarEMailBeneficiario", "CRM", new { id = Model.PRECATORIO.BENEFICIARIO.BENE_CD_ID})" />Enviar E-Mail</span>
+                                                                }
+                                                                else
+                                                                {
+                                                                <span style="float: right">Nenhum E-Mail cadastrado</span>
+                                                                }
+
                                                             }
                                                             else
                                                             {
@@ -342,7 +350,15 @@
                                                             }
                                                             @if (Model.PRECATORIO.BENEFICIARIO != null)
                                                             {
-                                                                <p><i class="fa fa-envelope"></i><a href="@Url.Action("EnviarEMailBeneficiario", "CRM", new { id = Model.PRECATORIO.BENEFICIARIO.BENE_CD_ID})"> @Model.PRECATORIO.BENEFICIARIO.BENE_EM_EMAIL</a></p>
+                                                                if (Model.PRECATORIO.BENEFICIARIO.BENE_EM_EMAIL != null)
+                                                                {
+                                                                    <p><i class="fa fa-envelope"></i><a href="@Url.Action("EnviarEMailBeneficiario", "CRM", new { id = Model.PRECATORIO.BENEFICIARIO.BENE_CD_ID})"> @Model.PRECATORIO.BENEFICIARIO.BENE_EM_EMAIL</a></p>
+                                                                }
+                                                                else
+                                                                {
+                                                                <p><i class="fa fa-envelope"></i>Nenhum E-Mail cadastrado</p>
+                                                                }
+
                                                             }
                                                             else
                                                             {
@@ -382,17 +398,13 @@
                                                                     Funil de Processo
                                                                     @Html.TextBoxFor(m => m.FUNIL.FUNI_NM_NOME, new { @class = "form-control", autofocus = true, @readonly="readonly" })
                                                                 </div>
-                                                                <div class="col-lg-3 col-md-3 col-xs-12" style="color: green; font-weight:bold">
-                                                                    Campanha
-                                                                    @Html.TextBoxFor(m => m.CRM1_NM_CAMPANHA, new { @class = "form-control", autofocus = true, @readonly="readonly" })
-                                                                </div>
                                                             </div>
                                                             <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
                                                                 <div class="col-lg-2 col-md-2 col-xs-12">
                                                                     Data Criação
                                                                     @Html.TextBoxFor(m => m.CRM1_DT_CRIACAO, "{0:dd/MM/yyyy}", new { @class = "form-control", autofocus = true, @id="data1", @readonly="readonly" })
                                                                 </div>
-                                                                <div class="col-lg-3 col-md-3 col-xs-12">
+                                                                <div class="col-lg-4 col-md-4 col-xs-12">
                                                                     Responsável
                                                                     @Html.TextBoxFor(m => m.USUARIO.USUA_NM_NOME, new { @class = "form-control", autofocus = true, @readonly="readonly" })
                                                                 </div>

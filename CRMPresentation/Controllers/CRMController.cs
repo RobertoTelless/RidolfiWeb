@@ -57,6 +57,7 @@ namespace ERP_Condominios_Solution.Controllers
         private readonly ITemplatePropostaAppService tpApp;
         private readonly IMensagemEnviadaSistemaAppService meApp;
         private readonly IBeneficiarioAppService benApp;
+        private readonly IPrecatorioAppService preApp;
 
         private String msg;
         private Exception exception;
@@ -71,7 +72,7 @@ namespace ERP_Condominios_Solution.Controllers
         DIARIO_PROCESSO objetoAntesDiario = new DIARIO_PROCESSO();
         String extensao;
 
-        public CRMController(ICRMAppService baseApps, ILogAppService logApps, IUsuarioAppService usuApps, IConfiguracaoAppService confApps, IMensagemAppService menApps, IAgendaAppService ageApps, IClienteAppService cliApps, ITemplateEMailAppService temaApps, ITemplateAppService tempApps, ICRMDiarioAppService diaApps, IFunilAppService funApps, ITemplatePropostaAppService tpApps, IMensagemEnviadaSistemaAppService meApps, IBeneficiarioAppService benApps)
+        public CRMController(ICRMAppService baseApps, ILogAppService logApps, IUsuarioAppService usuApps, IConfiguracaoAppService confApps, IMensagemAppService menApps, IAgendaAppService ageApps, IClienteAppService cliApps, ITemplateEMailAppService temaApps, ITemplateAppService tempApps, ICRMDiarioAppService diaApps, IFunilAppService funApps, ITemplatePropostaAppService tpApps, IMensagemEnviadaSistemaAppService meApps, IBeneficiarioAppService benApps, IPrecatorioAppService preApps)
         {
             baseApp = baseApps;
             logApp = logApps;
@@ -87,6 +88,7 @@ namespace ERP_Condominios_Solution.Controllers
             tpApp = tpApps;
             meApp = meApps;
             benApp = benApps;
+            preApp = preApps;
         }
 
         [HttpGet]
@@ -935,7 +937,7 @@ namespace ERP_Condominios_Solution.Controllers
 
                 // Gera diario
                 CRM crm = baseApp.GetItemById(item.CRM1_CD_ID);
-                CLIENTE cli = cliApp.GetItemById(crm.CLIE_CD_ID);
+                PRECATORIO cli = preApp.GetItemById(crm.PREC_CD_ID.Value);
                 DIARIO_PROCESSO dia = new DIARIO_PROCESSO();
                 dia.ASSI_CD_ID = usuario.ASSI_CD_ID;
                 dia.USUA_CD_ID = usuario.USUA_CD_ID;
@@ -943,7 +945,7 @@ namespace ERP_Condominios_Solution.Controllers
                 dia.CRM1_CD_ID = item.CRM1_CD_ID;
                 dia.CRAC_CD_ID = item.CRAC_CD_ID;
                 dia.DIPR_NM_OPERACAO = "Encerramento de Ação";
-                dia.DIPR_DS_DESCRICAO = "Encerramento de Ação " + item.CRAC_NM_TITULO + ". Processo: " + crm.CRM1_NM_NOME + ". Cliente: " + cli.CLIE_NM_NOME;
+                dia.DIPR_DS_DESCRICAO = "Encerramento de Ação " + item.CRAC_NM_TITULO + ". Processo: " + crm.CRM1_NM_NOME + ". Precatório: " + cli.PREC_NM_PRECATORIO;
                 dia.EMPR_CD_ID = 3;
                 Int32 volta3 = diaApp.ValidateCreate(dia);
                 
@@ -3022,14 +3024,14 @@ namespace ERP_Condominios_Solution.Controllers
                 }
 
                 // Gera diario
-                CLIENTE cli = cliApp.GetItemById(crm.CLIE_CD_ID);
+                PRECATORIO cli = preApp.GetItemById(crm.PREC_CD_ID.Value);
                 DIARIO_PROCESSO dia = new DIARIO_PROCESSO();
                 dia.ASSI_CD_ID = usuario.ASSI_CD_ID;
                 dia.USUA_CD_ID = usuario.USUA_CD_ID;
                 dia.DIPR_DT_DATA = DateTime.Today.Date;
                 dia.CRM1_CD_ID = crm.CRM1_CD_ID;
                 dia.DIPR_NM_OPERACAO = "Mudança de Etapa";
-                dia.DIPR_DS_DESCRICAO = "Mudança de Etapa. Processo: " + crm.CRM1_NM_NOME + ". Cliente: " + cli.CLIE_NM_NOME + ". Para " + etapa.FUET_NM_NOME;
+                dia.DIPR_DS_DESCRICAO = "Mudança de Etapa. Processo: " + crm.CRM1_NM_NOME + ". Precatório: " + cli.PREC_NM_PRECATORIO + ". Para " + etapa.FUET_NM_NOME;
                 dia.EMPR_CD_ID = 3;
                 Int32 volta3 = diaApp.ValidateCreate(dia);
                 Session["CRMAlterada"] = 1;
@@ -3120,14 +3122,14 @@ namespace ERP_Condominios_Solution.Controllers
                 }
 
                 // Gera diario
-                CLIENTE cli = cliApp.GetItemById(crm.CLIE_CD_ID);
+                PRECATORIO cli = preApp.GetItemById(crm.PREC_CD_ID.Value);
                 DIARIO_PROCESSO dia = new DIARIO_PROCESSO();
                 dia.ASSI_CD_ID = usuario.ASSI_CD_ID;
                 dia.USUA_CD_ID = usuario.USUA_CD_ID;
                 dia.DIPR_DT_DATA = DateTime.Today.Date;
                 dia.CRM1_CD_ID = crm.CRM1_CD_ID;
                 dia.DIPR_NM_OPERACAO = "Mudança de Etapa";
-                dia.DIPR_DS_DESCRICAO = "Mudança de Etapa. Processo: " + crm.CRM1_NM_NOME + ". Cliente: " + cli.CLIE_NM_NOME + ". Para " + etapa.FUET_NM_NOME;
+                dia.DIPR_DS_DESCRICAO = "Mudança de Etapa. Processo: " + crm.CRM1_NM_NOME + ". Precatório: " + cli.PREC_NM_PRECATORIO + ". Para " + etapa.FUET_NM_NOME;
                 dia.EMPR_CD_ID = 3;
                 Int32 volta3 = diaApp.ValidateCreate(dia);
                 Session["CRMAlterada"] = 1;
@@ -3267,14 +3269,14 @@ namespace ERP_Condominios_Solution.Controllers
                     Int32 volta1 = baseApp.ValidateEditSimples(item, item, usuario);
 
                     // Gera diario
-                    CLIENTE cli = cliApp.GetItemById(item.CLIE_CD_ID);
+                    PRECATORIO cli = preApp.GetItemById(item.PREC_CD_ID.Value);
                     DIARIO_PROCESSO dia = new DIARIO_PROCESSO();
                     dia.ASSI_CD_ID = usuario.ASSI_CD_ID;
                     dia.USUA_CD_ID = usuario.USUA_CD_ID;
                     dia.DIPR_DT_DATA = DateTime.Today.Date;
                     dia.CRM1_CD_ID = item.CRM1_CD_ID;
                     dia.DIPR_NM_OPERACAO = "Encerramento de Processo";
-                    dia.DIPR_DS_DESCRICAO = "Encerramento de Processo " + item.CRM1_NM_NOME + ". Cliente: " + cli.CLIE_NM_NOME;
+                    dia.DIPR_DS_DESCRICAO = "Encerramento de Processo " + item.CRM1_NM_NOME + ". Precatório: " + cli.PREC_NM_PRECATORIO;
                     dia.EMPR_CD_ID = 3;
                     Int32 volta3 = diaApp.ValidateCreate(dia);
 
@@ -4365,7 +4367,7 @@ namespace ERP_Condominios_Solution.Controllers
                     Int32 volta = baseApp.ValidateEdit(not, objetoAntes);
 
                     // Gera diario
-                    CLIENTE cli = cliApp.GetItemById(not.CLIE_CD_ID);
+                    PRECATORIO cli = preApp.GetItemById(not.PREC_CD_ID.Value);
                     DIARIO_PROCESSO dia = new DIARIO_PROCESSO();
                     dia.ASSI_CD_ID = usuarioLogado.ASSI_CD_ID;
                     dia.USUA_CD_ID = usuarioLogado.USUA_CD_ID;
@@ -4373,7 +4375,7 @@ namespace ERP_Condominios_Solution.Controllers
                     dia.CRM1_CD_ID = item.CRM1_CD_ID;
                     dia.CRCM_CD_ID = item.CRCM_CD_ID;
                     dia.DIPR_NM_OPERACAO = "Comentário de Processo";
-                    dia.DIPR_DS_DESCRICAO = "Comentário de Processo " + not.CRM1_NM_NOME + ". Cliente: " + cli.CLIE_NM_NOME;
+                    dia.DIPR_DS_DESCRICAO = "Comentário de Processo " + not.CRM1_NM_NOME + ". Precatório: " + cli.PREC_NM_PRECATORIO;
                     dia.EMPR_CD_ID = 3;
                     Int32 volta3 = diaApp.ValidateCreate(dia);
 
@@ -4578,7 +4580,7 @@ namespace ERP_Condominios_Solution.Controllers
 
                     // Gera diario
                     CRM not = baseApp.GetItemById(item.CRM1_CD_ID);
-                    CLIENTE cli = cliApp.GetItemById(not.CLIE_CD_ID);
+                    PRECATORIO cli = preApp.GetItemById(not.PREC_CD_ID.Value);
                     DIARIO_PROCESSO dia = new DIARIO_PROCESSO();
                     dia.ASSI_CD_ID = usuarioLogado.ASSI_CD_ID;
                     dia.USUA_CD_ID = usuarioLogado.USUA_CD_ID;
@@ -4586,7 +4588,7 @@ namespace ERP_Condominios_Solution.Controllers
                     dia.CRM1_CD_ID = item.CRM1_CD_ID;
                     dia.CRAC_CD_ID = item.CRAC_CD_ID;
                     dia.DIPR_NM_OPERACAO = "Alteração de Ação";
-                    dia.DIPR_DS_DESCRICAO = "Alteração de Ação " + item.CRAC_NM_TITULO + ". Processo: " + not.CRM1_NM_NOME + ". Cliente: " + cli.CLIE_NM_NOME;
+                    dia.DIPR_DS_DESCRICAO = "Alteração de Ação " + item.CRAC_NM_TITULO + ". Processo: " + not.CRM1_NM_NOME + ". Precatório: " + cli.PREC_NM_PRECATORIO;
                     dia.EMPR_CD_ID = 3;
                     Int32 volta3 = diaApp.ValidateCreate(dia);
 
@@ -4653,7 +4655,7 @@ namespace ERP_Condominios_Solution.Controllers
 
                 // Gera diario
                 CRM not = baseApp.GetItemById(item.CRM1_CD_ID);
-                CLIENTE cli = cliApp.GetItemById(not.CLIE_CD_ID);
+                PRECATORIO cli = preApp.GetItemById(not.PREC_CD_ID.Value);
                 DIARIO_PROCESSO dia = new DIARIO_PROCESSO();
                 dia.ASSI_CD_ID = usuario.ASSI_CD_ID;
                 dia.USUA_CD_ID = usuario.USUA_CD_ID;
@@ -4661,7 +4663,7 @@ namespace ERP_Condominios_Solution.Controllers
                 dia.CRM1_CD_ID = item.CRM1_CD_ID;
                 dia.CRAC_CD_ID = item.CRAC_CD_ID;
                 dia.DIPR_NM_OPERACAO = "Exclusão de Ação";
-                dia.DIPR_DS_DESCRICAO = "Exclusão de Ação " + item.CRAC_NM_TITULO + ". Processo: " + not.CRM1_NM_NOME + ". Cliente: " + cli.CLIE_NM_NOME;
+                dia.DIPR_DS_DESCRICAO = "Exclusão de Ação " + item.CRAC_NM_TITULO + ". Processo: " + not.CRM1_NM_NOME + ". `Precatório: " + cli.PREC_NM_PRECATORIO;
                 dia.EMPR_CD_ID = 3;
                 Int32 volta3 = diaApp.ValidateCreate(dia);
                 Session["CRMAlterada"] = 1;
@@ -4729,7 +4731,7 @@ namespace ERP_Condominios_Solution.Controllers
 
                 // Gera diario
                 CRM not = baseApp.GetItemById(item.CRM1_CD_ID);
-                CLIENTE cli = cliApp.GetItemById(not.CLIE_CD_ID);
+                PRECATORIO cli = preApp.GetItemById(not.PREC_CD_ID.Value);
                 DIARIO_PROCESSO dia = new DIARIO_PROCESSO();
                 dia.ASSI_CD_ID = usuario.ASSI_CD_ID;
                 dia.USUA_CD_ID = usuario.USUA_CD_ID;
@@ -4737,7 +4739,7 @@ namespace ERP_Condominios_Solution.Controllers
                 dia.CRM1_CD_ID = item.CRM1_CD_ID;
                 dia.CRAC_CD_ID = item.CRAC_CD_ID;
                 dia.DIPR_NM_OPERACAO = "Reativação de Ação";
-                dia.DIPR_DS_DESCRICAO = "Reativação de Ação " + item.CRAC_NM_TITULO + ". Processo: " + not.CRM1_NM_NOME + ". Cliente: " + cli.CLIE_NM_NOME;
+                dia.DIPR_DS_DESCRICAO = "Reativação de Ação " + item.CRAC_NM_TITULO + ". Processo: " + not.CRM1_NM_NOME + ". Precatório: " + cli.PREC_NM_PRECATORIO;
                 dia.EMPR_CD_ID = 3;
                 Int32 volta3 = diaApp.ValidateCreate(dia);
                 Session["CRMAlterada"] = 1;
@@ -4818,7 +4820,7 @@ namespace ERP_Condominios_Solution.Controllers
 
                 // Gera diario
                 CRM not = baseApp.GetItemById(item.CRM1_CD_ID);
-                CLIENTE cli = cliApp.GetItemById(not.CLIE_CD_ID);
+                PRECATORIO cli = preApp.GetItemById(not.PREC_CD_ID.Value);
                 DIARIO_PROCESSO dia = new DIARIO_PROCESSO();
                 dia.ASSI_CD_ID = usuario.ASSI_CD_ID;
                 dia.USUA_CD_ID = usuario.USUA_CD_ID;
@@ -4826,7 +4828,7 @@ namespace ERP_Condominios_Solution.Controllers
                 dia.CRM1_CD_ID = item.CRM1_CD_ID;
                 dia.CRAC_CD_ID = item.CRAC_CD_ID;
                 dia.DIPR_NM_OPERACAO = "Encerramento de Ação";
-                dia.DIPR_DS_DESCRICAO = "Encerramento de Ação " + item.CRAC_NM_TITULO + ". Processo: " + not.CRM1_NM_NOME + ". Cliente: " + cli.CLIE_NM_NOME;
+                dia.DIPR_DS_DESCRICAO = "Encerramento de Ação " + item.CRAC_NM_TITULO + ". Processo: " + not.CRM1_NM_NOME + ". Precatório: " + cli.PREC_NM_PRECATORIO;
                 dia.EMPR_CD_ID = 3;
                 Int32 volta3 = diaApp.ValidateCreate(dia);
                 Session["CRMAlterada"] = 1;
@@ -5204,7 +5206,7 @@ namespace ERP_Condominios_Solution.Controllers
 
                     // Gera diario
                     CRM not = baseApp.GetItemById(item.CRM1_CD_ID);
-                    CLIENTE cli = cliApp.GetItemById(not.CLIE_CD_ID);
+                    PRECATORIO cli = preApp.GetItemById(not.PREC_CD_ID.Value);
                     DIARIO_PROCESSO dia = new DIARIO_PROCESSO();
                     dia.ASSI_CD_ID = usuarioLogado.ASSI_CD_ID;
                     dia.USUA_CD_ID = usuarioLogado.USUA_CD_ID;
@@ -5213,7 +5215,7 @@ namespace ERP_Condominios_Solution.Controllers
                     dia.CRAC_CD_ID = item.CRAC_CD_ID;
                     dia.EMPR_CD_ID = 3;
                     dia.DIPR_NM_OPERACAO = "Criação de Ação";
-                    dia.DIPR_DS_DESCRICAO = "Criação de Ação " + item.CRAC_NM_TITULO + ". Processo: " + not.CRM1_NM_NOME + ". Cliente: " + cli.CLIE_NM_NOME;
+                    dia.DIPR_DS_DESCRICAO = "Criação de Ação " + item.CRAC_NM_TITULO + ". Processo: " + not.CRM1_NM_NOME + ". Precatório: " + cli.PREC_NM_NOME;
                     Int32 volta3 = diaApp.ValidateCreate(dia);
 
                     // Processa agenda
@@ -5242,7 +5244,7 @@ namespace ERP_Condominios_Solution.Controllers
                         dia.CRAC_CD_ID = item.CRAC_CD_ID;
                         dia.AGEN_CD_ID = ag.AGEN_CD_ID;
                         dia.DIPR_NM_OPERACAO = "Agendamento de Ação";
-                        dia.DIPR_DS_DESCRICAO = "Agendamento de Ação " + item.CRAC_NM_TITULO + ". Processo: " + not.CRM1_NM_NOME + ". Cliente: " + cli.CLIE_NM_NOME + ". Data: " + ag.AGEN_DT_DATA.ToLongDateString();
+                        dia.DIPR_DS_DESCRICAO = "Agendamento de Ação " + item.CRAC_NM_TITULO + ". Processo: " + not.CRM1_NM_NOME + ". Precatório: " + cli.PREC_NM_PRECATORIO + ". Data: " + ag.AGEN_DT_DATA.ToLongDateString();
                         dia.EMPR_CD_ID = 3;
                         Int32 volta4 = diaApp.ValidateCreate(dia);
 
@@ -8547,7 +8549,7 @@ namespace ERP_Condominios_Solution.Controllers
             }
 
             // Recupera Cliente
-            cliente = benApp.GetItemById(vm.ID.Value);
+            //cliente = benApp.GetItemById(vm.ID.Value);
 
             // Configuração
             CONFIGURACAO conf = confApp.GetItemById(1);
@@ -8981,7 +8983,7 @@ namespace ERP_Condominios_Solution.Controllers
 
                     // Gera diario
                     CRM not = baseApp.GetItemById(item.CRM1_CD_ID.Value);
-                    CLIENTE cli = cliApp.GetItemById(not.CLIE_CD_ID);
+                    PRECATORIO cli = preApp.GetItemById(not.PREC_CD_ID.Value);
                     DIARIO_PROCESSO dia = new DIARIO_PROCESSO();
                     dia.ASSI_CD_ID = usuarioLogado.ASSI_CD_ID;
                     dia.USUA_CD_ID = usuarioLogado.USUA_CD_ID;
@@ -8990,11 +8992,8 @@ namespace ERP_Condominios_Solution.Controllers
                     dia.CRPV_CD_ID = item.CRPV_CD_ID;
                     dia.EMPR_CD_ID = 3;
                     dia.DIPR_NM_OPERACAO = "Criação de Proposta";
-                    dia.DIPR_DS_DESCRICAO = "Criação de Proposta " + item.CRPV_NM_NOME + ". Processo: " + not.CRM1_NM_NOME + ". Cliente: " + cli.CLIE_NM_NOME;
+                    dia.DIPR_DS_DESCRICAO = "Criação de Proposta " + item.CRPV_NM_NOME + ". Processo: " + not.CRM1_NM_NOME + ". Precatório: " + cli.PREC_NM_PRECATORIO;
                     Int32 volta3 = diaApp.ValidateCreate(dia);
-
-                    // Recalcula categoria
-                    Int32 volta1 = cliApp.AtualizarCategoriaClienteCalculo(idAss, cli);
 
                     // Verifica retorno
                     Session["SegueInclusao"] = 1;
@@ -9165,7 +9164,7 @@ namespace ERP_Condominios_Solution.Controllers
 
                     // Gera diario
                     CRM not = baseApp.GetItemById(item.CRM1_CD_ID.Value);
-                    CLIENTE cli = cliApp.GetItemById(not.CLIE_CD_ID);
+                    PRECATORIO cli = preApp.GetItemById(not.PREC_CD_ID.Value);
                     DIARIO_PROCESSO dia = new DIARIO_PROCESSO();
                     dia.ASSI_CD_ID = usuario.ASSI_CD_ID;
                     dia.USUA_CD_ID = usuario.USUA_CD_ID;
@@ -9174,7 +9173,7 @@ namespace ERP_Condominios_Solution.Controllers
                     dia.CRPV_CD_ID = item.CRPV_CD_ID;
                     dia.DIPR_NM_OPERACAO = "Cancelamento de Proposta";
                     dia.EMPR_CD_ID = 3;
-                    dia.DIPR_DS_DESCRICAO = "Cancelamento de Proposta " + item.CRPV_NM_NOME + ". Processo: " + not.CRM1_NM_NOME + ". Cliente: " + cli.CLIE_NM_NOME;
+                    dia.DIPR_DS_DESCRICAO = "Cancelamento de Proposta " + item.CRPV_NM_NOME + ". Processo: " + not.CRM1_NM_NOME + ". Precatório: " + cli.PREC_NM_PRECATORIO;
                     Int32 volta3 = diaApp.ValidateCreate(dia);
 
                     // Listas
@@ -9323,7 +9322,7 @@ namespace ERP_Condominios_Solution.Controllers
 
                     // Gera diario
                     CRM not = baseApp.GetItemById(item.CRM1_CD_ID.Value);
-                    CLIENTE cli = cliApp.GetItemById(not.CLIE_CD_ID);
+                    PRECATORIO cli = preApp.GetItemById(not.PREC_CD_ID.Value);
                     DIARIO_PROCESSO dia = new DIARIO_PROCESSO();
                     dia.ASSI_CD_ID = usuario.ASSI_CD_ID;
                     dia.USUA_CD_ID = usuario.USUA_CD_ID;
@@ -9332,11 +9331,8 @@ namespace ERP_Condominios_Solution.Controllers
                     dia.CRPV_CD_ID = item.CRPV_CD_ID;
                     dia.EMPR_CD_ID = 3;
                     dia.DIPR_NM_OPERACAO = "Reprovação de Proposta";
-                    dia.DIPR_DS_DESCRICAO = "Reprovação de Proposta " + item.CRPV_NM_NOME + ". Processo: " + not.CRM1_NM_NOME + ". Cliente: " + cli.CLIE_NM_NOME;
+                    dia.DIPR_DS_DESCRICAO = "Reprovação de Proposta " + item.CRPV_NM_NOME + ". Processo: " + not.CRM1_NM_NOME + ". Precatório: " + cli.PREC_NM_PRECATORIO;
                     Int32 volta3 = diaApp.ValidateCreate(dia);
-
-                    // Recalcula categoria
-                    Int32 volta9 = cliApp.AtualizarCategoriaClienteCalculo(idAss, cli);
 
                     // Listas
                     Session["PedidoVendaAlterada"] = 1;
@@ -9484,7 +9480,7 @@ namespace ERP_Condominios_Solution.Controllers
 
                     // Gera diario
                     CRM not = baseApp.GetItemById(item.CRM1_CD_ID.Value);
-                    CLIENTE cli = cliApp.GetItemById(not.CLIE_CD_ID);
+                    PRECATORIO cli = preApp.GetItemById(not.PREC_CD_ID.Value);
                     DIARIO_PROCESSO dia = new DIARIO_PROCESSO();
                     dia.ASSI_CD_ID = usuario.ASSI_CD_ID;
                     dia.USUA_CD_ID = usuario.USUA_CD_ID;
@@ -9493,7 +9489,7 @@ namespace ERP_Condominios_Solution.Controllers
                     dia.CRPV_CD_ID = item.CRPV_CD_ID;
                     dia.EMPR_CD_ID = 3;
                     dia.DIPR_NM_OPERACAO = "Aprovação de Proposta";
-                    dia.DIPR_DS_DESCRICAO = "Aprovação de Proposta " + item.CRPV_NM_NOME + ". Processo: " + not.CRM1_NM_NOME + ". Cliente: " + cli.CLIE_NM_NOME;
+                    dia.DIPR_DS_DESCRICAO = "Aprovação de Proposta " + item.CRPV_NM_NOME + ". Processo: " + not.CRM1_NM_NOME + ". Precatório: " + cli.PREC_NM_PRECATORIO;
                     Int32 volta3 = diaApp.ValidateCreate(dia);
 
                     // Listas
