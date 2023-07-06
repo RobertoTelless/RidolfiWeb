@@ -56,8 +56,14 @@
                     }
                     <div class="tabs-container">
                         <div class="form-group">
-                            @Html.ButtonLinkIndex(text: "Enviar E-Mail", action: "EnviarEmailBeneficiario", controller: "Beneficiario")
-                            @Html.ButtonLinkIndex(text: "Enviar SMS", action: "EnviarSMSBeneficiario", controller: "Beneficiario")
+                            @if (Model.BENE_EM_EMAIL != null)
+                            {
+                                @Html.ButtonLinkIndex(text: "Enviar E-Mail", action: "EnviarEmailBeneficiario", controller: "Beneficiario")
+                            }
+                            @if (Model.BENE_NR_CELULAR != null)
+                            {
+                                @Html.ButtonLinkIndex(text: "Enviar SMS", action: "EnviarSMSBeneficiario", controller: "Beneficiario")
+                            }
                             @Html.ButtonLinkIndex(text: "Voltar", action: "VoltarBaseBeneficiario", controller: "Beneficiario")
                         </div>
                         

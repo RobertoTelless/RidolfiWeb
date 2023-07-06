@@ -2354,5 +2354,23 @@ namespace CRMPresentation.App_Start {
                 return ResourceManager.GetString("M0277", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Planilha de importação de precatórios não pode ter mais do que 500 linhas.
+        /// </summary>
+        internal static string M0278 {
+            get {
+                return ResourceManager.GetString("M0278", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Nenhuma linha informada na planilha.
+        /// </summary>
+        internal static string M0279 {
+            get {
+                return ResourceManager.GetString("M0279", resourceCulture);
+            }
+        }
     }
 }

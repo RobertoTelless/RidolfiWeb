@@ -19,5 +19,6 @@ namespace EntitiesServices.Model
         public string PRFA_NM_PRECATORIO { get; set; }
         public Nullable<System.DateTime> PRFA_DT_DATA { get; set; }
         public string PRFA_DS_MOTIVO { get; set; }
+        public Nullable<int> PRFA_IN_TIPO { get; set; }
     }
 }

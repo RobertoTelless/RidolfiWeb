@@ -882,4 +882,10 @@
   <data name="M0277" xml:space="preserve">
     <value>Tribunal não informado na planilha</value>
   </data>
+  <data name="M0278" xml:space="preserve">
+    <value>Planilha de importação de precatórios não pode ter mais do que 500 linhas</value>
+  </data>
+  <data name="M0279" xml:space="preserve">
+    <value>Nenhuma linha informada na planilha</value>
+  </data>
 </root>

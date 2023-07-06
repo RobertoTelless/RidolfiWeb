@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="RidolfiDB_WebModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012.Azure" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="RidolfiDB_WebModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012.Azure" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="AGENDA">
           <Key>
             <PropertyRef Name="AGEN_CD_ID" />
@@ -3058,6 +3058,7 @@
           <Property Name="PRFA_NM_PRECATORIO" Type="varchar" MaxLength="50" />
           <Property Name="PRFA_DT_DATA" Type="datetime" />
           <Property Name="PRFA_DS_MOTIVO" Type="varchar" MaxLength="250" />
+          <Property Name="PRFA_IN_TIPO" Type="int" />
         </EntityType>
         <EntityType Name="PRECIFICACAO">
           <Key>
@@ -11433,8 +11434,7 @@
             <End Role="VARA" EntitySet="VARA" />
           </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="RidolfiDB_WebModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -15154,6 +15154,7 @@
           <Property Name="PRFA_NM_PRECATORIO" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="PRFA_DT_DATA" Type="DateTime" Precision="3" />
           <Property Name="PRFA_DS_MOTIVO" Type="String" MaxLength="250" FixedLength="false" Unicode="false" />
+          <Property Name="PRFA_IN_TIPO" Type="Int32" />
         </EntityType>
         <EntityType Name="PRECIFICACAO">
           <Key>
@@ -26999,6 +27000,7 @@
           <EntitySetMapping Name="PRECATORIO_FALHA">
             <EntityTypeMapping TypeName="RidolfiDB_WebModel.PRECATORIO_FALHA">
               <MappingFragment StoreEntitySet="PRECATORIO_FALHA">
+                <ScalarProperty Name="PRFA_IN_TIPO" ColumnName="PRFA_IN_TIPO" />
                 <ScalarProperty Name="PRFA_CD_ID" ColumnName="PRFA_CD_ID" />
                 <ScalarProperty Name="PRFA_NM_TRF" ColumnName="PRFA_NM_TRF" />
                 <ScalarProperty Name="PRFA_NM_PRECATORIO" ColumnName="PRFA_NM_PRECATORIO" />

@@ -842,13 +842,8 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
-    <Content Include="Imagens\1\Clientes\10076\Fotos\Cydia_5.jpg" />
-    <Content Include="Imagens\1\Clientes\10077\Fotos\Cydia_1.jpg" />
-    <Content Include="Imagens\1\Clientes\1\Fotos\a4.jpg" />
     <Content Include="Imagens\1\Clientes\2\Fotos\a4.jpg" />
     <Content Include="Imagens\1\Clientes\3\Fotos\a6.jpg" />
-    <Content Include="Imagens\1\CRM\38\Fotos\Cydia_1.jpg" />
-    <Content Include="Imagens\1\CRM\40\Fotos\bz.jpg" />
     <Content Include="Imagens\1\Empresa\3\Anexos\03 - Maxwells Silver Hammer.mp3" />
     <Content Include="Imagens\1\Empresa\3\Anexos\schubert.jpg" />
     <Content Include="Imagens\1\Empresa\3\Logo\Logo_RTI.png" />
@@ -2485,8 +2480,6 @@
     <Content Include="Log\Messages.log" />
     <Content Include="Imagens\1\Empresa\Anexos\UsuarioLista_28042023.pdf" />
     <Content Include="Imagens\1\Agenda\120\Anexos\TarefaLista_22062023 %281%29.pdf" />
-    <Content Include="Imagens\1\CRM\38\Anexos\Laudo Completo 02_05_2023.pdf" />
-    <Content Include="Imagens\1\CRM\40\Anexos\AgendaLista_21062023.pdf" />
     <Content Include="Imagens\1\Mensagem\270\Anexos\pedido-60691280797.pdf" />
     <Content Include="Imagens\1\Mensagem\271\Anexos\pedido-60691280797.pdf" />
     <Content Include="Imagens\1\Mensagem\272\Anexos\pedido-60691280797.pdf" />
@@ -13390,27 +13383,19 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Imagens\1\Advogados\" />
     <Folder Include="Imagens\1\Agenda\121\Anexos\" />
     <Folder Include="Imagens\1\Agenda\122\Anexos\" />
     <Folder Include="Imagens\1\Agenda\123\Anexos\" />
-    <Folder Include="Imagens\1\Clientes\10076\Anexos\" />
-    <Folder Include="Imagens\1\Clientes\10077\Anexos\" />
-    <Folder Include="Imagens\1\Clientes\1\Anexos\" />
+    <Folder Include="Imagens\1\Beneficiarios\" />
     <Folder Include="Imagens\1\Clientes\2\Anexos\" />
     <Folder Include="Imagens\1\Clientes\3\Anexos\" />
-    <Folder Include="Imagens\1\CRM\37\Anexos\" />
-    <Folder Include="Imagens\1\CRM\37\Fotos\" />
-    <Folder Include="Imagens\1\CRM\41\Anexos\" />
-    <Folder Include="Imagens\1\CRM\41\Fotos\" />
-    <Folder Include="Imagens\1\CRM\42\Anexos\" />
-    <Folder Include="Imagens\1\CRM\42\Fotos\" />
-    <Folder Include="Imagens\1\CRM\43\Anexos\" />
-    <Folder Include="Imagens\1\CRM\43\Fotos\" />
-    <Folder Include="Imagens\1\CRM\44\Anexos\" />
-    <Folder Include="Imagens\1\CRM\44\Fotos\" />
+    <Folder Include="Imagens\1\CRM\" />
     <Folder Include="Imagens\1\Filial\" />
+    <Folder Include="Imagens\1\NewFolder1\" />
     <Folder Include="Imagens\1\Notificacao\355\Anexos\" />
     <Folder Include="Imagens\1\Pedido\" />
+    <Folder Include="Imagens\1\Precatorios\" />
     <Folder Include="Imagens\1\TemplatesHTML\" />
     <Folder Include="Imagens\1\Usuario\26\Anexos\" />
     <Folder Include="Imagens\1\Usuario\2\Anexos\" />

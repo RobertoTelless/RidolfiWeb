@@ -114,7 +114,7 @@ namespace ERP_Condominios_Solution.Controllers
             {
                 return RedirectToAction("Login", "ControleAcesso");
             }
-            if ((Int32)Session["VoltaPracatorio"] == 40)
+            if ((Int32)Session["VoltaPrecatorio"] == 40)
             {
                 return RedirectToAction("MontarTelaDashboardCRMNovo", "CRM");
             }
@@ -177,7 +177,7 @@ namespace ERP_Condominios_Solution.Controllers
             }
 
             // Carrega listas
-            if ((List<PRECATORIO>)Session["ListaPrecatorio"] == null || ((List<PRECATORIO>)Session["ListaPrecatorio"]).Count == 0)
+            if ((List<PRECATORIO>)Session["ListaPrecatorio"] == null)
             {
                 listaMasterTran = CarregaPrecatorio();
                 Session["ListaPrecatorio"] = listaMasterTran;
@@ -226,15 +226,20 @@ namespace ERP_Condominios_Solution.Controllers
                 if ((Int32)Session["MensPrecatorio"] == 10)
                 {
                     ModelState.AddModelError("", "Foram processados e incluídos " + ((Int32)Session["Conta"]).ToString() + " precatórios");
+                    ModelState.AddModelError("", "Foram processados e ajustados " + ((Int32)Session["Ajuste"]).ToString() + " precatórios");
                     ModelState.AddModelError("", "Foram processados e rejeitados " + ((Int32)Session["Falha"]).ToString() + " precatórios");
                 }
                 if ((Int32)Session["MensPrecatorio"] == 1)
                 {
                     ModelState.AddModelError("", CRMSys_Base.ResourceManager.GetString("M0016", CultureInfo.CurrentCulture));
                 }
+                if ((Int32)Session["MensPrecatorio"] == 200)
+                {
+                    ModelState.AddModelError("", CRMSys_Base.ResourceManager.GetString("M0278", CultureInfo.CurrentCulture));
+                }
                 if ((Int32)Session["MensPrecatorio"] == 999)
                 {
-                    ModelState.AddModelError("", CRMSys_Base.ResourceManager.GetString("M0277", CultureInfo.CurrentCulture));
+                    ModelState.AddModelError("", CRMSys_Base.ResourceManager.GetString("M0279", CultureInfo.CurrentCulture));
                 }
             }
 
@@ -325,16 +330,6 @@ namespace ERP_Condominios_Solution.Controllers
             if ((Int32)Session["VoltaMensagem"] == 40)
             {
                 return RedirectToAction("MontarTelaDashboardCRMNovo", "CRM");
-            }
-            if ((Int32)Session["VoltaClienteCRM"] == 1)
-            {
-                Session["VoltaClienteCRM"] = 0;
-                return RedirectToAction("IncluirProcessoCRM", "CRM");
-            }
-            if ((Int32)Session["VoltaClienteCRM"] == 11)
-            {
-                Session["VoltaClienteCRM"] = 0;
-                return RedirectToAction("MontarTelaCRM", "CRM");
             }
             if ((Int32)Session["VoltaPrecatorio"] == 10)
             {
@@ -2247,12 +2242,13 @@ namespace ERP_Condominios_Solution.Controllers
         }
 
         [HttpPost]
-        public ActionResult IncluirPrecatorioTRFExcel(HttpPostedFileBase file)
+        public System.Threading.Tasks.Task ProcessaOperacaoPlanilha(HttpPostedFileBase file)
         {
             USUARIO user = (USUARIO)Session["UserCredentials"];
             Int32 conta = 0;
             Int32 falha = 0;
             Int32 trf = 0;
+            Int32 ajuste = 0;
 
             // Recupera configuracao
             CONFIGURACAO conf = confApp.GetItemById(1);
@@ -2282,11 +2278,6 @@ namespace ERP_Condominios_Solution.Controllers
                 USUARIO usuCheca = new USUARIO();
 
                 // Checa planilha
-                if (wsGeral.Cells[2, 1].Value.ToString() == null)
-                {
-                    Session["MensPrecatorio"] = 999;
-                    return RedirectToAction("MontarTelaPrecatorio");
-                }
                 if (wsGeral.Cells[2, 1].Value.ToString() == "TRF3")
                 {
                     // Prcessa TRF
@@ -2517,7 +2508,7 @@ namespace ERP_Condominios_Solution.Controllers
                         catch (Exception ex)
                         {
                             ModelState.AddModelError("", ex.Message);
-                            return View();
+                            return System.Threading.Tasks.Task.Delay(5);
                         }
                     }
                 }
@@ -2693,7 +2684,7 @@ namespace ERP_Condominios_Solution.Controllers
                         catch (Exception ex)
                         {
                             ModelState.AddModelError("", ex.Message);
-                            return View();
+                            return System.Threading.Tasks.Task.Delay(5);
                         }
                     }
                 }
@@ -3214,7 +3205,7 @@ namespace ERP_Condominios_Solution.Controllers
                         catch (Exception ex)
                         {
                             ModelState.AddModelError("", ex.Message);
-                            return View();
+                            return System.Threading.Tasks.Task.Delay(5);
                         }
                     }
                 }
@@ -3228,37 +3219,21 @@ namespace ERP_Condominios_Solution.Controllers
                         {
                             Int32 check = 0;
                             PRECATORIO prec = new PRECATORIO();
+                            String colTRF = null;
                             if (wsGeral.Cells[row, 1].Value == null)
                             {
-                                if (wsGeral.Cells[row, 1].Value.ToString() == null)
-                                {
-                                    PRECATORIO_FALHA fal = new PRECATORIO_FALHA();
-                                    fal.PRFA_NM_TRF = wsGeral.Cells[2, 1].Value.ToString();
-                                    fal.PRFA_NM_PRECATORIO = "Não informado";
-                                    fal.PRFA_DT_DATA = DateTime.Now;
-                                    fal.PRFA_DS_MOTIVO = "Erro na inclusão do Precatório. Tribunal não informado";
-                                    Int32 volta2 = tranApp.ValidateCreateFalha(fal);
-                                    falha++;
-                                    continue;
-                                }
+                                break;
+                            }
+                            else
+                            {
+                                colTRF = wsGeral.Cells[row, 1].Value.ToString();
                             }
 
                             // Verifica existencia
-                            String numPrec = String.Empty;
+                            String numPrec = null;
                             if (wsGeral.Cells[row, 2].Value != null)
                             {
                                 numPrec = wsGeral.Cells[row, 2].Value.ToString();
-                                if (numPrec == null)
-                                {
-                                    PRECATORIO_FALHA fal = new PRECATORIO_FALHA();
-                                    fal.PRFA_NM_TRF = wsGeral.Cells[2, 1].Value.ToString();
-                                    fal.PRFA_NM_PRECATORIO = "Não informado";
-                                    fal.PRFA_DT_DATA = DateTime.Now;
-                                    fal.PRFA_DS_MOTIVO = "Erro na inclusão do Precatório. Número não informado";
-                                    Int32 volta2 = tranApp.ValidateCreateFalha(fal);
-                                    falha++;
-                                    continue;
-                                }
                                 numPrec = CrossCutting.ValidarNumerosDocumentos.RemoveNaoNumericos(numPrec);
                                 precCheca = tranApp.CheckExist(numPrec);
                                 if (precCheca != null)
@@ -3267,11 +3242,24 @@ namespace ERP_Condominios_Solution.Controllers
                                     fal.PRFA_NM_TRF = wsGeral.Cells[2, 1].Value.ToString();
                                     fal.PRFA_NM_PRECATORIO = numPrec;
                                     fal.PRFA_DT_DATA = DateTime.Now;
-                                    fal.PRFA_DS_MOTIVO = "Precatório já incluído para o " + trfx.TRF1_NM_NOME;
+                                    fal.PRFA_IN_TIPO = 1;
+                                    fal.PRFA_DS_MOTIVO = "Erro na inclusão do Precatório. Precatório já incluído para o " + trfx.TRF1_NM_NOME;
                                     Int32 volta2 = tranApp.ValidateCreateFalha(fal);
                                     falha++;
                                     continue;
                                 }
+                            }
+                            else
+                            {
+                                PRECATORIO_FALHA fal = new PRECATORIO_FALHA();
+                                fal.PRFA_NM_TRF = wsGeral.Cells[2, 1].Value.ToString();
+                                fal.PRFA_NM_PRECATORIO = "Não informado";
+                                fal.PRFA_DT_DATA = DateTime.Now;
+                                fal.PRFA_IN_TIPO = 1;
+                                fal.PRFA_DS_MOTIVO = "Erro na inclusão do Precatório. Número não informado";
+                                Int32 volta2 = tranApp.ValidateCreateFalha(fal);
+                                falha++;
+                                continue;
                             }
 
                             // Monta objeto
@@ -3355,6 +3343,7 @@ namespace ERP_Condominios_Solution.Controllers
                                         fal.PRFA_NM_TRF = wsGeral.Cells[2, 1].Value.ToString();
                                         fal.PRFA_NM_PRECATORIO = numPrec;
                                         fal.PRFA_DT_DATA = DateTime.Now;
+                                        fal.PRFA_IN_TIPO = 1;
                                         fal.PRFA_DS_MOTIVO = "Valor não numérico informado para BENEFICARIO VALOR PRINCIPAL" + valPrinc;
                                         Int32 volta2 = tranApp.ValidateCreateFalha(fal);
                                         falha++;
@@ -3386,6 +3375,7 @@ namespace ERP_Condominios_Solution.Controllers
                                         fal.PRFA_NM_TRF = wsGeral.Cells[2, 1].Value.ToString();
                                         fal.PRFA_NM_PRECATORIO = numPrec;
                                         fal.PRFA_DT_DATA = DateTime.Now;
+                                        fal.PRFA_IN_TIPO = 1;
                                         fal.PRFA_DS_MOTIVO = "Valor não numérico informado para BENEFICARIO JUROS " + juroBen;
                                         Int32 volta2 = tranApp.ValidateCreateFalha(fal);
                                         falha++;
@@ -3434,6 +3424,7 @@ namespace ERP_Condominios_Solution.Controllers
                                         fal.PRFA_NM_TRF = wsGeral.Cells[2, 1].Value.ToString();
                                         fal.PRFA_NM_PRECATORIO = numPrec;
                                         fal.PRFA_DT_DATA = DateTime.Now;
+                                        fal.PRFA_IN_TIPO = 1;
                                         fal.PRFA_DS_MOTIVO = "Valor não numérico informado para BENEFICARIO MESES EXE ANTERIOR " + mesAnt;
                                         Int32 volta2 = tranApp.ValidateCreateFalha(fal);
                                         falha++;
@@ -3499,6 +3490,7 @@ namespace ERP_Condominios_Solution.Controllers
                                         fal.PRFA_NM_TRF = wsGeral.Cells[2, 1].Value.ToString();
                                         fal.PRFA_NM_PRECATORIO = numPrec;
                                         fal.PRFA_DT_DATA = DateTime.Now;
+                                        fal.PRFA_IN_TIPO = 1;
                                         fal.PRFA_DS_MOTIVO = "Valor não numérico informado para VALOR INICIAL PSS" + iniPSS;
                                         Int32 volta2 = tranApp.ValidateCreateFalha(fal);
                                         falha++;
@@ -3530,6 +3522,7 @@ namespace ERP_Condominios_Solution.Controllers
                                         fal.PRFA_NM_TRF = wsGeral.Cells[2, 1].Value.ToString();
                                         fal.PRFA_NM_PRECATORIO = numPrec;
                                         fal.PRFA_DT_DATA = DateTime.Now;
+                                        fal.PRFA_IN_TIPO = 1;
                                         fal.PRFA_DS_MOTIVO = "Valor não numérico informado para VALOR REQUISITADO" + valReq;
                                         Int32 volta2 = tranApp.ValidateCreateFalha(fal);
                                         falha++;
@@ -3574,9 +3567,10 @@ namespace ERP_Condominios_Solution.Controllers
                                 fal.PRFA_NM_TRF = wsGeral.Cells[2, 1].Value.ToString();
                                 fal.PRFA_NM_PRECATORIO = numPrec;
                                 fal.PRFA_DT_DATA = DateTime.Now;
-                                fal.PRFA_DS_MOTIVO = "Informações incompletas do ADVOGADO. Precatório: " + numPrec;
+                                fal.PRFA_IN_TIPO = 2;
+                                fal.PRFA_DS_MOTIVO = "Informações incompletas do ADVOGADO. Precatório: " + numPrec + ". Importação prosseguiu sem inclusão de ADVOGADO";
                                 Int32 volta2 = tranApp.ValidateCreateFalha(fal);
-                                falha++;
+                                ajuste++;
                                 honoFlag = 0;
                             }
                             if (honoCPF != null)
@@ -3589,9 +3583,10 @@ namespace ERP_Condominios_Solution.Controllers
                                         fal.PRFA_NM_TRF = wsGeral.Cells[2, 1].Value.ToString();
                                         fal.PRFA_NM_PRECATORIO = numPrec;
                                         fal.PRFA_DT_DATA = DateTime.Now;
-                                        fal.PRFA_DS_MOTIVO = "CPF do ADVOGADO inválido. " + honoCPF;
+                                        fal.PRFA_IN_TIPO = 2;
+                                        fal.PRFA_DS_MOTIVO = "CPF do ADVOGADO inválido. " + honoCPF + ". Importação prosseguiu sem inclusão de ADVOGADO";
                                         Int32 volta2 = tranApp.ValidateCreateFalha(fal);
-                                        falha++;
+                                        ajuste++;
                                         honoFlag = 0;
                                     }
                                 }
@@ -3603,9 +3598,10 @@ namespace ERP_Condominios_Solution.Controllers
                                         fal.PRFA_NM_TRF = wsGeral.Cells[2, 1].Value.ToString();
                                         fal.PRFA_NM_PRECATORIO = numPrec;
                                         fal.PRFA_DT_DATA = DateTime.Now;
-                                        fal.PRFA_DS_MOTIVO = "CNPJ do ADVOGADO inválido. " + honoCPF;
+                                        fal.PRFA_IN_TIPO = 2;
+                                        fal.PRFA_DS_MOTIVO = "CNPJ do ADVOGADO inválido. " + honoCPF + ". Importação prosseguiu sem inclusão de ADVOGADO";
                                         Int32 volta2 = tranApp.ValidateCreateFalha(fal);
-                                        falha++;
+                                        ajuste++;
                                         honoFlag = 0;
                                     }
                                 }
@@ -3615,9 +3611,10 @@ namespace ERP_Condominios_Solution.Controllers
                                     fal.PRFA_NM_TRF = wsGeral.Cells[2, 1].Value.ToString();
                                     fal.PRFA_NM_PRECATORIO = numPrec;
                                     fal.PRFA_DT_DATA = DateTime.Now;
-                                    fal.PRFA_DS_MOTIVO = "CPF ou CNPJ do ADVOGADO inválido. " + honoCPF;
+                                    fal.PRFA_IN_TIPO = 2;
+                                    fal.PRFA_DS_MOTIVO = "CPF ou CNPJ do ADVOGADO inválido. " + honoCPF + ". Importação prosseguiu sem inclusão de ADVOGADO";
                                     Int32 volta2 = tranApp.ValidateCreateFalha(fal);
-                                    falha++;
+                                    ajuste++;
                                     honoFlag = 0;
                                 }
                             }
@@ -3649,9 +3646,27 @@ namespace ERP_Condominios_Solution.Controllers
                                         hono.TIPE_CD_ID = 2;
                                     }
                                     Int32 volta3 = honoApp.ValidateCreate(hono, user);
-                                    prec.HONO_CD_ID = hono.HONO_CD_ID;
-                                    prec.PREC_VL_HON_VALOR_PRINCIPAL = Convert.ToDecimal(wsGeral.Cells[row, 22].Value.ToString());
-                                    prec.PREC_VL_HON_JUROS = Convert.ToDecimal(wsGeral.Cells[row, 23].Value.ToString());
+                                    if (volta3 > 0)
+                                    {
+                                        PRECATORIO_FALHA fal = new PRECATORIO_FALHA();
+                                        fal.PRFA_NM_TRF = wsGeral.Cells[2, 1].Value.ToString();
+                                        fal.PRFA_NM_PRECATORIO = numPrec;
+                                        fal.PRFA_DT_DATA = DateTime.Now;
+                                        fal.PRFA_IN_TIPO = 2;
+                                        fal.PRFA_DS_MOTIVO = "Erro na inclusão do ADVOGADO " + honoNome + ". Prossegue a importação sem inclusão de ADVOGADO";
+                                        Int32 volta2 = tranApp.ValidateCreateFalha(fal);
+                                        ajuste++;
+                                    }
+                                    else
+                                    {
+                                        prec.HONO_CD_ID = hono.HONO_CD_ID;
+                                        prec.PREC_VL_HON_VALOR_PRINCIPAL = Convert.ToDecimal(wsGeral.Cells[row, 22].Value.ToString());
+                                        prec.PREC_VL_HON_JUROS = Convert.ToDecimal(wsGeral.Cells[row, 23].Value.ToString());
+
+                                        // Cria pastas
+                                        String caminho = "/Imagens/1" + "/Advogados/" + hono.HONO_CD_ID.ToString() + "/Anexos/";
+                                        Directory.CreateDirectory(Server.MapPath(caminho));
+                                    }
                                 }
                             }
 
@@ -3686,6 +3701,7 @@ namespace ERP_Condominios_Solution.Controllers
                                         fal.PRFA_NM_TRF = wsGeral.Cells[2, 1].Value.ToString();
                                         fal.PRFA_NM_PRECATORIO = numPrec;
                                         fal.PRFA_DT_DATA = DateTime.Now;
+                                        fal.PRFA_IN_TIPO = 1;
                                         fal.PRFA_DS_MOTIVO = "Valor não numérico informado para HONORARIO MES ANTERIOR" + honoMes;
                                         Int32 volta2 = tranApp.ValidateCreateFalha(fal);
                                         falha++;
@@ -3750,6 +3766,7 @@ namespace ERP_Condominios_Solution.Controllers
                                         fal.PRFA_NM_TRF = wsGeral.Cells[2, 1].Value.ToString();
                                         fal.PRFA_NM_PRECATORIO = numPrec;
                                         fal.PRFA_DT_DATA = DateTime.Now;
+                                        fal.PRFA_IN_TIPO = 1;
                                         fal.PRFA_DS_MOTIVO = "Valor não numérico informado para VALOR HONORARIO INICIAL PSS" + valPSS;
                                         Int32 volta2 = tranApp.ValidateCreateFalha(fal);
                                         falha++;
@@ -3781,6 +3798,7 @@ namespace ERP_Condominios_Solution.Controllers
                                         fal.PRFA_NM_TRF = wsGeral.Cells[2, 1].Value.ToString();
                                         fal.PRFA_NM_PRECATORIO = numPrec;
                                         fal.PRFA_DT_DATA = DateTime.Now;
+                                        fal.PRFA_IN_TIPO = 1;
                                         fal.PRFA_DS_MOTIVO = "Valor não numérico informado para VALOR HONORARIO REQUISITADO" + honReq;
                                         Int32 volta2 = tranApp.ValidateCreateFalha(fal);
                                         falha++;
@@ -3812,7 +3830,8 @@ namespace ERP_Condominios_Solution.Controllers
                                         fal.PRFA_NM_TRF = wsGeral.Cells[2, 1].Value.ToString();
                                         fal.PRFA_NM_PRECATORIO = numPrec;
                                         fal.PRFA_DT_DATA = DateTime.Now;
-                                        fal.PRFA_DS_MOTIVO = "Valor não inválido informado para ANO DA PROPOSTA " + anoProp;
+                                        fal.PRFA_IN_TIPO = 1;
+                                        fal.PRFA_DS_MOTIVO = "Valor inválido informado para ANO DA PROPOSTA " + anoProp;
                                         Int32 volta2 = tranApp.ValidateCreateFalha(fal);
                                         falha++;
                                         prec.PREC_NR_ANO = String.Empty;
@@ -3852,6 +3871,7 @@ namespace ERP_Condominios_Solution.Controllers
                                         fal.PRFA_NM_TRF = wsGeral.Cells[2, 1].Value.ToString();
                                         fal.PRFA_NM_PRECATORIO = numPrec;
                                         fal.PRFA_DT_DATA = DateTime.Now;
+                                        fal.PRFA_IN_TIPO = 1;
                                         fal.PRFA_DS_MOTIVO = "Valor não numérico informado para VALOR RRA. Assumido 0. " + valRRA;
                                         Int32 volta2 = tranApp.ValidateCreateFalha(fal);
                                         falha++;
@@ -3883,9 +3903,10 @@ namespace ERP_Condominios_Solution.Controllers
                                         fal.PRFA_NM_TRF = wsGeral.Cells[2, 1].Value.ToString();
                                         fal.PRFA_NM_PRECATORIO = numPrec;
                                         fal.PRFA_DT_DATA = DateTime.Now;
+                                        fal.PRFA_IN_TIPO = 2;
                                         fal.PRFA_DS_MOTIVO = "Valor não numérico informado para PERCENTAGEM RRA. Assumido 0. " + percRRA;
                                         Int32 volta2 = tranApp.ValidateCreateFalha(fal);
-                                        falha++;
+                                        ajuste++;
                                         prec.PREC_PC_RRA = 0;
                                     }
                                 }
@@ -3947,9 +3968,10 @@ namespace ERP_Condominios_Solution.Controllers
                                 fal.PRFA_NM_TRF = wsGeral.Cells[2, 1].Value.ToString();
                                 fal.PRFA_NM_PRECATORIO = numPrec;
                                 fal.PRFA_DT_DATA = DateTime.Now;
-                                fal.PRFA_DS_MOTIVO = "Beneficiário: Nome e CPF não informados";
+                                fal.PRFA_IN_TIPO = 2;
+                                fal.PRFA_DS_MOTIVO = "Beneficiário: Nome e CPF não informados. Prossegue a importação sem inclusão de BENEFICIÁRIO";
                                 Int32 volta2 = tranApp.ValidateCreateFalha(fal);
-                                falha++;
+                                ajuste++;
                                 flagBene = 0;
                             }
 
@@ -3964,42 +3986,55 @@ namespace ERP_Condominios_Solution.Controllers
                                     fal.PRFA_NM_TRF = wsGeral.Cells[2, 1].Value.ToString();
                                     fal.PRFA_NM_PRECATORIO = numPrec;
                                     fal.PRFA_DT_DATA = DateTime.Now;
-                                    fal.PRFA_DS_MOTIVO = "Data de nascimento inválida. Beneficiário: " + nome + ". " + nasc;
+                                    fal.PRFA_DS_MOTIVO = "Data de nascimento inválida. Beneficiário: " + nome + ". " + nasc + ". Prossegue a importação sem essa informação";
+                                    fal.PRFA_DT_DATA = DateTime.Now;
+                                    fal.PRFA_IN_TIPO = 2;
                                     Int32 volta2 = tranApp.ValidateCreateFalha(fal);
-                                    falha++;
+                                    ajuste++;
                                 }
                                 String x = nasc.ToString();
                                 dataNasc = Convert.ToDateTime(x);
                             }
 
-                            BENEFICIARIO beneNovo = new BENEFICIARIO();
-                            BENEFICIARIO bene = listaBene.Where(p => p.BENE_NM_NOME == nome & p.BENE_NR_CPF == cpf).FirstOrDefault();
-                            if (bene == null)
+                            if (flagBene == 1)
                             {
-                                beneNovo.TIPE_CD_ID = 1;
-                                if (sexo == "M" || sexo == "F")
+                                BENEFICIARIO beneNovo = new BENEFICIARIO();
+                                BENEFICIARIO bene = listaBene.Where(p => p.BENE_NM_NOME == nome & p.BENE_NR_CPF == cpf).FirstOrDefault();
+                                if (bene == null)
                                 {
-                                    beneNovo.SEXO_CD_ID = sexo == "M" ? 1 : 0;
+                                    beneNovo.TIPE_CD_ID = 1;
+                                    if (sexo == "M" || sexo == "F")
+                                    {
+                                        beneNovo.SEXO_CD_ID = sexo == "M" ? 1 : 0;
+                                    }
+                                    beneNovo.BENE_NM_NOME = nome;
+                                    beneNovo.BENE_NR_CPF = cpf;
+                                    beneNovo.BENE_DT_CADASTRO = DateTime.Today.Date;
+                                    beneNovo.BENE_NR_CELULAR = cel1;
+                                    beneNovo.BENE_NR_CELULAR2 = cel2;
+                                    beneNovo.BENE_DT_NASCIMENTO = dataNasc;
+                                    beneNovo.BENE_IN_ATIVO = 1;
+                                    Int32 voltaBene = beneApp.ValidateCreate(beneNovo, user);
+                                    if (voltaBene > 0)
+                                    {
+                                        PRECATORIO_FALHA fal = new PRECATORIO_FALHA();
+                                        fal.PRFA_NM_TRF = wsGeral.Cells[2, 1].Value.ToString();
+                                        fal.PRFA_NM_PRECATORIO = numPrec;
+                                        fal.PRFA_DT_DATA = DateTime.Now;
+                                        fal.PRFA_IN_TIPO = 2;
+                                        fal.PRFA_DS_MOTIVO = "Erro na inclusão do beneficiário " + nome + ". Prossegue a importação sem inclusão de BENEFICIÁRIO";
+                                        Int32 volta2 = tranApp.ValidateCreateFalha(fal);
+                                        ajuste++;
+                                    }
+                                    else
+                                    {
+                                        prec.BENE_CD_ID = beneNovo.BENE_CD_ID;
+
+                                        // Cria pastas
+                                        String caminho = "/Imagens/1" + "/Beneficiarios/" + beneNovo.BENE_CD_ID.ToString() + "/Anexos/";
+                                        Directory.CreateDirectory(Server.MapPath(caminho));
+                                    }
                                 }
-                                beneNovo.BENE_NM_NOME = nome;
-                                beneNovo.BENE_NR_CPF = cpf;
-                                beneNovo.BENE_DT_CADASTRO = DateTime.Today.Date;
-                                beneNovo.BENE_NR_CELULAR = cel1;
-                                beneNovo.BENE_NR_CELULAR2 = cel2;
-                                beneNovo.BENE_DT_NASCIMENTO = dataNasc;
-                                beneNovo.BENE_IN_ATIVO = 1;
-                                Int32 voltaBene = beneApp.ValidateCreate(beneNovo, user);
-                                if (voltaBene > 0)
-                                {
-                                    PRECATORIO_FALHA fal = new PRECATORIO_FALHA();
-                                    fal.PRFA_NM_TRF = wsGeral.Cells[2, 1].Value.ToString();
-                                    fal.PRFA_NM_PRECATORIO = numPrec;
-                                    fal.PRFA_DT_DATA = DateTime.Now;
-                                    fal.PRFA_DS_MOTIVO = "Erro na inclusão do beneficiário " + nome;
-                                    Int32 volta2 = tranApp.ValidateCreateFalha(fal);
-                                    falha++;
-                                }
-                                prec.BENE_CD_ID = beneNovo.BENE_CD_ID;
                             }
 
                             CLIENTE cliNovo = new CLIENTE();
@@ -4026,9 +4061,18 @@ namespace ERP_Condominios_Solution.Controllers
                                     fal.PRFA_NM_TRF = wsGeral.Cells[2, 1].Value.ToString();
                                     fal.PRFA_NM_PRECATORIO = numPrec;
                                     fal.PRFA_DT_DATA = DateTime.Now;
-                                    fal.PRFA_DS_MOTIVO = "Erro na inclusão do cliente " + nome;
+                                    fal.PRFA_IN_TIPO = 2;
+                                    fal.PRFA_DS_MOTIVO = "Erro na inclusão do cliente " + nome + ". Prossegue a importação sem inclusão de CLIENTE";
                                     Int32 volta2 = tranApp.ValidateCreateFalha(fal);
-                                    falha++;
+                                    ajuste++;
+                                }
+                                else
+                                {
+                                    // Cria pastas
+                                    String caminho = "/Imagens/1" + "/Clientes/" + cliNovo.CLIE_CD_ID.ToString() + "/Anexos/";
+                                    Directory.CreateDirectory(Server.MapPath(caminho));
+                                    caminho = "/Imagens/1" + "/Clientes/" + cliNovo.CLIE_CD_ID.ToString() + "/Fotos/";
+                                    Directory.CreateDirectory(Server.MapPath(caminho));
                                 }
                             }
 
@@ -4046,9 +4090,10 @@ namespace ERP_Condominios_Solution.Controllers
                                 fal.PRFA_NM_TRF = wsGeral.Cells[2, 1].Value.ToString();
                                 fal.PRFA_NM_PRECATORIO = numPrec;
                                 fal.PRFA_DT_DATA = DateTime.Now;
-                                fal.PRFA_DS_MOTIVO = "Usuário responsável não definido. Precatório " + numPrec;
+                                fal.PRFA_IN_TIPO = 2;
+                                fal.PRFA_DS_MOTIVO = "Usuário responsável não definido. Precatório " + numPrec + ". Prossegue a importação sem associação de RESPONSÁVEL";
                                 Int32 volta2 = tranApp.ValidateCreateFalha(fal);
-                                falha++;
+                                ajuste++;
                                 flagUsu = 0;
                             }
 
@@ -4061,9 +4106,10 @@ namespace ERP_Condominios_Solution.Controllers
                                     fal.PRFA_NM_TRF = wsGeral.Cells[2, 1].Value.ToString();
                                     fal.PRFA_NM_PRECATORIO = numPrec;
                                     fal.PRFA_DT_DATA = DateTime.Now;
-                                    fal.PRFA_DS_MOTIVO = "Usuário responsável não cadastrado. Precatório " + numPrec;
+                                    fal.PRFA_IN_TIPO = 2;
+                                    fal.PRFA_DS_MOTIVO = "Usuário responsável não cadastrado. Precatório " + numPrec + ". Prossegue a importação sem associação de RESPONSÁVEL";
                                     Int32 volta2 = tranApp.ValidateCreateFalha(fal);
-                                    falha++;
+                                    ajuste++;
                                     prec.USUA_CD_ID = null;
                                 }
                                 else
@@ -4073,18 +4119,45 @@ namespace ERP_Condominios_Solution.Controllers
                             }
 
                             // Grava objeto
-                            prec.PREC_NM_NOME = nome;
-                            Int32 volta = tranApp.ValidateCreate(prec, user);
-                            conta++;
+                            if (colTRF != null)
+                            {
+                                prec.PREC_NM_NOME = nome;
+                                Int32 volta = tranApp.ValidateCreate(prec, user);
+                                if (volta > 0)
+                                {
+                                    PRECATORIO_FALHA fal = new PRECATORIO_FALHA();
+                                    fal.PRFA_NM_TRF = wsGeral.Cells[2, 1].Value.ToString();
+                                    fal.PRFA_NM_PRECATORIO = numPrec;
+                                    fal.PRFA_DT_DATA = DateTime.Now;
+                                    fal.PRFA_IN_TIPO = 1;
+                                    fal.PRFA_DS_MOTIVO = "Erro na gravação do PRECATÓRIO. Precatório " + numPrec;
+                                    Int32 volta2 = tranApp.ValidateCreateFalha(fal);
+                                    falha++;
+                                    continue;
+                                }
+                                else
+                                {
+                                    conta++;
 
-                            // Cria pastas
-                            String caminho = "/Imagens/1" + "/Precatorios/" + prec.PREC_CD_ID.ToString() + "/Anexos/";
-                            Directory.CreateDirectory(Server.MapPath(caminho));
+                                    // Cria pastas
+                                    String caminho = "/Imagens/1" + "/Precatorios/" + prec.PREC_CD_ID.ToString() + "/Anexos/";
+                                    Directory.CreateDirectory(Server.MapPath(caminho));
+                                }
+                            }
+                            else
+                            {
+                                Session["Conta"] = conta;
+                                Session["Falha"] = falha;
+                                Session["MensPrecatorio"] = 50;
+                                Session["ListaPrecatorio"] = null;
+                                Session["VoltaPrecatorio"] = 0;
+                                return System.Threading.Tasks.Task.Delay(5);
+                            }
                         }
                         catch (Exception ex)
                         {
                             ModelState.AddModelError("", ex.Message);
-                            return View();
+                            return System.Threading.Tasks.Task.Delay(5);
                         }
                     }
                 }
@@ -4373,7 +4446,7 @@ namespace ERP_Condominios_Solution.Controllers
                         catch (Exception ex)
                         {
                             ModelState.AddModelError("", ex.Message);
-                            return View();
+                            return System.Threading.Tasks.Task.Delay(5);
                         }
                     }
                 }
@@ -4384,19 +4457,2228 @@ namespace ERP_Condominios_Solution.Controllers
             {
                 Session["Conta"] = conta;
                 Session["Falha"] = falha;
+                Session["Ajuste"] = ajuste;
                 Session["MensPrecatorio"] = 10;
                 Session["ListaPrecatorio"] = null;
-                return RedirectToAction("MontarTelaPrecatorio");
+                Session["VoltaPrecatorio"] = 0;
+                return System.Threading.Tasks.Task.Delay(5);
             }
             else
             {
                 Session["Conta"] = conta;
                 Session["Falha"] = falha;
+                Session["Ajuste"] = ajuste;
                 Session["MensPrecatorio"] = 11;
                 Session["ListaContato"] = null;
-                return RedirectToAction("MontarTelaContato");
+                Session["VoltaContato"] = 0;
+                return System.Threading.Tasks.Task.Delay(5);
             }
         }
+
+        [HttpPost]
+        public async Task<ActionResult> IncluirPrecatorioTRFExcel(HttpPostedFileBase file)
+        {
+            if ((String)Session["Ativa"] == null)
+            {
+                return RedirectToAction("Login", "ControleAcesso");
+            }
+
+            using (var pkg = new ExcelPackage(file.InputStream))
+            {
+                // Inicialização
+                ExcelWorksheet wsGeral = pkg.Workbook.Worksheets[0];
+                var wsFinalRow = wsGeral.Dimension.End;
+                if (wsFinalRow.Row > 500)
+                {
+                    Session["MensPrecatorio"] = 200;
+                    return RedirectToAction("MontarTelaPrecatorio");
+                }
+                if (wsGeral.Cells[2, 1].Value == null)
+                {
+                    Session["MensPrecatorio"] = 999;
+                    return RedirectToAction("MontarTelaPrecatorio");
+                }
+            }
+
+            await ProcessaOperacaoPlanilha(file);
+
+            // Finaliza
+            Session["ListaPrecatorio"] = null;
+            Session["PrecatorioAlterada"] = 1;
+            return RedirectToAction("MontarTelaPrecatorio");
+        }
+
+
+        //[HttpPost]
+        //public ActionResult IncluirPrecatorioTRFExcel(HttpPostedFileBase file)
+        //{
+        //    USUARIO user = (USUARIO)Session["UserCredentials"];
+        //    Int32 conta = 0;
+        //    Int32 falha = 0;
+        //    Int32 trf = 0;
+
+        //    // Recupera configuracao
+        //    CONFIGURACAO conf = confApp.GetItemById(1);
+        //    String caminhoAudio = conf.CONF_NM_LOCAL_AUDIO;
+
+        //    using (var pkg = new ExcelPackage(file.InputStream))
+        //    {
+        //        // Inicialização
+        //        ExcelWorksheet wsGeral = pkg.Workbook.Worksheets[0];
+        //        var wsFinalRow = wsGeral.Dimension.End;
+        //        Int32 idTRF = 0;
+
+        //        // Listas de pesquisas
+        //        List<TRF> trfs = CarregaTRF();
+        //        List<PRECATORIO> precs = CarregaPrecatorio();
+        //        List<NATUREZA> nats = CarregaNatureza();
+        //        PRECATORIO precCheca = new PRECATORIO();
+        //        NATUREZA natCheca = new NATUREZA();
+        //        BENEFICIARIO beneCheca = new BENEFICIARIO();
+        //        HONORARIO honoCheca = new HONORARIO();
+        //        TRF trfx = new TRF();
+        //        CONTATO contCheca = new CONTATO();
+        //        QUALIFICACAO qualiCheca = new QUALIFICACAO();
+        //        QUEM_DESLIGOU quemCheca = new QUEM_DESLIGOU();
+        //        List<BENEFICIARIO> listaBene = CarregaBeneficiario();
+        //        List<CLIENTE> listaCli = CarregaCliente();
+        //        USUARIO usuCheca = new USUARIO();
+
+        //        // Checa planilha
+        //        if (wsGeral.Cells[2, 1].Value.ToString() == null)
+        //        {
+        //            Session["MensPrecatorio"] = 999;
+        //            return RedirectToAction("MontarTelaPrecatorio");
+        //        }
+        //        if (wsGeral.Cells[2, 1].Value.ToString() == "TRF3")
+        //        {
+        //            // Prcessa TRF
+        //            trf = 3;
+        //            trfx = trfs.Where(m => m.TRF1_NM_NOME == "TRF-3").FirstOrDefault();
+        //            idTRF = trfx.TRF1_CD_ID;
+        //        }
+        //        if (wsGeral.Cells[2, 1].Value.ToString() == "TRF5")
+        //        {
+        //            // Prcessa TRF
+        //            trf = 5;
+        //            trfx = trfs.Where(m => m.TRF1_NM_NOME == "TRF-5").FirstOrDefault();
+        //            idTRF = trfx.TRF1_CD_ID;
+        //        }
+        //        if (wsGeral.Cells[2, 1].Value.ToString() == "TRF2")
+        //        {
+        //            // Prcessa TRF
+        //            trf = 2;
+        //            trfx = trfs.Where(m => m.TRF1_NM_NOME == "TRF-2").FirstOrDefault();
+        //            idTRF = trfx.TRF1_CD_ID;
+        //        }
+        //        if (wsGeral.Cells[2, 1].Value.ToString() == "TRF4")
+        //        {
+        //            // Prcessa TRF
+        //            trf = 4;
+        //            trfx = trfs.Where(m => m.TRF1_NM_NOME == "TRF-4").FirstOrDefault();
+        //            idTRF = trfx.TRF1_CD_ID;
+        //        }
+        //        if (wsGeral.Cells[2, 1].Value.ToString() == "DISC")
+        //        {
+        //            // Processa Callix
+        //            trf = 0;
+        //        }
+
+        //        // Processa TRF3
+        //        if (trf == 3)
+        //        {
+        //            for (int row = 2; row <= wsFinalRow.Row; row++)
+        //            {
+        //                try
+        //                {
+        //                    Int32 check = 0;
+        //                    PRECATORIO prec = new PRECATORIO();
+
+        //                    // Verifica existencia
+        //                    String numPrec = wsGeral.Cells[row, 2].Value.ToString();
+        //                    numPrec = CrossCutting.ValidarNumerosDocumentos.RemoveNaoNumericos(numPrec);
+        //                    precCheca = tranApp.CheckExist(numPrec);
+        //                    if (precCheca != null)
+        //                    {
+        //                        PRECATORIO_FALHA fal = new PRECATORIO_FALHA();
+        //                        fal.PRFA_NM_TRF = wsGeral.Cells[2, 1].Value.ToString();
+        //                        fal.PRFA_NM_PRECATORIO = numPrec;
+        //                        fal.PRFA_DT_DATA = DateTime.Now;
+        //                        fal.PRFA_DS_MOTIVO = "Precatório já incluído para o " + trfx.TRF1_NM_NOME;
+        //                        Int32 volta2 = tranApp.ValidateCreateFalha(fal);
+        //                        falha++;
+        //                        continue;
+        //                    }
+
+        //                    // Monta objeto
+        //                    if (true)
+        //                    {
+
+        //                    }
+        //                    prec.TRF1_CD_ID = idTRF;
+        //                    prec.PREC_NM_PRECATORIO = numPrec;
+        //                    prec.PREC_NM_PROC_EXECUCAO = wsGeral.Cells[row, 3].Value.ToString();
+        //                    prec.PREC_SG_PROCEDIMENTO = wsGeral.Cells[row, 4].Value.ToString();
+
+        //                    if (wsGeral.Cells[row, 6].Value != null)
+        //                    {
+        //                        String x = wsGeral.Cells[row, 6].Value.ToString();
+        //                        DateTime data = Convert.ToDateTime(x);
+        //                        prec.PREC_DT_PROTOCOLO_TRF = data;
+        //                    }
+        //                    else
+        //                    {
+        //                        prec.PREC_DT_PROTOCOLO_TRF = null;
+        //                    }
+
+        //                    prec.PREC_NM_OFICIO_REQUISITORIO = wsGeral.Cells[row, 8].Value.ToString();
+        //                    prec.PREC_NM_PROCESSO_ORIGEM = wsGeral.Cells[row, 10].Value.ToString();
+        //                    prec.PREC_NM_REQUERIDO = wsGeral.Cells[row, 11].Value.ToString();
+        //                    prec.PREC_NM_REQUERENTE = wsGeral.Cells[row, 12].Value.ToString();
+        //                    prec.PREC_NM_ADVOGADO = wsGeral.Cells[row, 13].Value.ToString();
+        //                    prec.PREC_NR_ANO = wsGeral.Cells[row, 14].Value.ToString();
+        //                    prec.PREC_VL_VALOR_INSCRITO_PROPOSTA = Convert.ToDecimal(wsGeral.Cells[row, 17].Value);
+        //                    if (wsGeral.Cells[row, 18].Value.ToString() == "SIM")
+        //                    {
+        //                        prec.PREC_IN_SITUACAO_ATUAL = 1;
+        //                    }
+        //                    else
+        //                    {
+        //                        prec.PREC_IN_SITUACAO_ATUAL = 2;
+        //                    }
+        //                    prec.PREC_NM_SITUACAO_REQUISICAO = wsGeral.Cells[row, 19].Value.ToString();
+        //                    String nat = wsGeral.Cells[row, 21].Value.ToString();
+        //                    natCheca = tranApp.CheckExistNatureza(nat);
+        //                    if (natCheca != null)
+        //                    {
+        //                        prec.NATU_CD_ID = natCheca.NATU_CD_ID;
+        //                    }
+        //                    else
+        //                    {
+        //                        prec.NATU_CD_ID = null;
+        //                    }
+
+        //                    String nome = wsGeral.Cells[row, 22].Value.ToString();
+        //                    String cpf = wsGeral.Cells[row, 23].Value.ToString();
+        //                    String sexo = wsGeral.Cells[row, 24].Value.ToString();
+        //                    String nasc = wsGeral.Cells[row, 25].Value.ToString();
+        //                    String cel1 = wsGeral.Cells[row, 26].Value.ToString();
+        //                    String cel2 = wsGeral.Cells[row, 27].Value.ToString();
+        //                    String tel = wsGeral.Cells[row, 28].Value.ToString();
+
+        //                    DateTime? dataNasc = null;
+        //                    if (nasc != null)
+        //                    {
+        //                        String x = nasc.ToString();
+        //                        dataNasc = Convert.ToDateTime(x);
+        //                    }
+
+        //                    BENEFICIARIO beneNovo = new BENEFICIARIO();
+        //                    if (nome != null && cpf != null)
+        //                    {
+        //                        BENEFICIARIO bene = listaBene.Where(p => p.BENE_NM_NOME == nome & p.BENE_NR_CPF == cpf).FirstOrDefault();
+        //                        if (bene == null)
+        //                        {
+        //                            beneNovo.TIPE_CD_ID = 1;
+        //                            if (sexo == "1" || sexo == "2")
+        //                            {
+        //                                beneNovo.SEXO_CD_ID = Convert.ToInt32(sexo);
+        //                            }
+        //                            beneNovo.BENE_NM_NOME = nome;
+        //                            beneNovo.BENE_NR_CPF = cpf;
+        //                            beneNovo.BENE_NR_TELEFONE2 = tel;
+        //                            beneNovo.BENE_DT_CADASTRO = DateTime.Today.Date;
+        //                            beneNovo.BENE_NR_CELULAR = cel1;
+        //                            beneNovo.BENE_NR_CELULAR2 = cel2;
+        //                            beneNovo.BENE_DT_NASCIMENTO = dataNasc;
+        //                            beneNovo.BENE_IN_ATIVO = 1;
+        //                            Int32 voltaBene = beneApp.ValidateCreate(beneNovo, user);
+        //                            if (voltaBene > 0)
+        //                            {
+        //                                PRECATORIO_FALHA fal = new PRECATORIO_FALHA();
+        //                                fal.PRFA_NM_TRF = wsGeral.Cells[2, 1].Value.ToString();
+        //                                fal.PRFA_NM_PRECATORIO = numPrec;
+        //                                fal.PRFA_DT_DATA = DateTime.Now;
+        //                                fal.PRFA_DS_MOTIVO = "Erro na inclusão do beneficiário " + nome;
+        //                                Int32 volta2 = tranApp.ValidateCreateFalha(fal);
+        //                                falha++;
+        //                            }
+        //                            prec.BENE_CD_ID = beneNovo.BENE_CD_ID;
+        //                        }
+        //                    }
+
+        //                    CLIENTE cliNovo = new CLIENTE();
+        //                    if (nome != null && cpf != null)
+        //                    {
+        //                        CLIENTE cli = listaCli.Where(p => p.CLIE_NM_NOME == nome & p.CLIE_NR_CPF == cpf).FirstOrDefault();
+        //                        if (cli == null)
+        //                        {
+        //                            cliNovo.TIPE_CD_ID = 1;
+        //                            if (sexo == "1" || sexo == "2")
+        //                            {
+        //                                cliNovo.SEXO_CD_ID = Convert.ToInt32(sexo);
+        //                            }
+        //                            cliNovo.CLIE_NM_NOME = nome;
+        //                            cliNovo.CLIE_NR_CPF = cpf;
+        //                            cliNovo.CLIE_NR_TELEFONE = tel;
+        //                            cliNovo.CLIE_DT_CADASTRO = DateTime.Today.Date;
+        //                            cliNovo.CLIE_NR_CELULAR = cel1;
+        //                            cliNovo.CLIE_NR_WHATSAPP = cel2;
+        //                            cliNovo.CLIE_DT_NASCIMENTO = dataNasc;
+        //                            cliNovo.CLIE_IN_ATIVO = 1;
+        //                            Int32 voltaCli = cliApp.ValidateCreate(cliNovo, user);
+        //                            if (voltaCli > 0)
+        //                            {
+        //                                PRECATORIO_FALHA fal = new PRECATORIO_FALHA();
+        //                                fal.PRFA_NM_TRF = wsGeral.Cells[2, 1].Value.ToString();
+        //                                fal.PRFA_NM_PRECATORIO = numPrec;
+        //                                fal.PRFA_DT_DATA = DateTime.Now;
+        //                                fal.PRFA_DS_MOTIVO = "Erro na inclusão do cliente " + nome;
+        //                                Int32 volta2 = tranApp.ValidateCreateFalha(fal);
+        //                                falha++;
+        //                            }
+        //                        }
+        //                    }
+
+        //                    // Processa usuário
+        //                    String usu = wsGeral.Cells[row, 29].Value.ToString();
+        //                    if (usu == null)
+        //                    {
+        //                        PRECATORIO_FALHA fal = new PRECATORIO_FALHA();
+        //                        fal.PRFA_NM_TRF = wsGeral.Cells[2, 1].Value.ToString();
+        //                        fal.PRFA_NM_PRECATORIO = numPrec;
+        //                        fal.PRFA_DT_DATA = DateTime.Now;
+        //                        fal.PRFA_DS_MOTIVO = "Usuário responsável não definido " + trfx.TRF1_NM_NOME;
+        //                        Int32 volta2 = tranApp.ValidateCreateFalha(fal);
+        //                        falha++;
+        //                        continue;
+        //                    }
+
+        //                    usuCheca = usuApp.GetItemById(Convert.ToInt32(usu));
+        //                    if (usuCheca == null)
+        //                    {
+        //                        PRECATORIO_FALHA fal = new PRECATORIO_FALHA();
+        //                        fal.PRFA_NM_TRF = wsGeral.Cells[2, 1].Value.ToString();
+        //                        fal.PRFA_NM_PRECATORIO = numPrec;
+        //                        fal.PRFA_DT_DATA = DateTime.Now;
+        //                        fal.PRFA_DS_MOTIVO = "Usuário responsável não cadastrado " + trfx.TRF1_NM_NOME;
+        //                        Int32 volta2 = tranApp.ValidateCreateFalha(fal);
+        //                        falha++;
+        //                        continue;
+        //                    }
+        //                    prec.USUA_CD_ID = Convert.ToInt32(usu);
+
+        //                    // Grava objeto
+        //                    prec.PREC_NM_NOME = nome;
+        //                    Int32 volta = tranApp.ValidateCreate(prec, user);
+        //                    conta++;
+
+        //                    // Cria pastas
+        //                    String caminho = "/Imagens/1" + "/Precatorios/" + prec.PREC_CD_ID.ToString() + "/Anexos/";
+        //                    Directory.CreateDirectory(Server.MapPath(caminho));
+        //                }
+        //                catch (Exception ex)
+        //                {
+        //                    ModelState.AddModelError("", ex.Message);
+        //                    return View();
+        //                }
+        //            }
+        //        }
+
+        //        // Processa TRF-5
+        //        if (trf == 5)
+        //        {
+        //            for (int row = 2; row <= wsFinalRow.Row; row++)
+        //            {
+        //                try
+        //                {
+        //                    Int32 check = 0;
+        //                    PRECATORIO prec = new PRECATORIO();
+
+        //                    // Verifica existencia
+        //                    String numPrec = wsGeral.Cells[row, 2].Value.ToString();
+        //                    numPrec = CrossCutting.ValidarNumerosDocumentos.RemoveNaoNumericos(numPrec);
+        //                    precCheca = tranApp.CheckExist(numPrec);
+        //                    if (precCheca != null)
+        //                    {
+        //                        PRECATORIO_FALHA fal = new PRECATORIO_FALHA();
+        //                        fal.PRFA_NM_TRF = wsGeral.Cells[2, 1].Value.ToString();
+        //                        fal.PRFA_NM_PRECATORIO = numPrec;
+        //                        fal.PRFA_DT_DATA = DateTime.Now;
+        //                        fal.PRFA_DS_MOTIVO = "Precatório já incluído para o " + trfx.TRF1_NM_NOME;
+        //                        Int32 volta2 = tranApp.ValidateCreateFalha(fal);
+        //                        falha++;
+        //                        continue;
+        //                    }
+
+        //                    // Monta objeto
+        //                    prec.TRF1_CD_ID = idTRF;
+        //                    prec.PREC_NM_PRECATORIO = numPrec;
+        //                    prec.PREC_NR_ANO = wsGeral.Cells[row, 3].Value.ToString();
+        //                    prec.PREC_NM_REQUERENTE = wsGeral.Cells[row, 11].Value.ToString();
+        //                    prec.PREC_NM_ADVOGADO = wsGeral.Cells[row, 12].Value.ToString();
+        //                    prec.PREC_NM_REQUERIDO = wsGeral.Cells[row, 13].Value.ToString();
+        //                    prec.PREC_NM_DEPRECANTE = wsGeral.Cells[row, 14].Value.ToString();
+        //                    prec.PREC_NM_PROCESSO_ORIGEM = wsGeral.Cells[row, 15].Value.ToString();
+        //                    prec.PREC_NM_OFICIO_REQUISITORIO = wsGeral.Cells[row, 16].Value.ToString();
+        //                    prec.PREC_NM_PROC_EXECUCAO = wsGeral.Cells[row, 17].Value.ToString();
+        //                    prec.PREC_NM_ASSUNTO = wsGeral.Cells[row, 21].Value.ToString();
+        //                    prec.PREC_NM_SITUACAO_REQUISICAO = wsGeral.Cells[row, 22].Value.ToString();
+        //                    String nat = wsGeral.Cells[row, 20].Value.ToString();
+        //                    natCheca = tranApp.CheckExistNatureza(nat);
+        //                    if (natCheca != null)
+        //                    {
+        //                        prec.NATU_CD_ID = natCheca.NATU_CD_ID;
+        //                    }
+        //                    else
+        //                    {
+        //                        prec.NATU_CD_ID = null;
+        //                    }
+
+        //                    String nome = wsGeral.Cells[row, 25].Value.ToString();
+        //                    String cpf = wsGeral.Cells[row, 26].Value.ToString();
+        //                    String sexo = wsGeral.Cells[row, 27].Value.ToString();
+        //                    String nasc = wsGeral.Cells[row, 28].Value.ToString();
+        //                    String cel1 = wsGeral.Cells[row, 29].Value.ToString();
+        //                    String cel2 = wsGeral.Cells[row, 30].Value.ToString();
+        //                    String tel = wsGeral.Cells[row, 31].Value.ToString();
+        //                    DateTime? dataNasc = null;
+        //                    if (nasc != null)
+        //                    {
+        //                        String x = nasc.ToString();
+        //                        dataNasc = Convert.ToDateTime(x);
+        //                    }
+
+        //                    BENEFICIARIO beneNovo = new BENEFICIARIO();
+        //                    if (nome != null && cpf != null)
+        //                    {
+        //                        BENEFICIARIO bene = listaBene.Where(p => p.BENE_NM_NOME == nome & p.BENE_NR_CPF == cpf).FirstOrDefault();
+        //                        if (bene == null)
+        //                        {
+        //                            beneNovo.TIPE_CD_ID = 1;
+        //                            if (sexo == "1" || sexo == "2")
+        //                            {
+        //                                beneNovo.SEXO_CD_ID = Convert.ToInt32(sexo);
+        //                            }
+        //                            beneNovo.BENE_NM_NOME = nome;
+        //                            beneNovo.BENE_NR_CPF = cpf;
+        //                            beneNovo.BENE_NR_TELEFONE2 = tel;
+        //                            beneNovo.BENE_DT_CADASTRO = DateTime.Today.Date;
+        //                            beneNovo.BENE_NR_CELULAR = cel1;
+        //                            beneNovo.BENE_NR_CELULAR2 = cel2;
+        //                            beneNovo.BENE_DT_NASCIMENTO = dataNasc;
+        //                            beneNovo.BENE_IN_ATIVO = 1;
+        //                            Int32 voltaBene = beneApp.ValidateCreate(beneNovo, user);
+        //                            if (voltaBene > 0)
+        //                            {
+        //                                PRECATORIO_FALHA fal = new PRECATORIO_FALHA();
+        //                                fal.PRFA_NM_TRF = wsGeral.Cells[2, 1].Value.ToString();
+        //                                fal.PRFA_NM_PRECATORIO = numPrec;
+        //                                fal.PRFA_DT_DATA = DateTime.Now;
+        //                                fal.PRFA_DS_MOTIVO = "Erro na inclusão do beneficiário " + nome;
+        //                                Int32 volta2 = tranApp.ValidateCreateFalha(fal);
+        //                                falha++;
+        //                            }
+        //                            prec.BENE_CD_ID = beneNovo.BENE_CD_ID;
+        //                        }
+        //                    }
+
+        //                    CLIENTE cliNovo = new CLIENTE();
+        //                    if (nome != null && cpf != null)
+        //                    {
+        //                        CLIENTE cli = listaCli.Where(p => p.CLIE_NM_NOME == nome & p.CLIE_NR_CPF == cpf).FirstOrDefault();
+        //                        if (cli == null)
+        //                        {
+        //                            cliNovo.TIPE_CD_ID = 1;
+        //                            if (sexo == "1" || sexo == "2")
+        //                            {
+        //                                cliNovo.SEXO_CD_ID = Convert.ToInt32(sexo);
+        //                            }
+        //                            cliNovo.CLIE_NM_NOME = nome;
+        //                            cliNovo.CLIE_NR_CPF = cpf;
+        //                            cliNovo.CLIE_NR_TELEFONE = tel;
+        //                            cliNovo.CLIE_DT_CADASTRO = DateTime.Today.Date;
+        //                            cliNovo.CLIE_NR_CELULAR = cel1;
+        //                            cliNovo.CLIE_NR_WHATSAPP = cel2;
+        //                            cliNovo.CLIE_DT_NASCIMENTO = dataNasc;
+        //                            cliNovo.CLIE_IN_ATIVO = 1;
+        //                            Int32 voltaCli = cliApp.ValidateCreate(cliNovo, user);
+        //                            if (voltaCli > 0)
+        //                            {
+        //                                PRECATORIO_FALHA fal = new PRECATORIO_FALHA();
+        //                                fal.PRFA_NM_TRF = wsGeral.Cells[2, 1].Value.ToString();
+        //                                fal.PRFA_NM_PRECATORIO = numPrec;
+        //                                fal.PRFA_DT_DATA = DateTime.Now;
+        //                                fal.PRFA_DS_MOTIVO = "Erro na inclusão do cliente " + nome;
+        //                                Int32 volta2 = tranApp.ValidateCreateFalha(fal);
+        //                                falha++;
+        //                            }
+        //                        }
+        //                    }
+
+        //                    // Processa usuário
+        //                    String usu = wsGeral.Cells[row, 32].Value.ToString();
+        //                    if (usu == null)
+        //                    {
+        //                        PRECATORIO_FALHA fal = new PRECATORIO_FALHA();
+        //                        fal.PRFA_NM_TRF = wsGeral.Cells[2, 1].Value.ToString();
+        //                        fal.PRFA_NM_PRECATORIO = numPrec;
+        //                        fal.PRFA_DT_DATA = DateTime.Now;
+        //                        fal.PRFA_DS_MOTIVO = "Usuário responsável não definido " + trfx.TRF1_NM_NOME;
+        //                        Int32 volta2 = tranApp.ValidateCreateFalha(fal);
+        //                        falha++;
+        //                        continue;
+        //                    }
+
+        //                    usuCheca = usuApp.GetItemById(Convert.ToInt32(usu));
+        //                    if (usuCheca == null)
+        //                    {
+        //                        PRECATORIO_FALHA fal = new PRECATORIO_FALHA();
+        //                        fal.PRFA_NM_TRF = wsGeral.Cells[2, 1].Value.ToString();
+        //                        fal.PRFA_NM_PRECATORIO = numPrec;
+        //                        fal.PRFA_DT_DATA = DateTime.Now;
+        //                        fal.PRFA_DS_MOTIVO = "Usuário responsável não cadastrado " + trfx.TRF1_NM_NOME;
+        //                        Int32 volta2 = tranApp.ValidateCreateFalha(fal);
+        //                        falha++;
+        //                        continue;
+        //                    }
+        //                    prec.USUA_CD_ID = Convert.ToInt32(usu);
+
+        //                    // Grava objeto
+        //                    prec.PREC_NM_NOME = nome;
+        //                    Int32 volta = tranApp.ValidateCreate(prec, user);
+        //                    conta++;
+
+        //                    // Cria pastas
+        //                    String caminho = "/Imagens/1" + "/Precatorios/" + prec.PREC_CD_ID.ToString() + "/Anexos/";
+        //                    Directory.CreateDirectory(Server.MapPath(caminho));
+        //                }
+        //                catch (Exception ex)
+        //                {
+        //                    ModelState.AddModelError("", ex.Message);
+        //                    return View();
+        //                }
+        //            }
+        //        }
+
+        //        // Processa TRF-2
+        //        if (trf == 2)
+        //        {
+        //            for (int row = 2; row <= wsFinalRow.Row; row++)
+        //            {
+        //                try
+        //                {
+        //                    if (wsGeral.Cells[row, 1].Value == null)
+        //                    {
+        //                        break;
+        //                    }                          
+
+        //                    Int32 check = 0;
+        //                    PRECATORIO prec = new PRECATORIO();
+
+        //                    // Verifica existencia
+        //                    String numPrec = String.Empty;
+        //                    if (wsGeral.Cells[row, 2].Value != null)
+        //                    {
+        //                        numPrec = wsGeral.Cells[row, 2].Value.ToString();
+        //                        numPrec = CrossCutting.ValidarNumerosDocumentos.RemoveNaoNumericos(numPrec);
+        //                        precCheca = tranApp.CheckExist(numPrec);
+        //                        if (precCheca != null)
+        //                        {
+        //                            PRECATORIO_FALHA fal = new PRECATORIO_FALHA();
+        //                            fal.PRFA_NM_TRF = wsGeral.Cells[2, 1].Value.ToString();
+        //                            fal.PRFA_NM_PRECATORIO = numPrec;
+        //                            fal.PRFA_DT_DATA = DateTime.Now;
+        //                            fal.PRFA_DS_MOTIVO = "Precatório já incluído para o " + trfx.TRF1_NM_NOME;
+        //                            Int32 volta2 = tranApp.ValidateCreateFalha(fal);
+        //                            falha++;
+        //                            continue;
+        //                        }
+        //                    }
+        //                    else
+        //                    {
+        //                        PRECATORIO_FALHA fal = new PRECATORIO_FALHA();
+        //                        fal.PRFA_NM_TRF = wsGeral.Cells[2, 1].Value.ToString();
+        //                        fal.PRFA_NM_PRECATORIO = numPrec;
+        //                        fal.PRFA_DT_DATA = DateTime.Now;
+        //                        fal.PRFA_DS_MOTIVO = "Precatório não informado " + trfx.TRF1_NM_NOME;
+        //                        Int32 volta2 = tranApp.ValidateCreateFalha(fal);
+        //                        falha++;
+        //                        continue;
+        //                    }
+
+        //                    // Monta objeto
+        //                    prec.TRF1_CD_ID = idTRF;
+        //                    prec.PREC_NM_PRECATORIO = numPrec;
+        //                    if (wsGeral.Cells[row, 3].Value != null)
+        //                    {
+        //                        prec.PREC_NM_PROC_EXECUCAO = wsGeral.Cells[row, 3].Value.ToString();
+
+        //                    }
+        //                    if (wsGeral.Cells[row, 4].Value != null)
+        //                    {
+        //                        prec.PREC_NM_PROCESSO_ORIGEM = wsGeral.Cells[row, 4].Value.ToString();
+
+        //                    }
+
+        //                    if (wsGeral.Cells[row, 6].Value != null)
+        //                    {
+        //                        prec.PREC_NM_REQUERENTE = wsGeral.Cells[row, 6].Value.ToString();
+
+        //                    }
+
+        //                    if (wsGeral.Cells[row, 7].Value != null)
+        //                    {
+        //                        prec.PREC_NM_ADVOGADO = wsGeral.Cells[row, 7].Value.ToString();
+
+        //                    }
+
+        //                    if (wsGeral.Cells[row, 8].Value != null)
+        //                    {
+        //                        prec.PREC_NM_DEPRECANTE = wsGeral.Cells[row, 8].Value.ToString();
+
+        //                    }
+
+        //                    if (wsGeral.Cells[row, 9].Value != null)
+        //                    {
+        //                        prec.PREC_NM_ASSUNTO = wsGeral.Cells[row, 9].Value.ToString();
+
+        //                    }
+
+        //                    if (wsGeral.Cells[row, 10].Value != null)
+        //                    {
+        //                        prec.PREC_NM_REQUERIDO = wsGeral.Cells[row, 10].Value.ToString();
+
+        //                    }
+
+        //                    if (wsGeral.Cells[row, 13].Value != null)
+        //                    {
+        //                        prec.PREC_VL_BEN_VALOR_PRINCIPAL = Convert.ToDecimal(wsGeral.Cells[row, 13].Value.ToString());
+
+        //                    }
+
+        //                    if (wsGeral.Cells[row, 14].Value != null)
+        //                    {
+        //                        prec.PREC_VL_JUROS = Convert.ToDecimal(wsGeral.Cells[row, 14].Value.ToString());
+
+        //                    }
+
+        //                    if (wsGeral.Cells[row, 15].Value != null)
+        //                    {
+        //                        if (wsGeral.Cells[row, 15].Value.ToString() == "Sim")
+        //                        {
+        //                            prec.PREC_SG_BEN_IR_RRA = "1";
+        //                        }
+        //                        else
+        //                        {
+        //                            prec.PREC_SG_BEN_IR_RRA = "0";
+        //                        }
+
+        //                    }
+
+        //                    if (wsGeral.Cells[row, 16].Value == null)
+        //                    {
+        //                        prec.PREC_BEN_MESES_EXE_ANTERIOR = 0;
+        //                    }
+        //                    else
+        //                    {
+        //                        prec.PREC_BEN_MESES_EXE_ANTERIOR = Convert.ToInt32(wsGeral.Cells[row, 16].Value.ToString());
+        //                    }
+
+        //                    if (wsGeral.Cells[row, 17].Value != null)
+        //                    {
+        //                        String datx = wsGeral.Cells[row, 17].Value.ToString();
+        //                        DateTime outData = new DateTime();
+        //                        if (DateTime.TryParse(datx, out outData))
+        //                        {
+        //                            prec.PREC_DT_BEN_DATABASE = Convert.ToDateTime(wsGeral.Cells[row, 17].Value.ToString());
+        //                        }
+        //                        else
+        //                        {
+        //                            DateTime dat = DateTime.FromOADate(Convert.ToDouble(wsGeral.Cells[row, 17].Value));
+        //                            if (dat == DateTime.MinValue)
+        //                            {
+        //                                prec.PREC_DT_BEN_DATABASE = null;
+        //                            }
+        //                            else
+        //                            {
+        //                                prec.PREC_DT_BEN_DATABASE = dat;
+        //                            }
+        //                        }
+        //                    }
+        //                    else
+        //                    {
+        //                        prec.PREC_DT_BEN_DATABASE = null;
+        //                    }
+
+        //                    if (wsGeral.Cells[row, 18].Value == null)
+        //                    {
+        //                        prec.PREC_VL_VALOR_INICIAL_PSS = 0;
+        //                    }
+        //                    else
+        //                    {
+        //                        prec.PREC_VL_VALOR_INICIAL_PSS = Convert.ToDecimal(wsGeral.Cells[row, 18].Value.ToString());
+        //                    }
+
+        //                    if (wsGeral.Cells[row, 19].Value != null)
+        //                    {
+        //                        prec.PREC_VL_BEN_VALOR_REQUISITADO = Convert.ToDecimal(wsGeral.Cells[row, 19].Value.ToString());
+
+        //                    }
+
+        //                    if (wsGeral.Cells[row, 20].Value != null & wsGeral.Cells[row, 21].Value != null)
+        //                    {
+        //                        String honoNome = wsGeral.Cells[row, 20].Value.ToString();
+        //                        String honoCPF = wsGeral.Cells[row, 21].Value.ToString();
+        //                        honoCheca = honoApp.CheckExist(honoNome, honoCPF);
+        //                        if (honoCheca != null)
+        //                        {
+        //                            prec.HONO_CD_ID = honoCheca.HONO_CD_ID;
+        //                        }
+        //                        else
+        //                        {
+        //                            HONORARIO hono = new HONORARIO();
+        //                            hono.HONO_DT_CADASTRO = DateTime.Today.Date;
+        //                            hono.HONO_IN_ATIVO = 1;
+        //                            hono.HONO_NM_NOME = wsGeral.Cells[row, 20].Value.ToString();
+        //                            if (CrossCutting.ValidarNumerosDocumentos.IsCFPValid(honoCPF))
+        //                            {
+        //                                hono.HONO_NR_CPF = wsGeral.Cells[row, 21].Value.ToString();
+        //                                hono.TIPE_CD_ID = 1;
+        //                            }
+        //                            else if (CrossCutting.ValidarNumerosDocumentos.IsCnpjValid(honoCPF))
+        //                            {
+        //                                hono.HONO_NR_CNPJ = wsGeral.Cells[row, 21].Value.ToString();
+        //                                hono.TIPE_CD_ID = 2;
+        //                            }
+        //                            else
+        //                            {
+        //                                PRECATORIO_FALHA fal = new PRECATORIO_FALHA();
+        //                                fal.PRFA_NM_TRF = wsGeral.Cells[2, 1].Value.ToString();
+        //                                fal.PRFA_NM_PRECATORIO = numPrec;
+        //                                fal.PRFA_DT_DATA = DateTime.Now;
+        //                                fal.PRFA_DS_MOTIVO = "CPF/CNPJ Advogado - Inválido " + trfx.TRF1_NM_NOME;
+        //                                Int32 volta2 = tranApp.ValidateCreateFalha(fal);
+        //                                falha++;
+        //                                continue;
+        //                            }
+        //                            Int32 volta3 = honoApp.ValidateCreate(hono, user);
+        //                            prec.HONO_CD_ID = hono.HONO_CD_ID;
+        //                        }
+        //                    }
+
+        //                    if (wsGeral.Cells[row, 22].Value != null)
+        //                    {
+        //                        prec.PREC_VL_HON_VALOR_PRINCIPAL = Convert.ToDecimal(wsGeral.Cells[row, 22].Value.ToString());
+
+        //                    }
+
+        //                    if (wsGeral.Cells[row, 23].Value != null)
+        //                    {
+        //                        prec.PREC_VL_HON_JUROS = Convert.ToDecimal(wsGeral.Cells[row, 23].Value.ToString());
+
+        //                    }
+
+        //                    if (wsGeral.Cells[row, 24].Value != null)
+        //                    {
+        //                        if (wsGeral.Cells[row, 24].Value.ToString() == "Sim")
+        //                        {
+        //                            prec.PREC_SG_HON_IR_RRA = "1";
+        //                        }
+        //                        else
+        //                        {
+        //                            prec.PREC_SG_HON_IR_RRA = "0";
+        //                        }
+
+        //                    }
+
+        //                    if (wsGeral.Cells[row, 25].Value != null)
+        //                    {
+        //                        if (wsGeral.Cells[row, 25].Value.ToString() == "-")
+        //                        {
+        //                            prec.PREC_IN_HON_MESES_EXE_ANTERIOR = 0;
+        //                        }
+        //                        else
+        //                        {
+        //                            prec.PREC_IN_HON_MESES_EXE_ANTERIOR = Convert.ToInt32(wsGeral.Cells[row, 25].Value.ToString());
+        //                        }
+
+        //                    }
+
+        //                    if (wsGeral.Cells[row, 26].Value != null)
+        //                    {
+        //                        String datx = wsGeral.Cells[row, 26].Value.ToString();
+        //                        DateTime outData = new DateTime();
+        //                        if (DateTime.TryParse(datx, out outData))
+        //                        {
+        //                            prec.PREC_DT_HON_DATABASE = Convert.ToDateTime(wsGeral.Cells[row, 26].Value.ToString());
+        //                        }
+        //                        else
+        //                        {
+        //                            DateTime dat = DateTime.FromOADate(Convert.ToDouble(wsGeral.Cells[row, 26].Value));
+        //                            if (dat == DateTime.MinValue)
+        //                            {
+        //                                prec.PREC_DT_HON_DATABASE = null;
+        //                            }
+        //                            else
+        //                            {
+        //                                prec.PREC_DT_HON_DATABASE = dat;
+        //                            }
+        //                        }
+        //                    }
+        //                    else
+        //                    {
+        //                        prec.PREC_DT_HON_DATABASE = null;
+        //                    }
+
+        //                    if (wsGeral.Cells[row, 27].Value != null)
+        //                    {
+        //                        if (wsGeral.Cells[row, 27].Value.ToString() == "-")
+        //                        {
+        //                            prec.PREC_VL_HON_VALOR_INICIAL_PSS = 0;
+        //                        }
+        //                        else
+        //                        {
+        //                            prec.PREC_VL_HON_VALOR_INICIAL_PSS = Convert.ToDecimal(wsGeral.Cells[row, 27].Value.ToString());
+        //                        }
+
+        //                    }
+
+        //                    if (wsGeral.Cells[row, 28].Value != null)
+        //                    {
+        //                        prec.PREC_VL_BEN_VALOR_REQUISITADO = Convert.ToDecimal(wsGeral.Cells[row, 28].Value.ToString());
+
+        //                    }
+
+        //                    String nome = String.Empty;
+        //                    String cpf= String.Empty;
+        //                    String nasc = String.Empty;
+        //                    String sexo = String.Empty;
+        //                    String cel1 = String.Empty;
+        //                    String cel2 = String.Empty;
+        //                    String tel = String.Empty;
+        //                    String nat = String.Empty;
+        //                    String usu = String.Empty;
+
+        //                    if (wsGeral.Cells[row, 29].Value != null)
+        //                    {
+        //                        nome = wsGeral.Cells[row, 29].Value.ToString();
+
+        //                    }
+
+        //                    if (wsGeral.Cells[row, 30].Value != null)
+        //                    {
+        //                        cpf = wsGeral.Cells[row, 30].Value.ToString();
+
+        //                    }
+
+        //                    if (wsGeral.Cells[row, 31].Value != null)
+        //                    {
+        //                        sexo = wsGeral.Cells[row, 31].Value.ToString();
+
+        //                    }
+
+        //                    if (wsGeral.Cells[row, 32].Value != null)
+        //                    {
+        //                        nasc = wsGeral.Cells[row, 32].Value.ToString();
+
+        //                    }
+
+        //                    if (wsGeral.Cells[row, 33].Value != null)
+        //                    {
+        //                        cel1 = wsGeral.Cells[row, 33].Value.ToString();
+
+        //                    }
+
+        //                    if (wsGeral.Cells[row, 34].Value != null)
+        //                    {
+        //                        cel2 = wsGeral.Cells[row, 34].Value.ToString();
+
+        //                    }
+
+        //                    if (wsGeral.Cells[row, 35].Value != null)
+        //                    {
+        //                        tel = wsGeral.Cells[row, 35].Value.ToString();
+
+        //                    }
+
+        //                    DateTime? dataNasc = null;
+        //                    if (nasc != String.Empty)
+        //                    {
+        //                        String x = nasc.ToString();
+        //                        dataNasc = Convert.ToDateTime(x);
+        //                    }
+
+        //                    BENEFICIARIO beneNovo = new BENEFICIARIO();
+        //                    if (nome != String.Empty && cpf != String.Empty)
+        //                    {
+        //                        BENEFICIARIO bene = listaBene.Where(p => p.BENE_NM_NOME == nome & p.BENE_NR_CPF == cpf).FirstOrDefault();
+        //                        if (bene == null)
+        //                        {
+        //                            beneNovo.TIPE_CD_ID = 1;
+        //                            if (sexo == "1" || sexo == "2")
+        //                            {
+        //                                beneNovo.SEXO_CD_ID = Convert.ToInt32(sexo);
+        //                            }
+        //                            beneNovo.BENE_NM_NOME = nome;
+        //                            beneNovo.BENE_NR_CPF = cpf;
+        //                            beneNovo.BENE_NR_TELEFONE2 = tel;
+        //                            beneNovo.BENE_DT_CADASTRO = DateTime.Today.Date;
+        //                            beneNovo.BENE_NR_CELULAR = cel1;
+        //                            beneNovo.BENE_NR_CELULAR2 = cel2;
+        //                            beneNovo.BENE_DT_NASCIMENTO = dataNasc;
+        //                            beneNovo.BENE_IN_ATIVO = 1;
+        //                            Int32 voltaBene = beneApp.ValidateCreate(beneNovo, user);
+        //                            if (voltaBene > 0)
+        //                            {
+        //                                PRECATORIO_FALHA fal = new PRECATORIO_FALHA();
+        //                                fal.PRFA_NM_TRF = wsGeral.Cells[2, 1].Value.ToString();
+        //                                fal.PRFA_NM_PRECATORIO = numPrec;
+        //                                fal.PRFA_DT_DATA = DateTime.Now;
+        //                                fal.PRFA_DS_MOTIVO = "Erro na inclusão do beneficiário " + nome;
+        //                                Int32 volta2 = tranApp.ValidateCreateFalha(fal);
+        //                                falha++;
+        //                            }
+        //                            prec.BENE_CD_ID = beneNovo.BENE_CD_ID;
+        //                        }
+        //                        else
+        //                        {
+        //                            prec.BENE_CD_ID = beneNovo.BENE_CD_ID;
+        //                        }
+
+        //                        CLIENTE cliNovo = new CLIENTE();
+        //                        if (nome != null && cpf != null)
+        //                        {
+        //                            CLIENTE cli = listaCli.Where(p => p.CLIE_NM_NOME == nome & p.CLIE_NR_CPF == cpf).FirstOrDefault();
+        //                            if (cli == null)
+        //                            {
+        //                                cliNovo.TIPE_CD_ID = 1;
+        //                                if (sexo == "1" || sexo == "2")
+        //                                {
+        //                                    cliNovo.SEXO_CD_ID = Convert.ToInt32(sexo);
+        //                                }
+        //                                cliNovo.CLIE_NM_NOME = nome;
+        //                                cliNovo.CLIE_NR_CPF = cpf;
+        //                                cliNovo.CLIE_NR_TELEFONE = tel;
+        //                                cliNovo.CLIE_DT_CADASTRO = DateTime.Today.Date;
+        //                                cliNovo.CLIE_NR_CELULAR = cel1;
+        //                                cliNovo.CLIE_NR_WHATSAPP = cel2;
+        //                                cliNovo.CLIE_DT_NASCIMENTO = dataNasc;
+        //                                cliNovo.CLIE_IN_ATIVO = 1;
+        //                                Int32 voltaCli = cliApp.ValidateCreate(cliNovo, user);
+        //                                if (voltaCli > 0)
+        //                                {
+        //                                    PRECATORIO_FALHA fal = new PRECATORIO_FALHA();
+        //                                    fal.PRFA_NM_TRF = wsGeral.Cells[2, 1].Value.ToString();
+        //                                    fal.PRFA_NM_PRECATORIO = numPrec;
+        //                                    fal.PRFA_DT_DATA = DateTime.Now;
+        //                                    fal.PRFA_DS_MOTIVO = "Erro na inclusão do cliente " + nome;
+        //                                    Int32 volta2 = tranApp.ValidateCreateFalha(fal);
+        //                                    falha++;
+        //                                }
+        //                            }
+        //                        }
+
+        //                    }
+
+        //                    if (wsGeral.Cells[row, 37].Value != null)
+        //                    {
+        //                        nat = wsGeral.Cells[row, 37].Value.ToString();
+
+        //                    }
+        //                    natCheca = tranApp.CheckExistNatureza(nat);
+        //                    if (natCheca != null)
+        //                    {
+        //                        prec.NATU_CD_ID = natCheca.NATU_CD_ID;
+        //                    }
+        //                    else
+        //                    {
+        //                        NATUREZA natNova = new NATUREZA();
+        //                        natNova.NATU_IN_ATIVO = 1;
+        //                        natNova.NATU_NM_NOME = nat;
+        //                        Int32 voltaNat = natApp.ValidateCreate(natNova, user);
+        //                        if (voltaNat > 0)
+        //                        {
+        //                            PRECATORIO_FALHA fal = new PRECATORIO_FALHA();
+        //                            fal.PRFA_NM_TRF = wsGeral.Cells[2, 1].Value.ToString();
+        //                            fal.PRFA_NM_PRECATORIO = numPrec;
+        //                            fal.PRFA_DT_DATA = DateTime.Now;
+        //                            fal.PRFA_DS_MOTIVO = "Erro na inclusão da natureza " + nat;
+        //                            Int32 volta2 = tranApp.ValidateCreateFalha(fal);
+        //                            falha++;
+        //                            prec.NATU_CD_ID = null;
+        //                        }
+        //                        else
+        //                        {
+        //                            prec.NATU_CD_ID = natNova.NATU_CD_ID;
+        //                        }
+        //                    }
+
+        //                    if (wsGeral.Cells[row, 36].Value != null)
+        //                    {
+        //                        prec.PREC_NR_ANO = wsGeral.Cells[row, 36].Value.ToString();
+
+        //                    }
+
+        //                    if (wsGeral.Cells[row, 38].Value != null)
+        //                    {
+        //                        prec.PREC_VL_RRA = Convert.ToDecimal(wsGeral.Cells[row, 38].Value.ToString());
+
+        //                    }
+
+        //                    if (wsGeral.Cells[row, 39].Value != null)
+        //                    {
+        //                        prec.PREC_PC_RRA = Convert.ToDecimal(wsGeral.Cells[row, 39].Value.ToString());
+
+        //                    }
+
+        //                    // Processa usuário
+        //                    if (wsGeral.Cells[row, 40].Value != null)
+        //                    {
+        //                        usu = wsGeral.Cells[row, 40].Value.ToString();
+
+        //                    }
+
+        //                    if (usu == String.Empty)
+        //                    {
+        //                        PRECATORIO_FALHA fal = new PRECATORIO_FALHA();
+        //                        fal.PRFA_NM_TRF = wsGeral.Cells[2, 1].Value.ToString();
+        //                        fal.PRFA_NM_PRECATORIO = numPrec;
+        //                        fal.PRFA_DT_DATA = DateTime.Now;
+        //                        fal.PRFA_DS_MOTIVO = "Usuário responsável não definido " + trfx.TRF1_NM_NOME;
+        //                        Int32 volta2 = tranApp.ValidateCreateFalha(fal);
+        //                        falha++;
+        //                        continue;
+        //                    }
+
+        //                    usuCheca = usuApp.GetItemById(Convert.ToInt32(usu));
+        //                    if (usuCheca == null)
+        //                    {
+        //                        PRECATORIO_FALHA fal = new PRECATORIO_FALHA();
+        //                        fal.PRFA_NM_TRF = wsGeral.Cells[2, 1].Value.ToString();
+        //                        fal.PRFA_NM_PRECATORIO = numPrec;
+        //                        fal.PRFA_DT_DATA = DateTime.Now;
+        //                        fal.PRFA_DS_MOTIVO = "Usuário responsável não cadastrado " + trfx.TRF1_NM_NOME;
+        //                        Int32 volta2 = tranApp.ValidateCreateFalha(fal);
+        //                        falha++;
+        //                        continue;
+        //                    }
+        //                    prec.USUA_CD_ID = Convert.ToInt32(usu);
+
+        //                    // Grava objeto
+        //                    prec.PREC_NM_NOME = nome;
+        //                    Int32 volta = tranApp.ValidateCreate(prec, user);
+        //                    conta++;
+
+        //                    // Cria pastas
+        //                    String caminho = "/Imagens/1" + "/Precatorios/" + prec.PREC_CD_ID.ToString() + "/Anexos/";
+        //                    Directory.CreateDirectory(Server.MapPath(caminho));
+        //                }
+        //                catch (Exception ex)
+        //                {
+        //                    ModelState.AddModelError("", ex.Message);
+        //                    return View();
+        //                }
+        //            }
+        //        }
+
+        //        // Processa TRF-4
+        //        if (trf == 4)
+        //        {
+        //            for (int row = 2; row <= wsFinalRow.Row; row++)
+        //            {
+        //                try
+        //                {
+        //                    Int32 check = 0;
+        //                    PRECATORIO prec = new PRECATORIO();
+        //                    String colTRF = null;
+        //                    if (wsGeral.Cells[row, 1].Value == null)
+        //                    {
+        //                        PRECATORIO_FALHA fal = new PRECATORIO_FALHA();
+        //                        fal.PRFA_NM_TRF = wsGeral.Cells[2, 1].Value.ToString();
+        //                        fal.PRFA_NM_PRECATORIO = "Não informado";
+        //                        fal.PRFA_DT_DATA = DateTime.Now;
+        //                        fal.PRFA_DS_MOTIVO = "Erro na inclusão do Precatório. Tribunal não informado. Importação Encerrada";
+        //                        Int32 volta2 = tranApp.ValidateCreateFalha(fal);
+        //                        falha++;
+        //                        break;
+        //                    }
+        //                    else
+        //                    {
+        //                        colTRF = wsGeral.Cells[row, 1].Value.ToString();
+        //                    }
+
+        //                    // Verifica existencia
+        //                    String numPrec = null;
+        //                    if (wsGeral.Cells[row, 2].Value != null)
+        //                    {
+        //                        numPrec = wsGeral.Cells[row, 2].Value.ToString();
+        //                        numPrec = CrossCutting.ValidarNumerosDocumentos.RemoveNaoNumericos(numPrec);
+        //                        precCheca = tranApp.CheckExist(numPrec);
+        //                        if (precCheca != null)
+        //                        {
+        //                            PRECATORIO_FALHA fal = new PRECATORIO_FALHA();
+        //                            fal.PRFA_NM_TRF = wsGeral.Cells[2, 1].Value.ToString();
+        //                            fal.PRFA_NM_PRECATORIO = numPrec;
+        //                            fal.PRFA_DT_DATA = DateTime.Now;
+        //                            fal.PRFA_DS_MOTIVO = "Precatório já incluído para o " + trfx.TRF1_NM_NOME;
+        //                            Int32 volta2 = tranApp.ValidateCreateFalha(fal);
+        //                            falha++;
+        //                            continue;
+        //                        }
+        //                    }
+        //                    else
+        //                    {
+        //                        PRECATORIO_FALHA fal = new PRECATORIO_FALHA();
+        //                        fal.PRFA_NM_TRF = wsGeral.Cells[2, 1].Value.ToString();
+        //                        fal.PRFA_NM_PRECATORIO = "Não informado";
+        //                        fal.PRFA_DT_DATA = DateTime.Now;
+        //                        fal.PRFA_DS_MOTIVO = "Erro na inclusão do Precatório. Número não informado";
+        //                        Int32 volta2 = tranApp.ValidateCreateFalha(fal);
+        //                        falha++;
+        //                        continue;
+        //                    }
+
+        //                    // Monta objeto
+        //                    prec.TRF1_CD_ID = idTRF;
+        //                    prec.PREC_NM_PRECATORIO = numPrec;
+        //                    if (wsGeral.Cells[row, 3].Value != null)
+        //                    {
+        //                        prec.PREC_NM_PROC_EXECUCAO = wsGeral.Cells[row, 3].Value.ToString();
+        //                    }
+        //                    else
+        //                    {
+        //                        prec.PREC_NM_PROC_EXECUCAO = String.Empty;
+        //                    }
+
+        //                    if (wsGeral.Cells[row, 4].Value != null)
+        //                    {
+        //                        prec.PREC_NM_PROCESSO_ORIGEM = wsGeral.Cells[row, 4].Value.ToString();
+        //                    }
+        //                    else
+        //                    {
+        //                        prec.PREC_NM_PROCESSO_ORIGEM = String.Empty;
+        //                    }
+
+        //                    if (wsGeral.Cells[row, 6].Value != null)
+        //                    {
+        //                        prec.PREC_NM_REQUERENTE = wsGeral.Cells[row, 6].Value.ToString();
+        //                    }
+        //                    else
+        //                    {
+        //                        prec.PREC_NM_REQUERENTE = String.Empty;
+        //                    }
+
+        //                    if (wsGeral.Cells[row, 7].Value != null)
+        //                    {
+        //                        prec.PREC_NM_ADVOGADO = wsGeral.Cells[row, 7].Value.ToString();
+        //                    }
+        //                    else
+        //                    {
+        //                        prec.PREC_NM_ADVOGADO = String.Empty;
+        //                    }
+
+        //                    if (wsGeral.Cells[row, 5].Value != null)
+        //                    {
+        //                        prec.PREC_NM_DEPRECANTE = wsGeral.Cells[row, 8].Value.ToString();
+        //                    }
+        //                    else
+        //                    {
+        //                        prec.PREC_NM_DEPRECANTE = String.Empty;
+        //                    }
+
+        //                    if (wsGeral.Cells[row, 9].Value != null)
+        //                    {
+        //                        prec.PREC_NM_ASSUNTO = wsGeral.Cells[row, 9].Value.ToString();
+        //                    }
+        //                    else
+        //                    {
+        //                        prec.PREC_NM_ASSUNTO = String.Empty;
+        //                    }
+
+        //                    if (wsGeral.Cells[row, 10].Value != null)
+        //                    {
+        //                        prec.PREC_NM_REQUERIDO = wsGeral.Cells[row, 10].Value.ToString();
+        //                    }
+        //                    else
+        //                    {
+        //                        prec.PREC_NM_REQUERIDO = String.Empty;
+        //                    }
+
+        //                    if (wsGeral.Cells[row, 13].Value != null)
+        //                    {
+        //                        String valPrinc = wsGeral.Cells[row, 13].Value.ToString();
+        //                        if (valPrinc != null)
+        //                        {
+        //                            if (Regex.IsMatch(valPrinc, @"\d"))
+        //                            {
+        //                                prec.PREC_VL_BEN_VALOR_PRINCIPAL = Convert.ToDecimal(wsGeral.Cells[row, 13].Value.ToString());
+        //                            }
+        //                            else
+        //                            {
+        //                                PRECATORIO_FALHA fal = new PRECATORIO_FALHA();
+        //                                fal.PRFA_NM_TRF = wsGeral.Cells[2, 1].Value.ToString();
+        //                                fal.PRFA_NM_PRECATORIO = numPrec;
+        //                                fal.PRFA_DT_DATA = DateTime.Now;
+        //                                fal.PRFA_DS_MOTIVO = "Valor não numérico informado para BENEFICARIO VALOR PRINCIPAL" + valPrinc;
+        //                                Int32 volta2 = tranApp.ValidateCreateFalha(fal);
+        //                                falha++;
+        //                                continue;
+        //                            }
+        //                        }
+        //                        else
+        //                        {
+        //                            prec.PREC_VL_BEN_VALOR_PRINCIPAL = 0;
+        //                        }
+        //                    }
+        //                    else
+        //                    {
+        //                        prec.PREC_VL_BEN_VALOR_PRINCIPAL = 0;
+        //                    }
+
+        //                    if ( wsGeral.Cells[row, 14].Value != null)
+        //                    {
+        //                        String juroBen = wsGeral.Cells[row, 14].Value.ToString();
+        //                        if (juroBen != null)
+        //                        {
+        //                            if (Regex.IsMatch(juroBen, @"\d"))
+        //                            {
+        //                                prec.PREC_VL_JUROS = Convert.ToDecimal(wsGeral.Cells[row, 14].Value.ToString());
+        //                            }
+        //                            else
+        //                            {
+        //                                PRECATORIO_FALHA fal = new PRECATORIO_FALHA();
+        //                                fal.PRFA_NM_TRF = wsGeral.Cells[2, 1].Value.ToString();
+        //                                fal.PRFA_NM_PRECATORIO = numPrec;
+        //                                fal.PRFA_DT_DATA = DateTime.Now;
+        //                                fal.PRFA_DS_MOTIVO = "Valor não numérico informado para BENEFICARIO JUROS " + juroBen;
+        //                                Int32 volta2 = tranApp.ValidateCreateFalha(fal);
+        //                                falha++;
+        //                                continue;
+        //                            }
+        //                        }
+        //                        else
+        //                        {
+        //                            prec.PREC_VL_JUROS = 0;
+        //                        }
+
+        //                    }
+        //                    else
+        //                    {
+        //                        prec.PREC_VL_JUROS = 0;
+        //                    }
+
+        //                    if (wsGeral.Cells[row, 15].Value != null)
+        //                    {
+        //                        if (wsGeral.Cells[row, 15].Value.ToString() == "Sim" || wsGeral.Cells[row, 15].Value.ToString() == "S")
+        //                        {
+        //                            prec.PREC_SG_BEN_IR_RRA = "1";
+        //                        }
+        //                        else
+        //                        {
+        //                            prec.PREC_SG_BEN_IR_RRA = "0";
+        //                        }
+        //                    }
+        //                    else
+        //                    {
+        //                        prec.PREC_SG_BEN_IR_RRA = "0";
+        //                    }
+
+        //                    if (wsGeral.Cells[row, 16].Value != null)
+        //                    {
+        //                        String mesAnt = wsGeral.Cells[row, 16].Value.ToString();
+        //                        if (mesAnt != null)
+        //                        {
+        //                            if (Regex.IsMatch(mesAnt, @"\d"))
+        //                            {
+        //                                prec.PREC_BEN_MESES_EXE_ANTERIOR = Convert.ToInt32(wsGeral.Cells[row, 16].Value.ToString());
+        //                            }
+        //                            else
+        //                            {
+        //                                PRECATORIO_FALHA fal = new PRECATORIO_FALHA();
+        //                                fal.PRFA_NM_TRF = wsGeral.Cells[2, 1].Value.ToString();
+        //                                fal.PRFA_NM_PRECATORIO = numPrec;
+        //                                fal.PRFA_DT_DATA = DateTime.Now;
+        //                                fal.PRFA_DS_MOTIVO = "Valor não numérico informado para BENEFICARIO MESES EXE ANTERIOR " + mesAnt;
+        //                                Int32 volta2 = tranApp.ValidateCreateFalha(fal);
+        //                                falha++;
+        //                                continue;
+        //                            }
+        //                        }
+        //                        else
+        //                        {
+        //                            prec.PREC_BEN_MESES_EXE_ANTERIOR = 0;
+        //                        }
+
+        //                    }
+        //                    else
+        //                    {
+        //                        prec.PREC_BEN_MESES_EXE_ANTERIOR = 0;
+        //                    }
+
+        //                    if (wsGeral.Cells[row, 17].Value != null)
+        //                    {
+        //                        if (wsGeral.Cells[row, 17].Value.ToString() != null)
+        //                        {
+        //                            String datx = wsGeral.Cells[row, 17].Value.ToString();
+        //                            DateTime outData = new DateTime();
+        //                            if (DateTime.TryParse(datx, out outData))
+        //                            {
+        //                                prec.PREC_DT_BEN_DATABASE = Convert.ToDateTime(wsGeral.Cells[row, 17].Value.ToString());
+        //                            }
+        //                            else
+        //                            {
+        //                                DateTime dat = DateTime.FromOADate(Convert.ToDouble(wsGeral.Cells[row, 17].Value));
+        //                                if (dat == DateTime.MinValue)
+        //                                {
+        //                                    prec.PREC_DT_BEN_DATABASE = null;
+        //                                }
+        //                                else
+        //                                {
+        //                                    prec.PREC_DT_BEN_DATABASE = dat;
+        //                                }
+        //                            }
+        //                        }
+        //                        else
+        //                        {
+        //                            prec.PREC_DT_BEN_DATABASE = null;
+        //                        }
+        //                    }
+        //                    else
+        //                    {
+        //                        prec.PREC_DT_BEN_DATABASE = null;
+        //                    }
+
+        //                    if (wsGeral.Cells[row, 18].Value != null)
+        //                    {
+        //                        String iniPSS = wsGeral.Cells[row, 18].Value.ToString();
+        //                        if (iniPSS != null)
+        //                        {
+        //                            if (Regex.IsMatch(iniPSS, @"\d"))
+        //                            {
+        //                                prec.PREC_VL_VALOR_INICIAL_PSS = Convert.ToDecimal(wsGeral.Cells[row, 18].Value.ToString());
+        //                            }
+        //                            else
+        //                            {
+        //                                PRECATORIO_FALHA fal = new PRECATORIO_FALHA();
+        //                                fal.PRFA_NM_TRF = wsGeral.Cells[2, 1].Value.ToString();
+        //                                fal.PRFA_NM_PRECATORIO = numPrec;
+        //                                fal.PRFA_DT_DATA = DateTime.Now;
+        //                                fal.PRFA_DS_MOTIVO = "Valor não numérico informado para VALOR INICIAL PSS" + iniPSS;
+        //                                Int32 volta2 = tranApp.ValidateCreateFalha(fal);
+        //                                falha++;
+        //                                continue;
+        //                            }
+        //                        }
+        //                        else
+        //                        {
+        //                            prec.PREC_VL_VALOR_INICIAL_PSS = 0;
+        //                        }
+        //                    }
+        //                    else
+        //                    {
+        //                        prec.PREC_VL_VALOR_INICIAL_PSS = 0;
+        //                    }
+
+        //                    if (wsGeral.Cells[row, 19].Value != null)
+        //                    {
+        //                        String valReq = wsGeral.Cells[row, 19].Value.ToString();
+        //                        if (valReq != null)
+        //                        {
+        //                            if (Regex.IsMatch(valReq, @"\d"))
+        //                            {
+        //                                prec.PREC_VL_BEN_VALOR_REQUISITADO = Convert.ToDecimal(wsGeral.Cells[row, 19].Value.ToString());
+        //                            }
+        //                            else
+        //                            {
+        //                                PRECATORIO_FALHA fal = new PRECATORIO_FALHA();
+        //                                fal.PRFA_NM_TRF = wsGeral.Cells[2, 1].Value.ToString();
+        //                                fal.PRFA_NM_PRECATORIO = numPrec;
+        //                                fal.PRFA_DT_DATA = DateTime.Now;
+        //                                fal.PRFA_DS_MOTIVO = "Valor não numérico informado para VALOR REQUISITADO" + valReq;
+        //                                Int32 volta2 = tranApp.ValidateCreateFalha(fal);
+        //                                falha++;
+        //                                continue;
+        //                            }
+        //                        }
+        //                        else
+        //                        {
+        //                            prec.PREC_VL_BEN_VALOR_REQUISITADO = 0;
+        //                        }
+        //                    }
+        //                    else
+        //                    {
+        //                        prec.PREC_VL_BEN_VALOR_REQUISITADO = 0;
+        //                    }
+
+        //                    Int32 honoFlag = 1;
+        //                    String honoNome = null;
+        //                    String honoCPF = null;
+
+        //                    if ( wsGeral.Cells[row, 20].Value != null)
+        //                    {
+        //                        honoNome = wsGeral.Cells[row, 20].Value.ToString();
+        //                    }
+        //                    else
+        //                    {
+        //                        honoNome = null;
+        //                    }
+        //                    if (wsGeral.Cells[row, 21].Value != null)
+        //                    {
+        //                        honoCPF = wsGeral.Cells[row, 21].Value.ToString();
+        //                    }
+        //                    else
+        //                    {
+        //                        honoCPF = null;
+        //                        honoFlag = 0;
+        //                    }
+
+        //                    if ((honoCPF != null & honoNome == null) || (honoCPF == null & honoNome != null))
+        //                    {
+        //                        PRECATORIO_FALHA fal = new PRECATORIO_FALHA();
+        //                        fal.PRFA_NM_TRF = wsGeral.Cells[2, 1].Value.ToString();
+        //                        fal.PRFA_NM_PRECATORIO = numPrec;
+        //                        fal.PRFA_DT_DATA = DateTime.Now;
+        //                        fal.PRFA_DS_MOTIVO = "Informações incompletas do ADVOGADO. Precatório: " + numPrec;
+        //                        Int32 volta2 = tranApp.ValidateCreateFalha(fal);
+        //                        falha++;
+        //                        honoFlag = 0;
+        //                    }
+        //                    if (honoCPF != null)
+        //                    {
+        //                        if (honoCPF.Length == 14)
+        //                        {
+        //                            if (!CrossCutting.ValidarNumerosDocumentos.IsCFPValid(honoCPF))
+        //                            {
+        //                                PRECATORIO_FALHA fal = new PRECATORIO_FALHA();
+        //                                fal.PRFA_NM_TRF = wsGeral.Cells[2, 1].Value.ToString();
+        //                                fal.PRFA_NM_PRECATORIO = numPrec;
+        //                                fal.PRFA_DT_DATA = DateTime.Now;
+        //                                fal.PRFA_DS_MOTIVO = "CPF do ADVOGADO inválido. " + honoCPF;
+        //                                Int32 volta2 = tranApp.ValidateCreateFalha(fal);
+        //                                falha++;
+        //                                honoFlag = 0;
+        //                            }
+        //                        }
+        //                        else if (honoCPF.Length == 18)
+        //                        {
+        //                            if (!CrossCutting.ValidarNumerosDocumentos.IsCnpjValid(honoCPF))
+        //                            {
+        //                                PRECATORIO_FALHA fal = new PRECATORIO_FALHA();
+        //                                fal.PRFA_NM_TRF = wsGeral.Cells[2, 1].Value.ToString();
+        //                                fal.PRFA_NM_PRECATORIO = numPrec;
+        //                                fal.PRFA_DT_DATA = DateTime.Now;
+        //                                fal.PRFA_DS_MOTIVO = "CNPJ do ADVOGADO inválido. " + honoCPF;
+        //                                Int32 volta2 = tranApp.ValidateCreateFalha(fal);
+        //                                falha++;
+        //                                honoFlag = 0;
+        //                            }
+        //                        }
+        //                        else
+        //                        {
+        //                            PRECATORIO_FALHA fal = new PRECATORIO_FALHA();
+        //                            fal.PRFA_NM_TRF = wsGeral.Cells[2, 1].Value.ToString();
+        //                            fal.PRFA_NM_PRECATORIO = numPrec;
+        //                            fal.PRFA_DT_DATA = DateTime.Now;
+        //                            fal.PRFA_DS_MOTIVO = "CPF ou CNPJ do ADVOGADO inválido. " + honoCPF;
+        //                            Int32 volta2 = tranApp.ValidateCreateFalha(fal);
+        //                            falha++;
+        //                            honoFlag = 0;
+        //                        }
+        //                    }
+
+        //                    if (honoFlag == 1)
+        //                    {
+        //                        honoCheca = honoApp.CheckExist(honoNome, honoCPF);
+        //                        if (honoCheca != null)
+        //                        {
+        //                            prec.HONO_CD_ID = honoCheca.HONO_CD_ID;
+        //                            prec.PREC_VL_HON_VALOR_PRINCIPAL = Convert.ToDecimal(wsGeral.Cells[row, 22].Value.ToString());
+        //                            prec.PREC_VL_HON_JUROS = Convert.ToDecimal(wsGeral.Cells[row, 23].Value.ToString());
+        //                        }
+        //                        else
+        //                        {
+        //                            HONORARIO hono = new HONORARIO();
+        //                            hono.HONO_DT_CADASTRO = DateTime.Today.Date;
+        //                            hono.HONO_IN_ATIVO = 1;
+        //                            hono.HONO_NM_NOME = honoNome;
+        //                            String cpfCNPJ = honoCPF;
+        //                            if (cpfCNPJ.Length == 14)
+        //                            {
+        //                                hono.HONO_NR_CPF = cpfCNPJ;
+        //                                hono.TIPE_CD_ID = 1;
+        //                            }
+        //                            else
+        //                            {
+        //                                hono.HONO_NR_CNPJ = cpfCNPJ;
+        //                                hono.TIPE_CD_ID = 2;
+        //                            }
+        //                            Int32 volta3 = honoApp.ValidateCreate(hono, user);
+        //                            prec.HONO_CD_ID = hono.HONO_CD_ID;
+        //                            prec.PREC_VL_HON_VALOR_PRINCIPAL = Convert.ToDecimal(wsGeral.Cells[row, 22].Value.ToString());
+        //                            prec.PREC_VL_HON_JUROS = Convert.ToDecimal(wsGeral.Cells[row, 23].Value.ToString());
+        //                        }
+        //                    }
+
+        //                    if (wsGeral.Cells[row, 24].Value != null)
+        //                    {
+        //                        if (wsGeral.Cells[row, 24].Value.ToString() == "Sim" || wsGeral.Cells[row, 24].Value.ToString() == "S")
+        //                        {
+        //                            prec.PREC_SG_HON_IR_RRA = "1";
+        //                        }
+        //                        else
+        //                        {
+        //                            prec.PREC_SG_HON_IR_RRA = "0";
+        //                        }
+        //                    }
+        //                    else
+        //                    {
+        //                        prec.PREC_SG_HON_IR_RRA = "0";
+        //                    }
+
+        //                    if (wsGeral.Cells[row, 25].Value != null)
+        //                    {
+        //                        String honoMes = wsGeral.Cells[row, 25].Value.ToString();
+        //                        if (honoMes != null)
+        //                        {
+        //                            if (Regex.IsMatch(honoMes, @"\d"))
+        //                            {
+        //                                prec.PREC_IN_HON_MESES_EXE_ANTERIOR = Convert.ToInt32(wsGeral.Cells[row, 25].Value.ToString());
+        //                            }
+        //                            else
+        //                            {
+        //                                PRECATORIO_FALHA fal = new PRECATORIO_FALHA();
+        //                                fal.PRFA_NM_TRF = wsGeral.Cells[2, 1].Value.ToString();
+        //                                fal.PRFA_NM_PRECATORIO = numPrec;
+        //                                fal.PRFA_DT_DATA = DateTime.Now;
+        //                                fal.PRFA_DS_MOTIVO = "Valor não numérico informado para HONORARIO MES ANTERIOR" + honoMes;
+        //                                Int32 volta2 = tranApp.ValidateCreateFalha(fal);
+        //                                falha++;
+        //                                continue;
+        //                            }
+        //                        }
+        //                        else
+        //                        {
+        //                            prec.PREC_IN_HON_MESES_EXE_ANTERIOR = 0;
+        //                        }
+        //                    }
+        //                    else
+        //                    {
+        //                        prec.PREC_IN_HON_MESES_EXE_ANTERIOR = 0;
+        //                    }
+
+        //                    if (wsGeral.Cells[row, 26].Value != null)
+        //                    {
+        //                        if (wsGeral.Cells[row, 26].Value.ToString() != null)
+        //                        {
+        //                            String datx = wsGeral.Cells[row, 26].Value.ToString();
+        //                            DateTime outData = new DateTime();
+        //                            if (DateTime.TryParse(datx, out outData))
+        //                            {
+        //                                prec.PREC_DT_HON_DATABASE = Convert.ToDateTime(wsGeral.Cells[row, 26].Value.ToString());
+        //                            }
+        //                            else
+        //                            {
+        //                                DateTime dat = DateTime.FromOADate(Convert.ToDouble(wsGeral.Cells[row, 26].Value));
+        //                                if (dat == DateTime.MinValue)
+        //                                {
+        //                                    prec.PREC_DT_HON_DATABASE = null;
+        //                                }
+        //                                else
+        //                                {
+        //                                    prec.PREC_DT_HON_DATABASE = dat;
+        //                                }
+        //                            }
+        //                        }
+        //                        else
+        //                        {
+        //                            prec.PREC_DT_HON_DATABASE = null;
+        //                        }
+        //                    }
+        //                    else
+        //                    {
+        //                        prec.PREC_DT_HON_DATABASE = null;
+        //                    }
+
+        //                    if (wsGeral.Cells[row, 27].Value != null)
+        //                    {
+        //                        String valPSS = wsGeral.Cells[row, 27].Value.ToString();
+        //                        if (valPSS != null)
+        //                        {
+        //                            if (Regex.IsMatch(valPSS, @"\d"))
+        //                            {
+        //                                prec.PREC_VL_HON_VALOR_INICIAL_PSS = Convert.ToDecimal(wsGeral.Cells[row, 27].Value.ToString());
+        //                            }
+        //                            else
+        //                            {
+        //                                PRECATORIO_FALHA fal = new PRECATORIO_FALHA();
+        //                                fal.PRFA_NM_TRF = wsGeral.Cells[2, 1].Value.ToString();
+        //                                fal.PRFA_NM_PRECATORIO = numPrec;
+        //                                fal.PRFA_DT_DATA = DateTime.Now;
+        //                                fal.PRFA_DS_MOTIVO = "Valor não numérico informado para VALOR HONORARIO INICIAL PSS" + valPSS;
+        //                                Int32 volta2 = tranApp.ValidateCreateFalha(fal);
+        //                                falha++;
+        //                                continue;
+        //                            }
+        //                        }
+        //                        else
+        //                        {
+        //                            prec.PREC_VL_HON_VALOR_INICIAL_PSS = 0;
+        //                        }
+        //                    }
+        //                    else
+        //                    {
+        //                        prec.PREC_VL_HON_VALOR_INICIAL_PSS = 0;
+        //                    }
+
+        //                    if (wsGeral.Cells[row, 28].Value != null)
+        //                    {
+        //                        String honReq = wsGeral.Cells[row, 28].Value.ToString();
+        //                        if (honReq != null)
+        //                        {
+        //                            if (Regex.IsMatch(honReq, @"\d"))
+        //                            {
+        //                                prec.PREC_VL_BEN_VALOR_REQUISITADO = Convert.ToDecimal(wsGeral.Cells[row, 28].Value.ToString());
+        //                            }
+        //                            else
+        //                            {
+        //                                PRECATORIO_FALHA fal = new PRECATORIO_FALHA();
+        //                                fal.PRFA_NM_TRF = wsGeral.Cells[2, 1].Value.ToString();
+        //                                fal.PRFA_NM_PRECATORIO = numPrec;
+        //                                fal.PRFA_DT_DATA = DateTime.Now;
+        //                                fal.PRFA_DS_MOTIVO = "Valor não numérico informado para VALOR HONORARIO REQUISITADO" + honReq;
+        //                                Int32 volta2 = tranApp.ValidateCreateFalha(fal);
+        //                                falha++;
+        //                                continue;
+        //                            }
+        //                        }
+        //                        else
+        //                        {
+        //                            prec.PREC_VL_BEN_VALOR_REQUISITADO = 0;
+        //                        }
+        //                    }
+        //                    else
+        //                    {
+        //                        prec.PREC_VL_BEN_VALOR_REQUISITADO = 0;
+        //                    }
+
+        //                    if (wsGeral.Cells[row, 35].Value != null)
+        //                    {
+        //                        String anoProp = wsGeral.Cells[row, 35].Value.ToString();
+        //                        if (anoProp != null)
+        //                        {
+        //                            if (Regex.IsMatch(anoProp, @"\d{4}"))
+        //                            {
+        //                                prec.PREC_NR_ANO = anoProp;
+        //                            }
+        //                            else
+        //                            {
+        //                                PRECATORIO_FALHA fal = new PRECATORIO_FALHA();
+        //                                fal.PRFA_NM_TRF = wsGeral.Cells[2, 1].Value.ToString();
+        //                                fal.PRFA_NM_PRECATORIO = numPrec;
+        //                                fal.PRFA_DT_DATA = DateTime.Now;
+        //                                fal.PRFA_DS_MOTIVO = "Valor não inválido informado para ANO DA PROPOSTA " + anoProp;
+        //                                Int32 volta2 = tranApp.ValidateCreateFalha(fal);
+        //                                falha++;
+        //                                prec.PREC_NR_ANO = String.Empty;
+        //                            }
+        //                        }
+        //                        else
+        //                        {
+        //                            prec.PREC_NR_ANO = String.Empty;
+        //                        }
+        //                    }
+        //                    else
+        //                    {
+        //                        prec.PREC_NR_ANO = String.Empty;
+        //                    }
+
+        //                    if (wsGeral.Cells[row, 36].Value != null)
+        //                    {
+        //                        prec.PREC_NM_TIPO_DESPESA = wsGeral.Cells[row, 36].Value.ToString();
+        //                    }
+        //                    else
+        //                    {
+        //                        prec.PREC_NM_TIPO_DESPESA = String.Empty;
+        //                    }
+
+        //                    if (wsGeral.Cells[row, 37].Value != null)
+        //                    {
+        //                        String valRRA = wsGeral.Cells[row, 37].Value.ToString();
+        //                        if (valRRA != null)
+        //                        {
+        //                            if (Regex.IsMatch(valRRA, @"\d"))
+        //                            {
+        //                                prec.PREC_VL_RRA = Convert.ToDecimal(wsGeral.Cells[row, 37].Value.ToString());
+        //                            }
+        //                            else
+        //                            {
+        //                                PRECATORIO_FALHA fal = new PRECATORIO_FALHA();
+        //                                fal.PRFA_NM_TRF = wsGeral.Cells[2, 1].Value.ToString();
+        //                                fal.PRFA_NM_PRECATORIO = numPrec;
+        //                                fal.PRFA_DT_DATA = DateTime.Now;
+        //                                fal.PRFA_DS_MOTIVO = "Valor não numérico informado para VALOR RRA. Assumido 0. " + valRRA;
+        //                                Int32 volta2 = tranApp.ValidateCreateFalha(fal);
+        //                                falha++;
+        //                                prec.PREC_VL_RRA = 0;
+        //                            }
+        //                        }
+        //                        else
+        //                        {
+        //                            prec.PREC_VL_RRA = 0;
+        //                        }
+        //                    }
+        //                    else
+        //                    {
+        //                        prec.PREC_VL_RRA = 0;
+        //                    }
+
+        //                    if (wsGeral.Cells[row, 38].Value != null)
+        //                    {
+        //                        String percRRA = wsGeral.Cells[row, 38].Value.ToString();
+        //                        if (percRRA != null)
+        //                        {
+        //                            if (Regex.IsMatch(percRRA, @"\d"))
+        //                            {
+        //                                prec.PREC_PC_RRA = Convert.ToDecimal(wsGeral.Cells[row, 38].Value.ToString());
+        //                            }
+        //                            else
+        //                            {
+        //                                PRECATORIO_FALHA fal = new PRECATORIO_FALHA();
+        //                                fal.PRFA_NM_TRF = wsGeral.Cells[2, 1].Value.ToString();
+        //                                fal.PRFA_NM_PRECATORIO = numPrec;
+        //                                fal.PRFA_DT_DATA = DateTime.Now;
+        //                                fal.PRFA_DS_MOTIVO = "Valor não numérico informado para PERCENTAGEM RRA. Assumido 0. " + percRRA;
+        //                                Int32 volta2 = tranApp.ValidateCreateFalha(fal);
+        //                                falha++;
+        //                                prec.PREC_PC_RRA = 0;
+        //                            }
+        //                        }
+        //                        else
+        //                        {
+        //                            prec.PREC_PC_RRA = 0;
+        //                        }
+        //                    }
+        //                    else
+        //                    {
+        //                        prec.PREC_PC_RRA = 0;
+        //                    }
+
+        //                    if (wsGeral.Cells[row, 40].Value != null)
+        //                    {
+        //                        prec.PREC_NM_PREFERENCIA = wsGeral.Cells[row, 40].Value.ToString();
+        //                    }
+        //                    else
+        //                    {
+        //                        prec.PREC_NM_PREFERENCIA = String.Empty;
+        //                    }
+
+        //                    Int32 flagBene = 1;
+        //                    String nome = null;
+        //                    String cpf = null;
+        //                    String sexo = null;
+        //                    String nasc = null;
+        //                    String cel1 = null;
+        //                    String cel2 = null;
+
+        //                    if ( wsGeral.Cells[row, 29].Value != null)
+        //                    {
+        //                        nome = wsGeral.Cells[row, 29].Value.ToString();
+        //                    }
+        //                    if (wsGeral.Cells[row, 30].Value != null)
+        //                    {
+        //                        cpf = wsGeral.Cells[row, 30].Value.ToString();
+        //                    }
+        //                    if (wsGeral.Cells[row, 31].Value != null)
+        //                    {
+        //                        sexo = wsGeral.Cells[row, 31].Value.ToString();
+        //                    }
+        //                    if (wsGeral.Cells[row, 32].Value != null)
+        //                    {
+        //                        nasc = wsGeral.Cells[row, 32].Value.ToString();
+        //                    }
+        //                    if (wsGeral.Cells[row, 33].Value != null)
+        //                    {
+        //                        cel1 = wsGeral.Cells[row, 33].Value.ToString();
+        //                    }
+        //                    if (wsGeral.Cells[row, 34].Value != null)
+        //                    {
+        //                        cel2 = wsGeral.Cells[row, 34].Value.ToString();
+        //                    }
+
+        //                    if (nome == null || cpf == null)
+        //                    {
+        //                        PRECATORIO_FALHA fal = new PRECATORIO_FALHA();
+        //                        fal.PRFA_NM_TRF = wsGeral.Cells[2, 1].Value.ToString();
+        //                        fal.PRFA_NM_PRECATORIO = numPrec;
+        //                        fal.PRFA_DT_DATA = DateTime.Now;
+        //                        fal.PRFA_DS_MOTIVO = "Beneficiário: Nome e CPF não informados";
+        //                        Int32 volta2 = tranApp.ValidateCreateFalha(fal);
+        //                        falha++;
+        //                        flagBene = 0;
+        //                    }
+
+        //                    DateTime checaNasc;
+        //                    DateTime? dataNasc = null;
+        //                    if (nasc != null)
+        //                    {
+        //                        Boolean data = DateTime.TryParse(nasc, out checaNasc);
+        //                        if (!data)
+        //                        {
+        //                            PRECATORIO_FALHA fal = new PRECATORIO_FALHA();
+        //                            fal.PRFA_NM_TRF = wsGeral.Cells[2, 1].Value.ToString();
+        //                            fal.PRFA_NM_PRECATORIO = numPrec;
+        //                            fal.PRFA_DT_DATA = DateTime.Now;
+        //                            fal.PRFA_DS_MOTIVO = "Data de nascimento inválida. Beneficiário: " + nome + ". " + nasc;
+        //                            Int32 volta2 = tranApp.ValidateCreateFalha(fal);
+        //                            falha++;
+        //                        }
+        //                        String x = nasc.ToString();
+        //                        dataNasc = Convert.ToDateTime(x);
+        //                    }
+
+        //                    if (flagBene == 1)
+        //                    {
+        //                        BENEFICIARIO beneNovo = new BENEFICIARIO();
+        //                        BENEFICIARIO bene = listaBene.Where(p => p.BENE_NM_NOME == nome & p.BENE_NR_CPF == cpf).FirstOrDefault();
+        //                        if (bene == null)
+        //                        {
+        //                            beneNovo.TIPE_CD_ID = 1;
+        //                            if (sexo == "M" || sexo == "F")
+        //                            {
+        //                                beneNovo.SEXO_CD_ID = sexo == "M" ? 1 : 0;
+        //                            }
+        //                            beneNovo.BENE_NM_NOME = nome;
+        //                            beneNovo.BENE_NR_CPF = cpf;
+        //                            beneNovo.BENE_DT_CADASTRO = DateTime.Today.Date;
+        //                            beneNovo.BENE_NR_CELULAR = cel1;
+        //                            beneNovo.BENE_NR_CELULAR2 = cel2;
+        //                            beneNovo.BENE_DT_NASCIMENTO = dataNasc;
+        //                            beneNovo.BENE_IN_ATIVO = 1;
+        //                            Int32 voltaBene = beneApp.ValidateCreate(beneNovo, user);
+        //                            if (voltaBene > 0)
+        //                            {
+        //                                PRECATORIO_FALHA fal = new PRECATORIO_FALHA();
+        //                                fal.PRFA_NM_TRF = wsGeral.Cells[2, 1].Value.ToString();
+        //                                fal.PRFA_NM_PRECATORIO = numPrec;
+        //                                fal.PRFA_DT_DATA = DateTime.Now;
+        //                                fal.PRFA_DS_MOTIVO = "Erro na inclusão do beneficiário " + nome;
+        //                                Int32 volta2 = tranApp.ValidateCreateFalha(fal);
+        //                                falha++;
+        //                            }
+        //                            prec.BENE_CD_ID = beneNovo.BENE_CD_ID;
+        //                        }
+        //                    }
+
+        //                    CLIENTE cliNovo = new CLIENTE();
+        //                    CLIENTE cli = listaCli.Where(p => p.CLIE_NM_NOME == nome & p.CLIE_NR_CPF == cpf).FirstOrDefault();
+        //                    if (cli == null)
+        //                    {
+        //                        cliNovo.TIPE_CD_ID = 1;
+        //                        if (sexo == "M" || sexo == "F")
+        //                        {
+        //                            cliNovo.SEXO_CD_ID = sexo == "M" ? 1 : 0;
+        //                        }
+        //                        cliNovo.CLIE_NM_NOME = nome;
+        //                        cliNovo.CLIE_NR_CPF = cpf;
+        //                        cliNovo.CLIE_DT_CADASTRO = DateTime.Today.Date;
+        //                        cliNovo.CLIE_NR_CELULAR = cel1;
+        //                        cliNovo.CLIE_NR_WHATSAPP = cel2;
+        //                        cliNovo.CLIE_DT_NASCIMENTO = dataNasc;
+        //                        cliNovo.CLIE_IN_ATIVO = 1;
+        //                        cliNovo.CLIE_NM_EMAIL = String.Empty;
+        //                        Int32 voltaCli = cliApp.ValidateCreate(cliNovo, user);
+        //                        if (voltaCli > 0)
+        //                        {
+        //                            PRECATORIO_FALHA fal = new PRECATORIO_FALHA();
+        //                            fal.PRFA_NM_TRF = wsGeral.Cells[2, 1].Value.ToString();
+        //                            fal.PRFA_NM_PRECATORIO = numPrec;
+        //                            fal.PRFA_DT_DATA = DateTime.Now;
+        //                            fal.PRFA_DS_MOTIVO = "Erro na inclusão do cliente " + nome;
+        //                            Int32 volta2 = tranApp.ValidateCreateFalha(fal);
+        //                            falha++;
+        //                        }
+        //                    }
+
+        //                    // Processa usuário
+        //                    Int32 flagUsu = 1;
+        //                    String usu = null;
+        //                    if (wsGeral.Cells[row, 39].Value != null)
+        //                    {
+        //                        usu = wsGeral.Cells[row, 39].Value.ToString();
+        //                    }
+
+        //                    if (usu == null)
+        //                    {
+        //                        PRECATORIO_FALHA fal = new PRECATORIO_FALHA();
+        //                        fal.PRFA_NM_TRF = wsGeral.Cells[2, 1].Value.ToString();
+        //                        fal.PRFA_NM_PRECATORIO = numPrec;
+        //                        fal.PRFA_DT_DATA = DateTime.Now;
+        //                        fal.PRFA_DS_MOTIVO = "Usuário responsável não definido. Precatório " + numPrec;
+        //                        Int32 volta2 = tranApp.ValidateCreateFalha(fal);
+        //                        falha++;
+        //                        flagUsu = 0;
+        //                    }
+
+        //                    if (flagUsu == 1)
+        //                    {
+        //                        usuCheca = usuApp.GetItemById(Convert.ToInt32(usu));
+        //                        if (usuCheca == null)
+        //                        {
+        //                            PRECATORIO_FALHA fal = new PRECATORIO_FALHA();
+        //                            fal.PRFA_NM_TRF = wsGeral.Cells[2, 1].Value.ToString();
+        //                            fal.PRFA_NM_PRECATORIO = numPrec;
+        //                            fal.PRFA_DT_DATA = DateTime.Now;
+        //                            fal.PRFA_DS_MOTIVO = "Usuário responsável não cadastrado. Precatório " + numPrec;
+        //                            Int32 volta2 = tranApp.ValidateCreateFalha(fal);
+        //                            falha++;
+        //                            prec.USUA_CD_ID = null;
+        //                        }
+        //                        else
+        //                        {
+        //                            prec.USUA_CD_ID = Convert.ToInt32(usu);
+        //                        }
+        //                    }
+
+        //                    // Grava objeto
+        //                    if (colTRF != null)
+        //                    {
+        //                        prec.PREC_NM_NOME = nome;
+        //                        Int32 volta = tranApp.ValidateCreate(prec, user);
+        //                        conta++;
+
+        //                        // Cria pastas
+        //                        String caminho = "/Imagens/1" + "/Precatorios/" + prec.PREC_CD_ID.ToString() + "/Anexos/";
+        //                        Directory.CreateDirectory(Server.MapPath(caminho));
+        //                    }
+        //                    else
+        //                    {
+        //                        Session["Conta"] = conta;
+        //                        Session["Falha"] = falha;
+        //                        Session["MensPrecatorio"] = 10;
+        //                        Session["ListaPrecatorio"] = null;
+        //                        Session["VoltaPrecatorio"] = 0;
+        //                        return RedirectToAction("MontarTelaPrecatorio");
+        //                    }
+        //                }
+        //                catch (Exception ex)
+        //                {
+        //                    ModelState.AddModelError("", ex.Message);
+        //                    return View();
+        //                }
+        //            }
+        //        }
+
+        //        // Processa Callix
+        //        if (trf == 0)
+        //        {
+        //            for (int row = 2; row < wsFinalRow.Row; row++)
+        //            {
+        //                try
+        //                {
+        //                    Int32 check = 0;
+        //                    CONTATO prec = new CONTATO();
+
+        //                    // Verifica existencia
+        //                    String prot = wsGeral.Cells[row, 4].Value.ToString();
+        //                    prot = CrossCutting.ValidarNumerosDocumentos.RemoveNaoNumericos(prot);
+        //                    contCheca = tranApp.CheckExistContato(prot);
+        //                    if (contCheca != null)
+        //                    {
+        //                        CONTATO_FALHA fal = new CONTATO_FALHA();
+        //                        fal.COFA_NR_PROTOCOLO = wsGeral.Cells[2, 4].Value.ToString();
+        //                        fal.COFA_NR_PRECATORIO = wsGeral.Cells[2, 3].Value.ToString();
+        //                        fal.COFA_NM_CONTATO = wsGeral.Cells[2, 7].Value.ToString();
+        //                        fal.COFA_NM_OPERADOR = wsGeral.Cells[2, 9].Value.ToString();
+        //                        fal.COFA_DT_DATA = DateTime.Now;
+        //                        String datx = wsGeral.Cells[row, 2].Value.ToString();
+        //                        DateTime outData = new DateTime();
+        //                        if (DateTime.TryParse(datx, out outData))
+        //                        {
+        //                            fal.COFA_DT_DATA_FALHA = Convert.ToDateTime(wsGeral.Cells[row, 2].Value.ToString());
+        //                        }
+        //                        else
+        //                        {
+        //                            DateTime dat = DateTime.FromOADate(Convert.ToDouble(wsGeral.Cells[row, 2].Value));
+        //                            if (dat == DateTime.MinValue)
+        //                            {
+        //                                fal.COFA_DT_DATA_FALHA = null;
+        //                            }
+        //                            else
+        //                            {
+        //                                fal.COFA_DT_DATA_FALHA = dat;
+        //                            }
+        //                        }
+        //                        fal.COFA_DS_MOTIVO = "Contato já incluído para " + wsGeral.Cells[2, 4].Value.ToString();
+        //                        Int32 volta2 = tranApp.ValidateCreateFalhaContato(fal);
+        //                        falha++;
+        //                        continue;
+        //                    }
+
+        //                    // Verifica precatorio
+        //                    String numPrec = wsGeral.Cells[row, 3].Value.ToString();
+        //                    numPrec = CrossCutting.ValidarNumerosDocumentos.RemoveNaoNumericos(numPrec);
+        //                    precCheca = tranApp.CheckExist(numPrec);
+        //                    if (precCheca == null)
+        //                    {
+        //                        CONTATO_FALHA fal = new CONTATO_FALHA();
+        //                        fal.COFA_NR_PROTOCOLO = wsGeral.Cells[2, 4].Value.ToString();
+        //                        fal.COFA_NR_PRECATORIO = wsGeral.Cells[2, 3].Value.ToString();
+        //                        fal.COFA_NM_CONTATO = wsGeral.Cells[2, 7].Value.ToString();
+        //                        fal.COFA_NM_OPERADOR = wsGeral.Cells[2, 9].Value.ToString();
+        //                        fal.COFA_DT_DATA = DateTime.Now;
+        //                        String datx = wsGeral.Cells[row, 2].Value.ToString();
+        //                        DateTime outData = new DateTime();
+        //                        if (DateTime.TryParse(datx, out outData))
+        //                        {
+        //                            fal.COFA_DT_DATA_FALHA = Convert.ToDateTime(wsGeral.Cells[row, 2].Value.ToString());
+        //                        }
+        //                        else
+        //                        {
+        //                            DateTime dat = DateTime.FromOADate(Convert.ToDouble(wsGeral.Cells[row, 2].Value));
+        //                            if (dat == DateTime.MinValue)
+        //                            {
+        //                                fal.COFA_DT_DATA_FALHA = null;
+        //                            }
+        //                            else
+        //                            {
+        //                                fal.COFA_DT_DATA_FALHA = dat;
+        //                            }
+        //                        }
+        //                        fal.COFA_DS_MOTIVO = "Precatório inexistente para " + wsGeral.Cells[2, 4].Value.ToString();
+        //                        Int32 volta2 = tranApp.ValidateCreateFalhaContato(fal);
+        //                        falha++;
+        //                        continue;
+        //                    }
+
+        //                    // Verifica beneficiario
+        //                    //String nome = wsGeral.Cells[row, 7].Value.ToString();
+        //                    //String cpf = wsGeral.Cells[row, 19].Value.ToString();
+        //                    //beneCheca = beneApp.CheckExist(nome, cpf);
+        //                    //if (beneCheca == null)
+        //                    //{
+        //                    //    CONTATO_FALHA fal = new CONTATO_FALHA();
+        //                    //    fal.COFA_NR_PROTOCOLO = wsGeral.Cells[2, 4].Value.ToString();
+        //                    //    fal.COFA_NR_PRECATORIO = wsGeral.Cells[2, 3].Value.ToString();
+        //                    //    fal.COFA_NM_CONTATO = wsGeral.Cells[2, 7].Value.ToString();
+        //                    //    fal.COFA_NM_OPERADOR = wsGeral.Cells[2, 9].Value.ToString();
+        //                    //    fal.COFA_DT_DATA = DateTime.Now;
+        //                    //    String datx = wsGeral.Cells[row, 2].Value.ToString();
+        //                    //    DateTime outData = new DateTime();
+        //                    //    if (DateTime.TryParse(datx, out outData))
+        //                    //    {
+        //                    //        fal.COFA_DT_DATA_FALHA = Convert.ToDateTime(wsGeral.Cells[row, 2].Value.ToString());
+        //                    //    }
+        //                    //    else
+        //                    //    {
+        //                    //        DateTime dat = DateTime.FromOADate(Convert.ToDouble(wsGeral.Cells[row, 2].Value));
+        //                    //        if (dat == DateTime.MinValue)
+        //                    //        {
+        //                    //            fal.COFA_DT_DATA_FALHA = null;
+        //                    //        }
+        //                    //        else
+        //                    //        {
+        //                    //            fal.COFA_DT_DATA_FALHA = dat;
+        //                    //        }
+        //                    //    }
+        //                    //    fal.COFA_DS_MOTIVO = "Beneficiário inexistente para " + wsGeral.Cells[2, 4].Value.ToString();
+        //                    //    Int32 volta2 = tranApp.ValidateCreateFalhaContato(fal);
+        //                    //    falha++;
+        //                    //    continue;
+        //                    //}
+
+        //                    // Monta objeto
+        //                    if (wsGeral.Cells[row, 2].Value.ToString() != null)
+        //                    {
+        //                        String datx = wsGeral.Cells[row, 2].Value.ToString();
+        //                        DateTime outData = new DateTime();
+        //                        if (DateTime.TryParse(datx, out outData))
+        //                        {
+        //                            prec.CONT_DT_CONTATO = Convert.ToDateTime(wsGeral.Cells[row, 2].Value.ToString());
+        //                        }
+        //                        else
+        //                        {
+        //                            DateTime dat = DateTime.FromOADate(Convert.ToDouble(wsGeral.Cells[row, 2].Value));
+        //                            if (dat == DateTime.MinValue)
+        //                            {
+        //                                prec.CONT_DT_CONTATO = null;
+        //                            }
+        //                            else
+        //                            {
+        //                                prec.CONT_DT_CONTATO = dat;
+        //                            }
+        //                        }
+        //                    }
+        //                    else
+        //                    {
+        //                        prec.CONT_DT_CONTATO = null;
+        //                    }
+
+        //                    String precNum = wsGeral.Cells[row, 3].Value.ToString();
+        //                    precCheca = tranApp.CheckExist(precNum);
+        //                    if (precCheca != null)
+        //                    {
+        //                        prec.PREC_CD_ID = precCheca.PREC_CD_ID;
+        //                    }
+        //                    else
+        //                    {
+        //                        PRECATORIO bene = new PRECATORIO();
+        //                        bene.PREC_DT_CADASTRO = DateTime.Today.Date;
+        //                        bene.PREC_IN_ATIVO = 1;
+        //                        bene.PREC_NM_PRECATORIO = wsGeral.Cells[row, 3].Value.ToString();
+        //                        bene.TRF1_CD_ID = 1;
+        //                        Int32 volta3 = tranApp.ValidateCreate(bene, user);
+        //                        prec.PREC_CD_ID = bene.PREC_CD_ID;
+        //                    }
+
+        //                    prec.CONT_NR_PROTOCOLO = wsGeral.Cells[row, 4].Value.ToString();
+        //                    prec.CONT_NM_CAMPANHA = wsGeral.Cells[row, 5].Value.ToString();
+        //                    prec.CONT_NM_LISTA = wsGeral.Cells[row, 6].Value.ToString();
+
+        //                    String beneNome = wsGeral.Cells[row, 7].Value.ToString();
+        //                    String beneCPF = wsGeral.Cells[row, 19].Value.ToString();
+        //                    beneCheca = beneApp.CheckExist(beneNome, beneCPF);
+        //                    if (beneCheca != null)
+        //                    {
+        //                        prec.BENE_CD_ID = beneCheca.BENE_CD_ID;
+        //                    }
+        //                    else
+        //                    {
+        //                        BENEFICIARIO bene = new BENEFICIARIO();
+        //                        bene.BENE_DT_CADASTRO = DateTime.Today.Date;
+        //                        bene.BENE_IN_ATIVO = 1;
+        //                        bene.BENE_NM_NOME = wsGeral.Cells[row, 7].Value.ToString();
+        //                        bene.BENE_NR_CPF = wsGeral.Cells[row, 19].Value.ToString();
+        //                        bene.TIPE_CD_ID = 1;
+        //                        Int32 volta3 = beneApp.ValidateCreate(bene, user);
+        //                        prec.BENE_CD_ID = bene.BENE_CD_ID;
+
+        //                        // Cria pastas
+        //                        String caminho1 = "/Imagens/1" + "/Beneficiarios/" + prec.BENE_CD_ID.ToString() + "/Anexos/";
+        //                        Directory.CreateDirectory(Server.MapPath(caminho1));
+        //                    }
+
+        //                    prec.CONT_NR_TELEFONE = wsGeral.Cells[row, 8].Value.ToString();
+        //                    prec.CONT_NM_AGENTE = wsGeral.Cells[row, 9].Value.ToString();
+
+        //                    String quali = wsGeral.Cells[row, 10].Value.ToString();
+        //                    qualiCheca = conApp.CheckExistQualificacao(quali);
+        //                    if (qualiCheca != null)
+        //                    {
+        //                        prec.QUAL_CD_ID = qualiCheca.QUAL_CD_ID;
+        //                    }
+        //                    else
+        //                    {
+        //                        QUALIFICACAO qualif = new QUALIFICACAO();
+        //                        qualif.QUAL_IN_ATIVO = 1;
+        //                        qualif.QUAL_NM_NOME = wsGeral.Cells[row, 10].Value.ToString();
+        //                        Int32 volta3 = conApp.ValidateCreateQualificacao(qualif);
+        //                        prec.QUAL_CD_ID = qualif.QUAL_CD_ID;
+        //                    }
+
+        //                    String quem = wsGeral.Cells[row, 11].Value.ToString();
+        //                    quemCheca = conApp.CheckExistDesligamento(quali);
+        //                    if (quemCheca != null)
+        //                    {
+        //                        prec.QUDE_CD_ID = quemCheca.QUDE_CD_ID;
+        //                    }
+        //                    else
+        //                    {
+        //                        QUEM_DESLIGOU desl = new QUEM_DESLIGOU();
+        //                        desl.QUDE_IN_ATIVO = 1;
+        //                        desl.QUDE_NM_NOME = wsGeral.Cells[row, 11].Value.ToString();
+        //                        Int32 volta3 = conApp.ValidateCreateDesligamento(desl);
+        //                        prec.QUDE_CD_ID = desl.QUDE_CD_ID;
+        //                    }
+
+        //                    prec.CONT_TM_DURACAO = wsGeral.Cells[row, 13].Value.ToString();
+        //                    prec.CONT_TM_DURACAO_ATENDIMENTO = wsGeral.Cells[row, 14].Value.ToString();
+
+        //                    String audio = wsGeral.Cells[row, 15].Value.ToString();
+        //                    prec.CONT_AQ_AUDIO = "/Audios/Ligacoes/" + audio;
+        //                    String arquivo = caminhoAudio + "/" + audio;
+        //                    String caminho = "/Audios/Ligacoes/";
+        //                    String path = Path.Combine(Server.MapPath(caminho), audio);
+        //                    if (System.IO.File.Exists(arquivo))
+        //                    {
+        //                        System.IO.File.Copy(arquivo, path);
+        //                    }
+
+        //                    prec.CONT_NM_ASSUNTO = wsGeral.Cells[row, 16].Value.ToString();
+        //                    if (wsGeral.Cells[row, 17].Value != null)
+        //                    {
+        //                        prec.CONT_NR_CELULAR_1 = wsGeral.Cells[row, 17].Value.ToString();
+        //                    }
+        //                    else
+        //                    {
+        //                        prec.CONT_NR_CELULAR_1 = "-";
+        //                    }
+        //                    if (wsGeral.Cells[row, 18].Value != null)
+        //                    {
+        //                        prec.CONT_NR_CELULAR_2 = wsGeral.Cells[row, 18].Value.ToString();
+        //                    }
+        //                    else
+        //                    {
+        //                        prec.CONT_NR_CELULAR_2 = "-";
+        //                    }
+        //                    if (wsGeral.Cells[row, 22].Value != null)
+        //                    {
+        //                        prec.CONT_NR_TELEFONE_1 = wsGeral.Cells[row, 22].Value.ToString();
+        //                    }
+        //                    else
+        //                    {
+        //                        prec.CONT_NR_TELEFONE_1 = "-";
+        //                    }
+        //                    if (wsGeral.Cells[row, 23].Value != null)
+        //                    {
+        //                        prec.CONT_NR_TELEFONE_2 = wsGeral.Cells[row, 23].Value.ToString();
+        //                    }
+        //                    else
+        //                    {
+        //                        prec.CONT_NR_TELEFONE_2 = "-";
+        //                    }
+        //                    if (wsGeral.Cells[row, 25].Value != null)
+        //                    {
+        //                        prec.CONT_VL_RIDOLFI = wsGeral.Cells[row, 25].Value.ToString();
+        //                    }
+        //                    else
+        //                    {
+        //                        prec.CONT_VL_RIDOLFI = "-";
+        //                    }
+
+        //                    // Grava objeto
+        //                    Int32 volta = conApp.ValidateCreate(prec, user);
+        //                    conta++;
+        //                }
+        //                catch (Exception ex)
+        //                {
+        //                    ModelState.AddModelError("", ex.Message);
+        //                    return View();
+        //                }
+        //            }
+        //        }
+        //    }
+
+        //    // Finaliza
+        //    if (trf != 0)
+        //    {
+        //        Session["Conta"] = conta;
+        //        Session["Falha"] = falha;
+        //        Session["MensPrecatorio"] = 10;
+        //        Session["ListaPrecatorio"] = null;
+        //        Session["VoltaPrecatorio"] = 0;
+        //        return RedirectToAction("MontarTelaPrecatorio");
+        //    }
+        //    else
+        //    {
+        //        Session["Conta"] = conta;
+        //        Session["Falha"] = falha;
+        //        Session["MensPrecatorio"] = 11;
+        //        Session["ListaContato"] = null;
+        //        Session["VoltaContato"] = 0;
+        //        return RedirectToAction("MontarTelaContato");
+        //    }
+        //}
 
         [HttpGet]
         public ActionResult OuvirAudio()

@@ -393,38 +393,38 @@ namespace ApplicationServices.Services
                 item.CLIE_IN_ATIVO = 1;
 
                 // Acerta letras
-                if (item.CLIE_NM_NOME != null)
-                {
-                    item.CLIE_NM_NOME = CommonHelpers.ToPascalCase(item.CLIE_NM_NOME);
-                }
-                if (item.CLIE_NM_RAZAO != null)
-                {
-                    item.CLIE_NM_RAZAO = CommonHelpers.ToPascalCase(item.CLIE_NM_RAZAO);
-                }
-                if (item.CLIE_NM_ENDERECO != null)
-                {
-                    item.CLIE_NM_ENDERECO = CommonHelpers.ToPascalCase(item.CLIE_NM_ENDERECO);
-                }
-                if (item.CLIE_NM_ENDERECO_ENTREGA != null)
-                {
-                    item.CLIE_NM_ENDERECO_ENTREGA = CommonHelpers.ToPascalCase(item.CLIE_NM_ENDERECO_ENTREGA);
-                }
-                if (item.CLIE_NM_BAIRRO != null)
-                {
-                    item.CLIE_NM_BAIRRO = CommonHelpers.ToPascalCase(item.CLIE_NM_BAIRRO);
-                }
-                if (item.CLIE_NM_BAIRRO_ENTREGA != null)
-                {
-                    item.CLIE_NM_BAIRRO_ENTREGA = CommonHelpers.ToPascalCase(item.CLIE_NM_BAIRRO_ENTREGA);
-                }
-                if (item.CLIE_NM_CIDADE != null)
-                {
-                    item.CLIE_NM_CIDADE = CommonHelpers.ToPascalCase(item.CLIE_NM_CIDADE);
-                }
-                if (item.CLIE_NM_CIDADE_ENTREGA != null)
-                {
-                    item.CLIE_NM_CIDADE_ENTREGA = CommonHelpers.ToPascalCase(item.CLIE_NM_CIDADE_ENTREGA);
-                }
+                //if (item.CLIE_NM_NOME != null)
+                //{
+                //    item.CLIE_NM_NOME = CommonHelpers.ToPascalCase(item.CLIE_NM_NOME);
+                //}
+                //if (item.CLIE_NM_RAZAO != null)
+                //{
+                //    item.CLIE_NM_RAZAO = CommonHelpers.ToPascalCase(item.CLIE_NM_RAZAO);
+                //}
+                //if (item.CLIE_NM_ENDERECO != null)
+                //{
+                //    item.CLIE_NM_ENDERECO = CommonHelpers.ToPascalCase(item.CLIE_NM_ENDERECO);
+                //}
+                //if (item.CLIE_NM_ENDERECO_ENTREGA != null)
+                //{
+                //    item.CLIE_NM_ENDERECO_ENTREGA = CommonHelpers.ToPascalCase(item.CLIE_NM_ENDERECO_ENTREGA);
+                //}
+                //if (item.CLIE_NM_BAIRRO != null)
+                //{
+                //    item.CLIE_NM_BAIRRO = CommonHelpers.ToPascalCase(item.CLIE_NM_BAIRRO);
+                //}
+                //if (item.CLIE_NM_BAIRRO_ENTREGA != null)
+                //{
+                //    item.CLIE_NM_BAIRRO_ENTREGA = CommonHelpers.ToPascalCase(item.CLIE_NM_BAIRRO_ENTREGA);
+                //}
+                //if (item.CLIE_NM_CIDADE != null)
+                //{
+                //    item.CLIE_NM_CIDADE = CommonHelpers.ToPascalCase(item.CLIE_NM_CIDADE);
+                //}
+                //if (item.CLIE_NM_CIDADE_ENTREGA != null)
+                //{
+                //    item.CLIE_NM_CIDADE_ENTREGA = CommonHelpers.ToPascalCase(item.CLIE_NM_CIDADE_ENTREGA);
+                //}
 
                 // Monta Log
                 LOG log = new LOG

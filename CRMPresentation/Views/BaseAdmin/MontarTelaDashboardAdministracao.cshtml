@@ -16,12 +16,9 @@
                         @Html.ButtonLinkIndex(text: "Usuários", action: "MontarTelaUsuario", controller: "Usuario", buttonClass: "primary")
                         @Html.ButtonLinkIndex(text: "Auditoria", action: "MontarTelaLog", controller: "Auditoria", buttonClass: "primary")
                         @Html.ButtonLinkIndex(text: "Notificações", action: "MontarTelaNotificacaoGeral", controller: "Notificacao", buttonClass: "primary")
-                        @if (ViewBag.Perfil == "ADM")
-                        {
-                            @Html.ButtonLinkIndex(text: "Notícias", action: "MontarTelaNoticia", controller: "Noticia", buttonClass: "primary")
-                            @Html.ButtonLinkIndex(text: "Vídeos", action: "MontarTelaVideo", controller: "Video", buttonClass: "primary")
-                            @Html.ButtonLinkIndex(text: "Tabelas Auxiliares", action: "MontarTelaTabelasAuxiliares", controller: "BaseAdmin", buttonClass: "success")
-                        }
+                        @Html.ButtonLinkIndex(text: "Notícias", action: "MontarTelaNoticia", controller: "Noticia", buttonClass: "primary")
+                        @Html.ButtonLinkIndex(text: "Vídeos", action: "MontarTelaVideo", controller: "Video", buttonClass: "primary")
+                        @Html.ButtonLinkIndex(text: "Tabelas Auxiliares", action: "MontarTelaTabelasAuxiliares", controller: "BaseAdmin", buttonClass: "success")
                         @Html.ButtonLinkIndex(text: "Mensagens Enviadas", action: "VerMensagensEnviadas", controller: "Usuario", buttonClass: "success")
                         @Html.ButtonLinkIndex(text: "Voltar", controller: "BaseAdmin", action: "VoltarDashboard")
                     </div>
