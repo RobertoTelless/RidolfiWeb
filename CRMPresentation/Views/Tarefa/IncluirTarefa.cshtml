@@ -18,7 +18,6 @@
         </ol>
         <br />
     </div>
-
     <div class="row">
         <div class="col-lg-12 col-md-12 col-xs-12">
             <div class="col-lg-12 col-md-12 col-xs-12 ibox float-e-margins">
@@ -34,6 +33,7 @@
                             @Html.ValidationSummary(false, "", new { @class = "text-danger" })
                         </div>
                     }
+
                     <div class="tabs-container">
                         @using (Html.BeginForm("IncluirTarefa", "Tarefa", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", @id = "pwd-container1" }))
                         {

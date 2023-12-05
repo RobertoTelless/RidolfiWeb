@@ -24,8 +24,10 @@ namespace ApplicationServices.Services
         private readonly ICRMAppService _crmService;
         private readonly ITarefaService _tarService;
         private readonly ILogService _logService;
+        private readonly IBeneficiarioService _benService;
+        private readonly IPrecatorioService _preService;
 
-        public UsuarioAppService(IUsuarioService usuarioService, INotificacaoService notiService, IAgendaService agService, ITarefaService tarService, IClienteAppService cliService, ICRMAppService crmService, ILogService logService) : base(usuarioService)
+        public UsuarioAppService(IUsuarioService usuarioService, INotificacaoService notiService, IAgendaService agService, ITarefaService tarService, IClienteAppService cliService, ICRMAppService crmService, ILogService logService, IBeneficiarioService benService, IPrecatorioService preService) : base(usuarioService)
         {
             _usuarioService = usuarioService;
             _notiService = notiService;
@@ -34,6 +36,8 @@ namespace ApplicationServices.Services
             _cliService = cliService;
             _crmService = crmService;
             _logService = logService;
+            _benService = benService;
+            _preService = preService;
         }
 
         public USUARIO GetByEmail(String email, Int32 idAss)
@@ -879,7 +883,7 @@ namespace ApplicationServices.Services
             mensagem.EMAIL_TO_DESTINO = usuario.USUA_NM_EMAIL;
             mensagem.NOME_EMISSOR_AZURE = conf.CONF_NM_EMISSOR_AZURE;
             mensagem.ENABLE_SSL = true;
-            mensagem.NOME_EMISSOR = "SysPrec";
+            mensagem.NOME_EMISSOR = "RidolfiWeb";
             mensagem.PORTA = conf.CONF_NM_PORTA_SMTP;
             mensagem.PRIORIDADE = System.Net.Mail.MailPriority.High;
             mensagem.SENHA_EMISSOR = conf.CONF_NM_SENDGRID_PWD;
@@ -994,13 +998,18 @@ namespace ApplicationServices.Services
                 return null;
             }
 
-            // Busca em Produtos
-            List<CLIENTE> listaClientes= new List<CLIENTE>();
-            listaClientes = _cliService.GetAllItens(idAss).Where(p => p.CLIE_NM_NOME.Contains(parm) || (p.CLIE_NM_RAZAO ?? "").Contains(parm) || (p.CLIE_NR_CPF ?? "").Contains(parm)|| (p.CLIE_NR_CNPJ ?? "").Contains(parm) || (p.CLIE_NR_TELEFONE ?? "").Contains(parm)  || (p.CLIE_NR_CELULAR ?? "").Contains(parm)   || (p.CLIE_NM_EMAIL ?? "").Contains(parm)).ToList();
+            // Busca em Beneficarios
+            List<BENEFICIARIO> listaClientes= new List<BENEFICIARIO>();
+            listaClientes = _benService.GetAllItens().Where(p => p.BENE_NM_NOME.Contains(parm) || (p.MOME_NM_RAZAO_SOCIAL ?? "").Contains(parm) || (p.BENE_NR_CPF ?? "").Contains(parm)|| (p.BENE_NR_CNPJ ?? "").Contains(parm) || (p.BENE_NR_TELEFONE ?? "").Contains(parm)  || (p.BENE_NR_CELULAR ?? "").Contains(parm)   || (p.BENE_EM_EMAIL ?? "").Contains(parm)).ToList();
+
+            // Busca em Precatorio
+            List<PRECATORIO> listaPrecs = new List<PRECATORIO>();
+            listaPrecs = _preService.GetAllItens().Where(p => p.PREC_NM_PRECATORIO.Contains(parm) || (p.PREC_NM_REQUERENTE ?? "").Contains(parm) || (p.PREC_NM_REQUERIDO ?? "").Contains(parm) || (p.PREC_NM_DEPRECANTE ?? "").Contains(parm) || (p.PREC_NM_PROCESSO_ORIGEM ?? "").Contains(parm) || (p.PREC_NM_ASSUNTO ?? "").Contains(parm)).ToList();
 
             // Busca em Processos
             List<CRM> listaCRM = new List<CRM>();
-            listaCRM = _crmService.GetAllItens(idAss).Where(p => p.CRM1_NM_NOME.Contains(parm) || (p.CLIENTE.CLIE_NM_NOME ?? "").Contains(parm) || (p.CLIENTE.CLIE_NM_RAZAO ?? "").Contains(parm) || (p.CRM1_DS_DESCRICAO ?? "").Contains(parm)).ToList();
+            //listaCRM = _crmService.GetAllItens(idAss).Where(p => p.CRM1_NM_NOME.Contains(parm) || (p.CLIENTE.CLIE_NM_NOME ?? "").Contains(parm) || (p.CLIENTE.CLIE_NM_RAZAO ?? "").Contains(parm) || (p.CRM1_DS_DESCRICAO ?? "").Contains(parm)).ToList();
+            listaCRM = _crmService.GetAllItens(idAss).Where(p => p.CRM1_NM_NOME.Contains(parm) || (p.CRM1_DS_DESCRICAO ?? "").Contains(parm)).ToList();
 
             // Busca em Acoes
             List<CRM_ACAO> listaAcoes = new List<CRM_ACAO>();
@@ -1022,14 +1031,29 @@ namespace ApplicationServices.Services
             List<VOLTA_PESQUISA> listaVolta = new List<VOLTA_PESQUISA>();
             if (listaClientes.Count > 0)
             {
-                foreach (CLIENTE item in listaClientes)
+                foreach (BENEFICIARIO item in listaClientes)
                 {
                     VOLTA_PESQUISA volta = new VOLTA_PESQUISA();
                     volta.PEGR_IN_TIPO = 1;
-                    volta.PEGR_CD_ITEM = item.CLIE_CD_ID;
-                    volta.PEGR_NM_NOME1 = item.CLIE_NM_NOME;
-                    volta.PEGR_NM_NOME2 = item.CLIE_NR_CPF;
-                    volta.PEGR_NM_NOME3 = item.CLIE_NR_CNPJ;
+                    volta.PEGR_CD_ITEM = item.BENE_CD_ID;
+                    volta.PEGR_NM_NOME1 = item.BENE_NM_NOME;
+                    volta.PEGR_NM_NOME2 = item.BENE_NR_CPF;
+                    volta.PEGR_NM_NOME3 = item.BENE_NR_CNPJ;
+                    volta.ASSI_CD_ID = idAss;
+                    listaVolta.Add(volta);
+                }
+            }
+
+            if (listaPrecs.Count > 0)
+            {
+                foreach (PRECATORIO item in listaPrecs)
+                {
+                    VOLTA_PESQUISA volta = new VOLTA_PESQUISA();
+                    volta.PEGR_IN_TIPO = 7;
+                    volta.PEGR_CD_ITEM = item.PREC_CD_ID;
+                    volta.PEGR_NM_NOME1 = item.PREC_NM_NOME;
+                    volta.PEGR_NM_NOME2 = item.PREC_NM_REQUERENTE;
+                    volta.PEGR_NM_NOME3 = item.PREC_NM_REQUERIDO;
                     volta.ASSI_CD_ID = idAss;
                     listaVolta.Add(volta);
                 }
@@ -1043,7 +1067,7 @@ namespace ApplicationServices.Services
                     volta.PEGR_IN_TIPO = 2;
                     volta.PEGR_CD_ITEM = item.CRM1_CD_ID;
                     volta.PEGR_NM_NOME1 = item.CRM1_NM_NOME;
-                    volta.PEGR_NM_NOME2 = item.CLIENTE.CLIE_NM_NOME;
+                    volta.PEGR_NM_NOME2 = item.PRECATORIO.PREC_NM_PRECATORIO;
                     volta.PEGR_NM_NOME3 = item.CRM1_IN_STATUS.ToString();
                     volta.ASSI_CD_ID = idAss;
                     listaVolta.Add(volta);

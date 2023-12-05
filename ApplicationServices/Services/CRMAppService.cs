@@ -393,7 +393,6 @@ namespace ApplicationServices.Services
                 }
 
                 // Persiste
-                item.CLIENTE = null;
                 item.CRM_ORIGEM = null;
                 Int32 volta = _baseService.Edit(item, log);
 
@@ -478,7 +477,6 @@ namespace ApplicationServices.Services
                 }
 
                 // Persiste
-                item.CLIENTE = null;
                 item.CRM_ORIGEM = null;
                 Int32 volta = _baseService.Edit(item, log);
                 return log.LOG_CD_ID;
@@ -517,7 +515,6 @@ namespace ApplicationServices.Services
                 }
 
                 // Persiste
-                item.CLIENTE = null;
                 item.CRM_ORIGEM = null;
                 Int32 volta = _baseService.Edit(item);
                 return volta;
@@ -566,7 +563,8 @@ namespace ApplicationServices.Services
                 dia.DIPR_DT_DATA = DateTime.Today.Date;
                 dia.CRM1_CD_ID = item.CRM1_CD_ID;
                 dia.DIPR_NM_OPERACAO = "Exclusão de Processo";
-                dia.DIPR_DS_DESCRICAO = "Exclusão do Processo " + item.CRM1_NM_NOME + ". Cliente: " + item.CLIENTE.CLIE_NM_NOME;
+                //dia.DIPR_DS_DESCRICAO = "Exclusão do Processo " + item.CRM1_NM_NOME + ". Cliente: " + item.CLIENTE.CLIE_NM_NOME;
+                dia.DIPR_DS_DESCRICAO = "Exclusão do Processo " + item.CRM1_NM_NOME + ".";
                 Int32 volta3 = _baseService.CreateDiario(dia);
 
                 return log.LOG_CD_ID;

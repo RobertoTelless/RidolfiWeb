@@ -1,12 +1,21 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-5QH2WKFNW1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-5QH2WKFNW1');
+    </script>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-    <title>Ridolfi Web</title>
+    <title>RidolfiWeb</title>
 
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700' rel='stylesheet' type='text/css'>
     <!-- Add local styles, mostly for plugins css file -->
@@ -23,15 +32,7 @@
     <script src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>  
     <script src="https://cdn.datatables.net/1.10.15/js/dataTables.bootstrap4.min.js "></script>
     <script src="https://kit.fontawesome.com/d16e0d1211.js" crossorigin="anonymous"></script>    
-    <script src="~/scripts/tinymce/tinymce.min.js"></script>  
-    @*<script type="text/javascript">
-        (function(c,l,a,r,i,t,y){
-            c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
-            t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
-            y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-        })(window, document, "clarity", "script", "hqkv05h084");
-    </script>*@
-
+        
     <!-- Primary Inspinia style -->     
     @Styles.Render("~/Content/css")
     @Styles.Render("~/font-awesome/css")
@@ -45,16 +46,16 @@
 
     <!-- Wrapper-->
     <!-- PageClass give you ability to specify custom style for specific view based on action -->
-    <div id="wrapper" class="@Html.PageClass()">
+    <div id="wrapper" class="@Html.PageClass() @ViewBag.SpecialClass" style="background-color: silver">
 
         <!-- Navigation -->
-        @Html.Partial("_Navigation")
+        @*@Html.Partial("_Navigation")*@
 
         <!-- Page wraper -->
-        <div id="page-wrapper" class="gray-bg @ViewBag.SpecialClass">
+        <!--<div id="page-wrapper" class="gray-bg @ViewBag.SpecialClass">-->
 
             <!-- Top Navbar -->
-            @Html.Partial("_TopNavbar")
+            @*@Html.Partial("_TopNavbar")*@
 
             <!-- Main view  -->
             @RenderBody()
@@ -79,7 +80,8 @@
     @Scripts.Render("~/bundles/datatables") 
     @Scripts.Render("~/Content/datatables") 
     @Scripts.Render("~/bundles/inputmask")
-    @Scripts.Render("~/bundles/js")
+    <script src="~/Scripts/jquery-ui-1.12.1.min.js"></script>
+    <script src="~/Scripts/datetime-moment.js"></script>
 
     <!-- Skin config script - only for demo purpose-->
     @Scripts.Render("~/bundles/skinConfig")

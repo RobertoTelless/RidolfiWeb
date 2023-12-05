@@ -22,7 +22,7 @@ namespace ApplicationServices.Interfaces
         FUNIL CheckExist(FUNIL conta, Int32 idAss);
 
         FUNIL_ETAPA GetEtapaById(Int32 id);
-        
+
 
         Int32 ValidateEditEtapa(FUNIL_ETAPA item);
         Int32 ValidateCreateEtapa(FUNIL_ETAPA item);

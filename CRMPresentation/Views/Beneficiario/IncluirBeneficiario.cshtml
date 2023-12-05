@@ -38,6 +38,8 @@
                         @using (Html.BeginForm("IncluirBeneficiario", "Beneficiario", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", @id = "pwd-container1" }))
                         {
                             <div class="form-group">
+                                <br />
+                                @Html.ButtonActionSubmit(text: "BtnSubmit", htmlAttributes: new { id = "submit", style = "display: none;" })
                                 <button class="btnSubmit btn btn-sm btn-success" id="basictoast" type="button">Confirma inclusão de Beneficiário</button>
                                 @Html.ButtonLinkIndex(text: "Voltar", action: "VoltarBaseBeneficiario", controller: "Beneficiario")
                             </div>
@@ -51,6 +53,7 @@
                                 <div id="tab-1" class="tab-pane active">
                                     <div class="panel-body">
                                         <div class="row">
+                                            <h4 style="margin-left: 0px; color:saddlebrown; background-color: beige; font-weight:bold">Identificação</h4>
                                             <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
                                                 <div class="col-lg-2 col-md-2 col-xs-12">
                                                     @Html.HiddenFor(m => m.BENE_DT_CADASTRO)
@@ -70,82 +73,166 @@
                                                     @Html.ValidationMessageFor(m => m.MOME_NM_RAZAO_SOCIAL, "", new { @style = "color:red" })
                                                 </div>
                                             </div>
-                                            <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
-                                                <div class="col-lg-2 col-md-2 col-xs-12"  id="PJ1">
-                                                    CNPJ
-                                                    @Html.TextBoxFor(m => m.BENE_NR_CNPJ, new { @class = "form-control", autofocus = true, @id = "cnpj" })
-                                                    @Html.ValidationMessageFor(m => m.BENE_NR_CNPJ, "", new { @style = "color:red" })
-                                                </div>
-                                                <div class="col-lg-2 col-md-2 col-xs-12"  id="PF">
-                                                    CPF
-                                                    @Html.TextBoxFor(m => m.BENE_NR_CPF, new { @class = "form-control", autofocus = true, @id = "cpf" })
-                                                    @Html.ValidationMessageFor(m => m.BENE_NR_CPF, "", new { @style = "color:red" })
-                                                </div>
-                                                <div class="col-lg-2 col-md-2 col-xs-12" id="PF1">
-                                                    RG
-                                                    @Html.TextBoxFor(m => m.BENE_NR_RG, new { @class = "form-control", autofocus = true })
-                                                    @Html.ValidationMessageFor(m => m.BENE_NR_RG, "", new { @style = "color:red" })
-                                                </div>
-                                                <div class="col-lg-2 col-md-2 col-xs-12">
-                                                    Telefone Principal
-                                                    @Html.TextBoxFor(m => m.BENE_NR_TELEFONE, new { @class = "form-control", autofocus = true, @id = "tel" })
-                                                    @Html.ValidationMessageFor(m => m.BENE_NR_TELEFONE, "", new { @style = "color:red" })
-                                                </div>
-                                                <div class="col-lg-2 col-md-2 col-xs-12">
-                                                    Celular Principal
-                                                    @Html.TextBoxFor(m => m.BENE_NR_CELULAR, new { @class = "form-control", autofocus = true, @id = "cel" })
-                                                    @Html.ValidationMessageFor(m => m.BENE_NR_CELULAR, "", new { @style = "color:red" })
-                                                </div>
-                                                <div class="col-lg-4 col-md-4 col-xs-12">
-                                                    E-Mail Principal
-                                                    @Html.TextBoxFor(m => m.BENE_EM_EMAIL, new { @class = "form-control", autofocus = true })
-                                                    @Html.ValidationMessageFor(m => m.BENE_EM_EMAIL, "", new { @style = "color:red" })
+                                            <div class="row">
+                                            <h4 style="margin-left: 0px; color:saddlebrown; background-color: beige; font-weight:bold">Documentação</h4>
+                                                <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
+                                                    <div class="col-lg-2 col-md-2 col-xs-12"  id="PJ1">
+                                                        CNPJ
+                                                        @Html.TextBoxFor(m => m.BENE_NR_CNPJ, new { @class = "form-control", autofocus = true, @id = "cnpj" })
+                                                        @Html.ValidationMessageFor(m => m.BENE_NR_CNPJ, "", new { @style = "color:red" })
+                                                    </div>
+                                                    <div class="col-lg-2 col-md-2 col-xs-12"  id="PF">
+                                                        CPF
+                                                        @Html.TextBoxFor(m => m.BENE_NR_CPF, new { @class = "form-control", autofocus = true, @id = "cpf" })
+                                                        @Html.ValidationMessageFor(m => m.BENE_NR_CPF, "", new { @style = "color:red" })
+                                                    </div>
+                                                    <div class="col-lg-2 col-md-2 col-xs-12" id="PF1">
+                                                        RG
+                                                        @Html.TextBoxFor(m => m.BENE_NR_RG, new { @class = "form-control", autofocus = true })
+                                                        @Html.ValidationMessageFor(m => m.BENE_NR_RG, "", new { @style = "color:red" })
+                                                    </div>
                                                 </div>
                                             </div>
-                                            <div class="form-group" style=" margin-left: -15px; margin-right: -15px;" id="PF4">
-                                                <div class="col-lg-2 col-md-2 col-xs-12" >
-                                                    Sexo    
-                                                    @Html.DropDownListFor(m => m.SEXO_CD_ID, (SelectList)ViewBag.Sexo, "Selecionar", new { @class = "form-control", autofocus = true })
-                                                    @Html.ValidationMessageFor(m => m.SEXO_CD_ID, "", new { @style = "color:red" })
-                                                </div>
-                                                <div class="col-lg-2 col-md-2 col-xs-12">
-                                                    Estado Civil
-                                                    @Html.DropDownListFor(m => m.ESCI_CD_ID, (SelectList)ViewBag.EstadoCivil, "Selecionar", new { @class = "form-control", autofocus = true })
-                                                    @Html.ValidationMessageFor(m => m.ESCI_CD_ID, "", new { @style = "color:red" })
-                                                </div>
-                                                <div class="col-lg-2 col-md-2 col-xs-12">
-                                                    Escolaridade
-                                                    @Html.DropDownListFor(m => m.ESCO_CD_ID, (SelectList)ViewBag.Escolaridade, "Selecionar", new { @class = "form-control", autofocus = true })
-                                                    @Html.ValidationMessageFor(m => m.ESCO_CD_ID, "", new { @style = "color:red" })
-                                                </div>
-                                                <div class="col-lg-2 col-md-2 col-xs-12">
-                                                    Data Nascimento
-                                                    @Html.TextBoxFor(m => m.BENE_DT_NASCIMENTO, "{0:dd/MM/yyyy}", new { @class = "form-control date-picker", autofocus = true, @id = "dn" })
-                                                    @Html.ValidationMessageFor(m => m.BENE_DT_NASCIMENTO, "", new { @style = "color:red" })
-                                                </div>
-                                            </div>
-                                            <div class="form-group" style=" margin-left: -15px; margin-right: -15px;" id="PF5">
-                                                <div class="col-lg-2 col-md-2 col-xs-12">
-                                                    Grau de Parentesco
-                                                    @Html.DropDownListFor(m => m.PARE_CD_ID, (SelectList)ViewBag.Parentesco, "Selecionar", new { @class = "form-control", autofocus = true })
-                                                    @Html.ValidationMessageFor(m => m.PARE_CD_ID, "", new { @style = "color:red" })
-                                                </div>
-                                                <div class="col-lg-4 col-md-4 col-xs-12">
-                                                    Nome do Parente
-                                                    @Html.TextBoxFor(m => m.BENE_NM_PARENTESCO, new { @class = "form-control", autofocus = true })
-                                                    @Html.ValidationMessageFor(m => m.BENE_NM_PARENTESCO, "", new { @style = "color:red" })
+
+                                            <div class="row">
+                                            <h4 style="margin-left: 0px; color:saddlebrown; background-color: beige; font-weight:bold"  id="PF4">Dados Pessoais</h4>
+                                                <div class="form-group" style=" margin-left: -15px; margin-right: -15px;" id="PF4">
+                                                    <div class="col-lg-2 col-md-2 col-xs-12" >
+                                                        Sexo    
+                                                        @Html.DropDownListFor(m => m.SEXO_CD_ID, (SelectList)ViewBag.Sexo, "Selecionar", new { @class = "form-control", autofocus = true })
+                                                        @Html.ValidationMessageFor(m => m.SEXO_CD_ID, "", new { @style = "color:red" })
+                                                    </div>
+                                                    <div class="col-lg-2 col-md-2 col-xs-12">
+                                                        Estado Civil
+                                                        @Html.DropDownListFor(m => m.ESCI_CD_ID, (SelectList)ViewBag.EstadoCivil, "Selecionar", new { @class = "form-control", autofocus = true })
+                                                        @Html.ValidationMessageFor(m => m.ESCI_CD_ID, "", new { @style = "color:red" })
+                                                    </div>
+                                                    <div class="col-lg-2 col-md-2 col-xs-12">
+                                                        Escolaridade
+                                                        @Html.DropDownListFor(m => m.ESCO_CD_ID, (SelectList)ViewBag.Escolaridade, "Selecionar", new { @class = "form-control", autofocus = true })
+                                                        @Html.ValidationMessageFor(m => m.ESCO_CD_ID, "", new { @style = "color:red" })
+                                                    </div>
+                                                    <div class="col-lg-2 col-md-2 col-xs-12">
+                                                        Data Nascimento
+                                                        @Html.TextBoxFor(m => m.BENE_DT_NASCIMENTO, "{0:dd/MM/yyyy}", new { @class = "form-control date-picker", autofocus = true, @id = "dn" })
+                                                        @Html.ValidationMessageFor(m => m.BENE_DT_NASCIMENTO, "", new { @style = "color:red" })
+                                                    </div>
                                                 </div>
                                             </div>
-                                            <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
-                                                <div class="col-lg-2 col-md-2 col-xs-12">
-                                                    Renda (R$)    
-                                                    @Html.TextBoxFor(m => m.BENE_VL_RENDA, new { @class = "form-control", autofocus = true })
-                                                    @Html.ValidationMessageFor(m => m.BENE_VL_RENDA, "", new { @style = "color:red" })
+
+                                            <div class="row">
+                                                <h4 style="margin-left: 0px; color:saddlebrown; background-color: beige; font-weight:bold"  id="PF5">Parentesco</h4>
+                                                <div class="form-group" style=" margin-left: -15px; margin-right: -15px;" id="PF5">
+                                                    <div class="col-lg-2 col-md-2 col-xs-12">
+                                                        Grau de Parentesco
+                                                        @Html.DropDownListFor(m => m.PARE_CD_ID, (SelectList)ViewBag.Parentesco, "Selecionar", new { @class = "form-control", autofocus = true })
+                                                        @Html.ValidationMessageFor(m => m.PARE_CD_ID, "", new { @style = "color:red" })
+                                                    </div>
+                                                    <div class="col-lg-4 col-md-4 col-xs-12">
+                                                        Nome do Parente
+                                                        @Html.TextBoxFor(m => m.BENE_NM_PARENTESCO, new { @class = "form-control", autofocus = true })
+                                                        @Html.ValidationMessageFor(m => m.BENE_NM_PARENTESCO, "", new { @style = "color:red" })
+                                                    </div>
                                                 </div>
-                                                <div class="col-lg-2 col-md-2 col-xs-12">
-                                                    Renda Estimada (R$)    
-                                                    @Html.TextBoxFor(m => m.BENE_VL_RENDA_ESTIMADA, new { @class = "form-control", autofocus = true })
-                                                    @Html.ValidationMessageFor(m => m.BENE_VL_RENDA_ESTIMADA, "", new { @style = "color:red" })
+                                            </div>
+
+                                            <div class="row">
+                                                <h4 style="margin-left: 0px; color:saddlebrown; background-color: beige; font-weight:bold">Endereço</h4>
+                                                <div class="form-group" style=" margin-left: -15px; margin-right: -15px;" id="PF5">
+                                                    <div class="col-lg-3 col-md-3 col-xs-12">
+                                                        Endereço
+                                                        @Html.TextBoxFor(m => m.BENE_NM_ENDERECO, new { @class = "form-control", autofocus = true })
+                                                        @Html.ValidationMessageFor(m => m.BENE_NM_ENDERECO, "", new { @style = "color:red" })
+                                                    </div>
+                                                    <div class="col-lg-3 col-md-3 col-xs-12">
+                                                        Bairro
+                                                        @Html.TextBoxFor(m => m.BENE_NM_BAIRRO, new { @class = "form-control", autofocus = true })
+                                                        @Html.ValidationMessageFor(m => m.BENE_NM_BAIRRO, "", new { @style = "color:red" })
+                                                    </div>
+                                                    <div class="col-lg-2 col-md-2 col-xs-12">
+                                                        Cidade
+                                                        @Html.TextBoxFor(m => m.BENE_NM_CIDADE, new { @class = "form-control", autofocus = true })
+                                                        @Html.ValidationMessageFor(m => m.BENE_NM_CIDADE, "", new { @style = "color:red" })
+                                                    </div>
+                                                    <div class="col-lg-2 col-md-2 col-xs-12">
+                                                        UF
+                                                        @Html.DropDownListFor(m => m.UF_CD_ID, (SelectList)ViewBag.UF, "Selecionar", new { @class = "form-control", autofocus = true })
+                                                        @Html.ValidationMessageFor(m => m.UF_CD_ID, "", new { @style = "color:red" })
+                                                    </div>
+                                                    <div class="col-lg-2 col-md-2 col-xs-12">
+                                                        CEP
+                                                        @Html.TextBoxFor(m => m.BENE_NR_CEP, new { @class = "form-control", autofocus = true, @id = "cep" })
+                                                        @Html.ValidationMessageFor(m => m.BENE_NR_CEP, "", new { @style = "color:red" })
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <h4 style="margin-left: 0px; color:saddlebrown; background-color: beige; font-weight:bold">Contatos</h4>
+                                                <div class="form-group" style=" margin-left: -15px; margin-right: -15px;" id="PF5">
+                                                    <div class="col-lg-3 col-md-3 col-xs-12">
+                                                        E-Mail
+                                                        @Html.TextBoxFor(m => m.BENE_EM_EMAIL, new { @class = "form-control", autofocus = true })
+                                                        @Html.ValidationMessageFor(m => m.BENE_EM_EMAIL, "", new { @style = "color:red" })
+                                                    </div>
+                                                    <div class="col-lg-2 col-md-2 col-xs-12">
+                                                        Telefone #1
+                                                        @Html.TextBoxFor(m => m.BENE_NR_TELEFONE, new { @class = "form-control", autofocus = true, @id = "tel1" })
+                                                        @Html.ValidationMessageFor(m => m.BENE_NR_TELEFONE, "", new { @style = "color:red" })
+                                                    </div>
+                                                    <div class="col-lg-2 col-md-2 col-xs-12">
+                                                        Telefone #2
+                                                        @Html.TextBoxFor(m => m.BENE_NR_TELEFONE2, new { @class = "form-control", autofocus = true , @id = "tel2"})
+                                                        @Html.ValidationMessageFor(m => m.BENE_NR_TELEFONE2, "", new { @style = "color:red" })
+                                                    </div>
+                                                    <div class="col-lg-2 col-md-2 col-xs-12">
+                                                        Telefone #3
+                                                        @Html.TextBoxFor(m => m.BENE_NR_TELEFONE3, new { @class = "form-control", autofocus = true, @id = "tel3" })
+                                                        @Html.ValidationMessageFor(m => m.BENE_NR_TELEFONE3, "", new { @style = "color:red" })
+                                                    </div>
+                                                    <div class="col-lg-2 col-md-2 col-xs-12">
+                                                        Telefone #4
+                                                        @Html.TextBoxFor(m => m.BENE_NR_TELEFONE4, new { @class = "form-control", autofocus = true, @id = "tel4"})
+                                                        @Html.ValidationMessageFor(m => m.BENE_NR_TELEFONE4, "", new { @style = "color:red" })
+                                                    </div>
+                                                </div>
+                                                <div class="form-group" style=" margin-left: -15px; margin-right: -15px;" id="PF5">
+                                                    <div class="col-lg-2 col-md-2 col-xs-12">
+                                                        Celular #1
+                                                        @Html.TextBoxFor(m => m.BENE_NR_CELULAR, new { @class = "form-control", autofocus = true, @id = "cel1" })
+                                                        @Html.ValidationMessageFor(m => m.BENE_NR_CELULAR, "", new { @style = "color:red" })
+                                                    </div>
+                                                    <div class="col-lg-2 col-md-2 col-xs-12">
+                                                        Celular #2
+                                                        @Html.TextBoxFor(m => m.BENE_NR_CELULAR2, new { @class = "form-control", autofocus = true , @id = "cel2"})
+                                                        @Html.ValidationMessageFor(m => m.BENE_NR_CELULAR2, "", new { @style = "color:red" })
+                                                    </div>
+                                                    <div class="col-lg-2 col-md-2 col-xs-12">
+                                                        Celular #3
+                                                        @Html.TextBoxFor(m => m.BENE_NR_CELULAR3, new { @class = "form-control", autofocus = true, @id = "cel3" })
+                                                        @Html.ValidationMessageFor(m => m.BENE_NR_CELULAR3, "", new { @style = "color:red" })
+                                                    </div>
+                                                    <div class="col-lg-2 col-md-2 col-xs-12">
+                                                        Celular #4
+                                                        @Html.TextBoxFor(m => m.BENE_NR_CELULAR4, new { @class = "form-control", autofocus = true, @id = "cel4"})
+                                                        @Html.ValidationMessageFor(m => m.BENE_NR_CELULAR4, "", new { @style = "color:red" })
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <h4 style="margin-left: 0px; color:saddlebrown; background-color: beige; font-weight:bold">Renda</h4>
+                                                <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
+                                                    <div class="col-lg-2 col-md-2 col-xs-12">
+                                                        Renda (R$)    
+                                                        @Html.TextBoxFor(m => m.BENE_VL_RENDA, new { @class = "form-control", autofocus = true })
+                                                        @Html.ValidationMessageFor(m => m.BENE_VL_RENDA, "", new { @style = "color:red" })
+                                                    </div>
+                                                    <div class="col-lg-2 col-md-2 col-xs-12">
+                                                        Renda Estimada (R$)    
+                                                        @Html.TextBoxFor(m => m.BENE_VL_RENDA_ESTIMADA, new { @class = "form-control", autofocus = true })
+                                                        @Html.ValidationMessageFor(m => m.BENE_VL_RENDA_ESTIMADA, "", new { @style = "color:red" })
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -178,12 +265,6 @@
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="form-group">
-                                    <br />
-                                    @Html.ButtonActionSubmit(text: "BtnSubmit", htmlAttributes: new { id = "submit", style = "display: none;" })
-                                    <button class="btnSubmit btn btn-sm btn-success" id="basictoast" type="button">Confirma inclusão de Beneficiário</button>
-                                    @Html.ButtonLinkIndex(text: "Cancelar", action: "VoltarBaseBeneficiario", controller: "Beneficiario")
                                 </div>
                             </div>
                         }

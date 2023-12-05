@@ -48,7 +48,7 @@
                 </div>
                 <div class="ibox-content">
                     <h1 class="no-margins">@ViewBag.Tarefas</h1>
-                    <small>Tarefas Exibidas</small>
+                    <small>Total de Tarefas</small>
                 </div>
             </div>
         </div>
@@ -60,7 +60,19 @@
                 </div>
                 <div class="ibox-content">
                     <h1 class="no-margins">@ViewBag.TarefasPendentes</h1>
-                    <small>Tarefas Iniciando & Andamento</small>
+                    <small>Tarefas para Iniciar</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-2">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title"  style="background-color: darkseagreen; color: darkgreen">
+                    <span class="label label-primary pull-right">Hoje</span>
+                    <h5>Tarefas</h5>
+                </div>
+                <div class="ibox-content">
+                    <h1 class="no-margins">@ViewBag.TarefasAndamento</h1>
+                    <small>Tarefas em Andamento</small>
                 </div>
             </div>
         </div>
@@ -101,6 +113,7 @@
             </div>
         </div>
     </div>
+
     <div class="row">
         <div class="col-lg-12 col-md-12 col-xs-12">
             <div class="col-lg-12 col-md-12 col-xs-12 ibox float-e-margins">
@@ -121,11 +134,11 @@
                                 @Html.TextBoxFor(m => m.TARE_NM_TITULO, new { @class = "form-control", autofocus = true })
                             </div>
                             <div class="col-lg-2 col-md-2 col-xs-12">
-                                Faixa de Data (Início)
+                                Data Prevista (Início)
                                 @Html.TextBoxFor(m => m.TARE_DT_CADASTRO, "{0:dd/MM/yyyy}", new { @class = "form-control date-picker", autofocus = true })
                             </div>
                             <div class="col-lg-2 col-md-2 col-xs-12">
-                                Faixa de Data (Final)
+                                Data Prevista (Final)
                                 @Html.TextBoxFor(m => m.TARE_DT_ESTIMADA, "{0:dd/MM/yyyy}", new { @class = "form-control date-picker", autofocus = true })
                             </div>
                             <div class="col-lg-2 col-md-2 col-xs-12">
@@ -142,9 +155,10 @@
                         <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
                             <div class="col-lg-12 col-md-12 col-xs-12">
                                 @Html.ButtonActionSubmit(text: "Filtrar")
-                                @Html.ButtonLinkIndex(text: "Incluir Nova Tarefa", controller: "Tarefa", action: "IncluirTarefa", buttonClass: "primary")
+                                @Html.ButtonLinkIndex(text: "Nova Tarefa", controller: "Tarefa", action: "IncluirTarefa", buttonClass: "primary")
                                 @Html.ButtonLinkIndex(text: "Retirar Filtro", controller: "Tarefa", action: "RetirarFiltroTarefa")
-                                @Html.ButtonLinkIndex(text: "Exibir Inativas", controller: "Tarefa", action: "MostrarTudoTarefa")
+                                @Html.ButtonLinkIndex(text: "Exibir Encerradas", controller: "Tarefa", action: "MostrarTarefaRealizada")
+                                @Html.ButtonLinkIndex(text: "Exibir Excluídas", controller: "Tarefa", action: "MostrarTudoTarefa")
                                 @Html.ButtonLinkIndex(text: "Visualização Kanban", controller: "Tarefa", action: "MontarTelaTarefaKanban")
                                 @Html.ButtonLinkIndex(text: "Gerar Listagem", controller: "Tarefa", action: "GerarRelatorioLista")
                                 @Html.ButtonLinkIndex(text: "Voltar", controller: "Tarefa", action: "Voltar")
@@ -179,9 +193,9 @@
                                         <th style="width: auto">Data de Início</th>
                                         <th style="width: auto">Tipo</th>
                                         <th style="width: auto">Título</th>
-                                        <th style="width: auto">Previsto</th>
+                                        <th style="width: auto">Previsão</th>
                                         <th style="width: auto">Status</th>
-                                        <th style="width: auto">Realizada</th>
+                                        <th style="width: auto">Encerramento</th>
                                         <th style="width: auto">Periodicidade</th>
                                         <th style="width: auto">Repetições</th>
                                         <th class="td-one-action">Ações</th>
@@ -190,71 +204,232 @@
                                 <tbody>
                                     @foreach (var cond in (ViewBag.Listas as List<EntitiesServices.Model.TAREFA>).OrderByDescending(x => x.TARE_DT_CADASTRO))
                                     {
-                                        <tr>
-                                            <td style="width: auto">@cond.TARE_DT_CADASTRO.ToShortDateString()</td>
-                                            @if (cond.TIPO_TAREFA == null)
-                                            {
-                                                <td style="width: auto">-</td>
-                                            }
-                                            else
-                                            {
-                                                <td style="width: auto">@cond.TIPO_TAREFA.TITR_NM_NOME</td>
-                                            }
-                                            <td style="width: auto"><a href="@Url.Action("EditarTarefa", "Tarefa", new { id = cond.TARE_CD_ID })" />@cond.TARE_NM_TITULO</td>
-                                            <td style="width: auto">@cond.TARE_DT_ESTIMADA.Value.ToShortDateString()</td>
-                                            @if (cond.TARE_IN_STATUS == 1)
-                                            {
-                                                <td style="width: auto"><span class="badge badge-warning">Para Iniciar</span></td>
-                                            }
-                                            else if (cond.TARE_IN_STATUS == 2)
-                                            {
-                                                <td style="width: auto"><span class="badge badge-primary">Em Andamento</span></td>
-                                            }
-                                            else if (cond.TARE_IN_STATUS == 3)
-                                            {
-                                                <td style="width: auto"><span class="badge badge-danger">Suspensa</span></td>
-                                            }
-                                            else if (cond.TARE_IN_STATUS == 4)
-                                            {
-                                                <td style="width: auto"><span class="badge badge-danger">Cancelada</span></td>
-                                            }
-                                            else if (cond.TARE_IN_STATUS == 5)
-                                            {
-                                                <td style="width: auto"><span class="badge badge-success">Encerrada</span></td>
-                                            }
-                                            @if (cond.TARE_DT_REALIZADA != null)
-                                            {
-                                                <td style="width: auto">@cond.TARE_DT_REALIZADA.Value.ToShortDateString()</td>
-                                            }
-                                            else
-                                            {
-                                                <td style="width: auto">-</td>
-                                            }
-                                            @if (cond.PERIODICIDADE_TAREFA != null)
-                                            {
-                                                <td style="width: auto">@cond.PERIODICIDADE_TAREFA.PETA_NM_NOME</td>
-                                                <td style="width: auto">@cond.TARE_NM_ORDEM</td>
-                                            }
-                                            else
-                                            {
-                                                <td style="width: auto">-</td>
-                                                <td style="width: auto">-</td>
-                                            }
-                                            <td class="td-one-action">
-                                                @Html.TableLinkDetails(cond.TARE_CD_ID, "EditarTarefa", "fa-edit", "Editar/Consultar")
-                                                @if (cond.TARE_IN_TAREFA_PAI != null || (cond.TARE_IN_TAREFA_PAI == null & cond.TAREFA1.Count == 0) )
+                                        if (cond.TARE_DT_ESTIMADA.Value.Date > DateTime.Today.Date)
+                                        {
+                                            <tr>
+                                                <td style="width: auto">@cond.TARE_DT_CADASTRO.ToShortDateString()</td>
+                                                @if (cond.TIPO_TAREFA == null)
                                                 {
-                                                    if (cond.TARE_IN_ATIVO == 1)
+                                                    <td style="width: auto">-</td>
+                                                }
+                                                else
+                                                {
+                                                    <td style="width: auto">@cond.TIPO_TAREFA.TITR_NM_NOME</td>
+                                                }
+                                                <td style="width: auto"><a href="@Url.Action("EditarTarefa", "Tarefa", new { id = cond.TARE_CD_ID })" />@cond.TARE_NM_TITULO</td>
+                                                <td style="width: auto">@cond.TARE_DT_ESTIMADA.Value.ToShortDateString()</td>
+                                                @if (cond.TARE_IN_STATUS == 1)
+                                                {
+                                                    <td style="width: auto"><span class="badge badge-warning">Para Iniciar</span></td>
+                                                }
+                                                else if (cond.TARE_IN_STATUS == 2)
+                                                {
+                                                    <td style="width: auto"><span class="badge badge-primary">Em Andamento</span></td>
+                                                }
+                                                else if (cond.TARE_IN_STATUS == 3)
+                                                {
+                                                    <td style="width: auto"><span class="badge badge-danger">Suspensa</span></td>
+                                                }
+                                                else if (cond.TARE_IN_STATUS == 4)
+                                                {
+                                                    <td style="width: auto"><span class="badge badge-danger">Cancelada</span></td>
+                                                }
+                                                else if (cond.TARE_IN_STATUS == 5)
+                                                {
+                                                    <td style="width: auto"><span class="badge badge-success">Encerrada</span></td>
+                                                }
+                                                @if (cond.TARE_DT_REALIZADA != null)
+                                                {
+                                                    <td style="width: auto">@cond.TARE_DT_REALIZADA.Value.ToShortDateString()</td>
+                                                }
+                                                else
+                                                {
+                                                    <td style="width: auto">-</td>
+                                                }
+                                                @if (cond.PERIODICIDADE_TAREFA != null)
+                                                {
+                                                    <td style="width: auto">@cond.PERIODICIDADE_TAREFA.PETA_NM_NOME</td>
+                                                    <td style="width: auto">@cond.TARE_NM_ORDEM</td>
+                                                }
+                                                else
+                                                {
+                                                    <td style="width: auto">-</td>
+                                                    <td style="width: auto">-</td>
+                                                }
+                                                <td class="td-one-action">
+                                                    @if (cond.TARE_IN_STATUS == 5 || cond.TARE_IN_STATUS == 3)
                                                     {
-                                                        <span style="color: #337ab7; cursor:pointer;" alt="Excluir" class="tbl-link fa-lg fa fa-trash-o" onclick="ShowModalExcluir('/Tarefa/ExcluirTarefa/@cond.TARE_CD_ID')" title="Excluir"></span>
+                                                        @Html.TableLinkDetails(cond.TARE_CD_ID, "VerTarefa", "fa-search", "Editar/Consultar")
                                                     }
                                                     else
                                                     {
-                                                        <span style="color: #337ab7; cursor:pointer;" alt="Reativar" class="tbl-link fa-lg fa fa-refresh" onclick="ShowModalReativar('/Tarefa/ReativarTarefa/@cond.TARE_CD_ID')" title="Reativar"></span>
+                                                        @Html.TableLinkDetails(cond.TARE_CD_ID, "EditarTarefa", "fa-edit", "Editar/Consultar")
                                                     }
+                                                    @if (cond.TARE_IN_TAREFA_PAI != null || (cond.TARE_IN_TAREFA_PAI == null & cond.TAREFA1.Count == 0) )
+                                                    {
+                                                        if (cond.TARE_IN_ATIVO == 1)
+                                                        {
+                                                            <span style="color: #337ab7; cursor:pointer;" alt="Excluir" class="tbl-link fa-lg fa fa-trash-o" onclick="ShowModalExcluir('/Tarefa/ExcluirTarefa/@cond.TARE_CD_ID')" title="Excluir"></span>
+                                                        }
+                                                        else
+                                                        {
+                                                            <span style="color: #337ab7; cursor:pointer;" alt="Reativar" class="tbl-link fa-lg fa fa-refresh" onclick="ShowModalReativar('/Tarefa/ReativarTarefa/@cond.TARE_CD_ID')" title="Reativar"></span>
+                                                        }
+                                                    }
+                                                </td>
+                                            </tr>
+                                        }
+                                        if (cond.TARE_DT_ESTIMADA.Value.Date == DateTime.Today.Date)
+                                        {
+                                            <tr style="background-color:lavender">
+                                                <td style="width: auto">@cond.TARE_DT_CADASTRO.ToShortDateString()</td>
+                                                @if (cond.TIPO_TAREFA == null)
+                                                {
+                                                    <td style="width: auto">-</td>
                                                 }
-                                            </td>
-                                        </tr>
+                                                else
+                                                {
+                                                    <td style="width: auto">@cond.TIPO_TAREFA.TITR_NM_NOME</td>
+                                                }
+                                                <td style="width: auto"><a href="@Url.Action("EditarTarefa", "Tarefa", new { id = cond.TARE_CD_ID })" />@cond.TARE_NM_TITULO</td>
+                                                <td style="width: auto; color: green; font-weight: bold">@cond.TARE_DT_ESTIMADA.Value.ToShortDateString()</td>
+                                                @if (cond.TARE_IN_STATUS == 1)
+                                                {
+                                                    <td style="width: auto"><span class="badge badge-warning">Para Iniciar</span></td>
+                                                }
+                                                else if (cond.TARE_IN_STATUS == 2)
+                                                {
+                                                    <td style="width: auto"><span class="badge badge-primary">Em Andamento</span></td>
+                                                }
+                                                else if (cond.TARE_IN_STATUS == 3)
+                                                {
+                                                    <td style="width: auto"><span class="badge badge-danger">Suspensa</span></td>
+                                                }
+                                                else if (cond.TARE_IN_STATUS == 4)
+                                                {
+                                                    <td style="width: auto"><span class="badge badge-danger">Cancelada</span></td>
+                                                }
+                                                else if (cond.TARE_IN_STATUS == 5)
+                                                {
+                                                    <td style="width: auto"><span class="badge badge-success">Encerrada</span></td>
+                                                }
+                                                @if (cond.TARE_DT_REALIZADA != null)
+                                                {
+                                                    <td style="width: auto">@cond.TARE_DT_REALIZADA.Value.ToShortDateString()</td>
+                                                }
+                                                else
+                                                {
+                                                    <td style="width: auto">-</td>
+                                                }
+                                                @if (cond.PERIODICIDADE_TAREFA != null)
+                                                {
+                                                    <td style="width: auto">@cond.PERIODICIDADE_TAREFA.PETA_NM_NOME</td>
+                                                    <td style="width: auto">@cond.TARE_NM_ORDEM</td>
+                                                }
+                                                else
+                                                {
+                                                    <td style="width: auto">-</td>
+                                                    <td style="width: auto">-</td>
+                                                }
+                                                <td class="td-one-action">
+                                                    @if (cond.TARE_IN_STATUS == 5 || cond.TARE_IN_STATUS == 3)
+                                                    {
+                                                        @Html.TableLinkDetails(cond.TARE_CD_ID, "VerTarefa", "fa-search", "Editar/Consultar")
+                                                    }
+                                                    else
+                                                    {
+                                                        @Html.TableLinkDetails(cond.TARE_CD_ID, "EditarTarefa", "fa-edit", "Editar/Consultar")
+                                                    }
+                                                    @if (cond.TARE_IN_TAREFA_PAI != null || (cond.TARE_IN_TAREFA_PAI == null & cond.TAREFA1.Count == 0) )
+                                                    {
+                                                        if (cond.TARE_IN_ATIVO == 1)
+                                                        {
+                                                            <span style="color: #337ab7; cursor:pointer;" alt="Excluir" class="tbl-link fa-lg fa fa-trash-o" onclick="ShowModalExcluir('/Tarefa/ExcluirTarefa/@cond.TARE_CD_ID')" title="Excluir"></span>
+                                                        }
+                                                        else
+                                                        {
+                                                            <span style="color: #337ab7; cursor:pointer;" alt="Reativar" class="tbl-link fa-lg fa fa-refresh" onclick="ShowModalReativar('/Tarefa/ReativarTarefa/@cond.TARE_CD_ID')" title="Reativar"></span>
+                                                        }
+                                                    }
+                                                </td>
+                                            </tr>
+                                        }
+                                        if (cond.TARE_DT_ESTIMADA.Value.Date < DateTime.Today.Date)
+                                        {
+                                            <tr style="background-color: beige">
+                                                <td style="width: auto">@cond.TARE_DT_CADASTRO.ToShortDateString()</td>
+                                                @if (cond.TIPO_TAREFA == null)
+                                                {
+                                                    <td style="width: auto">-</td>
+                                                }
+                                                else
+                                                {
+                                                    <td style="width: auto">@cond.TIPO_TAREFA.TITR_NM_NOME</td>
+                                                }
+                                                <td style="width: auto"><a href="@Url.Action("EditarTarefa", "Tarefa", new { id = cond.TARE_CD_ID })" />@cond.TARE_NM_TITULO</td>
+                                                <td style="width: auto; color: red">@cond.TARE_DT_ESTIMADA.Value.ToShortDateString()</td>
+                                                @if (cond.TARE_IN_STATUS == 1)
+                                                {
+                                                    <td style="width: auto"><span class="badge badge-warning">Para Iniciar</span></td>
+                                                }
+                                                else if (cond.TARE_IN_STATUS == 2)
+                                                {
+                                                    <td style="width: auto"><span class="badge badge-primary">Em Andamento</span></td>
+                                                }
+                                                else if (cond.TARE_IN_STATUS == 3)
+                                                {
+                                                    <td style="width: auto"><span class="badge badge-danger">Suspensa</span></td>
+                                                }
+                                                else if (cond.TARE_IN_STATUS == 4)
+                                                {
+                                                    <td style="width: auto"><span class="badge badge-danger">Cancelada</span></td>
+                                                }
+                                                else if (cond.TARE_IN_STATUS == 5)
+                                                {
+                                                    <td style="width: auto"><span class="badge badge-success">Encerrada</span></td>
+                                                }
+                                                @if (cond.TARE_DT_REALIZADA != null)
+                                                {
+                                                    <td style="width: auto">@cond.TARE_DT_REALIZADA.Value.ToShortDateString()</td>
+                                                }
+                                                else
+                                                {
+                                                    <td style="width: auto">-</td>
+                                                }
+                                                @if (cond.PERIODICIDADE_TAREFA != null)
+                                                {
+                                                    <td style="width: auto">@cond.PERIODICIDADE_TAREFA.PETA_NM_NOME</td>
+                                                    <td style="width: auto">@cond.TARE_NM_ORDEM</td>
+                                                }
+                                                else
+                                                {
+                                                    <td style="width: auto">-</td>
+                                                    <td style="width: auto">-</td>
+                                                }
+                                                <td class="td-one-action">
+                                                    @if (cond.TARE_IN_STATUS == 5 || cond.TARE_IN_STATUS == 3)
+                                                    {
+                                                        @Html.TableLinkDetails(cond.TARE_CD_ID, "VerTarefa", "fa-search", "Editar/Consultar")
+                                                    }
+                                                    else
+                                                    {
+                                                        @Html.TableLinkDetails(cond.TARE_CD_ID, "EditarTarefa", "fa-edit", "Editar/Consultar")
+                                                    }
+                                                    @if (cond.TARE_IN_TAREFA_PAI != null || (cond.TARE_IN_TAREFA_PAI == null & cond.TAREFA1.Count == 0) )
+                                                    {
+                                                        if (cond.TARE_IN_ATIVO == 1)
+                                                        {
+                                                            <span style="color: #337ab7; cursor:pointer;" alt="Excluir" class="tbl-link fa-lg fa fa-trash-o" onclick="ShowModalExcluir('/Tarefa/ExcluirTarefa/@cond.TARE_CD_ID')" title="Excluir"></span>
+                                                        }
+                                                        else
+                                                        {
+                                                            <span style="color: #337ab7; cursor:pointer;" alt="Reativar" class="tbl-link fa-lg fa fa-refresh" onclick="ShowModalReativar('/Tarefa/ReativarTarefa/@cond.TARE_CD_ID')" title="Reativar"></span>
+                                                        }
+                                                    }
+                                                </td>
+                                            </tr>
+                                        }
+
                                     }
                                 </tbody>
                             </table>

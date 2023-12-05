@@ -100,11 +100,6 @@ namespace ERP_Condominios_Solution.Controllers
                 usuario = (USUARIO)Session["UserCredentials"];
 
                 // Verfifica permissão
-                if (usuario.PERFIL.PERF_SG_SIGLA == "VIS")
-                {
-                    Session["MensPermissao"] = 2;
-                    return RedirectToAction("MontarTelaDashboardCadastro", "BaseAdmin");
-                }
             }
             else
             {
@@ -198,7 +193,6 @@ namespace ERP_Condominios_Solution.Controllers
             }
             catch (Exception ex)
             {
-                LogError(ex.Message);
                 ViewBag.Message = ex.Message;
                 Session["TipoVolta"] = 2;
                 Session["VoltaExcecao"] = "Honorário";
@@ -232,7 +226,7 @@ namespace ERP_Condominios_Solution.Controllers
                 usuario = (USUARIO)Session["UserCredentials"];
 
                 // Verfifica permissão
-                if (usuario.PERFIL.PERF_SG_SIGLA == "VIS")
+                if (usuario.PERFIL.PERF_SG_SIGLA == "USU")
                 {
                     Session["MensPermissao"] = 2;
                     return RedirectToAction("MontarTelaHonorario", "Honorario");
@@ -300,7 +294,6 @@ namespace ERP_Condominios_Solution.Controllers
                 }
                 catch (Exception ex)
                 {
-                    LogError(ex.Message);
                     ViewBag.Message = ex.Message;
                     Session["TipoVolta"] = 2;
                     Session["VoltaExcecao"] = "Honorário";
@@ -348,7 +341,7 @@ namespace ERP_Condominios_Solution.Controllers
                 usuario = (USUARIO)Session["UserCredentials"];
 
                 // Verfifica permissão
-                if (usuario.PERFIL.PERF_SG_SIGLA == "VIS")
+                if (usuario.PERFIL.PERF_SG_SIGLA == "USU")
                 {
                     Session["MensPermissao"] = 2;
                     return RedirectToAction("MontarTelaHonorario", "Honorario");
@@ -431,7 +424,7 @@ namespace ERP_Condominios_Solution.Controllers
                 usuario = (USUARIO)Session["UserCredentials"];
 
                 // Verfifica permissão
-                if (usuario.PERFIL.PERF_SG_SIGLA == "FUN" || usuario.PERFIL.PERF_SG_SIGLA == "VIS")
+                if (usuario.PERFIL.PERF_SG_SIGLA == "USU")
                 {
                     Session["MensHonorario"] = 2;
                     return RedirectToAction("CarregarBase", "BaseAdmin");
@@ -460,7 +453,6 @@ namespace ERP_Condominios_Solution.Controllers
             }
             catch (Exception ex)
             {
-                LogError(ex.Message);
                 ViewBag.Message = ex.Message;
                 Session["TipoVolta"] = 2;
                 Session["VoltaExcecao"] = "Honorário";
@@ -485,7 +477,7 @@ namespace ERP_Condominios_Solution.Controllers
                 usuario = (USUARIO)Session["UserCredentials"];
 
                 // Verfifica permissão
-                if (usuario.PERFIL.PERF_SG_SIGLA == "FUN" || usuario.PERFIL.PERF_SG_SIGLA == "VIS")
+                if (usuario.PERFIL.PERF_SG_SIGLA == "USU")
                 {
                     Session["MensHonorario"] = 2;
                     return RedirectToAction("CarregarBase", "BaseAdmin");
@@ -509,7 +501,6 @@ namespace ERP_Condominios_Solution.Controllers
             }
             catch (Exception ex)
             {
-                LogError(ex.Message);
                 ViewBag.Message = ex.Message;
                 Session["TipoVolta"] = 2;
                 Session["VoltaExcecao"] = "Honorário";

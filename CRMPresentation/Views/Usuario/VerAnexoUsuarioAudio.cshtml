@@ -3,6 +3,17 @@
 @{
     Layout = "~/Views/Shared/_Layout_Admin.cshtml";
 }
+<div style="z-index: 999;" class="dotContainer">
+    <div style="top: 500px" class="dotWrapper">
+        <div class="circle"></div>
+        <div class="circle"></div>
+        <div class="circle"></div>
+        <div class="shadow"></div>
+        <div class="shadow"></div>
+        <div class="shadow"></div>
+    </div>
+</div>
+
 <div class="wrapper wrapper-content animated fadeInRight">
     <div class="page-title"> 
         <h3 class="title">Usuários</h3> 
@@ -26,7 +37,6 @@
         </ol>
         <br />
     </div>
-
     <div class="row">
         <div class="col-lg-12 col-md-12 col-xs-12">
             <div class="col-lg-12 col-md-12 col-xs-12 ibox float-e-margins">
@@ -78,13 +88,7 @@
     @Scripts.Render("~/plugins/jasnyBootstrap")
     @Scripts.Render("~/plugins/videoResponsible")
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.maskedinput/1.4.1/jquery.maskedinput.js"></script>
-    <script type="text/javascript">
-        $(function () {
-            $("#cpf").mask("999.999.999-99");
-            $("#cnpj").mask("99.999.999/9999-99");
-            $("#cep").mask("99999-999");
-        });
-    </script>
+    <script>
     <script type="text/javascript">
         $(document).on('webkitfullscreenchange mozfullscreenchange fullscreenchange', function (e) {
             $('body').hasClass('fullscreen-video') ? $('body').removeClass('fullscreen-video') : $('body').addClass('fullscreen-video')

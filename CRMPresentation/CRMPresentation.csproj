@@ -396,7 +396,6 @@
     <Compile Include="Controllers\AuditoriaController.cs" />
     <Compile Include="Controllers\BaseAdminController.cs" />
     <Compile Include="Controllers\BeneficiarioController.cs" />
-    <Compile Include="Controllers\ClienteController.cs" />
     <Compile Include="Controllers\ConfiguracaoController.cs" />
     <Compile Include="Controllers\ControleAcessoController.cs" />
     <Compile Include="Controllers\ControleCache.cs" />
@@ -405,7 +404,6 @@
     <Compile Include="Controllers\GrupoController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\HonorarioController.cs" />
-    <Compile Include="Controllers\MensagemController.cs" />
     <Compile Include="Controllers\NoticiaController.cs" />
     <Compile Include="Controllers\NotificacaoController.cs" />
     <Compile Include="Controllers\PlanoController.cs" />
@@ -414,11 +412,9 @@
     <Compile Include="Controllers\TarefaController.cs" />
     <Compile Include="Controllers\TemplateEMailController.cs" />
     <Compile Include="Controllers\TemplatePropostaController.cs" />
-    <Compile Include="Controllers\TemplateSMSController.cs" />
     <Compile Include="Controllers\TRFController.cs" />
     <Compile Include="Controllers\UsuarioController.cs" />
     <Compile Include="Controllers\VaraController.cs" />
-    <Compile Include="Controllers\VideoController.cs" />
     <Compile Include="Extensions\HMTLHelperExtensions.cs" />
     <Compile Include="Extensions\MVCButtonExtensions.cs" />
     <Compile Include="Extensions\WebMvcExtensions.cs" />
@@ -430,6 +426,7 @@
     </Compile>
     <Compile Include="Helpers\HMTLHelperExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ViewModels\AgendaContatoViewModel.cs" />
     <Compile Include="ViewModels\AgendaViewModel.cs" />
     <Compile Include="ViewModels\AssinanteAnotacaoViewModel.cs" />
     <Compile Include="ViewModels\AssinantePlanoViewModel.cs" />
@@ -3319,6 +3316,7 @@
     <Content Include="Scripts\UploadAnexo.js" />
     <Content Include="Sounds\chimes.wav" />
     <Content Include="TemplateEMail\Modelos\1\beefree-bdre9wegb2h.html" />
+    <Content Include="Views\Beneficiario\VerContato.cshtml" />
     <Content Include="VSdoc\index.html" />
     <Content Include="VSdoc\msdn2019\chm_msdn2019.css" />
     <Content Include="VSdoc\msdn2019\chm_msdn2019.js" />
@@ -13134,7 +13132,6 @@
     <Content Include="Views\ControleAcesso\Login.cshtml" />
     <Content Include="Views\ControleAcesso\TrocarSenha.cshtml" />
     <Content Include="Views\ControleAcesso\GerarSenha.cshtml" />
-    <Content Include="Views\BaseAdmin\CarregarLandingPage.cshtml" />
     <Content Include="Views\BaseAdmin\CarregarBase.cshtml" />
     <Content Include="Views\BaseAdmin\CarregarDesenvolvimento.cshtml" />
     <Content Include="Views\BaseAdmin\MontarTelaDashboardAdministracao.cshtml" />
@@ -13157,12 +13154,6 @@
     <Content Include="Views\Configuracao\MontarTelaConfiguracao.cshtml" />
     <Content Include="Views\Auditoria\MontarTelaLog.cshtml" />
     <Content Include="Views\Auditoria\VerLog.cshtml" />
-    <Content Include="Views\Video\VerVideo.cshtml" />
-    <Content Include="Views\Video\MontarTelaUsuario.cshtml" />
-    <Content Include="Views\Video\MontarTelaVideo.cshtml" />
-    <Content Include="Views\Video\IncluirVideo.cshtml" />
-    <Content Include="Views\Video\EditarVideo.cshtml" />
-    <Content Include="Views\Video\IncluirComentario.cshtml" />
     <Content Include="Views\Usuario\MontarTelaUsuario.cshtml" />
     <Content Include="Views\Usuario\VerAnexoUsuario.cshtml" />
     <Content Include="Views\Usuario\VerUsuario.cshtml" />
@@ -13310,10 +13301,6 @@
     <Content Include="Views\TemplateEMail\IncluirTemplateEMail.cshtml" />
     <Content Include="Views\TemplateEMail\EditarTemplateEMail.cshtml" />
     <Content Include="Views\TemplateEMail\VerTemplateEMail.cshtml" />
-    <Content Include="Views\TemplateSMS\MontarTelaTemplateSMS.cshtml" />
-    <Content Include="Views\TemplateSMS\IncluirTemplateSMS.cshtml" />
-    <Content Include="Views\TemplateSMS\EditarTemplateSMS.cshtml" />
-    <Content Include="Views\TemplateSMS\VerTemplateSMS.cshtml" />
     <Content Include="Views\BaseAdmin\TrataExcecao.cshtml" />
     <Content Include="Views\BaseAdmin\EnviarEMailSuporte.cshtml" />
     <Content Include="Views\BaseAdmin\EnviarSMSSuporte.cshtml" />
@@ -13352,17 +13339,13 @@
     <Content Include="Views\CRM\VerLembrete.cshtml" />
     <Content Include="Views\Cliente\EnviarMailAniversario.cshtml" />
     <Content Include="Views\Beneficiario\EditarBeneficiario.cshtml" />
-    <Content Include="Views\Beneficiario\EditarEndereco.cshtml" />
     <Content Include="Views\Beneficiario\EnviarEMailBeneficiario.cshtml" />
     <Content Include="Views\Beneficiario\EnviarSMSBeneficiario.cshtml" />
     <Content Include="Views\Beneficiario\IncluirBeneficiario.cshtml" />
     <Content Include="Views\Beneficiario\IncluirComentario.cshtml" />
-    <Content Include="Views\Beneficiario\IncluirEndereco.cshtml" />
     <Content Include="Views\Beneficiario\MontarTelaBeneficiario.cshtml" />
     <Content Include="Views\Beneficiario\VerAnexoBeneficiario.cshtml" />
     <Content Include="Views\Beneficiario\VerBeneficiario.cshtml" />
-    <Content Include="Views\Beneficiario\VerCardsBeneficiario.cshtml" />
-    <Content Include="Views\Beneficiario\VerContato.cshtml" />
     <Content Include="Views\Honorario\EditarHonorario.cshtml" />
     <Content Include="Views\Honorario\IncluirComentario.cshtml" />
     <Content Include="Views\Honorario\IncluirHonorario.cshtml" />
@@ -13390,6 +13373,12 @@
     <Content Include="Views\Beneficiario\VerAnexoBeneficiarioAudio.cshtml" />
     <Content Include="Views\Precatorio\VerAnexoPrecatorioAudio.cshtml" />
     <Content Include="Views\Precatorio\EditarComentario.cshtml" />
+    <Content Include="Views\Agenda\EditarContatoAgenda.cshtml" />
+    <Content Include="Views\Agenda\IncluirContatoAgenda.cshtml" />
+    <Content Include="Views\Tarefa\VerTarefa.cshtml" />
+    <Content Include="Views\Usuario\MontarTelaLogExcecao.cshtml" />
+    <Content Include="Views\Usuario\VerLogExcecao.cshtml" />
+    <Content Include="Views\Beneficiario\IncluirContato.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

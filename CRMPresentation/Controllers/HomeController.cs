@@ -145,7 +145,6 @@ namespace CRMPresentation.Controllers
             Session["Parentescos"] = null;
             Session["Sexos"] = null;
             return RedirectToAction("Login", "ControleAcesso");
-            //return RedirectToAction("CarregarLandingPage", "BaseAdmin");
         }
 
         public ActionResult About()

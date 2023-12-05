@@ -25,6 +25,7 @@ using log4net.Core;
 using EntitiesServices.WorkClasses;
 using ERP_Condominios_Solution.Classes;
 
+
 namespace ERP_Condominios_Solution.Controllers
 {
     public class NoticiaController : Controller

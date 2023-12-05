@@ -59,6 +59,7 @@ namespace ERP_Condominios_Solution.Controllers
             return View();
         }
 
+
         public ActionResult Voltar()
         {
             if ((String)Session["Ativa"] == null)
@@ -148,6 +149,7 @@ namespace ERP_Condominios_Solution.Controllers
                 return RedirectToAction("Logout", "ControleAcesso");
             }
             Int32 idAss = (Int32)Session["IdAssinante"];
+
 
             // Carrega listas
             objeto = baseApp.GetItemById(idAss);
@@ -353,6 +355,5 @@ namespace ERP_Condominios_Solution.Controllers
             Int32 volta = baseApp.ValidateEdit(conf);
             return RedirectToAction("MontarTelaConfiguracao", "Configuracao");
         }
-
     }
 }

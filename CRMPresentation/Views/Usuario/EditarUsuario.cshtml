@@ -3,6 +3,18 @@
 @{
     Layout = "~/Views/Shared/_Layout_Admin.cshtml";
 }
+
+<div style="z-index: 999;" class="dotContainer">
+    <div style="top: 500px" class="dotWrapper">
+        <div class="circle"></div>
+        <div class="circle"></div>
+        <div class="circle"></div>
+        <div class="shadow"></div>
+        <div class="shadow"></div>
+        <div class="shadow"></div>
+    </div>
+</div>
+
 <div class="wrapper wrapper-content animated fadeInRight">
     <div class="modalContainer">
         <div id="modal" class="modal" tabindex="-1" role="dialog">
@@ -107,29 +119,7 @@
         <div class="col-lg-12 col-md-12 col-xs-12">
             <div class="col-lg-12 col-md-12 col-xs-12 ibox float-e-margins">
                 <div class="ibox-title">
-                    <h5>Usuário - Edição</h5>&nbsp;&nbsp;&nbsp;
-                    @if (ViewBag.Perfil == "ADM" || ViewBag.Perfil == "GER")
-                    {
-                        if (Model.USUA_IN_BLOQUEADO == 0)
-                        {
-                            <button alt="Desativar" class="btn btn-sm btn-warning demo2" onclick="ShowModalBloquear('/Usuario/BloquearUsuario/@Model.USUA_CD_ID', '@Model.USUA_NM_NOME')" title="Bloquear">Bloquear</button>
-                        }
-                        else
-                        {
-                            <button alt="Desativar" class="btn btn-sm btn-warning demo2" onclick="ShowModalDesbloquear('/Usuario/DesbloquearUsuario/@Model.USUA_CD_ID', '@Model.USUA_NM_NOME')" title="Desbloquear">Desbloquear</button>
-                        }
-                        if (Model.USUA_IN_ATIVO == 1)
-                        {
-                            <button alt="Desativar" class="btn btn-sm btn-warning demo2" onclick="ShowModalExcluir('/Usuario/DesativarUsuario/@Model.USUA_CD_ID', '@Model.USUA_NM_NOME')" title="Bloquear">Desativar</button>
-                        }
-                        else
-                        {
-                            <button alt="Desativar" class="btn btn-sm btn-warning demo2" onclick="ShowModalReativar('/Usuario/ReativarUsuario/@Model.USUA_CD_ID', '@Model.USUA_NM_NOME')" title="Desbloquear">Reativar</button>
-                        }
-                    }
-                    @Html.ButtonLinkIndex(text: "Enviar E-Mail", action: "EnviarEMailUsuarioForm", controller: "Usuario")
-                    @Html.ButtonLinkIndex(text: "Enviar SMS", action: "EnviarSMSUsuarioForm", controller: "Usuario")
-                    @Html.ButtonLinkIndex(text: "Voltar", action: "VoltarBase", controller: "Usuario", buttonClass: "warning")
+                    <h5>Usuário - Edição</h5>
                 </div>
 
                 <div class="ibox-content">
@@ -140,6 +130,37 @@
                             @Html.ValidationSummary(false, "", new { @class = "text-danger" })
                         </div>
                     }
+                    <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
+                        @if (ViewBag.Perfil == "ADM" || ViewBag.Perfil == "GER")
+                        {
+                            if (Model.USUA_IN_BLOQUEADO == 0)
+                            {
+                                <button alt="Desativar" class="btn btn-sm btn-warning demo2" onclick="ShowModalBloquear('/Usuario/BloquearUsuario/@Model.USUA_CD_ID', '@Model.USUA_NM_NOME')" title="Bloquear">Bloquear</button>
+                            }
+                            else
+                            {
+                                <button alt="Desativar" class="btn btn-sm btn-warning demo2" onclick="ShowModalDesbloquear('/Usuario/DesbloquearUsuario/@Model.USUA_CD_ID', '@Model.USUA_NM_NOME')" title="Desbloquear">Desbloquear</button>
+                            }
+                            if (Model.USUA_IN_ATIVO == 1)
+                            {
+                                <button alt="Desativar" class="btn btn-sm btn-warning demo2" onclick="ShowModalExcluir('/Usuario/DesativarUsuario/@Model.USUA_CD_ID', '@Model.USUA_NM_NOME')" title="Bloquear">Desativar</button>
+                            }
+                            else
+                            {
+                                <button alt="Desativar" class="btn btn-sm btn-warning demo2" onclick="ShowModalReativar('/Usuario/ReativarUsuario/@Model.USUA_CD_ID', '@Model.USUA_NM_NOME')" title="Desbloquear">Reativar</button>
+                            }
+                        }
+                        @if (ViewBag.EMail == 1)
+                        {
+                            @Html.ButtonLinkIndex(text: "Enviar E-Mail", action: "EnviarEMailUsuarioForm", controller: "Usuario")
+                        }
+                        @if (ViewBag.SMS == 1)
+                        {
+                            @Html.ButtonLinkIndex(text: "Enviar SMS", action: "EnviarSMSUsuarioForm", controller: "Usuario")
+                        }
+                        @Html.ButtonLinkIndex(text: "Voltar", action: "VoltarBase", controller: "Usuario", buttonClass: "warning")
+                    </div>
+
                     <div class="tabs-container">
                         <ul class="nav nav-tabs">
                             <li class="active"><a data-toggle="tab" href="#tab-1">Dados Gerais</a></li>
@@ -159,11 +180,11 @@
                                                 <div style="text-align: center; margin-top: 20px; line-height: 10px;">
                                                     @if (!String.IsNullOrEmpty(Model.USUA_AQ_FOTO))
                                                     {
-                                                        <img src="@Url.Content(Model.USUA_AQ_FOTO)" style="width: auto; height: auto; max-height: 110px; max-width: 90px;" data-toggle="modal" data-target="#fotoModal" onclick="CriaModal('@Model.USUA_NM_NOME', '@Url.Content(Model.USUA_AQ_FOTO)')">
+                                                        <img src="@Url.Content(Model.USUA_AQ_FOTO)" style="width: auto; height: auto; max-height: 220px; max-width: 220px;" data-toggle="modal" data-target="#fotoModal" onclick="CriaModal('@Model.USUA_NM_NOME', '@Url.Content(Model.USUA_AQ_FOTO)')">
                                                     }
                                                     else
                                                     {
-                                                        <img src="~/Images/gallery/10s.jpg" style="width: auto; height: auto; max-height: 110px; max-width: 90px;" data-toggle="modal" data-target="#fotoModal" onclick="CriaModal('@Model.USUA_NM_NOME', '/Images/gallery/10s.jpg')">
+                                                        <img src="~/Images/gallery/10s.jpg" style="width: auto; height: auto; max-height: 220px; max-width: 220px;" data-toggle="modal" data-target="#fotoModal" onclick="CriaModal('@Model.USUA_NM_NOME', '/Images/gallery/10s.jpg')">
                                                     }
                                                     <br />
                                                     <br />
@@ -194,7 +215,9 @@
                                                         @Html.HiddenFor(m => m.USUA_NR_FALHAS)
                                                         @Html.HiddenFor(m => m.CAUS_CD_ID)
                                                         @Html.HiddenFor(m => m.USUA_AQ_FOTO)
+                                                        @Html.HiddenFor(m => m.USUA_IN_ESPECIAL)
                                                         @Html.HiddenFor(m => m.EMPR_CD_ID)
+                                                        @Html.HiddenFor(m => m.USUA_NM_SALT)
                                                         Nome*
                                                         @Html.TextBoxFor(m => m.USUA_NM_NOME, new { @class = "form-control", autofocus = true })
                                                         @Html.ValidationMessageFor(m => m.USUA_NM_NOME, "", new { @style = "color:red" })
@@ -210,8 +233,8 @@
                                                         @Html.ValidationMessageFor(m => m.USUA_NM_EMAIL, "", new { @style = "color:red" })
                                                     </div>
                                                     <div class="col-lg-2 col-md-2 col-xs-12">
-                                                        Login
-                                                        @Html.TextBoxFor(m => m.USUA_NM_LOGIN, new { @class = "form-control", autofocus = true, @readonly="readonly" })
+                                                        Login*
+                                                        @Html.TextBoxFor(m => m.USUA_NM_LOGIN, new { @class = "form-control", autofocus = true })
                                                         @Html.ValidationMessageFor(m => m.USUA_NM_LOGIN, "", new { @style = "color:red" })
                                                     </div>
                                                     <div class="col-lg-2 col-md-2 col-xs-12">
@@ -227,8 +250,8 @@
                                                 </div>
                                                 <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
                                                     <div class="col-lg-2 col-md-2 col-xs-12">
-                                                        CPF
-                                                        @Html.TextBoxFor(m => m.USUA_NR_CPF, new { @class = "form-control", autofocus = true, @id="cpf", @readonly="readonly"  })
+                                                        CPF*
+                                                        @Html.TextBoxFor(m => m.USUA_NR_CPF, new { @class = "form-control", autofocus = true, @id="cpf" })
                                                         @Html.ValidationMessageFor(m => m.USUA_NR_CPF, "", new { @style = "color:red" })
                                                     </div>
                                                     <div class="col-lg-2 col-md-2 col-xs-12">
@@ -260,6 +283,21 @@
                             <div id="tab-2" class="tab-pane">
                                 <div class="panel-body">
                                     <div class="row">
+                                        <div class="col-lg-2 col-md-2 col-xs-12">
+                                            <div class="form-group">
+                                                <div class="col-lg-12 col-md-12 col-sm-12">
+                                                    <br />
+                                                    @if (!String.IsNullOrEmpty(Model.USUA_AQ_FOTO))
+	                                                {
+                                                        <img src="@Url.Content(Model.USUA_AQ_FOTO)" style = "width: auto; height: auto; max-height: 220px; max-width: 220px;">
+                                                    }
+                                                    else
+                                                    {
+                                                        <img src="~/Images/gallery/10s.jpg" style = "width: auto; height: auto; max-height: 220px; max-width: 220px;">
+                                                    }
+                                                </div>                       
+                                            </div>
+                                        </div>
                                         <div class="col-lg-10 col-md-10 col-xs-12">   
                                             <div class="form-group">
                                                 <h4>Fotografia</h4>
@@ -270,21 +308,6 @@
                                                         <input style="float: left;" type="submit" value="Incluir Foto do Usuário" class="btn btn-sm btn-success" />
                                                     </div>
                                                 }
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-2 col-md-2 col-xs-12">
-                                            <div class="form-group">
-                                                <div class="col-lg-12 col-md-12 col-sm-12">
-                                                    <br />
-                                                    @if (!String.IsNullOrEmpty(Model.USUA_AQ_FOTO))
-	                                                {
-                                                        <img src="@Url.Content(Model.USUA_AQ_FOTO)" style = "width: auto; height: auto; max-height: 110px; max-width: 90px;">
-                                                    }
-                                                    else
-                                                    {
-                                                        <img src="~/Images/gallery/10s.jpg" style = "width: auto; height: auto; max-height: 110px; max-width: 90px;">
-                                                    }
-                                                </div>                       
                                             </div>
                                         </div>
                                     </div>
@@ -299,7 +322,7 @@
                                                     <div class="ibox-content">
                                                         @if (Model.USUARIO_ANEXO != null)
 	                                                    {
-                                                            if (Model.USUARIO_ANEXO.Count > 0)
+                                                            if (Model.USUARIO_ANEXO.Where(p => p.USAN_IN_ATIVO == 1).ToList().Count > 0)
                                                             {
                                                                 <table class="table table-striped table-bordered table-hover dataTables-example">
                                                                     <thead style ="background-color:lightsteelblue">
@@ -311,7 +334,7 @@
                                                                         </tr>
                                                                     </thead>
                                                                     <tbody>
-                                                                        @foreach (var cond in (Model.USUARIO_ANEXO))
+                                                                        @foreach (var cond in (Model.USUARIO_ANEXO.Where(p => p.USAN_IN_ATIVO == 1).ToList()))
                                                                         {
                                                                             <tr>
                                                                                 <td>@cond.USAN_NM_TITULO</td>
@@ -358,6 +381,10 @@
                                                                                         <a title="Visualizar" class="fa fa-camera fa-lg" href="~/PdfViewer/web/viewer.html?file=@(cond.USAN_AQ_ARQUIVO.Replace("~", ""))&ReturnUrl=@Request.Url.AbsolutePath" target="_blank"></a>
                                                                                     }
                                                                                     @Html.TableLinkDetails(cond.USAN_CD_ID, "DownloadUsuario","fa-download", "Download")
+                                                                                    @if (cond.USAN_IN_ATIVO == 1)
+	                                                                                {
+                                                                                        <span style="color: #337ab7; cursor:pointer;" alt="Desativar" class="tbl-link fa-lg fa fa-trash-o" onclick="ShowModalExcluirAnexo('/Usuario/ExcluirAnexo/@cond.USAN_CD_ID')" title="Desativar"></span>
+	                                                                                }
                                                                                 </td>
                                                                             </tr>
                                                                         }
@@ -404,24 +431,20 @@
                                                     @Html.HiddenFor(m => m.USUA_TX_OBSERVACOES)
                                                     @Html.HiddenFor(m => m.CAUS_CD_ID)
                                                     @Html.HiddenFor(m => m.USUA_IN_ESPECIAL)
-                                                    @Html.HiddenFor(m => m.EMPR_CD_ID)
                                                     Bloqueado?
-                                                    <br />
-                                                    @Html.CheckBoxFor(m => m.Bloqueio, new { @class = "checkbox i-checks", autofocus = true, @readonly="readonly" })
+                                                    @Html.TextBoxFor(m => m.Bloqueado, new { @class = "form-control", autofocus = true, @readonly="readonly" })
                                                 </div>  
                                                 <div class="col-lg-2 col-md-2 col-xs-12">
                                                     Data do Bloqueio
                                                     @Html.TextBoxFor(m => m.USUA_DT_BLOQUEADO,"{0:dd/MM/yyyy}", new { @class = "form-control", autofocus = true, @readonly="readonly" })
                                                 </div>
                                                 <div class="col-lg-2 col-md-2 col-xs-12">
-                                                    Senha Provisória?
-                                                    <br />
-                                                    @Html.CheckBoxFor(m => m.Provisoria, new { @class = "checkbox i-checks", autofocus = true, @readonly="readonly"})
+                                                    Senha Provisória
+                                                    @Html.TextBoxFor(m => m.SenhaProvisoria, new { @class = "form-control", autofocus = true, @readonly="readonly" })
                                                 </div>                                                
                                                 <div class="col-lg-3 col-md-3 col-xs-12">
                                                     Login com Senha Provisória?
-                                                    <br />
-                                                    @Html.CheckBoxFor(m => m.LoginProvisorio, new { @class = "checkbox i-checks", autofocus = true, @readonly="readonly"})
+                                                    @Html.TextBoxFor(m => m.LoginSenhaProvisoria, new { @class = "form-control", autofocus = true, @readonly="readonly" })
                                                 </div>                                                
                                             </div>
                                             <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">              
@@ -496,7 +519,6 @@
                                                     @Html.HiddenFor(m => m.USUA_NR_WHATSAPP)
                                                     @Html.HiddenFor(m => m.CAUS_CD_ID)
                                                     @Html.HiddenFor(m => m.CAUS_CD_ID)
-                                                    @Html.HiddenFor(m => m.EMPR_CD_ID)
                                                     Observações
                                                     @Html.TextAreaFor(m => m.USUA_TX_OBSERVACOES, new { @class = "form-control", style = "width: 100%; height: 400px;", autofocus = true})
                                                     @Html.ValidationMessageFor(m => m.USUA_TX_OBSERVACOES, "",new { @style="color:red" })
@@ -686,7 +708,8 @@
     @Scripts.Render("~/plugins/iCheck")
     @Scripts.Render("~/plugins/sweetAlert")
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.maskedinput/1.4.1/jquery.maskedinput.js"></script>
-    <script type="text/javascript">
+    
+    @*<script type="text/javascript">
         $(document).ready(function () {
 
             $('.dataTables-example').DataTable({
@@ -708,14 +731,9 @@
                         }
                     }
                 ]
-
-            });
-
-           
-
+            });          
         });
-
-    </script>
+    </script>*@
 
     <script>
         $(function () {
@@ -753,6 +771,13 @@
             $('#modal').find('.modal-header').prepend('<h5 id="modalTitle" class="modal-title">' + nome + '</h5>');
             $('#modal').modal('show');
         }
+
+        function ShowModalExcluirAnexo(url) {
+            $('#modal').find('.modal-footer').prepend('<a id="btnModal" alt="Desativar" class="btn btn-primary" href="' + url + '" target="_self" title="Desativar">Confirmar</a>');
+            $('#modal').find('.modal-body').html('Confirma exclusão de Anexo?');
+            $('#modal').find('.modal-header').prepend('<h5 id="modalTitle" class="modal-title">Confimar Exclusão</h5>');
+            $('#modal').modal('show');
+        }
     </script>
 
     <script type="text/javascript">
@@ -766,51 +791,6 @@
 
         });
     </script>
-    <script type="text/javascript">
-        $(document).ready(function () {
-
-            $('body').addClass('light-navbar');
-
-            $("#sparkline1").sparkline([34, 43, 43, 35, 44, 32, 44, 52], {
-                type: 'line',
-                width: '100%',
-                height: '60',
-                lineColor: '#1ab394',
-                fillColor: "#ffffff"
-            });
-
-        });
-    </script>
-    <script type="text/javascript">
-        $(document).ready(function(){
-            //Chama o evento após selecionar um valor
-            $('#pessoa').on('change', function() {
-                //Verifica se o valor é igual a 1 e mostra a divCnpj
-              if ( this.value == '2')
-              {
-                    $("#PF").hide();
-                    $("#PJ").show();
-              }
-                //Se o tempo for mé igual a 2 mostra a divCpf
-              else if( this.value == '1')
-              {
-                  $("#PJ").hide();
-                  $("#PF").show();
-              }
-              else if( this.value == '3')
-              {
-                    $("#PF").hide();
-                    $("#PJ").show();
-              }
-
-                //Se não for nem 1 nem 2 esconde as duas
-                else{
-                     $("#PJ").hide();
-                     $("#PF").hide();
-                }
-            });
-        });
-    </script>
 
     <script type="text/javascript">
         $(document).ready(function () {
@@ -822,6 +802,7 @@
 
         });
     </script>
+
     <script type="text/javascript">
         $(document).ready(function () {
 

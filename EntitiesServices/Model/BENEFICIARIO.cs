@@ -52,6 +52,11 @@ namespace EntitiesServices.Model
         public Nullable<decimal> BENE_VL_RENDA { get; set; }
         public Nullable<decimal> BENE_VL_RENDA_ESTIMADA { get; set; }
         public int BENE_IN_ATIVO { get; set; }
+        public Nullable<int> UF_CD_ID { get; set; }
+        public string BENE_NM_CIDADE { get; set; }
+        public string BENE_NM_ENDERECO { get; set; }
+        public string BENE_NR_CEP { get; set; }
+        public string BENE_NM_BAIRRO { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<BENEFICIARIO_ANEXO> BENEFICIARIO_ANEXO { get; set; }
@@ -72,5 +77,6 @@ namespace EntitiesServices.Model
         public virtual TIPO_PESSOA TIPO_PESSOA { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<PRECATORIO> PRECATORIO { get; set; }
+        public virtual UF UF { get; set; }
     }
 }

@@ -3,6 +3,7 @@
 @{
     Layout = "~/Views/Shared/_Layout_Admin.cshtml";
 }
+
 <div class="wrapper wrapper-content animated fadeInRight">
     <div class="page-title"> 
         <h3 class="title">Tarefas</h3> 
@@ -23,7 +24,6 @@
         </ol>
         <br />
     </div>
-
     <div class="row">
         <div class="col-lg-12 col-md-12 col-xs-12">
             <div class="col-lg-12 col-md-12 col-xs-12 ibox float-e-margins">
@@ -67,11 +67,11 @@
                                         @Html.HiddenFor(m => m.USUA_CD_ID)
                                         @Html.HiddenFor(m => m.TAAC_DT_ACOMPANHAMENTO)
                                         Data
-                                        @Html.TextBoxFor(m => m.TAAC_DT_ACOMPANHAMENTO, "{0:dd/MM/yyyy HH:mm}", new { @class = "form-control", autofocus = true , @readonly="readonly"})
+                                        @Html.TextBoxFor(m => m.TAAC_DT_ACOMPANHAMENTO, "{0:dd/MM/yyyy HH:mm}", new { @class = "form-control", @readonly="readonly"})
                                     </div>
                                     <div class="col-lg-5 col-md-5 col-sm-12">
                                         Nome 
-                                        @Html.TextBoxFor(m => m.USUARIO.USUA_NM_NOME, new { @class = "form-control", autofocus = true , @readonly="readonly"})
+                                        @Html.TextBoxFor(m => m.USUARIO.USUA_NM_NOME, new { @class = "form-control", @readonly="readonly"})
                                     </div>
                                 </div>
                             </div>

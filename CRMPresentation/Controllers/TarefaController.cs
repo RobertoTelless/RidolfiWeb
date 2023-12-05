@@ -35,6 +35,7 @@ namespace ERP_Condominios_Solution.Controllers
         private readonly ILogAppService logApp;
         private readonly IUsuarioAppService usuApp;
         private readonly IAgendaAppService agenApp;
+        private readonly IEmpresaAppService empApp;
         private readonly IConfiguracaoAppService confApp;
 
         private String msg;
@@ -47,12 +48,13 @@ namespace ERP_Condominios_Solution.Controllers
         List<LOG> listaMasterLog = new List<LOG>();
         String extensao;
 
-        public TarefaController(ITarefaAppService baseApps, ILogAppService logApps, IUsuarioAppService usuApps, IAgendaAppService agenApps, IConfiguracaoAppService confApps)
+        public TarefaController(ITarefaAppService baseApps, ILogAppService logApps, IUsuarioAppService usuApps, IAgendaAppService agenApps, IEmpresaAppService empApps, IConfiguracaoAppService confApps)
         {
             baseApp = baseApps;
             logApp = logApps;
             usuApp = usuApps;
             agenApp = agenApps;
+            empApp = empApps;
             confApp = confApps;
         }
 
@@ -135,65 +137,91 @@ namespace ERP_Condominios_Solution.Controllers
         [HttpGet]
         public ActionResult MontarTelaTarefaKanban(Int32? id)
         {
-            Session["VoltaKanban"] = 1;
-
-            // Verifica se tem usuario logado
-            USUARIO usuario = new USUARIO();
-            if ((String)Session["Ativa"] == null)
+            try
             {
-                return RedirectToAction("Logout", "ControleAcesso");
-            }
-            if ((USUARIO)Session["UserCredentials"] != null)
-            {
-                usuario = (USUARIO)Session["UserCredentials"];
-            }
-            else
-            {
-                return RedirectToAction("Logout", "ControleAcesso");
-            }
-            Int32 idAss = (Int32)Session["IdAssinante"];
+                Session["VoltaKanban"] = 1;
 
-            // Carrega listas
-            if (Session["ListaTarefa"] == null)
-            {
-                listaMaster = CarregaTarefa(usuario.USUA_CD_ID);
-                Session["ListaTarefa"] = listaMaster;
+                // Verifica se tem usuario logado
+                USUARIO usuario = new USUARIO();
+                if ((String)Session["Ativa"] == null)
+                {
+                    return RedirectToAction("Logout", "ControleAcesso");
+                }
+                if ((USUARIO)Session["UserCredentials"] != null)
+                {
+                    usuario = (USUARIO)Session["UserCredentials"];
+                }
+                else
+                {
+                    return RedirectToAction("Login", "ControleAcesso");
+                }
+                Int32 idAss = (Int32)Session["IdAssinante"];
+
+                // Carrega listas
+                if (Session["ListaTarefa"] == null)
+                {
+                    listaMaster = CarregaTarefa(usuario.USUA_CD_ID);
+                    Session["ListaTarefa"] = listaMaster;
+                }
+
+                if (id == null)
+                {
+                    ViewBag.Listas = (List<TAREFA>)Session["ListaTarefa"];
+                }
+                else
+                {
+                    ViewBag.Listas = baseApp.GetByUser(usuario.USUA_CD_ID).Where(x => x.TARE_DT_REALIZADA == null).ToList();
+                }
+                ViewBag.Title = "Tarefas";
+
+                // Listas
+                ViewBag.Tarefas = ((List<TAREFA>)Session["ListaTarefa"]).Count;
+                ViewBag.Tipos = new SelectList(CarregaTipoTarefa(), "TITR_CD_ID", "TITR_NM_NOME");
+                ViewBag.TarefasPendentes = baseApp.GetTarefaStatus(usuario.USUA_CD_ID, 1).Count;
+                ViewBag.TarefasEncerradas = baseApp.GetTarefaStatus(usuario.USUA_CD_ID, 2).Count;
+
+                List<SelectListItem> status = new List<SelectListItem>();
+                status.Add(new SelectListItem() { Text = "Pendente", Value = "1" });
+                status.Add(new SelectListItem() { Text = "Suspensa", Value = "2" });
+                status.Add(new SelectListItem() { Text = "Cancelada", Value = "3" });
+                status.Add(new SelectListItem() { Text = "Encerrada", Value = "4" });
+                ViewBag.Status = new SelectList(status, "Value", "Text");
+
+                // Mensagem
+                if ((Int32)Session["MensTarefa"] == 1)
+                {
+                    ModelState.AddModelError("", CRMSys_Base.ResourceManager.GetString("M0016", CultureInfo.CurrentCulture));
+                }
+
+                // Monta Log
+                LOG log = new LOG
+                {
+                    LOG_DT_DATA = DateTime.Now,
+                    ASSI_CD_ID = usuario.ASSI_CD_ID,
+                    USUA_CD_ID = usuario.USUA_CD_ID,
+                    LOG_NM_OPERACAO = "accTARE",
+                    LOG_IN_ATIVO = 1,
+                    LOG_TX_REGISTRO = null,
+                    LOG_IN_SISTEMA = 1
+                };
+                Int32 volta1 = logApp.ValidateCreate(log);
+
+                Session["MensTarefa"] = 0;
+                objeto = new TAREFA();
+                objeto.TARE_DT_CADASTRO = DateTime.Today.Date;
+                return View(objeto);
             }
-
-            if (id == null)
+            catch (Exception ex)
             {
-                ViewBag.Listas = (List<TAREFA>)Session["ListaTarefa"];
+                ViewBag.Message = ex.Message;
+                Session["TipoVolta"] = 2;
+                Session["VoltaExcecao"] = "Tarefas";
+                Session["Excecao"] = ex;
+                Session["ExcecaoTipo"] = ex.GetType().ToString();
+                GravaLogExcecao grava = new GravaLogExcecao(usuApp);
+                Int32 voltaX = grava.GravarLogExcecao(ex, "Tarefas", "CRMSys", 1, (USUARIO)Session["UserCredentials"]);
+                return RedirectToAction("TrataExcecao", "BaseAdmin");
             }
-            else
-            {
-                ViewBag.Listas = baseApp.GetByUser(usuario.USUA_CD_ID).Where(x => x.TARE_DT_REALIZADA == null).ToList();
-            }
-            ViewBag.Title = "Tarefas";
-
-            // Listas
-            ViewBag.Tarefas = ((List<TAREFA>)Session["ListaTarefa"]).Count;
-            ViewBag.Tipos = new SelectList(CarregaTipoTarefa(), "TITR_CD_ID", "TITR_NM_NOME");
-            ViewBag.TarefasPendentes = baseApp.GetTarefaStatus(usuario.USUA_CD_ID, 1).Count;
-            ViewBag.TarefasEncerradas = baseApp.GetTarefaStatus(usuario.USUA_CD_ID, 2).Count;
-
-            List<SelectListItem> status = new List<SelectListItem>();
-            status.Add(new SelectListItem() { Text = "Pendente", Value = "1" });
-            status.Add(new SelectListItem() { Text = "Suspensa", Value = "2" });
-            status.Add(new SelectListItem() { Text = "Cancelada", Value = "3" });
-            status.Add(new SelectListItem() { Text = "Encerrada", Value = "4" });
-            ViewBag.Status = new SelectList(status, "Value", "Text");
-
-            // Mensagem
-            if ((Int32)Session["MensTarefa"] == 1)
-            {
-                ModelState.AddModelError("", CRMSys_Base.ResourceManager.GetString("M0016", CultureInfo.CurrentCulture));
-            }
-
-            // Abre view
-            Session["MensTarefa"] = 0;
-            objeto = new TAREFA();
-            objeto.TARE_DT_CADASTRO = DateTime.Today.Date;
-            return View(objeto);
         }
 
         [HttpPost]
@@ -219,112 +247,194 @@ namespace ERP_Condominios_Solution.Controllers
         [HttpGet]
         public ActionResult MontarTelaTarefa(Int32? id)
         {
-            Session["VoltaKanban"] = 0;
-
-            // Verifica se tem usuario logado
-            USUARIO usuario = new USUARIO();
-            if ((String)Session["Ativa"] == null)
+            try
             {
-                return RedirectToAction("Logout", "ControleAcesso");
+                Session["VoltaKanban"] = 0;
+
+                // Verifica se tem usuario logado
+                USUARIO usuario = new USUARIO();
+                if ((String)Session["Ativa"] == null)
+                {
+                    return RedirectToAction("Logout", "ControleAcesso");
+                }
+                if ((USUARIO)Session["UserCredentials"] != null)
+                {
+                    usuario = (USUARIO)Session["UserCredentials"];
+                }
+                else
+                {
+                    return RedirectToAction("Logout", "ControleAcesso");
+                }
+                Int32 idAss = (Int32)Session["IdAssinante"];
+
+                // Carrega listas
+                if (Session["ListaTarefa"] == null)
+                {
+                    listaMaster = CarregaTarefa(usuario.USUA_CD_ID).Where(p => p.TARE_IN_STATUS != 5).ToList();
+                    Session["ListaTarefa"] = listaMaster;
+                }
+
+                if (id == null)
+                {
+                    ViewBag.Listas = ((List<TAREFA>)Session["ListaTarefa"]).OrderByDescending(x => x.TARE_DT_CADASTRO).ToList<TAREFA>();
+                }
+                else
+                {
+                    ViewBag.Listas = CarregaTarefa(usuario.USUA_CD_ID).Where(x => x.TARE_DT_REALIZADA == null).OrderByDescending(x => x.TARE_DT_CADASTRO).ToList<TAREFA>();
+                }
+
+                ViewBag.Title = "Tarefas";
+
+                // Indicadores
+                ViewBag.Tarefas = ((List<TAREFA>)Session["ListaTarefa"]).Count;
+                ViewBag.Tipos = new SelectList(CarregaTipoTarefa(), "TITR_CD_ID", "TITR_NM_NOME");
+                ViewBag.TarefasPendentes = baseApp.GetTarefaStatus(usuario.USUA_CD_ID, 1).Count;
+                ViewBag.TarefasAndamento = baseApp.GetTarefaStatus(usuario.USUA_CD_ID, 2).Count;
+                ViewBag.TarefasSuspensas = baseApp.GetTarefaStatus(usuario.USUA_CD_ID, 3).Count;
+                ViewBag.TarefasCanceladas = baseApp.GetTarefaStatus(usuario.USUA_CD_ID, 4).Count;
+                ViewBag.TarefasEncerradas = baseApp.GetTarefaStatus(usuario.USUA_CD_ID, 5).Count;
+
+                List<USUARIO> listaTotal = CarregaUsuario();
+                ViewBag.Usuarios = new SelectList(listaTotal, "USUA_CD_ID", "USUA_NM_NOME");
+                ViewBag.Perfil = usuario.PERFIL.PERF_SG_SIGLA;
+
+                List<SelectListItem> status = new List<SelectListItem>();
+                status.Add(new SelectListItem() { Text = "Para Iniciar", Value = "1" });
+                status.Add(new SelectListItem() { Text = "Em Andamento", Value = "2" });
+                status.Add(new SelectListItem() { Text = "Suspensa", Value = "3" });
+                status.Add(new SelectListItem() { Text = "Cancelada", Value = "4" });
+                status.Add(new SelectListItem() { Text = "Encerrada", Value = "5" });
+                ViewBag.Status = new SelectList(status, "Value", "Text");
+
+                // Mensagem
+                if ((Int32)Session["MensTarefa"] == 1)
+                {
+                    ModelState.AddModelError("", CRMSys_Base.ResourceManager.GetString("M0016", CultureInfo.CurrentCulture));
+                }
+
+                // Monta Log
+                LOG log = new LOG
+                {
+                    LOG_DT_DATA = DateTime.Now,
+                    ASSI_CD_ID = usuario.ASSI_CD_ID,
+                    USUA_CD_ID = usuario.USUA_CD_ID,
+                    LOG_NM_OPERACAO = "accTARE",
+                    LOG_IN_ATIVO = 1,
+                    LOG_TX_REGISTRO = null,
+                    LOG_IN_SISTEMA = 1
+                };
+                Int32 volta1 = logApp.ValidateCreate(log);
+
+                Session["MensTarefa"] = 0;
+                Session["VoltaTarefa"] = 1;
+                Session["AbaTarefa"] = 1;
+                objeto = new TAREFA();
+                objeto.TARE_DT_CADASTRO = DateTime.Today.Date;
+                objeto.TARE_DT_ESTIMADA = DateTime.Today.Date;
+                return View(objeto);
             }
-            if ((USUARIO)Session["UserCredentials"] != null)
+            catch (Exception ex)
             {
-                usuario = (USUARIO)Session["UserCredentials"];
+                ViewBag.Message = ex.Message;
+                Session["TipoVolta"] = 2;
+                Session["VoltaExcecao"] = "Tarefas";
+                Session["Excecao"] = ex;
+                Session["ExcecaoTipo"] = ex.GetType().ToString();
+                GravaLogExcecao grava = new GravaLogExcecao(usuApp);
+                Int32 voltaX = grava.GravarLogExcecao(ex, "Tarefas", "CRMSys", 1, (USUARIO)Session["UserCredentials"]);
+                return RedirectToAction("TrataExcecao", "BaseAdmin");
             }
-            else
-            {
-                return RedirectToAction("Logout", "ControleAcesso");
-            }
-            Int32 idAss = (Int32)Session["IdAssinante"];
-
-            // Carrega listas
-            if (Session["ListaTarefa"] == null)
-            {
-                listaMaster = CarregaTarefa(usuario.USUA_CD_ID);
-                Session["ListaTarefa"] = listaMaster;
-            }
-
-            if (id == null)
-            {
-                ViewBag.Listas = ((List<TAREFA>)Session["ListaTarefa"]).OrderByDescending(x => x.TARE_DT_CADASTRO).ToList<TAREFA>();
-            }
-            else
-            {
-                ViewBag.Listas = CarregaTarefa(usuario.USUA_CD_ID).Where(x => x.TARE_DT_REALIZADA == null).OrderByDescending(x => x.TARE_DT_CADASTRO).ToList<TAREFA>();
-            }
-
-            ViewBag.Title = "Tarefas";
-
-            // Indicadores
-            ViewBag.Tarefas = ((List<TAREFA>)Session["ListaTarefa"]).Count;
-            ViewBag.Tipos = new SelectList(CarregaTipoTarefa(), "TITR_CD_ID", "TITR_NM_NOME");
-            ViewBag.TarefasPendentes = baseApp.GetTarefaStatus(usuario.USUA_CD_ID, 1).Count;
-            ViewBag.TarefasEncerradas = baseApp.GetTarefaStatus(usuario.USUA_CD_ID, 2).Count;
-            ViewBag.TarefasSuspensas = baseApp.GetTarefaStatus(usuario.USUA_CD_ID, 3).Count;
-            ViewBag.TarefasCanceladas= baseApp.GetTarefaStatus(usuario.USUA_CD_ID, 4).Count;
-
-            List<USUARIO> listaTotal = CarregaUsuario();
-            if ((String)Session["PerfilUsuario"] != "ADM")
-            {
-                listaTotal = listaTotal.Where(p => p.EMPR_CD_ID == (Int32)Session["IdEmpresa"]).ToList();
-            }
-            ViewBag.Usuarios = new SelectList(listaTotal, "USUA_CD_ID", "USUA_NM_NOME");
-            ViewBag.Perfil = usuario.PERFIL.PERF_SG_SIGLA;
-
-            List<SelectListItem> status = new List<SelectListItem>();
-            status.Add(new SelectListItem() { Text = "Pendente", Value = "1" });
-            status.Add(new SelectListItem() { Text = "Em Andamento", Value = "2" });
-            status.Add(new SelectListItem() { Text = "Suspensa", Value = "3" });
-            status.Add(new SelectListItem() { Text = "Cancelada", Value = "4" });
-            status.Add(new SelectListItem() { Text = "Encerrada", Value = "5" });
-            ViewBag.Status = new SelectList(status, "Value", "Text");
-
-            // Mensagem
-            if ((Int32)Session["MensTarefa"] == 1)
-            {
-                ModelState.AddModelError("", CRMSys_Base.ResourceManager.GetString("M0016", CultureInfo.CurrentCulture));
-            }
-
-            // Abre view
-            Session["MensTarefa"] = 0;
-            Session["VoltaTarefa"] = 1;
-            objeto = new TAREFA();
-            objeto.TARE_DT_CADASTRO = DateTime.Today.Date;
-            objeto.TARE_DT_ESTIMADA = DateTime.Today.Date;
-            return View(objeto);
         }
 
         public ActionResult RetirarFiltroTarefa()
         {
-            if ((String)Session["Ativa"] == null)
+            try
             {
-                return RedirectToAction("Logout", "ControleAcesso");
+                if ((String)Session["Ativa"] == null)
+                {
+                    return RedirectToAction("Logout", "ControleAcesso");
+                }
+                Session["ListaTarefa"] = null;
+                return RedirectToAction("MontarTelaTarefa");
             }
-            Session["ListaTarefa"] = null;
-            return RedirectToAction("MontarTelaTarefa");
+            catch (Exception ex)
+            {
+                ViewBag.Message = ex.Message;
+                Session["TipoVolta"] = 2;
+                Session["VoltaExcecao"] = "Tarefas";
+                Session["Excecao"] = ex;
+                Session["ExcecaoTipo"] = ex.GetType().ToString();
+                GravaLogExcecao grava = new GravaLogExcecao(usuApp);
+                Int32 voltaX = grava.GravarLogExcecao(ex, "Tarefas", "CRMSys", 1, (USUARIO)Session["UserCredentials"]);
+                return RedirectToAction("TrataExcecao", "BaseAdmin");
+            }
+        }
+
+        public ActionResult MostrarTarefaRealizada()
+        {
+            try
+            {
+                if ((String)Session["Ativa"] == null)
+                {
+                    return RedirectToAction("Logout", "ControleAcesso");
+                }
+                USUARIO usuario = (USUARIO)Session["UserCredentials"];
+                listaMaster = CarregaTarefa(usuario.USUA_CD_ID);
+                Session["ListaTarefa"] = listaMaster;
+                return RedirectToAction("MontarTelaTarefa");
+            }
+            catch (Exception ex)
+            {
+                ViewBag.Message = ex.Message;
+                Session["TipoVolta"] = 2;
+                Session["VoltaExcecao"] = "Tarefas";
+                Session["Excecao"] = ex;
+                Session["ExcecaoTipo"] = ex.GetType().ToString();
+                GravaLogExcecao grava = new GravaLogExcecao(usuApp);
+                Int32 voltaX = grava.GravarLogExcecao(ex, "Tarefas", "CRMSys", 1, (USUARIO)Session["UserCredentials"]);
+                return RedirectToAction("TrataExcecao", "BaseAdmin");
+            }
         }
 
         public ActionResult MostrarTudoTarefa()
         {
-            if ((String)Session["Ativa"] == null)
+            try
             {
-                return RedirectToAction("Logout", "ControleAcesso");
+                if ((String)Session["Ativa"] == null)
+                {
+                    return RedirectToAction("Logout", "ControleAcesso");
+                }
+                USUARIO usuario = (USUARIO)Session["UserCredentials"];
+                listaMaster = baseApp.GetAllItensAdm(usuario.USUA_CD_ID);
+                Session["ListaTarefa"] = listaMaster;
+                return RedirectToAction("MontarTelaTarefa");
             }
-            USUARIO usuario = (USUARIO)Session["UserCredentials"];
-            listaMaster = baseApp.GetAllItensAdm(usuario.USUA_CD_ID);
-            Session["ListaTarefa"] = listaMaster;
-            return RedirectToAction("MontarTelaTarefa");
+            catch (Exception ex)
+            {
+                ViewBag.Message = ex.Message;
+                Session["TipoVolta"] = 2;
+                Session["VoltaExcecao"] = "Tarefas";
+                Session["Excecao"] = ex;
+                Session["ExcecaoTipo"] = ex.GetType().ToString();
+                GravaLogExcecao grava = new GravaLogExcecao(usuApp);
+                Int32 voltaX = grava.GravarLogExcecao(ex, "Tarefas", "CRMSys", 1, (USUARIO)Session["UserCredentials"]);
+                return RedirectToAction("TrataExcecao", "BaseAdmin");
+            }
         }
 
         [HttpPost]
         public ActionResult FiltrarTarefa(TAREFA item)
         {
-            if ((String)Session["Ativa"] == null)
-            {
-                return RedirectToAction("Logout", "ControleAcesso");
-            }
             try
             {
+                if ((String)Session["Ativa"] == null)
+                {
+                    return RedirectToAction("Logout", "ControleAcesso");
+                }
+
+                // Sanitização
+                item.TARE_NM_TITULO = CrossCutting.UtilitariosGeral.CleanStringGeral(item.TARE_NM_TITULO);
+
                 USUARIO user = (USUARIO)Session["UserCredentials"];
                 Int32 idAss = (Int32)Session["IdAssinante"];
                 if (user.PERF_CD_ID != 1)
@@ -351,14 +461,13 @@ namespace ERP_Condominios_Solution.Controllers
             }
             catch (Exception ex)
             {
-                LogError(ex.Message);
                 ViewBag.Message = ex.Message;
                 Session["TipoVolta"] = 2;
                 Session["VoltaExcecao"] = "Tarefas";
                 Session["Excecao"] = ex;
                 Session["ExcecaoTipo"] = ex.GetType().ToString();
                 GravaLogExcecao grava = new GravaLogExcecao(usuApp);
-                Int32 voltaX = grava.GravarLogExcecao(ex, "Tarefas", "RidolfiWeb", 1, (USUARIO)Session["UserCredentials"]);
+                Int32 voltaX = grava.GravarLogExcecao(ex, "Tarefas", "CRMSys", 1, (USUARIO)Session["UserCredentials"]);
                 return RedirectToAction("TrataExcecao", "BaseAdmin");
             }
         }
@@ -369,6 +478,10 @@ namespace ERP_Condominios_Solution.Controllers
             if (Session["UserCredentials"] == null)
             {
                 return RedirectToAction("Logout", "ControleAcesso");
+            }
+            if ((Int32)Session["VoltaTarefa"] == 11)
+            {
+                return RedirectToAction("CarregarBase", "BaseAdmin");
             }
             if ((Int32)Session["VoltaTarefa"] == 10)
             {
@@ -396,59 +509,69 @@ namespace ERP_Condominios_Solution.Controllers
         [HttpGet]
         public ActionResult IncluirTarefa()
         {
-            // Verifica se tem usuario logado
-            USUARIO usuario = new USUARIO();
-            if ((String)Session["Ativa"] == null)
+            try
             {
-                return RedirectToAction("Logout", "ControleAcesso");
-            }
-            if ((USUARIO)Session["UserCredentials"] != null)
-            {
-                usuario = (USUARIO)Session["UserCredentials"];
-            }
-            else
-            {
-                return RedirectToAction("Logout", "ControleAcesso");
-            }
-            Int32 idAss = (Int32)Session["IdAssinante"];
+                // Verifica se tem usuario logado
+                USUARIO usuario = new USUARIO();
+                if ((String)Session["Ativa"] == null)
+                {
+                    return RedirectToAction("Logout", "ControleAcesso");
+                }
+                if ((USUARIO)Session["UserCredentials"] != null)
+                {
+                    usuario = (USUARIO)Session["UserCredentials"];
+                }
+                else
+                {
+                    return RedirectToAction("Logout", "ControleAcesso");
+                }
+                Int32 idAss = (Int32)Session["IdAssinante"];
 
-            // Prepara listas
-            ViewBag.Tipos = new SelectList(CarregaTipoTarefa(), "TITR_CD_ID", "TITR_NM_NOME");
-            List<USUARIO> listaTotal = CarregaUsuario();
-            if ((String)Session["PerfilUsuario"] != "ADM")
-            {
-                listaTotal = listaTotal.Where(p => p.EMPR_CD_ID == (Int32)Session["IdEmpresa"]).ToList();
+                // Prepara listas
+                ViewBag.Tipos = new SelectList(CarregaTipoTarefa(), "TITR_CD_ID", "TITR_NM_NOME");
+                List<USUARIO> listaTotal = CarregaUsuario();
+                ViewBag.Usuarios = new SelectList(listaTotal, "USUA_CD_ID", "USUA_NM_NOME");
+                ViewBag.Periodicidade = new SelectList(baseApp.GetAllPeriodicidade(), "PETA_CD_ID", "PETA_NM_NOME");
+                List<SelectListItem> status = new List<SelectListItem>();
+                status.Add(new SelectListItem() { Text = "Pendente", Value = "1" });
+                status.Add(new SelectListItem() { Text = "Em Andamento", Value = "2" });
+                status.Add(new SelectListItem() { Text = "Suspensa", Value = "3" });
+                status.Add(new SelectListItem() { Text = "Cancelada", Value = "4" });
+                status.Add(new SelectListItem() { Text = "Encerrada", Value = "5" });
+                ViewBag.Status = new SelectList(status, "Value", "Text");
+                List<SelectListItem> prior = new List<SelectListItem>();
+                prior.Add(new SelectListItem() { Text = "Normal", Value = "1" });
+                prior.Add(new SelectListItem() { Text = "Baixa", Value = "2" });
+                prior.Add(new SelectListItem() { Text = "Alta", Value = "3" });
+                prior.Add(new SelectListItem() { Text = "Urgente", Value = "4" });
+                ViewBag.Prioridade = new SelectList(prior, "Value", "Text");
+
+                // Prepara view
+                ViewBag.Perfil = usuario.PERFIL.PERF_SG_SIGLA;
+
+                TAREFA item = new TAREFA();
+                TarefaViewModel vm = Mapper.Map<TAREFA, TarefaViewModel>(item);
+                vm.USUA_CD_ID = usuario.USUA_CD_ID;
+                vm.TARE_IN_ATIVO = 1;
+                vm.TARE_DT_CADASTRO = DateTime.Today.Date;
+                vm.TARE_DT_ESTIMADA = DateTime.Today.Date.AddDays(5);
+                vm.TARE_IN_PRIORIDADE = 1;
+                vm.TARE_IN_STATUS = 1;
+                vm.TARE_IN_AVISA = 1;
+                vm.ASSI_CD_ID = usuario.ASSI_CD_ID;
+                return View(vm);
             }
-            ViewBag.Usuarios = new SelectList(listaTotal, "USUA_CD_ID", "USUA_NM_NOME");
-            ViewBag.Periodicidade = new SelectList(baseApp.GetAllPeriodicidade(), "PETA_CD_ID", "PETA_NM_NOME");
-            List<SelectListItem> status = new List<SelectListItem>();
-            status.Add(new SelectListItem() { Text = "Pendente", Value = "1" });
-            status.Add(new SelectListItem() { Text = "Em Andamento", Value = "2" });
-            status.Add(new SelectListItem() { Text = "Suspensa", Value = "3" });
-            status.Add(new SelectListItem() { Text = "Cancelada", Value = "4" });
-            status.Add(new SelectListItem() { Text = "Encerrada", Value = "5" });
-            ViewBag.Status = new SelectList(status, "Value", "Text");
-            List<SelectListItem> prior = new List<SelectListItem>();
-            prior.Add(new SelectListItem() { Text = "Normal", Value = "1" });
-            prior.Add(new SelectListItem() { Text = "Baixa", Value = "2" });
-            prior.Add(new SelectListItem() { Text = "Alta", Value = "3" });
-            prior.Add(new SelectListItem() { Text = "Urgente", Value = "4" });
-            ViewBag.Prioridade = new SelectList(prior, "Value", "Text");
-
-            // Prepara view
-            ViewBag.Perfil = usuario.PERFIL.PERF_SG_SIGLA;
-
-            TAREFA item = new TAREFA();
-            TarefaViewModel vm = Mapper.Map<TAREFA, TarefaViewModel>(item);
-            vm.USUA_CD_ID = usuario.USUA_CD_ID;
-            vm.TARE_IN_ATIVO = 1;
-            vm.TARE_DT_CADASTRO = DateTime.Today.Date;
-            vm.TARE_DT_ESTIMADA = DateTime.Today.Date.AddDays(5);
-            vm.TARE_IN_PRIORIDADE = 1;
-            vm.TARE_IN_STATUS = 1;
-            vm.TARE_IN_AVISA = 1;
-            vm.ASSI_CD_ID = usuario.ASSI_CD_ID;
-            return View(vm);
+            catch (Exception ex)
+            {
+                ViewBag.Message = ex.Message;
+                Session["TipoVolta"] = 2;
+                Session["VoltaExcecao"] = "Tarefas";
+                Session["Excecao"] = ex;
+                Session["ExcecaoTipo"] = ex.GetType().ToString();
+                GravaLogExcecao grava = new GravaLogExcecao(usuApp);
+                Int32 voltaX = grava.GravarLogExcecao(ex, "Tarefas", "CRMSys", 1, (USUARIO)Session["UserCredentials"]);
+                return RedirectToAction("TrataExcecao", "BaseAdmin");
+            }
         }
 
         [HttpPost]
@@ -460,13 +583,9 @@ namespace ERP_Condominios_Solution.Controllers
             }
             Session["ListaAgenda"] = null;
             Int32 idAss = (Int32)Session["IdAssinante"];
-
+            Int32 volta = 0;
             ViewBag.Tipos = new SelectList(CarregaTipoTarefa(), "TITR_CD_ID", "TITR_NM_NOME");
             List<USUARIO> listaTotal = CarregaUsuario();
-            if ((String)Session["PerfilUsuario"] != "ADM")
-            {
-                listaTotal = listaTotal.Where(p => p.EMPR_CD_ID == (Int32)Session["IdEmpresa"]).ToList();
-            }
             ViewBag.Usuarios = new SelectList(listaTotal, "USUA_CD_ID", "USUA_NM_NOME");
             ViewBag.Periodicidade = new SelectList(baseApp.GetAllPeriodicidade(), "PETA_CD_ID", "PETA_NM_NOME");
             List<SelectListItem> status = new List<SelectListItem>();
@@ -486,6 +605,12 @@ namespace ERP_Condominios_Solution.Controllers
             {
                 try
                 {
+                    // Sanitização
+                    vm.TARE_NM_TITULO = CrossCutting.UtilitariosGeral.CleanStringGeral(vm.TARE_NM_TITULO);
+                    vm.TARE_DS_DESCRICAO = CrossCutting.UtilitariosGeral.CleanStringGeral(vm.TARE_DS_DESCRICAO);
+                    vm.TARE_NM_LOCAL = CrossCutting.UtilitariosGeral.CleanStringGeral(vm.TARE_NM_LOCAL);
+                    vm.TARE_TX_OBSERVACOES = CrossCutting.UtilitariosGeral.CleanStringGeral(vm.TARE_TX_OBSERVACOES);
+
                     // Preparação
                     TAREFA item = Mapper.Map<TarefaViewModel, TAREFA>(vm);
                     USUARIO usuarioLogado = (USUARIO)Session["UserCredentials"];
@@ -509,14 +634,14 @@ namespace ERP_Condominios_Solution.Controllers
                         TAREFA tarefa = new TAREFA();
                         Int32 tare = 0;
                         Int32 pai = 0;
-                        Int32? repete = item.TARE_NR_PERIODICIDADE_QUANTIDADE + 1;
+                        Int32? repete = item.TARE_NR_PERIODICIDADE_QUANTIDADE;
 
                         for (var i = 1; i <= repete; i++)
                         {
                             if (i == 1)
                             {
                                 item.TARE_NM_ORDEM = "1/" + repete.ToString();
-                                Int32 volta = baseApp.ValidateCreate(item, usuarioLogado);
+                                volta = baseApp.ValidateCreate(item, usuarioLogado);
                                 Session["PeriTarefa"] = item.PERIODICIDADE_TAREFA;
                                 tare = item.TARE_CD_ID;
                                 pai = item.TARE_CD_ID;
@@ -555,8 +680,12 @@ namespace ERP_Condominios_Solution.Controllers
                                 tarefa.TARE_NM_TITULO = $"{item.TARE_NM_TITULO} #{i}";
                                 tarefa.TARE_NM_ORDEM = i.ToString() + "/" + repete.ToString();
 
-                                Int32 volta = baseApp.ValidateCreate(tarefa, usuarioLogado);
+                                volta = baseApp.ValidateCreate(tarefa, usuarioLogado);
                                 tare = tarefa.TARE_CD_ID;
+
+                                // Cria pastas Tarefa
+                                String caminho1 = "/Imagens/" + usuarioLogado.ASSI_CD_ID.ToString() + "/Tarefa/" + tarefa.TARE_CD_ID.ToString() + "/Anexos/";
+                                Directory.CreateDirectory(Server.MapPath(caminho1));
                             }
 
                             AGENDA ag = new AGENDA();
@@ -608,7 +737,7 @@ namespace ERP_Condominios_Solution.Controllers
                     }
                     else
                     {
-                        Int32 volta1 = baseApp.ValidateCreate(item, usuarioLogado);
+                        volta = baseApp.ValidateCreate(item, usuarioLogado);
 
                         AGENDA ag = new AGENDA();
                         ag.USUA_CD_ID = item.USUA_CD_ID;
@@ -625,7 +754,7 @@ namespace ERP_Condominios_Solution.Controllers
 
 
                         // Verifica retorno
-                        if (volta1 == 1)
+                        if (volta == 1)
                         {
                             ModelState.AddModelError("", CRMSys_Import.ResourceManager.GetString("M0058", CultureInfo.CurrentCulture));
                             return View(vm);
@@ -642,7 +771,6 @@ namespace ERP_Condominios_Solution.Controllers
                         Directory.CreateDirectory(Server.MapPath(agCaminho));
                     }
 
-                    // Sucesso
                     listaMaster = new List<TAREFA>();
                     Session["ListaTarefa"] = null;
                     Session["IdVolta"] = item.TARE_CD_ID;
@@ -670,14 +798,13 @@ namespace ERP_Condominios_Solution.Controllers
                 }
                 catch (Exception ex)
                 {
-                    LogError(ex.Message);
                     ViewBag.Message = ex.Message;
                     Session["TipoVolta"] = 2;
                     Session["VoltaExcecao"] = "Tarefas";
                     Session["Excecao"] = ex;
                     Session["ExcecaoTipo"] = ex.GetType().ToString();
                     GravaLogExcecao grava = new GravaLogExcecao(usuApp);
-                    Int32 voltaX = grava.GravarLogExcecao(ex, "Tarefas", "RidolfiWeb", 1, (USUARIO)Session["UserCredentials"]);
+                    Int32 voltaX = grava.GravarLogExcecao(ex, "Tarefas", "CRMSys", 1, (USUARIO)Session["UserCredentials"]);
                     return RedirectToAction("TrataExcecao", "BaseAdmin");
                 }
             }
@@ -690,66 +817,76 @@ namespace ERP_Condominios_Solution.Controllers
         [HttpGet]
         public ActionResult EditarTarefa(Int32 id)
         {
-            // Verifica se tem usuario logado
-            USUARIO usuario = new USUARIO();
-            if ((String)Session["Ativa"] == null)
+            try
             {
-                return RedirectToAction("Logout", "ControleAcesso");
-            }
-            if ((USUARIO)Session["UserCredentials"] != null)
-            {
-                usuario = (USUARIO)Session["UserCredentials"];
-            }
-            else
-            {
-                return RedirectToAction("Logout", "ControleAcesso");
-            }
-            Int32 idAss = (Int32)Session["IdAssinante"];
+                // Verifica se tem usuario logado
+                USUARIO usuario = new USUARIO();
+                if ((String)Session["Ativa"] == null)
+                {
+                    return RedirectToAction("Logout", "ControleAcesso");
+                }
+                if ((USUARIO)Session["UserCredentials"] != null)
+                {
+                    usuario = (USUARIO)Session["UserCredentials"];
+                }
+                else
+                {
+                    return RedirectToAction("Logout", "ControleAcesso");
+                }
+                Int32 idAss = (Int32)Session["IdAssinante"];
 
-            // Prepara view
-            ViewBag.Tipos = new SelectList(CarregaTipoTarefa(), "TITR_CD_ID", "TITR_NM_NOME");
-            List<USUARIO> listaTotal = CarregaUsuario();
-            if ((String)Session["PerfilUsuario"] != "ADM")
-            {
-                listaTotal = listaTotal.Where(p => p.EMPR_CD_ID == (Int32)Session["IdEmpresa"]).ToList();
-            }
-            ViewBag.Usuarios = new SelectList(listaTotal, "USUA_CD_ID", "USUA_NM_NOME");
-            ViewBag.Periodicidade = new SelectList(baseApp.GetAllPeriodicidade(), "PETA_CD_ID", "PETA_NM_NOME");
-            List<SelectListItem> status = new List<SelectListItem>();
-            status.Add(new SelectListItem() { Text = "Pendente", Value = "1" });
-            status.Add(new SelectListItem() { Text = "Em Andamento", Value = "2" });
-            status.Add(new SelectListItem() { Text = "Suspensa", Value = "3" });
-            status.Add(new SelectListItem() { Text = "Cancelada", Value = "4" });
-            status.Add(new SelectListItem() { Text = "Encerrada", Value = "5" });
-            ViewBag.StatusX = new SelectList(status, "Value", "Text");
-            List<SelectListItem> prior = new List<SelectListItem>();
-            prior.Add(new SelectListItem() { Text = "Normal", Value = "1" });
-            prior.Add(new SelectListItem() { Text = "Baixa", Value = "2" });
-            prior.Add(new SelectListItem() { Text = "Alta", Value = "3" });
-            prior.Add(new SelectListItem() { Text = "Urgente", Value = "4" });
-            ViewBag.Prioridade = new SelectList(prior, "Value", "Text");
+                // Prepara view
+                ViewBag.Tipos = new SelectList(CarregaTipoTarefa(), "TITR_CD_ID", "TITR_NM_NOME");
+                List<USUARIO> listaTotal = CarregaUsuario();
+                ViewBag.Usuarios = new SelectList(listaTotal, "USUA_CD_ID", "USUA_NM_NOME");
+                ViewBag.Periodicidade = new SelectList(baseApp.GetAllPeriodicidade(), "PETA_CD_ID", "PETA_NM_NOME");
+                List<SelectListItem> status = new List<SelectListItem>();
+                status.Add(new SelectListItem() { Text = "Para Iniciar", Value = "1" });
+                status.Add(new SelectListItem() { Text = "Em Andamento", Value = "2" });
+                status.Add(new SelectListItem() { Text = "Suspensa", Value = "3" });
+                status.Add(new SelectListItem() { Text = "Cancelada", Value = "4" });
+                status.Add(new SelectListItem() { Text = "Encerrada", Value = "5" });
+                ViewBag.StatusX = new SelectList(status, "Value", "Text");
+                List<SelectListItem> prior = new List<SelectListItem>();
+                prior.Add(new SelectListItem() { Text = "Normal", Value = "1" });
+                prior.Add(new SelectListItem() { Text = "Baixa", Value = "2" });
+                prior.Add(new SelectListItem() { Text = "Alta", Value = "3" });
+                prior.Add(new SelectListItem() { Text = "Urgente", Value = "4" });
+                ViewBag.Prioridade = new SelectList(prior, "Value", "Text");
 
-            // Mensagens
-            if ((Int32)Session["MensTarefa"] == 10)
-            {
-                ModelState.AddModelError("", CRMSys_Import.ResourceManager.GetString("M0019", CultureInfo.CurrentCulture));
-            }
-            if ((Int32)Session["MensTarefa"] == 11)
-            {
-                ModelState.AddModelError("", CRMSys_Import.ResourceManager.GetString("M0024", CultureInfo.CurrentCulture));
-            }
+                // Mensagens
+                if ((Int32)Session["MensTarefa"] == 10)
+                {
+                    ModelState.AddModelError("", CRMSys_Import.ResourceManager.GetString("M0019", CultureInfo.CurrentCulture));
+                }
+                if ((Int32)Session["MensTarefa"] == 11)
+                {
+                    ModelState.AddModelError("", CRMSys_Import.ResourceManager.GetString("M0024", CultureInfo.CurrentCulture));
+                }
 
-            TAREFA item = baseApp.GetItemById(id);
-            objetoAntes = item;
-            Session["Tarefa"] = item;
-            Session["IdVolta"] = id;
-            Session["StatusAnterior"] = item.TARE_IN_STATUS;
-            ViewBag.Status = (item.TARE_IN_STATUS == 1 ? "Pendente" : (item.TARE_IN_STATUS == 2 ? "Em Andamento" : (item.TARE_IN_STATUS == 3 ? "Suspensa" : (item.TARE_IN_STATUS == 4 ? "Cancelada" : "Encerrada"))));
-            ViewBag.StatusCor = (item.TARE_IN_STATUS == 1 ? "red-bg" : (item.TARE_IN_STATUS == 2 ? "blue-bg" : (item.TARE_IN_STATUS == 2 ? "blue-bg" : (item.TARE_IN_STATUS == 3 ? "yellow-bg" : "navy-bg"))));
-            ViewBag.Prior = (item.TARE_IN_PRIORIDADE == 1 ? "Normal" : (item.TARE_IN_PRIORIDADE == 2 ? "Baixa" : (item.TARE_IN_PRIORIDADE == 3 ? "Alta" : "Urgente")));
-            ViewBag.PriorCor = item.TARE_IN_PRIORIDADE == 1 ? "navy-bg" : "red-bg";
-            TarefaViewModel vm = Mapper.Map<TAREFA, TarefaViewModel>(item);
-            return View(vm);
+                TAREFA item = baseApp.GetItemById(id);
+                objetoAntes = item;
+                Session["Tarefa"] = item;
+                Session["IdVolta"] = id;
+                Session["StatusAnterior"] = item.TARE_IN_STATUS;
+                ViewBag.Status = (item.TARE_IN_STATUS == 1 ? "Para Iniciar" : (item.TARE_IN_STATUS == 2 ? "Em Andamento" : (item.TARE_IN_STATUS == 3 ? "Suspensa" : (item.TARE_IN_STATUS == 4 ? "Cancelada" : "Encerrada"))));
+                ViewBag.StatusCor = (item.TARE_IN_STATUS == 1 ? "red-bg" : (item.TARE_IN_STATUS == 2 ? "blue-bg" : (item.TARE_IN_STATUS == 2 ? "blue-bg" : (item.TARE_IN_STATUS == 3 ? "yellow-bg" : "navy-bg"))));
+                ViewBag.Prior = (item.TARE_IN_PRIORIDADE == 1 ? "Normal" : (item.TARE_IN_PRIORIDADE == 2 ? "Baixa" : (item.TARE_IN_PRIORIDADE == 3 ? "Alta" : "Urgente")));
+                ViewBag.PriorCor = item.TARE_IN_PRIORIDADE == 1 ? "navy-bg" : "red-bg";
+                TarefaViewModel vm = Mapper.Map<TAREFA, TarefaViewModel>(item);
+                return View(vm);
+            }
+            catch (Exception ex)
+            {
+                ViewBag.Message = ex.Message;
+                Session["TipoVolta"] = 2;
+                Session["VoltaExcecao"] = "Tarefas";
+                Session["Excecao"] = ex;
+                Session["ExcecaoTipo"] = ex.GetType().ToString();
+                GravaLogExcecao grava = new GravaLogExcecao(usuApp);
+                Int32 voltaX = grava.GravarLogExcecao(ex, "Tarefas", "CRMSys", 1, (USUARIO)Session["UserCredentials"]);
+                return RedirectToAction("TrataExcecao", "BaseAdmin");
+            }
         }
 
         [HttpPost]
@@ -762,10 +899,6 @@ namespace ERP_Condominios_Solution.Controllers
             Int32 idAss = (Int32)Session["IdAssinante"];
             ViewBag.Tipos = new SelectList(CarregaTipoTarefa(), "TITR_CD_ID", "TITR_NM_NOME");
             List<USUARIO> listaTotal = CarregaUsuario();
-            if ((String)Session["PerfilUsuario"] != "ADM")
-            {
-                listaTotal = listaTotal.Where(p => p.EMPR_CD_ID == (Int32)Session["IdEmpresa"]).ToList();
-            }
             ViewBag.Usuarios = new SelectList(listaTotal, "USUA_CD_ID", "USUA_NM_NOME");
             ViewBag.Periodicidade = new SelectList(baseApp.GetAllPeriodicidade(), "PETA_CD_ID", "PETA_NM_NOME");
             List<SelectListItem> status = new List<SelectListItem>();
@@ -785,6 +918,12 @@ namespace ERP_Condominios_Solution.Controllers
             {
                 try
                 {
+                    // Sanitização
+                    vm.TARE_NM_TITULO = CrossCutting.UtilitariosGeral.CleanStringGeral(vm.TARE_NM_TITULO);
+                    vm.TARE_DS_DESCRICAO = CrossCutting.UtilitariosGeral.CleanStringGeral(vm.TARE_DS_DESCRICAO);
+                    vm.TARE_NM_LOCAL = CrossCutting.UtilitariosGeral.CleanStringGeral(vm.TARE_NM_LOCAL);
+                    vm.TARE_TX_OBSERVACOES = CrossCutting.UtilitariosGeral.CleanStringGeral(vm.TARE_TX_OBSERVACOES);
+
                     // Executa a operação
                     USUARIO usuarioLogado = (USUARIO)Session["UserCredentials"];
                     TAREFA item = Mapper.Map<TarefaViewModel, TAREFA>(vm);
@@ -823,7 +962,7 @@ namespace ERP_Condominios_Solution.Controllers
                         foreach (AGENDA ag in ags)
                         {
                             ag.AGEN_IN_STATUS = 2;
-                            Int32 volta1 = agenApp.ValidateEdit(ag, ag, usuarioLogado);
+                            Int32 volta1 = agenApp.ValidateEdit(ag, usuarioLogado);
                         }
                     }
                     if (item.TARE_IN_STATUS == 4 || item.TARE_IN_STATUS == 5)
@@ -833,7 +972,7 @@ namespace ERP_Condominios_Solution.Controllers
                         foreach (AGENDA ag in ags)
                         {
                             ag.AGEN_IN_STATUS = 3;
-                            Int32 volta1 = agenApp.ValidateEdit(ag, ag, usuarioLogado);
+                            Int32 volta1 = agenApp.ValidateEdit(ag, usuarioLogado);
                         }
                     }
 
@@ -855,7 +994,7 @@ namespace ERP_Condominios_Solution.Controllers
                             foreach (AGENDA ag in ags)
                             {
                                 ag.AGEN_IN_ATIVO = 0;
-                                volta1 = agenApp.ValidateEdit(ag, ag, usuarioLogado);
+                                volta1 = agenApp.ValidateEdit(ag, usuarioLogado);
                             }
                         }
 
@@ -959,14 +1098,13 @@ namespace ERP_Condominios_Solution.Controllers
                 }
                 catch (Exception ex)
                 {
-                    LogError(ex.Message);
                     ViewBag.Message = ex.Message;
                     Session["TipoVolta"] = 2;
                     Session["VoltaExcecao"] = "Tarefas";
                     Session["Excecao"] = ex;
                     Session["ExcecaoTipo"] = ex.GetType().ToString();
                     GravaLogExcecao grava = new GravaLogExcecao(usuApp);
-                    Int32 voltaX = grava.GravarLogExcecao(ex, "Tarefas", "RidolfiWeb", 1, (USUARIO)Session["UserCredentials"]);
+                    Int32 voltaX = grava.GravarLogExcecao(ex, "Tarefas", "CRMSys", 1, (USUARIO)Session["UserCredentials"]);
                     return RedirectToAction("TrataExcecao", "BaseAdmin");
                 }
             }
@@ -979,28 +1117,28 @@ namespace ERP_Condominios_Solution.Controllers
         [HttpPost]
         public JsonResult EditarStatusTarefa(Int32 id, Int32 status, DateTime? dtEnc)
         {
-            var tarefa = baseApp.GetById(id);
-            tarefa.TARE_IN_STATUS = status;
-
-            var item = new TAREFA();
-            item.TARE_CD_ID = tarefa.TARE_CD_ID;
-            item.TARE_DS_DESCRICAO = tarefa.TARE_DS_DESCRICAO;
-            item.TARE_DT_CADASTRO = tarefa.TARE_DT_CADASTRO;
-            item.TARE_DT_ESTIMADA = tarefa.TARE_DT_ESTIMADA;
-            item.TARE_DT_REALIZADA = dtEnc;
-            item.TARE_IN_ATIVO = tarefa.TARE_IN_ATIVO;
-            item.TARE_IN_AVISA = tarefa.TARE_IN_AVISA;
-            item.TARE_IN_PRIORIDADE = tarefa.TARE_IN_PRIORIDADE;
-            item.TARE_IN_STATUS = tarefa.TARE_IN_STATUS;
-            item.TARE_NM_LOCAL = tarefa.TARE_NM_LOCAL;
-            item.TARE_NM_TITULO = tarefa.TARE_NM_TITULO;
-            item.TARE_TX_OBSERVACOES = tarefa.TARE_TX_OBSERVACOES;
-            item.TITR_CD_ID = tarefa.TITR_CD_ID;
-            item.USUA_CD_ID = tarefa.USUA_CD_ID;
-            item.ASSI_CD_ID = tarefa.ASSI_CD_ID;
-
             try
             {
+                var tarefa = baseApp.GetById(id);
+                tarefa.TARE_IN_STATUS = status;
+
+                var item = new TAREFA();
+                item.TARE_CD_ID = tarefa.TARE_CD_ID;
+                item.TARE_DS_DESCRICAO = tarefa.TARE_DS_DESCRICAO;
+                item.TARE_DT_CADASTRO = tarefa.TARE_DT_CADASTRO;
+                item.TARE_DT_ESTIMADA = tarefa.TARE_DT_ESTIMADA;
+                item.TARE_DT_REALIZADA = dtEnc;
+                item.TARE_IN_ATIVO = tarefa.TARE_IN_ATIVO;
+                item.TARE_IN_AVISA = tarefa.TARE_IN_AVISA;
+                item.TARE_IN_PRIORIDADE = tarefa.TARE_IN_PRIORIDADE;
+                item.TARE_IN_STATUS = tarefa.TARE_IN_STATUS;
+                item.TARE_NM_LOCAL = tarefa.TARE_NM_LOCAL;
+                item.TARE_NM_TITULO = tarefa.TARE_NM_TITULO;
+                item.TARE_TX_OBSERVACOES = tarefa.TARE_TX_OBSERVACOES;
+                item.TITR_CD_ID = tarefa.TITR_CD_ID;
+                item.USUA_CD_ID = tarefa.USUA_CD_ID;
+                item.ASSI_CD_ID = tarefa.ASSI_CD_ID;
+
                 // Executa a operação
                 USUARIO usuarioLogado = (USUARIO)Session["UserCredentials"];
                 Int32 volta = baseApp.ValidateEdit(item, objetoAntes, usuarioLogado);
@@ -1021,14 +1159,13 @@ namespace ERP_Condominios_Solution.Controllers
             }
             catch (Exception ex)
             {
-                LogError(ex.Message);
                 ViewBag.Message = ex.Message;
                 Session["TipoVolta"] = 2;
                 Session["VoltaExcecao"] = "Tarefas";
                 Session["Excecao"] = ex;
                 Session["ExcecaoTipo"] = ex.GetType().ToString();
                 GravaLogExcecao grava = new GravaLogExcecao(usuApp);
-                Int32 voltaX = grava.GravarLogExcecao(ex, "Tarefas", "RidolfiWeb", 1, (USUARIO)Session["UserCredentials"]);
+                Int32 voltaX = grava.GravarLogExcecao(ex, "Tarefas", "CRMSys", 1, (USUARIO)Session["UserCredentials"]);
                 return Json(ex.Message);
             }
         }
@@ -1036,25 +1173,24 @@ namespace ERP_Condominios_Solution.Controllers
         [HttpGet]
         public ActionResult ExcluirTarefa(Int32 id)
         {
-            // Verifica se tem usuario logado
-            USUARIO usuario = new USUARIO();
-            if ((String)Session["Ativa"] == null)
-            {
-                return RedirectToAction("Logout", "ControleAcesso");
-            }
-            if ((USUARIO)Session["UserCredentials"] != null)
-            {
-                usuario = (USUARIO)Session["UserCredentials"];
-            }
-            else
-            {
-                return RedirectToAction("Logout", "ControleAcesso");
-            }
-            Int32 idAss = (Int32)Session["IdAssinante"];
-
-            // Processa
             try
             {
+                // Verifica se tem usuario logado
+                USUARIO usuario = new USUARIO();
+                if ((String)Session["Ativa"] == null)
+                {
+                    return RedirectToAction("Logout", "ControleAcesso");
+                }
+                if ((USUARIO)Session["UserCredentials"] != null)
+                {
+                    usuario = (USUARIO)Session["UserCredentials"];
+                }
+                else
+                {
+                    return RedirectToAction("Logout", "ControleAcesso");
+                }
+                Int32 idAss = (Int32)Session["IdAssinante"];
+
                 TAREFA tarefa = baseApp.GetItemById(id);
                 TAREFA item = new TAREFA();
                 item.TARE_CD_ID = tarefa.TARE_CD_ID;
@@ -1081,14 +1217,13 @@ namespace ERP_Condominios_Solution.Controllers
             }
             catch (Exception ex)
             {
-                LogError(ex.Message);
                 ViewBag.Message = ex.Message;
                 Session["TipoVolta"] = 2;
                 Session["VoltaExcecao"] = "Tarefas";
                 Session["Excecao"] = ex;
                 Session["ExcecaoTipo"] = ex.GetType().ToString();
                 GravaLogExcecao grava = new GravaLogExcecao(usuApp);
-                Int32 voltaX = grava.GravarLogExcecao(ex, "Tarefas", "RidolfiWeb", 1, (USUARIO)Session["UserCredentials"]);
+                Int32 voltaX = grava.GravarLogExcecao(ex, "Tarefas", "CRMSys", 1, (USUARIO)Session["UserCredentials"]);
                 return RedirectToAction("TrataExcecao", "BaseAdmin");
             }
         }
@@ -1096,25 +1231,25 @@ namespace ERP_Condominios_Solution.Controllers
         [HttpGet]
         public ActionResult ReativarTarefa(Int32 id)
         {
-            // Verifica se tem usuario logado
-            USUARIO usuario = new USUARIO();
-            if ((String)Session["Ativa"] == null)
-            {
-                return RedirectToAction("Logout", "ControleAcesso");
-            }
-            if ((USUARIO)Session["UserCredentials"] != null)
-            {
-                usuario = (USUARIO)Session["UserCredentials"];
-            }
-            else
-            {
-                return RedirectToAction("Logout", "ControleAcesso");
-            }
-            Int32 idAss = (Int32)Session["IdAssinante"];
-
-            // processa
             try
             {
+                // Verifica se tem usuario logado
+                USUARIO usuario = new USUARIO();
+                if ((String)Session["Ativa"] == null)
+                {
+                    return RedirectToAction("Logout", "ControleAcesso");
+                }
+                if ((USUARIO)Session["UserCredentials"] != null)
+                {
+                    usuario = (USUARIO)Session["UserCredentials"];
+                }
+                else
+                {
+                    return RedirectToAction("Logout", "ControleAcesso");
+                }
+                Int32 idAss = (Int32)Session["IdAssinante"];
+
+                // processa
                 TAREFA tarefa = baseApp.GetItemById(id);
                 TAREFA item = new TAREFA();
                 item.TARE_CD_ID = tarefa.TARE_CD_ID;
@@ -1148,7 +1283,7 @@ namespace ERP_Condominios_Solution.Controllers
                 Session["Excecao"] = ex;
                 Session["ExcecaoTipo"] = ex.GetType().ToString();
                 GravaLogExcecao grava = new GravaLogExcecao(usuApp);
-                Int32 voltaX = grava.GravarLogExcecao(ex, "Tarefas", "RidolfiWeb", 1, (USUARIO)Session["UserCredentials"]);
+                Int32 voltaX = grava.GravarLogExcecao(ex, "Tarefas", "CRMSys", 1, (USUARIO)Session["UserCredentials"]);
                 return RedirectToAction("TrataExcecao", "BaseAdmin");
             }
         }
@@ -1175,37 +1310,37 @@ namespace ERP_Condominios_Solution.Controllers
         [HttpPost]
         public ActionResult UploadFileQueueTarefa(FileQueue file)
         {
-            if ((String)Session["Ativa"] == null)
-            {
-                return RedirectToAction("Logout", "ControleAcesso");
-            }
-            if (file == null)
-            {
-                Session["MensTarefa"] = 10;
-                return RedirectToAction("VoltarAnexoTarefa");
-            }
-
-            TAREFA item = baseApp.GetById((Int32)Session["IdVolta"]);
-            USUARIO usu = (USUARIO)Session["UserCredentials"];
-            var fileName = file.Name;
-
-            if (fileName.Length > 250)
-            {
-                Session["MensTarefa"] = 11;
-                return RedirectToAction("VoltarAnexoTarefa");
-            }
-
-            String caminho = "/Imagens/" + usu.ASSI_CD_ID.ToString() + "/Tarefa/" + item.TARE_CD_ID.ToString() + "/Anexos/";
-            String path = Path.Combine(Server.MapPath(caminho), fileName);
-            System.IO.File.WriteAllBytes(path, file.Contents);
-
-            //Recupera tipo de arquivo
-            extensao = Path.GetExtension(fileName);
-            String a = extensao;
-
-            // Gravar registro
             try
             {
+                if ((String)Session["Ativa"] == null)
+                {
+                    return RedirectToAction("Logout", "ControleAcesso");
+                }
+                if (file == null)
+                {
+                    Session["MensTarefa"] = 10;
+                    return RedirectToAction("VoltarAnexoTarefa");
+                }
+
+                TAREFA item = baseApp.GetById((Int32)Session["IdVolta"]);
+                USUARIO usu = (USUARIO)Session["UserCredentials"];
+                var fileName = file.Name;
+
+                if (fileName.Length > 250)
+                {
+                    Session["MensTarefa"] = 11;
+                    return RedirectToAction("VoltarAnexoTarefa");
+                }
+
+                String caminho = "/Imagens/" + usu.ASSI_CD_ID.ToString() + "/Tarefa/" + item.TARE_CD_ID.ToString() + "/Anexos/";
+                String path = Path.Combine(Server.MapPath(caminho), fileName);
+                System.IO.File.WriteAllBytes(path, file.Contents);
+
+                //Recupera tipo de arquivo
+                extensao = Path.GetExtension(fileName);
+                String a = extensao;
+
+                // Gravar registro
                 TAREFA_ANEXO foto = new TAREFA_ANEXO();
                 foto.TAAN_AQ_ARQUIVO = "~" + caminho + fileName;
                 foto.TAAN_DT_ANEXO = DateTime.Today;
@@ -1250,14 +1385,13 @@ namespace ERP_Condominios_Solution.Controllers
             }
             catch (Exception ex)
             {
-                LogError(ex.Message);
                 ViewBag.Message = ex.Message;
                 Session["TipoVolta"] = 2;
                 Session["VoltaExcecao"] = "Tarefas";
                 Session["Excecao"] = ex;
                 Session["ExcecaoTipo"] = ex.GetType().ToString();
                 GravaLogExcecao grava = new GravaLogExcecao(usuApp);
-                Int32 voltaX = grava.GravarLogExcecao(ex, "Tarefas", "RidolfiWeb", 1, (USUARIO)Session["UserCredentials"]);
+                Int32 voltaX = grava.GravarLogExcecao(ex, "Tarefas", "CRMSys", 1, (USUARIO)Session["UserCredentials"]);
                 return RedirectToAction("TrataExcecao", "BaseAdmin");
             }
         }
@@ -1265,37 +1399,37 @@ namespace ERP_Condominios_Solution.Controllers
         [HttpPost]
         public ActionResult UploadFileTarefa(HttpPostedFileBase file)
         {
-            if ((String)Session["Ativa"] == null)
-            {
-                return RedirectToAction("Logout", "ControleAcesso");
-            }
-            if (file == null)
-            {
-                Session["MensTarefa"] = 10;
-                return RedirectToAction("VoltarAnexoTarefa");
-            }
-
-            TAREFA item = baseApp.GetById((Int32)Session["IdVolta"]);
-            USUARIO usu = (USUARIO)Session["UserCredentials"];
-            var fileName = Path.GetFileName(file.FileName);
-
-            if (fileName.Length > 100)
-            {
-                Session["MensTarefa"] = 11;
-                return RedirectToAction("VoltarAnexoTarefa");
-            }
-
-            String caminho = "/Imagens/" + usu.ASSI_CD_ID.ToString() + "/Tarefa/" + item.TARE_CD_ID.ToString() + "/Anexos/";
-            String path = Path.Combine(Server.MapPath(caminho), fileName);
-            file.SaveAs(path);
-
-            //Recupera tipo de arquivo
-            extensao = Path.GetExtension(fileName);
-            String a = extensao;
-
-            // Gravar registro
             try
             {
+                if ((String)Session["Ativa"] == null)
+                {
+                    return RedirectToAction("Logout", "ControleAcesso");
+                }
+                if (file == null)
+                {
+                    Session["MensTarefa"] = 10;
+                    return RedirectToAction("VoltarAnexoTarefa");
+                }
+
+                TAREFA item = baseApp.GetById((Int32)Session["IdVolta"]);
+                USUARIO usu = (USUARIO)Session["UserCredentials"];
+                var fileName = Path.GetFileName(file.FileName);
+
+                if (fileName.Length > 100)
+                {
+                    Session["MensTarefa"] = 11;
+                    return RedirectToAction("VoltarAnexoTarefa");
+                }
+
+                String caminho = "/Imagens/" + usu.ASSI_CD_ID.ToString() + "/Tarefa/" + item.TARE_CD_ID.ToString() + "/Anexos/";
+                String path = Path.Combine(Server.MapPath(caminho), fileName);
+                file.SaveAs(path);
+
+                //Recupera tipo de arquivo
+                extensao = Path.GetExtension(fileName);
+                String a = extensao;
+
+                // Gravar registro
                 TAREFA_ANEXO foto = new TAREFA_ANEXO();
                 foto.TAAN_AQ_ARQUIVO = "~" + caminho + fileName;
                 foto.TAAN_DT_ANEXO = DateTime.Today;
@@ -1336,18 +1470,18 @@ namespace ERP_Condominios_Solution.Controllers
                 item.TAREFA_ANEXO.Add(foto);
                 objetoAntes = item;
                 Int32 volta = baseApp.ValidateEdit(item, objetoAntes);
+                Session["AbaTarefa"] = 3;
                 return RedirectToAction("VoltarAnexoTarefa");
             }
             catch (Exception ex)
             {
-                LogError(ex.Message);
                 ViewBag.Message = ex.Message;
                 Session["TipoVolta"] = 2;
                 Session["VoltaExcecao"] = "Tarefas";
                 Session["Excecao"] = ex;
                 Session["ExcecaoTipo"] = ex.GetType().ToString();
                 GravaLogExcecao grava = new GravaLogExcecao(usuApp);
-                Int32 voltaX = grava.GravarLogExcecao(ex, "Tarefas", "RidolfiWeb", 1, (USUARIO)Session["UserCredentials"]);
+                Int32 voltaX = grava.GravarLogExcecao(ex, "Tarefas", "CRMSys", 1, (USUARIO)Session["UserCredentials"]);
                 return RedirectToAction("TrataExcecao", "BaseAdmin");
             }
         }
@@ -1388,398 +1522,504 @@ namespace ERP_Condominios_Solution.Controllers
 
         public ActionResult GerarRelatorioLista()
         {
-            if ((String)Session["Ativa"] == null)
+            try
             {
-                return RedirectToAction("Logout", "ControleAcesso");
-            }
-            // Prepara geração
-            CONFIGURACAO conf = CarregaConfiguracaoGeral();
-            Int32 idAss = (Int32)Session["IdAssinante"];
-            String data = DateTime.Today.Date.ToShortDateString();
-            data = data.Substring(0, 2) + data.Substring(3, 2) + data.Substring(6, 4);
-            String nomeRel = "TarefaLista" + "_" + data + ".pdf";
-            List<TAREFA> lista = (List<TAREFA>)Session["ListaTarefa"];
-            TAREFA filtro = (TAREFA)Session["FiltroTarefa"];
-            Font meuFont = FontFactory.GetFont("Arial", 8, iTextSharp.text.Font.NORMAL, BaseColor.BLACK);
-            Font meuFont1 = FontFactory.GetFont("Arial", 9, iTextSharp.text.Font.NORMAL, BaseColor.BLACK);
-            Font meuFont2 = FontFactory.GetFont("Arial", 12, iTextSharp.text.Font.NORMAL, BaseColor.BLACK);
+                // Prepara geração
+                CONFIGURACAO conf = CarregaConfiguracaoGeral();
+                Int32 idAss = (Int32)Session["IdAssinante"];
+                String data = DateTime.Today.Date.ToShortDateString();
+                data = data.Substring(0, 2) + data.Substring(3, 2) + data.Substring(6, 4);
+                String nomeRel = "TarefaLista" + "_" + data + ".pdf";
+                List<TAREFA> lista = (List<TAREFA>)Session["ListaTarefa"];
+                TAREFA filtro = (TAREFA)Session["FiltroTarefa"];
+                Font meuFont = FontFactory.GetFont("Arial", 8, iTextSharp.text.Font.NORMAL, BaseColor.BLACK);
+                Font meuFont1 = FontFactory.GetFont("Arial", 9, iTextSharp.text.Font.NORMAL, BaseColor.BLACK);
+                Font meuFont2 = FontFactory.GetFont("Arial", 12, iTextSharp.text.Font.NORMAL, BaseColor.BLACK);
 
-            // Cria documento
-            Document pdfDoc = new Document(PageSize.A4.Rotate(), 10, 10, 10, 10);
-            PdfWriter pdfWriter = PdfWriter.GetInstance(pdfDoc, Response.OutputStream);
-            pdfDoc.Open();
+                // Cria documento
+                Document pdfDoc = new Document(PageSize.A4.Rotate(), 10, 10, 10, 10);
+                PdfWriter pdfWriter = PdfWriter.GetInstance(pdfDoc, Response.OutputStream);
+                pdfDoc.Open();
 
-            // Linha horizontal
-            Paragraph line = new Paragraph(new Chunk(new iTextSharp.text.pdf.draw.LineSeparator(0.0F, 100.0F, BaseColor.BLUE, Element.ALIGN_LEFT, 1)));
-            pdfDoc.Add(line);
+                // Linha horizontal
+                Paragraph line = new Paragraph(new Chunk(new iTextSharp.text.pdf.draw.LineSeparator(0.0F, 100.0F, BaseColor.BLUE, Element.ALIGN_LEFT, 1)));
+                pdfDoc.Add(line);
 
-            // Cabeçalho
-            PdfPTable table = new PdfPTable(5);
-            table.WidthPercentage = 100;
-            table.HorizontalAlignment = 1; //0=Left, 1=Centre, 2=Right
-            table.SpacingBefore = 1f;
-            table.SpacingAfter = 1f;
+                // Cabeçalho
+                PdfPTable table = new PdfPTable(5);
+                table.WidthPercentage = 100;
+                table.HorizontalAlignment = 1; //0=Left, 1=Centre, 2=Right
+                table.SpacingBefore = 1f;
+                table.SpacingAfter = 1f;
 
-            PdfPCell cell = new PdfPCell();
-            cell.Border = 0;
-            Image image = null;
-            image = Image.GetInstance(Server.MapPath("~/Images/CRM_Icon2.jpg"));
-            image.ScaleAbsolute(50, 50);
-            cell.AddElement(image);
-            table.AddCell(cell);
-
-            cell = new PdfPCell(new Paragraph("Tarefas - Listagem", meuFont2))
-            {
-                VerticalAlignment = Element.ALIGN_MIDDLE,
-                HorizontalAlignment = Element.ALIGN_CENTER
-            };
-            cell.Border = 0;
-            cell.Colspan = 4;
-            table.AddCell(cell);
-            pdfDoc.Add(table);
-
-            // Linha Horizontal
-            Paragraph line1 = new Paragraph(new Chunk(new iTextSharp.text.pdf.draw.LineSeparator(0.0F, 100.0F, BaseColor.BLUE, Element.ALIGN_LEFT, 1)));
-            pdfDoc.Add(line1);
-            line1 = new Paragraph("  ");
-            pdfDoc.Add(line1);
-
-            // Grid
-            table = new PdfPTable(new float[] { 80f, 60f, 120f, 60f, 80f, 60f});
-            table.WidthPercentage = 100;
-            table.HorizontalAlignment = 0;
-            table.SpacingBefore = 1f;
-            table.SpacingAfter = 1f;
-
-            cell = new PdfPCell(new Paragraph("Tarefas selecionadas pelos parametros de filtro abaixo", meuFont1))
-            {
-                VerticalAlignment = Element.ALIGN_MIDDLE, HorizontalAlignment = Element.ALIGN_LEFT
-            };
-            cell.Colspan = 7;
-            cell.BackgroundColor = BaseColor.LIGHT_GRAY;
-            table.AddCell(cell);
-
-            cell = new PdfPCell(new Paragraph("Tipo", meuFont))
-            {
-                VerticalAlignment = Element.ALIGN_MIDDLE,
-                HorizontalAlignment = Element.ALIGN_LEFT
-            };
-            cell.BackgroundColor = BaseColor.LIGHT_GRAY;
-            table.AddCell(cell);
-            cell = new PdfPCell(new Paragraph("Início", meuFont))
-            {
-                VerticalAlignment = Element.ALIGN_MIDDLE,
-                HorizontalAlignment = Element.ALIGN_LEFT
-            };
-            cell.BackgroundColor = BaseColor.LIGHT_GRAY;
-            table.AddCell(cell);
-            cell = new PdfPCell(new Paragraph("Título", meuFont))
-            {
-                VerticalAlignment = Element.ALIGN_MIDDLE,
-                HorizontalAlignment = Element.ALIGN_LEFT
-            };
-            cell.BackgroundColor = BaseColor.LIGHT_GRAY;
-            table.AddCell(cell);
-            cell = new PdfPCell(new Paragraph("Previsão", meuFont))
-            {
-                VerticalAlignment = Element.ALIGN_MIDDLE,
-                HorizontalAlignment = Element.ALIGN_LEFT
-            };
-            cell.BackgroundColor = BaseColor.LIGHT_GRAY;
-            table.AddCell(cell);
-            cell = new PdfPCell(new Paragraph("Status", meuFont))
-            {
-                VerticalAlignment = Element.ALIGN_MIDDLE,
-                HorizontalAlignment = Element.ALIGN_LEFT
-            };
-            cell.BackgroundColor = BaseColor.LIGHT_GRAY;
-            table.AddCell(cell);
-            cell = new PdfPCell(new Paragraph("Realizada", meuFont))
-            {
-                VerticalAlignment = Element.ALIGN_MIDDLE,
-                HorizontalAlignment = Element.ALIGN_LEFT
-            };
-            cell.BackgroundColor = BaseColor.LIGHT_GRAY;
-            table.AddCell(cell);
-
-            foreach (TAREFA item in lista)
-            {
-                if (item.TIPO_TAREFA != null)
+                PdfPCell cell = new PdfPCell();
+                cell.Border = 0;
+                Image image = null;
+                if (conf.CONF_IN_LOGO_EMPRESA == 1)
                 {
-                    cell = new PdfPCell(new Paragraph(item.TIPO_TAREFA.TITR_NM_NOME, meuFont))
-                    {
-                        VerticalAlignment = Element.ALIGN_MIDDLE,
-                        HorizontalAlignment = Element.ALIGN_LEFT
-                    };
-                    table.AddCell(cell);
+                    EMPRESA empresa = empApp.GetItemByAssinante(idAss);
+                    image = Image.GetInstance(Server.MapPath(empresa.EMPR_AQ_LOGO));
                 }
                 else
                 {
-                    cell = new PdfPCell(new Paragraph("-", meuFont))
-                    {
-                        VerticalAlignment = Element.ALIGN_MIDDLE,
-                        HorizontalAlignment = Element.ALIGN_LEFT
-                    };
-                    table.AddCell(cell);
+                    image = Image.GetInstance(Server.MapPath("~/Images/CRM_Icon2.jpg"));
                 }
-                cell = new PdfPCell(new Paragraph(item.TARE_DT_CADASTRO.ToShortDateString(), meuFont))
+                image.ScaleAbsolute(50, 50);
+                cell.AddElement(image);
+                table.AddCell(cell);
+
+                cell = new PdfPCell(new Paragraph("Tarefas - Listagem", meuFont2))
+                {
+                    VerticalAlignment = Element.ALIGN_MIDDLE,
+                    HorizontalAlignment = Element.ALIGN_CENTER
+                };
+                cell.Border = 0;
+                cell.Colspan = 4;
+                table.AddCell(cell);
+                pdfDoc.Add(table);
+
+                // Linha Horizontal
+                Paragraph line1 = new Paragraph(new Chunk(new iTextSharp.text.pdf.draw.LineSeparator(0.0F, 100.0F, BaseColor.BLUE, Element.ALIGN_LEFT, 1)));
+                pdfDoc.Add(line1);
+                line1 = new Paragraph("  ");
+                pdfDoc.Add(line1);
+
+                // Grid
+                table = new PdfPTable(new float[] { 80f, 60f, 120f, 60f, 80f, 60f});
+                table.WidthPercentage = 100;
+                table.HorizontalAlignment = 0;
+                table.SpacingBefore = 1f;
+                table.SpacingAfter = 1f;
+
+                cell = new PdfPCell(new Paragraph("Tarefas selecionadas pelos parametros de filtro abaixo", meuFont1))
                 {
                     VerticalAlignment = Element.ALIGN_MIDDLE, HorizontalAlignment = Element.ALIGN_LEFT
                 };
+                cell.Colspan = 7;
+                cell.BackgroundColor = BaseColor.LIGHT_GRAY;
                 table.AddCell(cell);
-                cell = new PdfPCell(new Paragraph(item.TARE_NM_TITULO, meuFont))
+
+                cell = new PdfPCell(new Paragraph("Tipo", meuFont))
                 {
                     VerticalAlignment = Element.ALIGN_MIDDLE,
                     HorizontalAlignment = Element.ALIGN_LEFT
                 };
+                cell.BackgroundColor = BaseColor.LIGHT_GRAY;
                 table.AddCell(cell);
-                if (item.TARE_DT_ESTIMADA != null)
+                cell = new PdfPCell(new Paragraph("Início", meuFont))
                 {
-                    cell = new PdfPCell(new Paragraph(item.TARE_DT_ESTIMADA.Value.ToShortDateString(), meuFont))
+                    VerticalAlignment = Element.ALIGN_MIDDLE,
+                    HorizontalAlignment = Element.ALIGN_LEFT
+                };
+                cell.BackgroundColor = BaseColor.LIGHT_GRAY;
+                table.AddCell(cell);
+                cell = new PdfPCell(new Paragraph("Título", meuFont))
+                {
+                    VerticalAlignment = Element.ALIGN_MIDDLE,
+                    HorizontalAlignment = Element.ALIGN_LEFT
+                };
+                cell.BackgroundColor = BaseColor.LIGHT_GRAY;
+                table.AddCell(cell);
+                cell = new PdfPCell(new Paragraph("Previsão", meuFont))
+                {
+                    VerticalAlignment = Element.ALIGN_MIDDLE,
+                    HorizontalAlignment = Element.ALIGN_LEFT
+                };
+                cell.BackgroundColor = BaseColor.LIGHT_GRAY;
+                table.AddCell(cell);
+                cell = new PdfPCell(new Paragraph("Status", meuFont))
+                {
+                    VerticalAlignment = Element.ALIGN_MIDDLE,
+                    HorizontalAlignment = Element.ALIGN_LEFT
+                };
+                cell.BackgroundColor = BaseColor.LIGHT_GRAY;
+                table.AddCell(cell);
+                cell = new PdfPCell(new Paragraph("Realizada", meuFont))
+                {
+                    VerticalAlignment = Element.ALIGN_MIDDLE,
+                    HorizontalAlignment = Element.ALIGN_LEFT
+                };
+                cell.BackgroundColor = BaseColor.LIGHT_GRAY;
+                table.AddCell(cell);
+
+                foreach (TAREFA item in lista)
+                {
+                    if (item.TIPO_TAREFA != null)
+                    {
+                        cell = new PdfPCell(new Paragraph(item.TIPO_TAREFA.TITR_NM_NOME, meuFont))
+                        {
+                            VerticalAlignment = Element.ALIGN_MIDDLE,
+                            HorizontalAlignment = Element.ALIGN_LEFT
+                        };
+                        table.AddCell(cell);
+                    }
+                    else
+                    {
+                        cell = new PdfPCell(new Paragraph("-", meuFont))
+                        {
+                            VerticalAlignment = Element.ALIGN_MIDDLE,
+                            HorizontalAlignment = Element.ALIGN_LEFT
+                        };
+                        table.AddCell(cell);
+                    }
+                    cell = new PdfPCell(new Paragraph(item.TARE_DT_CADASTRO.ToShortDateString(), meuFont))
+                    {
+                        VerticalAlignment = Element.ALIGN_MIDDLE, HorizontalAlignment = Element.ALIGN_LEFT
+                    };
+                    table.AddCell(cell);
+                    cell = new PdfPCell(new Paragraph(item.TARE_NM_TITULO, meuFont))
                     {
                         VerticalAlignment = Element.ALIGN_MIDDLE,
                         HorizontalAlignment = Element.ALIGN_LEFT
                     };
                     table.AddCell(cell);
+                    if (item.TARE_DT_ESTIMADA != null)
+                    {
+                        cell = new PdfPCell(new Paragraph(item.TARE_DT_ESTIMADA.Value.ToShortDateString(), meuFont))
+                        {
+                            VerticalAlignment = Element.ALIGN_MIDDLE,
+                            HorizontalAlignment = Element.ALIGN_LEFT
+                        };
+                        table.AddCell(cell);
+                    }
+                    else
+                    {
+                        cell = new PdfPCell(new Paragraph("Sem estimativa", meuFont))
+                        {
+                            VerticalAlignment = Element.ALIGN_MIDDLE,
+                            HorizontalAlignment = Element.ALIGN_LEFT
+                        };
+                        table.AddCell(cell);
+                    }
+                    if (item.TARE_IN_STATUS == 1)
+                    {
+                        cell = new PdfPCell(new Paragraph("Pendente", meuFont))
+                        {
+                            VerticalAlignment = Element.ALIGN_MIDDLE,
+                            HorizontalAlignment = Element.ALIGN_LEFT
+                        };
+                        table.AddCell(cell);
+                    }
+                    else if (item.TARE_IN_STATUS == 2)
+                    {
+                        cell = new PdfPCell(new Paragraph("Em Andamento", meuFont))
+                        {
+                            VerticalAlignment = Element.ALIGN_MIDDLE,
+                            HorizontalAlignment = Element.ALIGN_LEFT
+                        };
+                        table.AddCell(cell);
+                    }
+                    else if (item.TARE_IN_STATUS == 3)
+                    {
+                        cell = new PdfPCell(new Paragraph("Suspensa", meuFont))
+                        {
+                            VerticalAlignment = Element.ALIGN_MIDDLE,
+                            HorizontalAlignment = Element.ALIGN_LEFT
+                        };
+                        table.AddCell(cell);
+                    }
+                    else if (item.TARE_IN_STATUS == 4)
+                    {
+                        cell = new PdfPCell(new Paragraph("Cancelada", meuFont))
+                        {
+                            VerticalAlignment = Element.ALIGN_MIDDLE,
+                            HorizontalAlignment = Element.ALIGN_LEFT
+                        };
+                        table.AddCell(cell);
+                    }
+                    else if (item.TARE_IN_STATUS == 5)
+                    {
+                        cell = new PdfPCell(new Paragraph("Encerrada", meuFont))
+                        {
+                            VerticalAlignment = Element.ALIGN_MIDDLE,
+                            HorizontalAlignment = Element.ALIGN_LEFT
+                        };
+                        table.AddCell(cell);
+                    }
+                    if (item.TARE_DT_REALIZADA != null)
+                    {
+                        cell = new PdfPCell(new Paragraph(item.TARE_DT_REALIZADA.Value.ToShortDateString(), meuFont))
+                        {
+                            VerticalAlignment = Element.ALIGN_MIDDLE,
+                            HorizontalAlignment = Element.ALIGN_LEFT
+                        };
+                        table.AddCell(cell);
+                    }
+                    else
+                    {
+                        cell = new PdfPCell(new Paragraph("-", meuFont))
+                        {
+                            VerticalAlignment = Element.ALIGN_MIDDLE,
+                            HorizontalAlignment = Element.ALIGN_LEFT
+                        };
+                        table.AddCell(cell);
+                    }
+                }
+                pdfDoc.Add(table);
+
+                // Linha Horizontal
+                Paragraph line2 = new Paragraph(new Chunk(new iTextSharp.text.pdf.draw.LineSeparator(0.0F, 100.0F, BaseColor.BLUE, Element.ALIGN_LEFT, 1)));
+                pdfDoc.Add(line2);
+
+                // Rodapé
+                Chunk chunk1 = new Chunk("Parâmetros de filtro: ", FontFactory.GetFont("Arial", 10, Font.NORMAL, BaseColor.BLACK));
+                pdfDoc.Add(chunk1);
+
+                String parametros = String.Empty;
+                Int32 ja = 0;
+                if (filtro != null)
+                {
+                    if (filtro.TITR_CD_ID != null)
+                    {
+                        parametros += "Tipo: " + filtro.TIPO_TAREFA.TITR_NM_NOME;
+                        ja = 1;
+                    }
+                    if (filtro.TARE_NM_TITULO != null)
+                    {
+                        if (ja == 0)
+                        {
+                            parametros += "Título: " + filtro.TARE_NM_TITULO;
+                            ja = 1;
+                        }
+                        else
+                        {
+                            parametros +=  " e Título: " + filtro.TARE_NM_TITULO;
+                        }
+                    }
+                    if (filtro.TARE_DT_CADASTRO != null)
+                    {
+                        if (ja == 0)
+                        {
+                            parametros += "Data: " + filtro.TARE_DT_CADASTRO.ToShortDateString();
+                            ja = 1;
+                        }
+                        else
+                        {
+                            parametros += " e Data: " + filtro.TARE_DT_CADASTRO.ToShortDateString();
+                        }
+                    }
+                    if (filtro.TARE_IN_STATUS > 0)
+                    {
+                        if (ja == 0)
+                        {
+                            parametros += "Status: " + (filtro.TARE_IN_STATUS == 1 ? "Pendente" : filtro.TARE_IN_STATUS == 2 ? "Em Andamento" : filtro.TARE_IN_STATUS == 3 ? "Suspensa" : filtro.TARE_IN_STATUS == 4 ? "Cancelada" : "Realizada");
+                            ja = 1;
+                        }
+                        else
+                        {
+                            parametros += "e Status: " + (filtro.TARE_IN_STATUS == 1 ? "Pendente" : filtro.TARE_IN_STATUS == 2 ? "Em Andamento" : filtro.TARE_IN_STATUS == 3 ? "Suspensa" : filtro.TARE_IN_STATUS == 4 ? "Cancelada" : "Realizada");
+                        }
+                    }
+                    if (ja == 0)
+                    {
+                        parametros = "Nenhum filtro definido.";
+                    }
                 }
                 else
-                {
-                    cell = new PdfPCell(new Paragraph("Sem estimativa", meuFont))
-                    {
-                        VerticalAlignment = Element.ALIGN_MIDDLE,
-                        HorizontalAlignment = Element.ALIGN_LEFT
-                    };
-                    table.AddCell(cell);
-                }
-                if (item.TARE_IN_STATUS == 1)
-                {
-                    cell = new PdfPCell(new Paragraph("Pendente", meuFont))
-                    {
-                        VerticalAlignment = Element.ALIGN_MIDDLE,
-                        HorizontalAlignment = Element.ALIGN_LEFT
-                    };
-                    table.AddCell(cell);
-                }
-                else if (item.TARE_IN_STATUS == 2)
-                {
-                    cell = new PdfPCell(new Paragraph("Em Andamento", meuFont))
-                    {
-                        VerticalAlignment = Element.ALIGN_MIDDLE,
-                        HorizontalAlignment = Element.ALIGN_LEFT
-                    };
-                    table.AddCell(cell);
-                }
-                else if (item.TARE_IN_STATUS == 3)
-                {
-                    cell = new PdfPCell(new Paragraph("Suspensa", meuFont))
-                    {
-                        VerticalAlignment = Element.ALIGN_MIDDLE,
-                        HorizontalAlignment = Element.ALIGN_LEFT
-                    };
-                    table.AddCell(cell);
-                }
-                else if (item.TARE_IN_STATUS == 4)
-                {
-                    cell = new PdfPCell(new Paragraph("Cancelada", meuFont))
-                    {
-                        VerticalAlignment = Element.ALIGN_MIDDLE,
-                        HorizontalAlignment = Element.ALIGN_LEFT
-                    };
-                    table.AddCell(cell);
-                }
-                else if (item.TARE_IN_STATUS == 5)
-                {
-                    cell = new PdfPCell(new Paragraph("Encerrada", meuFont))
-                    {
-                        VerticalAlignment = Element.ALIGN_MIDDLE,
-                        HorizontalAlignment = Element.ALIGN_LEFT
-                    };
-                    table.AddCell(cell);
-                }
-                if (item.TARE_DT_REALIZADA != null)
-                {
-                    cell = new PdfPCell(new Paragraph(item.TARE_DT_REALIZADA.Value.ToShortDateString(), meuFont))
-                    {
-                        VerticalAlignment = Element.ALIGN_MIDDLE,
-                        HorizontalAlignment = Element.ALIGN_LEFT
-                    };
-                    table.AddCell(cell);
-                }
-                else
-                {
-                    cell = new PdfPCell(new Paragraph("-", meuFont))
-                    {
-                        VerticalAlignment = Element.ALIGN_MIDDLE,
-                        HorizontalAlignment = Element.ALIGN_LEFT
-                    };
-                    table.AddCell(cell);
-                }
-            }
-            pdfDoc.Add(table);
-
-            // Linha Horizontal
-            Paragraph line2 = new Paragraph(new Chunk(new iTextSharp.text.pdf.draw.LineSeparator(0.0F, 100.0F, BaseColor.BLUE, Element.ALIGN_LEFT, 1)));
-            pdfDoc.Add(line2);
-
-            // Rodapé
-            Chunk chunk1 = new Chunk("Parâmetros de filtro: ", FontFactory.GetFont("Arial", 10, Font.NORMAL, BaseColor.BLACK));
-            pdfDoc.Add(chunk1);
-
-            String parametros = String.Empty;
-            Int32 ja = 0;
-            if (filtro != null)
-            {
-                if (filtro.TITR_CD_ID != null)
-                {
-                    parametros += "Tipo: " + filtro.TIPO_TAREFA.TITR_NM_NOME;
-                    ja = 1;
-                }
-                if (filtro.TARE_NM_TITULO != null)
-                {
-                    if (ja == 0)
-                    {
-                        parametros += "Título: " + filtro.TARE_NM_TITULO;
-                        ja = 1;
-                    }
-                    else
-                    {
-                        parametros +=  " e Título: " + filtro.TARE_NM_TITULO;
-                    }
-                }
-                if (filtro.TARE_DT_CADASTRO != null)
-                {
-                    if (ja == 0)
-                    {
-                        parametros += "Data: " + filtro.TARE_DT_CADASTRO.ToShortDateString();
-                        ja = 1;
-                    }
-                    else
-                    {
-                        parametros += " e Data: " + filtro.TARE_DT_CADASTRO.ToShortDateString();
-                    }
-                }
-                if (filtro.TARE_IN_STATUS > 0)
-                {
-                    if (ja == 0)
-                    {
-                        parametros += "Status: " + (filtro.TARE_IN_STATUS == 1 ? "Pendente" : filtro.TARE_IN_STATUS == 2 ? "Em Andamento" : filtro.TARE_IN_STATUS == 3 ? "Suspensa" : filtro.TARE_IN_STATUS == 4 ? "Cancelada" : "Realizada");
-                        ja = 1;
-                    }
-                    else
-                    {
-                        parametros += "e Status: " + (filtro.TARE_IN_STATUS == 1 ? "Pendente" : filtro.TARE_IN_STATUS == 2 ? "Em Andamento" : filtro.TARE_IN_STATUS == 3 ? "Suspensa" : filtro.TARE_IN_STATUS == 4 ? "Cancelada" : "Realizada");
-                    }
-                }
-                if (ja == 0)
                 {
                     parametros = "Nenhum filtro definido.";
                 }
+                Chunk chunk = new Chunk(parametros, FontFactory.GetFont("Arial", 9, Font.NORMAL, BaseColor.BLACK));
+                pdfDoc.Add(chunk);
+
+                // Linha Horizontal
+                Paragraph line3 = new Paragraph(new Chunk(new iTextSharp.text.pdf.draw.LineSeparator(0.0F, 100.0F, BaseColor.BLUE, Element.ALIGN_LEFT, 1)));
+                pdfDoc.Add(line3);
+
+                // Finaliza
+                pdfWriter.CloseStream = false;
+                pdfDoc.Close();
+                Response.Buffer = true;
+                Response.ContentType = "application/pdf";
+                Response.AddHeader("content-disposition", "attachment;filename=" + nomeRel);
+                Response.Cache.SetCacheability(HttpCacheability.NoCache);
+                Response.Write(pdfDoc);
+                Response.End();
+
+                return RedirectToAction("MontarTelaTarefa");
             }
-            else
+            catch (Exception ex)
             {
-                parametros = "Nenhum filtro definido.";
+                ViewBag.Message = ex.Message;
+                Session["TipoVolta"] = 2;
+                Session["VoltaExcecao"] = "Tarefas";
+                Session["Excecao"] = ex;
+                Session["ExcecaoTipo"] = ex.GetType().ToString();
+                GravaLogExcecao grava = new GravaLogExcecao(usuApp);
+                Int32 voltaX = grava.GravarLogExcecao(ex, "Tarefas", "CRMSys", 1, (USUARIO)Session["UserCredentials"]);
+                return RedirectToAction("TrataExcecao", "BaseAdmin");
             }
-            Chunk chunk = new Chunk(parametros, FontFactory.GetFont("Arial", 9, Font.NORMAL, BaseColor.BLACK));
-            pdfDoc.Add(chunk);
-
-            // Linha Horizontal
-            Paragraph line3 = new Paragraph(new Chunk(new iTextSharp.text.pdf.draw.LineSeparator(0.0F, 100.0F, BaseColor.BLUE, Element.ALIGN_LEFT, 1)));
-            pdfDoc.Add(line3);
-
-            // Finaliza
-            pdfWriter.CloseStream = false;
-            pdfDoc.Close();
-            Response.Buffer = true;
-            Response.ContentType = "application/pdf";
-            Response.AddHeader("content-disposition", "attachment;filename=" + nomeRel);
-            Response.Cache.SetCacheability(HttpCacheability.NoCache);
-            Response.Write(pdfDoc);
-            Response.End();
-
-            return RedirectToAction("MontarTelaTarefa");
         }
 
         public FileResult DownloadTarefa(Int32 id)
         {
-            TAREFA_ANEXO item = baseApp.GetAnexoById(id);
-            String arquivo = item.TAAN_AQ_ARQUIVO;
-            Int32 pos = arquivo.LastIndexOf("/") + 1;
-            String nomeDownload = arquivo.Substring(pos);
-            String contentType = string.Empty;
-            if (arquivo.Contains(".pdf"))
+            try
             {
-                contentType = "application/pdf";
+                TAREFA_ANEXO item = baseApp.GetAnexoById(id);
+                String arquivo = item.TAAN_AQ_ARQUIVO;
+                Int32 pos = arquivo.LastIndexOf("/") + 1;
+                String nomeDownload = arquivo.Substring(pos);
+                String contentType = string.Empty;
+                if (arquivo.Contains(".pdf"))
+                {
+                    contentType = "application/pdf";
+                }
+                else if (arquivo.Contains(".jpg"))
+                {
+                    contentType = "image/jpg";
+                }
+                else if (arquivo.Contains(".png"))
+                {
+                    contentType = "image/png";
+                }
+                else if (arquivo.Contains(".docx"))
+                {
+                    contentType = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+                }
+                else if (arquivo.Contains(".xlsx"))
+                {
+                    contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+                }
+                else if (arquivo.Contains(".pptx"))
+                {
+                    contentType = "application/vnd.openxmlformats-officedocument.presentationml.presentation";
+                }
+                else if (arquivo.Contains(".mp3"))
+                {
+                    contentType = "audio/mpeg";
+                }
+                else if (arquivo.Contains(".mpeg"))
+                {
+                    contentType = "audio/mpeg";
+                }
+                return File(arquivo, contentType, nomeDownload);
             }
-            else if (arquivo.Contains(".jpg"))
+            catch (Exception ex)
             {
-                contentType = "image/jpg";
+                ViewBag.Message = ex.Message;
+                Session["TipoVolta"] = 2;
+                Session["VoltaExcecao"] = "Tarefas";
+                Session["Excecao"] = ex;
+                Session["ExcecaoTipo"] = ex.GetType().ToString();
+                GravaLogExcecao grava = new GravaLogExcecao(usuApp);
+                Int32 voltaX = grava.GravarLogExcecao(ex, "Tarefas", "CRMSys", 1, (USUARIO)Session["UserCredentials"]);
+                return null;
             }
-            else if (arquivo.Contains(".png"))
-            {
-                contentType = "image/png";
-            }
-            else if (arquivo.Contains(".docx"))
-            {
-                contentType = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
-            }
-            else if (arquivo.Contains(".xlsx"))
-            {
-                contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-            }
-            else if (arquivo.Contains(".pptx"))
-            {
-                contentType = "application/vnd.openxmlformats-officedocument.presentationml.presentation";
-            }
-            else if (arquivo.Contains(".mp3"))
-            {
-                contentType = "audio/mpeg";
-            }
-            else if (arquivo.Contains(".mpeg"))
-            {
-                contentType = "audio/mpeg";
-            }
-            return File(arquivo, contentType, nomeDownload);
         }
 
         [HttpGet]
         public ActionResult VerAnexoTarefa(Int32 id)
         {
-            if ((String)Session["Ativa"] == null)
+            try
             {
-                return RedirectToAction("Logout", "ControleAcesso");
+                if ((String)Session["Ativa"] == null)
+                {
+                    return RedirectToAction("Logout", "ControleAcesso");
+                }
+                // Prepara view
+                TAREFA_ANEXO item = baseApp.GetAnexoById(id);
+                return View(item);
             }
-            // Prepara view
-            TAREFA_ANEXO item = baseApp.GetAnexoById(id);
-            return View(item);
+            catch (Exception ex)
+            {
+                ViewBag.Message = ex.Message;
+                Session["TipoVolta"] = 2;
+                Session["VoltaExcecao"] = "Tarefas";
+                Session["Excecao"] = ex;
+                Session["ExcecaoTipo"] = ex.GetType().ToString();
+                GravaLogExcecao grava = new GravaLogExcecao(usuApp);
+                Int32 voltaX = grava.GravarLogExcecao(ex, "Tarefas", "CRMSys", 1, (USUARIO)Session["UserCredentials"]);
+                return RedirectToAction("TrataExcecao", "BaseAdmin");
+            }
+        }
+
+        [HttpGet]
+        public ActionResult VerTarefa(Int32 id)
+        {
+            try
+            {
+                if ((String)Session["Ativa"] == null)
+                {
+                    return RedirectToAction("Logout", "ControleAcesso");
+                }
+                // Prepara view
+                TAREFA item = baseApp.GetItemById(id);
+                ViewBag.Status = (item.TARE_IN_STATUS == 1 ? "Para Iniciar" : (item.TARE_IN_STATUS == 2 ? "Em Andamento" : (item.TARE_IN_STATUS == 3 ? "Suspensa" : (item.TARE_IN_STATUS == 4 ? "Cancelada" : "Encerrada"))));
+                ViewBag.StatusCor = (item.TARE_IN_STATUS == 1 ? "red-bg" : (item.TARE_IN_STATUS == 2 ? "blue-bg" : (item.TARE_IN_STATUS == 2 ? "blue-bg" : (item.TARE_IN_STATUS == 3 ? "yellow-bg" : "navy-bg"))));
+                ViewBag.Prior = (item.TARE_IN_PRIORIDADE == 1 ? "Normal" : (item.TARE_IN_PRIORIDADE == 2 ? "Baixa" : (item.TARE_IN_PRIORIDADE == 3 ? "Alta" : "Urgente")));
+                ViewBag.PriorCor = item.TARE_IN_PRIORIDADE == 1 ? "navy-bg" : "red-bg";
+
+                TarefaViewModel vm = Mapper.Map<TAREFA, TarefaViewModel>(item);
+                return View(vm);
+            }
+            catch (Exception ex)
+            {
+                ViewBag.Message = ex.Message;
+                Session["TipoVolta"] = 2;
+                Session["VoltaExcecao"] = "Tarefas";
+                Session["Excecao"] = ex;
+                Session["ExcecaoTipo"] = ex.GetType().ToString();
+                GravaLogExcecao grava = new GravaLogExcecao(usuApp);
+                Int32 voltaX = grava.GravarLogExcecao(ex, "Tarefas", "CRMSys", 1, (USUARIO)Session["UserCredentials"]);
+                return RedirectToAction("TrataExcecao", "BaseAdmin");
+            }
         }
 
         public ActionResult VerAnexoTarefaAudio(Int32 id)
         {
-            if ((String)Session["Ativa"] == null)
+            try
             {
-                return RedirectToAction("Logout", "ControleAcesso");
+                if ((String)Session["Ativa"] == null)
+                {
+                    return RedirectToAction("Logout", "ControleAcesso");
+                }
+                // Prepara view
+                TAREFA_ANEXO item = baseApp.GetAnexoById(id);
+                return View(item);
             }
-            // Prepara view
-            TAREFA_ANEXO item = baseApp.GetAnexoById(id);
-            return View(item);
+            catch (Exception ex)
+            {
+                ViewBag.Message = ex.Message;
+                Session["TipoVolta"] = 2;
+                Session["VoltaExcecao"] = "Tarefas";
+                Session["Excecao"] = ex;
+                Session["ExcecaoTipo"] = ex.GetType().ToString();
+                GravaLogExcecao grava = new GravaLogExcecao(usuApp);
+                Int32 voltaX = grava.GravarLogExcecao(ex, "Tarefas", "CRMSys", 1, (USUARIO)Session["UserCredentials"]);
+                return RedirectToAction("TrataExcecao", "BaseAdmin");
+            }
         }
 
         public ActionResult IncluirAcompanhamento()
         {
-            if ((String)Session["Ativa"] == null)
+            try
             {
-                return RedirectToAction("Logout", "ControleAcesso");
+                if ((String)Session["Ativa"] == null)
+                {
+                    return RedirectToAction("Logout", "ControleAcesso");
+                }
+                TAREFA item = baseApp.GetItemById((Int32)Session["IdVolta"]);
+                USUARIO usuarioLogado = (USUARIO)Session["UserCredentials"];
+                TAREFA_ACOMPANHAMENTO coment = new TAREFA_ACOMPANHAMENTO();
+                TarefaAcompanhamentoViewModel vm = Mapper.Map<TAREFA_ACOMPANHAMENTO, TarefaAcompanhamentoViewModel>(coment);
+                vm.TAAC_DT_ACOMPANHAMENTO = DateTime.Now;
+                vm.TAAC_IN_ATIVO = 1;
+                vm.TARE_CD_ID = item.TARE_CD_ID;
+                vm.USUARIO = usuarioLogado;
+                vm.USUA_CD_ID = usuarioLogado.USUA_CD_ID;
+                return View(vm);
             }
-            TAREFA item = baseApp.GetItemById((Int32)Session["IdVolta"]);
-            USUARIO usuarioLogado = (USUARIO)Session["UserCredentials"];
-            TAREFA_ACOMPANHAMENTO coment = new TAREFA_ACOMPANHAMENTO();
-            TarefaAcompanhamentoViewModel vm = Mapper.Map<TAREFA_ACOMPANHAMENTO, TarefaAcompanhamentoViewModel>(coment);
-            vm.TAAC_DT_ACOMPANHAMENTO = DateTime.Now;
-            vm.TAAC_IN_ATIVO = 1;
-            vm.TARE_CD_ID = item.TARE_CD_ID;
-            vm.USUARIO = usuarioLogado;
-            vm.USUA_CD_ID = usuarioLogado.USUA_CD_ID;
-            return View(vm);
+            catch (Exception ex)
+            {
+                ViewBag.Message = ex.Message;
+                Session["TipoVolta"] = 2;
+                Session["VoltaExcecao"] = "Tarefas";
+                Session["Excecao"] = ex;
+                Session["ExcecaoTipo"] = ex.GetType().ToString();
+                GravaLogExcecao grava = new GravaLogExcecao(usuApp);
+                Int32 voltaX = grava.GravarLogExcecao(ex, "Tarefas", "CRMSys", 1, (USUARIO)Session["UserCredentials"]);
+                return RedirectToAction("TrataExcecao", "BaseAdmin");
+            }
         }
 
         [HttpPost]
@@ -1794,6 +2034,9 @@ namespace ERP_Condominios_Solution.Controllers
             {
                 try
                 {
+                    // Sanitização
+                    vm.TAAC_DS_ACOMPANHAMENTO = CrossCutting.UtilitariosGeral.CleanStringGeral(vm.TAAC_DS_ACOMPANHAMENTO);
+
                     // Executa a operação
                     TAREFA_ACOMPANHAMENTO item = Mapper.Map<TarefaAcompanhamentoViewModel, TAREFA_ACOMPANHAMENTO>(vm);
                     USUARIO usuarioLogado = (USUARIO)Session["UserCredentials"];
@@ -1804,21 +2047,34 @@ namespace ERP_Condominios_Solution.Controllers
                     objetoAntes = not;
                     Int32 volta = baseApp.ValidateEdit(not, objetoAntes);
 
-                    // Verifica retorno
+                    // Monta Log
+                    item.USUARIO = null;
+                    item.TAREFA = null;
+                    LOG log = new LOG
+                    {
+                        LOG_DT_DATA = DateTime.Now,
+                        ASSI_CD_ID = usuarioLogado.ASSI_CD_ID,
+                        USUA_CD_ID = usuarioLogado.USUA_CD_ID,
+                        LOG_NM_OPERACAO = "iacTARE",
+                        LOG_IN_ATIVO = 1,
+                        LOG_TX_REGISTRO = Serialization.SerializeJSON<TAREFA_ACOMPANHAMENTO>(item),
+                        LOG_IN_SISTEMA = 1
+                    };
+                    Int32 volta1 = logApp.ValidateCreate(log);
 
                     // Sucesso
+                    Session["AbaTarefa"] = 2;
                     return RedirectToAction("EditarTarefa", new { id = (Int32)Session["IdVolta"] });
                 }
                 catch (Exception ex)
                 {
-                    LogError(ex.Message);
                     ViewBag.Message = ex.Message;
                     Session["TipoVolta"] = 2;
                     Session["VoltaExcecao"] = "Tarefas";
                     Session["Excecao"] = ex;
                     Session["ExcecaoTipo"] = ex.GetType().ToString();
                     GravaLogExcecao grava = new GravaLogExcecao(usuApp);
-                    Int32 voltaX = grava.GravarLogExcecao(ex, "Tarefas", "RidolfiWeb", 1, (USUARIO)Session["UserCredentials"]);
+                    Int32 voltaX = grava.GravarLogExcecao(ex, "Tarefas", "CRMSys", 1, (USUARIO)Session["UserCredentials"]);
                     return RedirectToAction("TrataExcecao", "BaseAdmin");
                 }
             }
@@ -1830,123 +2086,221 @@ namespace ERP_Condominios_Solution.Controllers
 
         public List<TAREFA> CarregaTarefa(Int32 usuario)
         {
-            Int32 idAss = (Int32)Session["IdAssinante"];
-            List<TAREFA> conf = new List<TAREFA>();
-            if (Session["TarefasLista"] == null)
+            try
             {
-                conf = baseApp.GetByUser(usuario);
-            }
-            else
-            {
-                if ((Int32)Session["TarefaAlterada"] == 1)
+                Int32 idAss = (Int32)Session["IdAssinante"];
+                List<TAREFA> conf = new List<TAREFA>();
+                if (Session["TarefasLista"] == null)
                 {
                     conf = baseApp.GetByUser(usuario);
                 }
                 else
                 {
-                    conf = (List<TAREFA>)Session["TarefasLista"];
+                    if ((Int32)Session["TarefaAlterada"] == 1)
+                    {
+                        conf = baseApp.GetByUser(usuario);
+                    }
+                    else
+                    {
+                        conf = (List<TAREFA>)Session["TarefasLista"];
+                    }
                 }
+                Session["TarefasLista"] = conf;
+                Session["TarefaAlterada"] = 0;
+                return conf;
             }
-            Session["TarefasLista"] = conf;
-            Session["TarefaAlterada"] = 0;
-            return conf;
+            catch (Exception ex)
+            {
+                ViewBag.Message = ex.Message;
+                Session["TipoVolta"] = 2;
+                Session["VoltaExcecao"] = "Tarefas";
+                Session["Excecao"] = ex;
+                Session["ExcecaoTipo"] = ex.GetType().ToString();
+                GravaLogExcecao grava = new GravaLogExcecao(usuApp);
+                Int32 voltaX = grava.GravarLogExcecao(ex, "Tarefas", "CRMSys", 1, (USUARIO)Session["UserCredentials"]);
+                return null;
+            }
         }
 
         public List<TIPO_TAREFA> CarregaTipoTarefa()
         {
-            Int32 idAss = (Int32)Session["IdAssinante"];
-            List<TIPO_TAREFA> conf = new List<TIPO_TAREFA>();
-            if (Session["TipoTarefas"] == null)
+            try
             {
-                conf = baseApp.GetAllTipos(idAss);
-            }
-            else
-            {
-                if ((Int32)Session["TipoTarefaAlterada"] == 1)
+                Int32 idAss = (Int32)Session["IdAssinante"];
+                List<TIPO_TAREFA> conf = new List<TIPO_TAREFA>();
+                if (Session["TipoTarefas"] == null)
                 {
                     conf = baseApp.GetAllTipos(idAss);
                 }
                 else
                 {
-                    conf = (List<TIPO_TAREFA>)Session["TipoTarefas"];
+                    if ((Int32)Session["TipoTarefaAlterada"] == 1)
+                    {
+                        conf = baseApp.GetAllTipos(idAss);
+                    }
+                    else
+                    {
+                        conf = (List<TIPO_TAREFA>)Session["TipoTarefas"];
+                    }
                 }
+                Session["TipoTarefas"] = conf;
+                Session["TipoTarefaAlterada"] = 0;
+                return conf;
             }
-            Session["TipoTarefas"] = conf;
-            Session["TipoTarefaAlterada"] = 0;
-            return conf;
+            catch (Exception ex)
+            {
+                ViewBag.Message = ex.Message;
+                Session["TipoVolta"] = 2;
+                Session["VoltaExcecao"] = "Tarefas";
+                Session["Excecao"] = ex;
+                Session["ExcecaoTipo"] = ex.GetType().ToString();
+                GravaLogExcecao grava = new GravaLogExcecao(usuApp);
+                Int32 voltaX = grava.GravarLogExcecao(ex, "Tarefas", "CRMSys", 1, (USUARIO)Session["UserCredentials"]);
+                return null;
+            }
         }
 
         public List<USUARIO> CarregaUsuario()
         {
-            Int32 idAss = (Int32)Session["IdAssinante"];
-            List<USUARIO> conf = new List<USUARIO>();
-            if (Session["Usuarios"] == null)
+            try
             {
-                conf = usuApp.GetAllItens(idAss);
-            }
-            else
-            {
-                if ((Int32)Session["UsuarioAlterada"] == 1)
+                Int32 idAss = (Int32)Session["IdAssinante"];
+                List<USUARIO> conf = new List<USUARIO>();
+                if (Session["Usuarios"] == null)
                 {
                     conf = usuApp.GetAllItens(idAss);
                 }
                 else
                 {
-                    conf = (List<USUARIO>)Session["Usuarios"];
+                    if ((Int32)Session["UsuarioAlterada"] == 1)
+                    {
+                        conf = usuApp.GetAllItens(idAss);
+                    }
+                    else
+                    {
+                        conf = (List<USUARIO>)Session["Usuarios"];
+                    }
                 }
+                Session["UsuarioAlterada"] = 0;
+                Session["Usuarios"] = conf;
+                return conf;
             }
-            Session["UsuarioAlterada"] = 0;
-            Session["Usuarios"] = conf;
-            return conf;
+            catch (Exception ex)
+            {
+                ViewBag.Message = ex.Message;
+                Session["TipoVolta"] = 2;
+                Session["VoltaExcecao"] = "Tarefas";
+                Session["Excecao"] = ex;
+                Session["ExcecaoTipo"] = ex.GetType().ToString();
+                GravaLogExcecao grava = new GravaLogExcecao(usuApp);
+                Int32 voltaX = grava.GravarLogExcecao(ex, "Tarefas", "CRMSys", 1, (USUARIO)Session["UserCredentials"]);
+                return null;
+            }
         }
 
         public CONFIGURACAO CarregaConfiguracaoGeral()
         {
-            Int32 idAss = (Int32)Session["IdAssinante"];
-            CONFIGURACAO conf = new CONFIGURACAO();
-            if (Session["Configuracao"] == null)
+            try
             {
-                conf = confApp.GetAllItems(idAss).FirstOrDefault();
-            }
-            else
-            {
-                if ((Int32)Session["ConfAlterada"] == 1)
+                Int32 idAss = (Int32)Session["IdAssinante"];
+                CONFIGURACAO conf = new CONFIGURACAO();
+                if (Session["Configuracao"] == null)
                 {
                     conf = confApp.GetAllItems(idAss).FirstOrDefault();
                 }
                 else
                 {
-                    conf = (CONFIGURACAO)Session["Configuracao"];
+                    if ((Int32)Session["ConfAlterada"] == 1)
+                    {
+                        conf = confApp.GetAllItems(idAss).FirstOrDefault();
+                    }
+                    else
+                    {
+                        conf = (CONFIGURACAO)Session["Configuracao"];
+                    }
                 }
+                Session["ConfAlterada"] = 0;
+                Session["Configuracao"] = conf;
+                return conf;
             }
-            Session["ConfAlterada"] = 0;
-            Session["Configuracao"] = conf;
-            return conf;
+            catch (Exception ex)
+            {
+                ViewBag.Message = ex.Message;
+                Session["TipoVolta"] = 2;
+                Session["VoltaExcecao"] = "Tarefas";
+                Session["Excecao"] = ex;
+                Session["ExcecaoTipo"] = ex.GetType().ToString();
+                GravaLogExcecao grava = new GravaLogExcecao(usuApp);
+                Int32 voltaX = grava.GravarLogExcecao(ex, "Tarefas", "CRMSys", 1, (USUARIO)Session["UserCredentials"]);
+                return null;
+            }
         }
 
         public List<PERIODICIDADE_TAREFA> CarregaPeriodicidade()
         {
-            Int32 idAss = (Int32)Session["IdAssinante"];
-            List<PERIODICIDADE_TAREFA> conf = new List<PERIODICIDADE_TAREFA>();
-            if (Session["Periodicidades"] == null)
+            try
             {
-                conf = baseApp.GetAllPeriodicidade();
-            }
-            else
-            {
-                if ((Int32)Session["PeriodicidadeAlterada"] == 1)
+                Int32 idAss = (Int32)Session["IdAssinante"];
+                List<PERIODICIDADE_TAREFA> conf = new List<PERIODICIDADE_TAREFA>();
+                if (Session["Periodicidades"] == null)
                 {
                     conf = baseApp.GetAllPeriodicidade();
                 }
                 else
                 {
-                    conf = (List<PERIODICIDADE_TAREFA>)Session["Periodicidades"];
+                    if ((Int32)Session["PeriodicidadeAlterada"] == 1)
+                    {
+                        conf = baseApp.GetAllPeriodicidade();
+                    }
+                    else
+                    {
+                        conf = (List<PERIODICIDADE_TAREFA>)Session["Periodicidades"];
+                    }
                 }
+                Session["PeriodicidadeAlterada"] = 0;
+                Session["Periodicidades"] = conf;
+                return conf;
             }
-            Session["PeriodicidadeAlterada"] = 0;
-            Session["Periodicidades"] = conf;
-            return conf;
+            catch (Exception ex)
+            {
+                ViewBag.Message = ex.Message;
+                Session["TipoVolta"] = 2;
+                Session["VoltaExcecao"] = "Tarefas";
+                Session["Excecao"] = ex;
+                Session["ExcecaoTipo"] = ex.GetType().ToString();
+                GravaLogExcecao grava = new GravaLogExcecao(usuApp);
+                Int32 voltaX = grava.GravarLogExcecao(ex, "Tarefas", "CRMSys", 1, (USUARIO)Session["UserCredentials"]);
+                return null;
+            }
         }
 
+        [HttpGet]
+        public ActionResult ExcluirAnexo(Int32 id)
+        {
+            try
+            {
+                if ((String)Session["Ativa"] == null)
+                {
+                    return RedirectToAction("Logout", "ControleAcesso");
+                }
+
+                TAREFA_ANEXO item = baseApp.GetAnexoById(id);
+                item.TAAN_IN_ATIVO = 0;
+                Int32 volta = baseApp.ValidateEditAnexo(item);
+                Session["TarefaAlterada"] = 1;
+                return RedirectToAction("VoltarAnexoTarefa");
+            }
+            catch (Exception ex)
+            {
+                ViewBag.Message = ex.Message;
+                Session["TipoVolta"] = 2;
+                Session["VoltaExcecao"] = "Tarefa";
+                Session["Excecao"] = ex;
+                Session["ExcecaoTipo"] = ex.GetType().ToString();
+                GravaLogExcecao grava = new GravaLogExcecao(usuApp);
+                Int32 voltaX = grava.GravarLogExcecao(ex, "Tarefa", "CRMSys", 1, (USUARIO)Session["UserCredentials"]);
+                return RedirectToAction("TrataExcecao", "BaseAdmin");
+            }
+        }
     }
 }

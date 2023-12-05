@@ -77,7 +77,10 @@
                                 @Html.ButtonActionSubmit(text: "Filtrar")
                                 @Html.ButtonLinkIndex(text: "Retirar Filtro", controller: "Honorario", action: "RetirarFiltroHonorario")
                                 @Html.ButtonLinkIndex(text: "Exibir Todos", controller: "Honorario", action: "MostrarTudoHonorario")
-                                @Html.ButtonLinkIndex(text: "Novo Advogado", controller: "Honorario", action: "IncluirHonorario")
+                                @if (ViewBag.Perfil != "USU")
+                                {
+                                    @Html.ButtonLinkIndex(text: "Novo Advogado", controller: "Honorario", action: "IncluirHonorario")
+                                }
                                 @Html.ButtonLinkIndex(text: "Gerar Relatório", controller: "Honorario", action: "GerarRelatorioLista")
                                 @Html.ButtonLinkIndex(text: "Voltar", controller: "Honorario", action: "Voltar")
                             </div>
@@ -170,6 +173,19 @@
                                     }
                                 </tbody>
                             </table>
+                        }
+                        else
+                        {
+                            <div class="row">
+                                <div class="col-lg-3 col-md-3 col-xs-2">
+                                </div>
+                                <div style="border: 5px solid #F6A54A; padding: 10px; border-radius: 8px 8px; " class="col-lg-6 col-md-6 col-xs-8">
+                                    <h2 style="font-weight: bold">Sua pesquisa não retornou nenhum resultado ou nenhum advogado cadastrado</h2>
+                                    @Html.ButtonLinkIndex(text: "Retirar Filtro", controller: "Funil", action: "RetirarFiltroHonorario")
+                                </div>
+                                <div class="col-lg-3 col-md-3 col-xs-2">
+                                </div>
+                            </div>
                         }
                     </div>
                 </div>

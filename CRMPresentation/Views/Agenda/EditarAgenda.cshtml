@@ -3,7 +3,28 @@
 @{
     Layout = "~/Views/Shared/_Layout_Admin.cshtml";
 }
+
 <div class="wrapper wrapper-content animated fadeInRight">
+    <div class="modalContainer">
+        <div id="modal" class="modal" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        @*Titulo gerado dinamicamente*@
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        @*Gerado dinamicamente*@
+                    </div>
+                    <div class="modal-footer">
+                        <button onclick="limpaModal()" type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="page-title"> 
         <h3 class="title">Agenda</h3> 
         <br />
@@ -20,7 +41,6 @@
         </ol>
         <br />
     </div>
-
     <div class="row">
         <div class="col-lg-12 col-md-12 col-xs-12">
             <div class="col-lg-12 col-md-12 col-xs-12 ibox float-e-margins">
@@ -36,181 +56,434 @@
                                 @Html.ValidationSummary(false, "", new { @class = "text-danger" })
                             </div>
                         }
-                    <div class="tabs-cotainer">
+                    <div class="tabs-container">
+                        <div class="form-group">
+                            @Html.ButtonLinkIndex(text: "Voltar", action: "VoltarGrava", controller: "Agenda")
+                        </div>
                         <ul class="nav nav-tabs">
-                             <li class="active"><a data-toggle="tab" href="#tab-1">Dados Gerais</a></li>
-                             <li><a data-toggle="tab" href="#tab-2">Anexos</a></li>
+                            @if ((Int32)Session["AbaAgenda"] == 1)
+                            {
+                                <li class="active"><a data-toggle="tab" href="#tab-1">Dados Gerais</a></li>
+                                <li class=""><a data-toggle="tab" href="#tab-3">Contatos</a></li>
+                                <li class=""><a data-toggle="tab" href="#tab-2">Anexos</a></li>
+                            }
+                            @if ((Int32)Session["AbaAgenda"] == 2)
+                            {
+                                <li class=""><a data-toggle="tab" href="#tab-1">Dados Gerais</a></li>
+                                <li class="active"><a data-toggle="tab" href="#tab-3">Contatos</a></li>
+                                <li class=""><a data-toggle="tab" href="#tab-2">Anexos</a></li>
+                            }
                         </ul>
 
                         <div class="tab-content">
-                            <div id="tab-1" class="tab-pane active">
-                                 @using (Html.BeginForm("EditarAgenda", "Agenda", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", @id = "pwd-container1" }))
-                                 {
-                                <div class="panel-body">
-                                    <div class="form-group">
-                                        @Html.ButtonActionSubmit(text: "Confirma Edição de Item de Agenda", htmlAttributes: new { id = "basictoast" })
-                                        @Html.ButtonLinkIndex(text: "Voltar", action: "VoltarBaseAgenda", controller: "Agenda")
-                                    </div>
-                                    <div class="row">
-                                        <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
-                                            <div class="col-lg-2 col-md-2 col-xs-12">
-                                                Status*
-                                                @Html.DropDownListFor(m => m.AGEN_IN_STATUS, (SelectList)ViewBag.Status, "Selecionar", new { @class = "form-control", autofocus = true })
-                                                @Html.ValidationMessageFor(m => m.AGEN_IN_STATUS, "", new { @style = "color:red" })
+                            @if ((Int32)Session["AbaAgenda"] == 1)
+                            {
+                                <div id="tab-1" class="tab-pane active">
+                                     @using (Html.BeginForm("EditarAgenda", "Agenda", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", @id = "pwd-container1" }))
+                                     {
+                                        <div class="panel-body">
+                                            <div class="form-group">
+                                                @Html.ButtonActionSubmit(text: "Confirma Edição de Evento", htmlAttributes: new { id = "basictoast" })
                                             </div>
-                                        </div>
-                                        <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
-                                            <div class="col-lg-3 col-md-3 col-xs-12">
-                                                @Html.HiddenFor(m => m.ASSI_CD_ID)
-                                                @Html.HiddenFor(m => m.AGEN_IN_ATIVO)
-                                                @Html.HiddenFor(m => m.USUA_CD_ID)
-                                                @Html.HiddenFor(m => m.AGEN_CD_ID)
-                                                @Html.HiddenFor(m => m.CRM1_CD_ID)
-                                                Categoria*
-                                                @Html.DropDownListFor(m => m.CAAG_CD_ID, (SelectList)ViewBag.Tipos, "Selecionar", new { @class = "form-control", autofocus = true })
-                                                @Html.ValidationMessageFor(m => m.CAAG_CD_ID, "", new { @style = "color:red" })
-                                            </div>
-                                            <div class="col-lg-2 col-md-2 col-xs-12">
-                                                Data*
-                                                @Html.TextBoxFor(m => m.AGEN_DT_DATA, "{0:dd/MM/yyyy}", new { @class = "form-control date-picker", autofocus = true })
-                                                @Html.ValidationMessageFor(m => m.AGEN_DT_DATA, "", new { @style = "color:red" })
-                                            </div>
-                                            <div class="col-lg-1 col-md-1 col-xs-12">
-                                                Hora*
-                                                <div class='input-group date' id='datetimepicker3'>
-                                                    @Html.TextBoxFor(m => m.AGEN_HR_HORA, new { @class = "form-control time-picker", autofocus = true, @id = "hora" })
-                                                    @Html.ValidationMessageFor(m => m.AGEN_HR_HORA, "", new { @style = "color:red" })
-                                                    <span class="input-group-addon">
-                                                        <span style="cursor: pointer;" class="glyphicon glyphicon-time"></span>
-                                                    </span>
+                                            <div class="row">
+                                                <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
+                                                    <div class="col-lg-3 col-md-3 col-xs-12">
+                                                        @Html.HiddenFor(m => m.ASSI_CD_ID)
+                                                        @Html.HiddenFor(m => m.AGEN_IN_ATIVO)
+                                                        @Html.HiddenFor(m => m.USUA_CD_ID)
+                                                        @Html.HiddenFor(m => m.AGEN_CD_ID)
+                                                        @Html.HiddenFor(m => m.CRM1_CD_ID)
+                                                        @Html.HiddenFor(m => m.AGEN_IN_STATUS)
+                                                        @Html.HiddenFor(m => m.AGEN_CD_USUARIO)
+                                                        Categoria*
+                                                        @Html.DropDownListFor(m => m.CAAG_CD_ID, (SelectList)ViewBag.Tipos, "Selecionar", new { @class = "form-control", autofocus = true })
+                                                        @Html.ValidationMessageFor(m => m.CAAG_CD_ID, "", new { @style = "color:red" })
+                                                    </div>
+                                                    <div class="col-lg-2 col-md-2 col-xs-12">
+                                                        Data*
+                                                        @Html.TextBoxFor(m => m.AGEN_DT_DATA, "{0:dd/MM/yyyy}", new { @class = "form-control date-picker", autofocus = true, onfocus="this.select();"  })
+                                                        @Html.ValidationMessageFor(m => m.AGEN_DT_DATA, "", new { @style = "color:red" })
+                                                    </div>
+                                                    <div class="col-lg-1 col-md-1 col-xs-12">
+                                                        Início*
+                                                        <div class='input-group date' id='datetimepicker3'>
+                                                            @Html.TextBoxFor(m => m.AGEN_HR_HORA, new { @class = "form-control time-picker", autofocus = true, @id = "hora" })
+                                                            @Html.ValidationMessageFor(m => m.AGEN_HR_HORA, "", new { @style = "color:red" })
+                                                            <span class="input-group-addon">
+                                                                <span style="cursor: pointer;" class="glyphicon glyphicon-time"></span>
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-1 col-md-1 col-xs-12">
+                                                        Final*
+                                                        <div class='input-group date' id='datetimepicker3'>
+                                                            @Html.TextBoxFor(m => m.AGEN_HR_FINAL, new { @class = "form-control time-picker1", autofocus = true, @id = "hora1" })
+                                                            @Html.ValidationMessageFor(m => m.AGEN_HR_FINAL, "", new { @style = "color:red" })
+                                                            <span class="input-group-addon">
+                                                                <span style="cursor: pointer;" class="glyphicon glyphicon-time"></span>
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-5 col-md-5 col-xs-12">
+                                                        Link para Reunião
+                                                        @Html.TextBoxFor(m => m.AGEN_LK_REUNIAO, new { @class = "form-control", autofocus = true, id = "titulo" })
+                                                        @Html.ValidationMessageFor(m => m.AGEN_LK_REUNIAO, "", new { @style = "color:red" })
+                                                    </div>
+
+                                                </div>
+                                                <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
+                                                    <div class="col-lg-12 col-md-12 col-xs-12">
+                                                        Título*
+                                                        @Html.TextBoxFor(m => m.AGEN_NM_TITULO, new { @class = "form-control", autofocus = true })
+                                                        @Html.ValidationMessageFor(m => m.AGEN_NM_TITULO, "", new { @style = "color:red" })
+                                                    </div>
+                                                </div>
+                                                <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
+                                                    <div class="col-lg-12 col-md-12 col-xs-12">
+                                                        Descrição
+                                                        @Html.TextAreaFor(m => m.AGEN_DS_DESCRICAO, new { @class = "form-control", style = "width: 100%; height: 200px;", autofocus = true })
+                                                        @Html.ValidationMessageFor(m => m.AGEN_DS_DESCRICAO, "", new { @style = "color:red" })
+                                                    </div>
+                                                </div>
+                                                <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
+                                                    <div class="col-lg-12 col-md-12 col-xs-12">
+                                                        Observações
+                                                        @Html.TextAreaFor(m => m.AGEN_DS_DESCRICAO, new { @class = "form-control", style = "width: 100%; height: 300px;", autofocus = true })
+                                                        @Html.ValidationMessageFor(m => m.AGEN_DS_DESCRICAO, "", new { @style = "color:red" })
+                                                    </div>
                                                 </div>
                                             </div>
-                                            <div class="col-lg-3 col-md-3 col-xs-12">
-                                                Contato
-                                                @Html.DropDownListFor(m => m.AGEN_CD_USUARIO, (SelectList)ViewBag.Usuarios, "Selecionar", new { @class = "form-control", autofocus = true })
-                                                @Html.ValidationMessageFor(m => m.AGEN_CD_USUARIO, "", new { @style = "color:red" })
-                                            </div>
-                                            <div class="col-lg-3 col-md-3 col-xs-12">
-                                                Link Reunião
-                                                @Html.TextBoxFor(m => m.AGEN_LK_REUNIAO, new { @class = "form-control", autofocus = true, id = "titulo" })
-                                                @Html.ValidationMessageFor(m => m.AGEN_LK_REUNIAO, "", new { @style = "color:red" })
-                                            </div>
                                         </div>
-                                        <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
-                                            <div class="col-lg-12 col-md-12 col-xs-12">
-                                                Título*
-                                                @Html.TextBoxFor(m => m.AGEN_NM_TITULO, new { @class = "form-control", autofocus = true })
-                                                @Html.ValidationMessageFor(m => m.AGEN_NM_TITULO, "", new { @style = "color:red" })
-                                            </div>
-                                        </div>
-                                        <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
-                                            <div class="col-lg-12 col-md-12 col-xs-12">
-                                                Descrição
-                                                @Html.TextAreaFor(m => m.AGEN_DS_DESCRICAO, new { @class = "form-control", style = "width: 100%; height: 200px;", autofocus = true })
-                                                @Html.ValidationMessageFor(m => m.AGEN_DS_DESCRICAO, "", new { @style = "color:red" })
-                                            </div>
-                                        </div>
-                                        <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
-                                            <div class="col-lg-12 col-md-12 col-xs-12">
-                                                Observações
-                                                @Html.TextAreaFor(m => m.AGEN_DS_DESCRICAO, new { @class = "form-control", style = "width: 100%; height: 300px;", autofocus = true })
-                                                @Html.ValidationMessageFor(m => m.AGEN_DS_DESCRICAO, "", new { @style = "color:red" })
-                                            </div>
-                                        </div>
-                                    </div>
+                                     }
                                 </div>
-                                 }
-                            </div>
+                            }
+                            else
+                            {
+                                <div id="tab-1" class="tab-pane">
+                                     @using (Html.BeginForm("EditarAgenda", "Agenda", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", @id = "pwd-container1" }))
+                                     {
+                                        <div class="panel-body">
+                                            <div class="form-group">
+                                                @Html.ButtonActionSubmit(text: "Confirma Edição de Evento", htmlAttributes: new { id = "basictoast" })
+                                            </div>
+                                            <div class="row">
+                                                <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
+                                                    <div class="col-lg-3 col-md-3 col-xs-12">
+                                                        @Html.HiddenFor(m => m.ASSI_CD_ID)
+                                                        @Html.HiddenFor(m => m.AGEN_IN_ATIVO)
+                                                        @Html.HiddenFor(m => m.USUA_CD_ID)
+                                                        @Html.HiddenFor(m => m.AGEN_CD_ID)
+                                                        @Html.HiddenFor(m => m.CRM1_CD_ID)
+                                                        @Html.HiddenFor(m => m.AGEN_IN_STATUS)
+                                                        Categoria*
+                                                        @Html.DropDownListFor(m => m.CAAG_CD_ID, (SelectList)ViewBag.Tipos, "Selecionar", new { @class = "form-control", autofocus = true })
+                                                        @Html.ValidationMessageFor(m => m.CAAG_CD_ID, "", new { @style = "color:red" })
+                                                    </div>
+                                                    <div class="col-lg-2 col-md-2 col-xs-12">
+                                                        Data*
+                                                        @Html.TextBoxFor(m => m.AGEN_DT_DATA, "{0:dd/MM/yyyy}", new { @class = "form-control date-picker", autofocus = true, onfocus="this.select();"  })
+                                                        @Html.ValidationMessageFor(m => m.AGEN_DT_DATA, "", new { @style = "color:red" })
+                                                    </div>
+                                                    <div class="col-lg-1 col-md-1 col-xs-12">
+                                                        Início*
+                                                        <div class='input-group date' id='datetimepicker3'>
+                                                            @Html.TextBoxFor(m => m.AGEN_HR_HORA, new { @class = "form-control time-picker", autofocus = true, @id = "hora" })
+                                                            @Html.ValidationMessageFor(m => m.AGEN_HR_HORA, "", new { @style = "color:red" })
+                                                            <span class="input-group-addon">
+                                                                <span style="cursor: pointer;" class="glyphicon glyphicon-time"></span>
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-1 col-md-1 col-xs-12">
+                                                        Final*
+                                                        <div class='input-group date' id='datetimepicker3'>
+                                                            @Html.TextBoxFor(m => m.AGEN_HR_FINAL, new { @class = "form-control time-picker1", autofocus = true, @id = "hora1" })
+                                                            @Html.ValidationMessageFor(m => m.AGEN_HR_FINAL, "", new { @style = "color:red" })
+                                                            <span class="input-group-addon">
+                                                                <span style="cursor: pointer;" class="glyphicon glyphicon-time"></span>
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-5 col-md-5 col-xs-12">
+                                                        Link para Reunião
+                                                        @Html.TextBoxFor(m => m.AGEN_LK_REUNIAO, new { @class = "form-control", autofocus = true, id = "titulo" })
+                                                        @Html.ValidationMessageFor(m => m.AGEN_LK_REUNIAO, "", new { @style = "color:red" })
+                                                    </div>
+
+                                                </div>
+                                                <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
+                                                    <div class="col-lg-12 col-md-12 col-xs-12">
+                                                        Título*
+                                                        @Html.TextBoxFor(m => m.AGEN_NM_TITULO, new { @class = "form-control", autofocus = true })
+                                                        @Html.ValidationMessageFor(m => m.AGEN_NM_TITULO, "", new { @style = "color:red" })
+                                                    </div>
+                                                </div>
+                                                <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
+                                                    <div class="col-lg-12 col-md-12 col-xs-12">
+                                                        Descrição
+                                                        @Html.TextAreaFor(m => m.AGEN_DS_DESCRICAO, new { @class = "form-control", style = "width: 100%; height: 200px;", autofocus = true })
+                                                        @Html.ValidationMessageFor(m => m.AGEN_DS_DESCRICAO, "", new { @style = "color:red" })
+                                                    </div>
+                                                </div>
+                                                <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
+                                                    <div class="col-lg-12 col-md-12 col-xs-12">
+                                                        Observações
+                                                        @Html.TextAreaFor(m => m.AGEN_DS_DESCRICAO, new { @class = "form-control", style = "width: 100%; height: 300px;", autofocus = true })
+                                                        @Html.ValidationMessageFor(m => m.AGEN_DS_DESCRICAO, "", new { @style = "color:red" })
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                     }
+                                </div>
+                            }
 
                             <div id="tab-2" class="tab-pane">
                                 <div class="panel-body">
                                     <div class="row">
-                    <hr />
-                    <div class="col-lg-12 col-md-12 col-xs-12"> 
-                        <h4>Anexos</h4>
-                        <br />
-                        <div class="form-group">
-                            @using (Html.BeginForm("UploadFileAgenda", "Agenda", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { enctype = "multipart/form-data", @id="pwd-container2" }))
-                            {
-                                <div class="ibox-content">
-                                    @if (Model.AGENDA_ANEXO.Count > 0)
-                                    {
-                                        <table style ="background-color:lightsteelblue" class="table table-striped table-bordered table-hover dataTables-example">
-                                            <thead>
-                                                <tr>
-                                                    <th>Título</th>
-                                                    <th>Data</th>
-                                                    <th>Tipo</th>
-                                                    <th class="td-one-action">Ações</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                @foreach (var cond in (Model.AGENDA_ANEXO))
+                                        <hr />
+                                        <div class="col-lg-12 col-md-12 col-xs-12"> 
+                                            <h4>Anexos</h4>
+                                            <br />
+                                            <div class="form-group">
+                                                @using (Html.BeginForm("UploadFileAgenda", "Agenda", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { enctype = "multipart/form-data", @id="pwd-container2" }))
                                                 {
-                                                    <tr>
-                                                        <td>@cond.AGAN_NM_TITULO</td>
-                                                        <td>@cond.AGAN_DT_ANEXO.ToShortDateString()</td>
-                                                            @if (cond.AGAN_IN_TIPO == 1)
-                                                            {
-                                                                <td>Imagem</td>
-                                                            }
-                                                            else if (cond.AGAN_IN_TIPO == 2)
-                                                            {
-                                                                <td>Vídeo</td>
-                                                            }
-                                                            else if (cond.AGAN_IN_TIPO == 3)
-                                                            {
-                                                                <td>PDF</td>
-                                                            }
-                                                            else if (cond.AGAN_IN_TIPO == 4)
-                                                            {
-                                                                <td>Audio</td>
-                                                            }
-                                                            else if (cond.AGAN_IN_TIPO == 5)
-                                                            {
-                                                                <td>Documento/Word</td>
-                                                            }
-                                                            else if (cond.AGAN_IN_TIPO == 6)
-                                                            {
-                                                                <td>Planilha/Excel</td>
-                                                            }
-                                                            else
-                                                            {
-                                                                <td>Outros</td>
-                                                            }
-                                                            <td class="td-one-action">
-                                                            @if (cond.AGAN_IN_TIPO == 1 || cond.AGAN_IN_TIPO == 2)
-	                                                        {
-                                                                @Html.TableLinkDetails(cond.AGAN_CD_ID, "VerAnexoAgenda","fa-camera", "Visualizar")
-	                                                        }
-                                                            @if (cond.AGAN_IN_TIPO == 4)
-	                                                        {
-                                                                @Html.TableLinkDetails(cond.AGAN_CD_ID, "VerAnexoAgendaAudio","fa-volume-up", "Visualizar")
-	                                                        }
-                                                            @if (cond.AGAN_IN_TIPO == 3)
-                                                            {
-                                                                <a title="Visualizar" class="fa fa-camera fa-lg" href="~/PdfViewer/web/viewer.html?file=@(cond.AGAN_AQ_ARQUIVO.Replace("~", ""))&ReturnUrl=@Request.Url.AbsolutePath" target="_blank"></a>
-                                                            }
-                                                            @Html.TableLinkDetails(cond.AGAN_CD_ID, "DownloadAgenda","fa-download", "Download")
-                                                        </td>
-                                                    </tr>
+                                                    <div class="ibox-content">
+                                                        @if ((Model.AGENDA_ANEXO.Where(p => p.AGAN_IN_ATIVO == 1)).ToList().Count > 0)
+                                                        {
+                                                            <table style ="background-color:lightsteelblue" class="table table-striped table-bordered table-hover dataTables-example">
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th>Título</th>
+                                                                        <th>Data</th>
+                                                                        <th>Tipo</th>
+                                                                        <th class="td-one-action">Ações</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    @foreach (var cond in (Model.AGENDA_ANEXO.Where(p => p.AGAN_IN_ATIVO == 1).ToList()))
+                                                                    {
+                                                                        <tr>
+                                                                            <td>@cond.AGAN_NM_TITULO</td>
+                                                                            <td>@cond.AGAN_DT_ANEXO.ToShortDateString()</td>
+                                                                                @if (cond.AGAN_IN_TIPO == 1)
+                                                                                {
+                                                                                    <td>Imagem</td>
+                                                                                }
+                                                                                else if (cond.AGAN_IN_TIPO == 2)
+                                                                                {
+                                                                                    <td>Vídeo</td>
+                                                                                }
+                                                                                else if (cond.AGAN_IN_TIPO == 3)
+                                                                                {
+                                                                                    <td>PDF</td>
+                                                                                }
+                                                                                else if (cond.AGAN_IN_TIPO == 4)
+                                                                                {
+                                                                                    <td>Audio</td>
+                                                                                }
+                                                                                else if (cond.AGAN_IN_TIPO == 5)
+                                                                                {
+                                                                                    <td>Documento/Word</td>
+                                                                                }
+                                                                                else if (cond.AGAN_IN_TIPO == 6)
+                                                                                {
+                                                                                    <td>Planilha/Excel</td>
+                                                                                }
+                                                                                else
+                                                                                {
+                                                                                    <td>Outros</td>
+                                                                                }
+                                                                                <td class="td-one-action">
+                                                                                @if (cond.AGAN_IN_TIPO == 1 || cond.AGAN_IN_TIPO == 2)
+	                                                                            {
+                                                                                    @Html.TableLinkDetails(cond.AGAN_CD_ID, "VerAnexoAgenda","fa-camera", "Visualizar")
+	                                                                            }
+                                                                                @if (cond.AGAN_IN_TIPO == 4)
+	                                                                            {
+                                                                                    @Html.TableLinkDetails(cond.AGAN_CD_ID, "VerAnexoAgendaAudio","fa-volume-up", "Visualizar")
+	                                                                            }
+                                                                                @if (cond.AGAN_IN_TIPO == 3)
+                                                                                {
+                                                                                    <a title="Visualizar" class="fa fa-camera fa-lg" href="~/PdfViewer/web/viewer.html?file=@(cond.AGAN_AQ_ARQUIVO.Replace("~", ""))&ReturnUrl=@Request.Url.AbsolutePath" target="_blank"></a>
+                                                                                }
+                                                                                @Html.TableLinkDetails(cond.AGAN_CD_ID, "DownloadAgenda","fa-download", "Download")
+                                                                                @if (cond.AGAN_IN_ATIVO == 1)
+	                                                                            {
+                                                                                    <span style="color: #337ab7; cursor:pointer;" alt="Desativar" class="tbl-link fa-lg fa fa-trash-o" onclick="ShowModalExcluir('/Agenda/ExcluirAnexoAgenda/@cond.AGAN_CD_ID')" title="Desativar"></span>
+	                                                                            }
+                                                                            </td>
+                                                                        </tr>
+                                                                    }
+                                                                </tbody>
+                                                            </table>
+                                                        }
+                                                        <div class="col-lg-12 col-md-12 col-xs-12">
+                                                            <input style="float: left; margin-right: 5px;" type="file" name="file" id="file" class="btn btn-sm btn-warning"/>
+                                                            <input style="float: left;" type="submit" value="Incluir Anexo ao Evento" class="btn btn-sm btn-success" />
+                                                        </div>
+                                                    </div>
                                                 }
-                                            </tbody>
-                                        </table>
-                                    }
-                                    <div class="col-lg-12 col-md-12 col-xs-12">
-                                        <input style="float: left; margin-right: 5px;" type="file" name="file" id="file" class="btn btn-sm btn-warning"/>
-                                        <input style="float: left;" type="submit" value="Incluir Anexo ao Item da Agenda" class="btn btn-sm btn-success" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                                    </div>
+                                                </div>
+                       
+                            @if ((Int32)Session["AbaAgenda"] == 2)
+                            {
+                                <div id="tab-3" class="tab-pane active">
+                                    <div class="panel-body">
+                                        <div class="row">
+                                            <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
+                                                <div class="col-lg-12 col-md-12 col-xs-12">
+                                                    <h4>Contatos do Evento</h4>
+                                                    <br />
+                                                    @if (Model.AGENDA_CONTATO.Count > 0)
+                                                    {
+                                                        <table class="table table-striped table-bordered table-hover dataTables-example">
+                                                            <thead style="background-color:lightsteelblue">
+                                                                <tr>
+                                                                    <th>Nome</th>
+                                                                    <th>Tipo</th>
+                                                                    <th>E-Mail</th>
+                                                                    <th>Anotação</th>
+                                                                    <th>Link Enviado</th>
+                                                                    <th class="td-one-action">Ações</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                @foreach (var cond in (Model.AGENDA_CONTATO.Where(p => p.AGCO_IN_ATIVO == 1)))
+                                                                {
+                                                                    <tr>
+                                                                        @if (cond.AGCO_IN_TIPO == 1)
+                                                                        {
+                                                                            <td>@cond.USUARIO.USUA_NM_NOME</td>
+                                                                            <td style="width: auto"><span class="badge badge-primary">Interno</span></td>
+                                                                            <td>@cond.USUARIO.USUA_NM_EMAIL</td>
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            <td>@cond.AGCO_NM_NOME</td>
+                                                                            <td style="width: auto"><span class="badge badge-primary">Externo</span></td>
+                                                                            <td>@cond.AGCO_NM_EMAIL</td>
+                                                                        }
+                                                                        <td>@cond.AGCO_DS_ANOTACAO</td>
+                                                                        @if (cond.AGCO_IN_ENVIO == 0)
+                                                                        {
+                                                                            <td style="width: auto"><span class="badge badge-warning">Não</span></td>
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            <td style="width: auto"><span class="badge badge-primary">Sim</span></td>
+                                                                        }
+                                                                        <td class="td-one-action">
+                                                                            @if (cond.AGCO_IN_ENVIO == 0 & cond.AGENDA.AGEN_LK_REUNIAO != null)
+                                                                            {
+                                                                                @Html.TableLinkDetails(cond.AGCO_CD_ID, "EnviarLinkReuniaoUnico", "fa-send", "Enviar Link")
+                                                                            }
+                                                                            @Html.TableLinkDetails(cond.AGCO_CD_ID, "EditarContatoAgenda", "fa-edit", "Editar/Consultar Contato")
+                                                                            @if (cond.AGCO_IN_ATIVO == 1)
+                                                                            {
+                                                                                <span style="color: #337ab7; cursor:pointer;" alt="Excluir" class="tbl-link fa-lg fa fa-trash-o" onclick="ShowModalExcluir('/Agenda/ExcluirContatoAgenda/@cond.AGCO_CD_ID')" title="Excluir"></span>
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                <span style="color: #337ab7; cursor:pointer;" alt="Reativar" class="tbl-link fa-lg fa fa-refresh" onclick="ShowModalReativar('/Agenda/ReativarContatoAgenda/@cond.AGCO_CD_ID')" title="Reativar"></span>
+                                                                            }
+                                                                        </td>
+                                                                    </tr>
+                                                                }
+                                                            </tbody>
+                                                        </table>
+                                                    }
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            @Html.ButtonLinkIndex(text: "Incluir Novo Contato do Evento", action: "IncluirContatoAgenda", controller: "Agenda")
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                            else
+                            {
+                                <div id="tab-3" class="tab-pane">
+                                    <div class="panel-body">
+                                        <div class="row">
+                                            <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
+                                                <div class="col-lg-12 col-md-12 col-xs-12">
+                                                    <h4>Contatos do Evento</h4>
+                                                    <br />
+                                                    @if (Model.AGENDA_CONTATO.Count > 0)
+                                                    {
+                                                        <table class="table table-striped table-bordered table-hover dataTables-example">
+                                                            <thead style="background-color:lightsteelblue">
+                                                                <tr>
+                                                                    <th>Nome</th>
+                                                                    <th>Tipo</th>
+                                                                    <th>E-Mail</th>
+                                                                    <th>Anotação</th>
+                                                                    <th>Link Enviado</th>
+                                                                    <th class="td-one-action">Ações</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                @foreach (var cond in (Model.AGENDA_CONTATO.Where(p => p.AGCO_IN_ATIVO == 1)))
+                                                                {
+                                                                    <tr>
+                                                                        @if (cond.AGCO_IN_TIPO == 1)
+                                                                        {
+                                                                            <td>@cond.USUARIO.USUA_NM_NOME</td>
+                                                                            <td style="width: auto"><span class="badge badge-primary">Interno</span></td>
+                                                                            <td>@cond.USUARIO.USUA_NM_EMAIL</td>
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            <td>@cond.AGCO_NM_NOME</td>
+                                                                            <td style="width: auto"><span class="badge badge-primary">Externo</span></td>
+                                                                            <td>@cond.AGCO_NM_EMAIL</td>
+                                                                        }
+                                                                        <td>@cond.AGCO_DS_ANOTACAO</td>
+                                                                        @if (cond.AGCO_IN_ENVIO == 0)
+                                                                        {
+                                                                            <td style="width: auto"><span class="badge badge-warning">Não</span></td>
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            <td style="width: auto"><span class="badge badge-primary">Sim</span></td>
+                                                                        }
+                                                                        <td class="td-one-action">
+                                                                            @if (cond.AGCO_IN_ENVIO == 0 & cond.AGENDA.AGEN_LK_REUNIAO != null)
+                                                                            {
+                                                                                @Html.TableLinkDetails(cond.AGCO_CD_ID, "EnviarLinkReuniaoUnico", "fa-send", "Enviar Link")
+                                                                            }
+                                                                            @Html.TableLinkDetails(cond.AGCO_CD_ID, "EditarContatoAgenda", "fa-edit", "Editar/Consultar Contato")
+                                                                            @if (cond.AGCO_IN_ATIVO == 1)
+                                                                            {
+                                                                                <span style="color: #337ab7; cursor:pointer;" alt="Excluir" class="tbl-link fa-lg fa fa-trash-o" onclick="ShowModalExcluir('/Agenda/ExcluirContatoAgenda/@cond.AGCO_CD_ID')" title="Excluir"></span>
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                <span style="color: #337ab7; cursor:pointer;" alt="Reativar" class="tbl-link fa-lg fa fa-refresh" onclick="ShowModalReativar('/Agenda/ReativarContatoAgenda/@cond.AGCO_CD_ID')" title="Reativar"></span>
+                                                                            }
+                                                                        </td>
+                                                                    </tr>
+                                                                }
+                                                            </tbody>
+                                                        </table>
+                                                    }
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            @Html.ButtonLinkIndex(text: "Incluir Novo Contato do Evento", action: "IncluirContatoAgenda", controller: "Agenda")
+                                        </div>
                                     </div>
                                 </div>
                             }
                         </div>
                     </div>
-                </div>
-                                </div>
-                            </div>
-                        </div>
-                </div>
                 </div>
             </div>
          </div>
@@ -218,34 +491,40 @@
 </div>
 
 @section Styles {
-    <link href="~/Content/themes/base/jquery-ui.min.css" rel="stylesheet" />
-    <link href="~/Content/themes/base/all.css" rel="stylesheet" />
-    <link href="~/Content/jquery.datetimepicker.css" rel="stylesheet" />
-    @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
-    @Styles.Render("~/plugins/jasnyBootstrapStyles")
-    @Styles.Render("~/plugins/toastrStyles")
 }
 @section Scripts {
-      <script src="~/Scripts/jquery.datetimepicker.full.min.js"></script>
-    <script type="text/javascript" src="~/Scripts/moment.min.js"></script>
-    <script type="text/javascript" src="~/Scripts/bootstrap.min.js"></script>
-    <script type="text/javascript" src="~/Scripts/jquery.datetimepicker"></script>
-
-    @Scripts.Render("~/plugins/toastr")
-    <script src="~/Scripts/jquery-ui-1.12.1.min.js"></script>
-    @Scripts.Render("~/plugins/dataTables")
-    @Scripts.Render("~/bundles/inputmask")
-    @Scripts.Render("~/plugins/jasnyBootstrap")
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.maskedinput/1.4.1/jquery.maskedinput.js"></script>
-    <script src="~/Scripts/uploadAnexo.js"></script>
-    <script type="text/javascript">
+   
+    <script>
         $(function () {
-            $("#cpf").mask("999.999.999-99");
-            $("#cnpj").mask("99.999.999/9999-99");
-            $("#cep").mask("99999-999");
-            $("#hora").mask("99:99");
+            limpaModal();
         });
+
+        function limpaModal() {
+            $('#btnModal').remove();
+            $('#modalTitle').remove();
+        }
+
+        function ShowModalExcluir(url) {
+            $('#modal').find('.modal-footer').prepend('<a id="btnModal" alt="Desativar" class="btn btn-primary" href="' + url + '" target="_self" title="Desativar">Confirmar</a>');
+            $('#modal').find('.modal-body').html('Confirma exclusão de anexo?');
+            $('#modal').find('.modal-header').prepend('<h5 id="modalTitle" class="modal-title">Confimar Exclusão</h5>');
+            $('#modal').modal('show');
+        }
+        function ShowModalExcluirContato(url) {
+            $('#modal').find('.modal-footer').prepend('<a id="btnModal" alt="Desativar" class="btn btn-primary" href="' + url + '" target="_self" title="Desativar">Confirmar</a>');
+            $('#modal').find('.modal-body').html('Confirma exclusão de contato?');
+            $('#modal').find('.modal-header').prepend('<h5 id="modalTitle" class="modal-title">Confimar Exclusão</h5>');
+            $('#modal').modal('show');
+        }
+        function ShowModalReativarContato(url) {
+            $('#modal').find('.modal-footer').prepend('<a id="btnModal" alt="Desativar" class="btn btn-primary" href="' + url + '" target="_self" title="Desativar">Confirmar</a>');
+            $('#modal').find('.modal-body').html('Confirma reativação de contato?');
+            $('#modal').find('.modal-header').prepend('<h5 id="modalTitle" class="modal-title">Confimar Exclusão</h5>');
+            $('#modal').modal('show');
+        }
+
     </script>
+    
    <script type="text/javascript">
         $(function () {
             $('.time-picker').datetimepicker({
@@ -259,131 +538,10 @@
             $('#datetimepicker3').click(function () {
                 $('.time-picker').datetimepicker('show');
             });
-        });
-    </script>
-    <script type="text/javascript" language="javascript">
-        $(function () {
-            $('.date-picker').datepicker(
-                {
-                    dateFormat: 'dd/mm/yy',
-                    dayNames: ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'],
-                    dayNamesMin: ['D', 'S', 'T', 'Q', 'Q', 'S', 'S', 'D'],
-                    dayNamesShort: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'],
-                    monthNames: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'],
-                    monthNamesShort: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
-                    nextText: 'Proximo',
-                    prevText: 'Anterior',
-                    showOn: "focus"
-                }
-            )
-            .css("display", "normal")
-            .next("button").button({
-                icons: { primary: "ui-icon-calendar" },
-                label: "Selecione uma data",
-                text: false 
+            $('.time-picker1').datetimepicker({
+                datepicker: false,
+                format: 'H:i'
             });
-        });
-    </script> 
-
-    <script type="text/javascript">
-        $(document).ready(function () {
-
-            var i = -1;
-            var toastCount = 0;
-            var $toastlast;
-            var getMessage = function () {
-                var msg = 'Hi, welcome to Inspinia. This is example of Toastr notification box.';
-                return msg;
-            };
-
-            $('#basictoast').click(function () {
-                // Display a success toast, with a title
-                toastr.success('Edição em andamento!')
-            });
-            $('#showtoast').click(function () {
-                var shortCutFunction = $("#toastTypeGroup input:radio:checked").val();
-                var msg = $('#message').val();
-                var title = $('#title').val() || '';
-                var $showDuration = $('#showDuration');
-                var $hideDuration = $('#hideDuration');
-                var $timeOut = $('#timeOut');
-                var $extendedTimeOut = $('#extendedTimeOut');
-                var $showEasing = $('#showEasing');
-                var $hideEasing = $('#hideEasing');
-                var $showMethod = $('#showMethod');
-                var $hideMethod = $('#hideMethod');
-                var toastIndex = toastCount++;
-                toastr.options = {
-                    closeButton: $('#closeButton').prop('checked'),
-                    debug: $('#debugInfo').prop('checked'),
-                    progressBar: $('#progressBar').prop('checked'),
-                    positionClass: $('#positionGroup input:radio:checked').val() || 'toast-top-right',
-                    onclick: null
-                };
-                if ($('#addBehaviorOnToastClick').prop('checked')) {
-                    toastr.options.onclick = function () {
-                        alert('You can perform some custom action after a toast goes away');
-                    };
-                }
-                if ($showDuration.val().length) {
-                    toastr.options.showDuration = $showDuration.val();
-                }
-                if ($hideDuration.val().length) {
-                    toastr.options.hideDuration = $hideDuration.val();
-                }
-                if ($timeOut.val().length) {
-                    toastr.options.timeOut = $timeOut.val();
-                }
-                if ($extendedTimeOut.val().length) {
-                    toastr.options.extendedTimeOut = $extendedTimeOut.val();
-                }
-                if ($showEasing.val().length) {
-                    toastr.options.showEasing = $showEasing.val();
-                }
-                if ($hideEasing.val().length) {
-                    toastr.options.hideEasing = $hideEasing.val();
-                }
-                if ($showMethod.val().length) {
-                    toastr.options.showMethod = $showMethod.val();
-                }
-                if ($hideMethod.val().length) {
-                    toastr.options.hideMethod = $hideMethod.val();
-                }
-                if (!msg) {
-                    msg = getMessage();
-                }
-                $("#toastrOptions").text("Command: toastr["
-                        + shortCutFunction
-                        + "](\""
-                        + msg
-                        + (title ? "\", \"" + title : '')
-                        + "\")\n\ntoastr.options = "
-                        + JSON.stringify(toastr.options, null, 2)
-                );
-                var $toast = toastr[shortCutFunction](msg, title); // Wire up an event handler to a button in the toast, if it exists
-                $toastlast = $toast;
-                if ($toast.find('#okBtn').length) {
-                    $toast.delegate('#okBtn', 'click', function () {
-                        alert('you clicked me. i was toast #' + toastIndex + '. goodbye!');
-                        $toast.remove();
-                    });
-                }
-                if ($toast.find('#surpriseBtn').length) {
-                    $toast.delegate('#surpriseBtn', 'click', function () {
-                        alert('Surprise! you clicked me. i was toast #' + toastIndex + '. You could perform an action here.');
-                    });
-                }
-            });
-            function getLastToast() {
-                return $toastlast;
-            }
-            $('#clearlasttoast').click(function () {
-                toastr.clear(getLastToast());
-            });
-            $('#cleartoasts').click(function () {
-                toastr.clear();
-            });
-
         });
     </script>
     @if (ViewBag.Message != null)

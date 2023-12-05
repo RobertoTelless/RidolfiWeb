@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="RidolfiDB_WebModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012.Azure" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="RidolfiDB_WebModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012.Azure" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="AGENDA">
           <Key>
             <PropertyRef Name="AGEN_CD_ID" />
@@ -395,6 +395,11 @@
           <Property Name="BENE_VL_RENDA" Type="decimal" Precision="20" Scale="2" />
           <Property Name="BENE_VL_RENDA_ESTIMADA" Type="decimal" Precision="20" Scale="2" />
           <Property Name="BENE_IN_ATIVO" Type="int" Nullable="false" />
+          <Property Name="UF_CD_ID" Type="int" />
+          <Property Name="BENE_NM_CIDADE" Type="varchar" MaxLength="50" />
+          <Property Name="BENE_NM_ENDERECO" Type="varchar" MaxLength="150" />
+          <Property Name="BENE_NR_CEP" Type="varchar" MaxLength="10" />
+          <Property Name="BENE_NM_BAIRRO" Type="varchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="BENEFICIARIO_ANEXO">
           <Key>
@@ -4692,6 +4697,18 @@
             </Principal>
             <Dependent Role="BENEFICIARIO_ANOTACOES">
               <PropertyRef Name="USUA_CD_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_BENEFICIARIO_UF">
+          <End Role="UF" Type="Self.UF" Multiplicity="0..1" />
+          <End Role="BENEFICIARIO" Type="Self.BENEFICIARIO" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UF">
+              <PropertyRef Name="UF_CD_ID" />
+            </Principal>
+            <Dependent Role="BENEFICIARIO">
+              <PropertyRef Name="UF_CD_ID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -9896,6 +9913,10 @@
             <End Role="USUARIO" EntitySet="USUARIO" />
             <End Role="BENEFICIARIO_ANOTACOES" EntitySet="BENEFICIARIO_ANOTACOES" />
           </AssociationSet>
+          <AssociationSet Name="FK_BENEFICIARIO_UF" Association="Self.FK_BENEFICIARIO_UF">
+            <End Role="UF" EntitySet="UF" />
+            <End Role="BENEFICIARIO" EntitySet="BENEFICIARIO" />
+          </AssociationSet>
           <AssociationSet Name="FK_CATEGORIA_ORDEM_SERVICO_ASSINANTE" Association="Self.FK_CATEGORIA_ORDEM_SERVICO_ASSINANTE">
             <End Role="ASSINANTE" EntitySet="ASSINANTE" />
             <End Role="CATEGORIA_ORDEM_SERVICO" EntitySet="CATEGORIA_ORDEM_SERVICO" />
@@ -11469,8 +11490,7 @@
             <End Role="VARA" EntitySet="VARA" />
           </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="RidolfiDB_WebModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -11994,6 +12014,12 @@
           <NavigationProperty Name="ESCOLARIDADE" Relationship="Self.FKBENEFICIAR821804" FromRole="BENEFICIARIO" ToRole="ESCOLARIDADE" />
           <NavigationProperty Name="TIPO_PESSOA" Relationship="Self.FKBENEFICIAR947372" FromRole="BENEFICIARIO" ToRole="TIPO_PESSOA" />
           <NavigationProperty Name="PRECATORIO" Relationship="Self.FKPRECATORIO759277" FromRole="BENEFICIARIO" ToRole="PRECATORIO" />
+          <Property Name="UF_CD_ID" Type="Int32" />
+          <NavigationProperty Name="UF" Relationship="RidolfiDB_WebModel.FK_BENEFICIARIO_UF" FromRole="BENEFICIARIO" ToRole="UF" />
+          <Property Name="BENE_NM_CIDADE" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="BENE_NM_ENDERECO" Type="String" MaxLength="150" FixedLength="false" Unicode="false" />
+          <Property Name="BENE_NR_CEP" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="BENE_NM_BAIRRO" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="BENEFICIARIO_ANEXO">
           <Key>
@@ -16066,6 +16092,7 @@
           <NavigationProperty Name="MUNICIPIO" Relationship="Self.FK_MUNICIPIO_UF" FromRole="UF" ToRole="MUNICIPIO" />
           <NavigationProperty Name="PACIENTE" Relationship="Self.FK_PACIENTE_UF" FromRole="UF" ToRole="PACIENTE" />
           <NavigationProperty Name="TRF" Relationship="Self.FKTRF126253" FromRole="UF" ToRole="TRF" />
+          <NavigationProperty Name="BENEFICIARIO" Relationship="RidolfiDB_WebModel.FK_BENEFICIARIO_UF" FromRole="UF" ToRole="BENEFICIARIO" />
         </EntityType>
         <EntityType Name="UNIDADE">
           <Key>
@@ -23837,7 +23864,23 @@
             <End Role="VIDEO" EntitySet="VIDEO" />
             <End Role="VIDEO_COMENTARIO" EntitySet="VIDEO_COMENTARIO" />
           </AssociationSet>
+          <AssociationSet Name="FK_BENEFICIARIO_UF" Association="RidolfiDB_WebModel.FK_BENEFICIARIO_UF">
+            <End Role="UF" EntitySet="UF" />
+            <End Role="BENEFICIARIO" EntitySet="BENEFICIARIO" />
+          </AssociationSet>
         </EntityContainer>
+        <Association Name="FK_BENEFICIARIO_UF">
+          <End Type="RidolfiDB_WebModel.UF" Role="UF" Multiplicity="0..1" />
+          <End Type="RidolfiDB_WebModel.BENEFICIARIO" Role="BENEFICIARIO" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UF">
+              <PropertyRef Name="UF_CD_ID" />
+            </Principal>
+            <Dependent Role="BENEFICIARIO">
+              <PropertyRef Name="UF_CD_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -24230,6 +24273,11 @@
           <EntitySetMapping Name="BENEFICIARIO">
             <EntityTypeMapping TypeName="RidolfiDB_WebModel.BENEFICIARIO">
               <MappingFragment StoreEntitySet="BENEFICIARIO">
+                <ScalarProperty Name="BENE_NM_BAIRRO" ColumnName="BENE_NM_BAIRRO" />
+                <ScalarProperty Name="BENE_NR_CEP" ColumnName="BENE_NR_CEP" />
+                <ScalarProperty Name="BENE_NM_ENDERECO" ColumnName="BENE_NM_ENDERECO" />
+                <ScalarProperty Name="BENE_NM_CIDADE" ColumnName="BENE_NM_CIDADE" />
+                <ScalarProperty Name="UF_CD_ID" ColumnName="UF_CD_ID" />
                 <ScalarProperty Name="BENE_CD_ID" ColumnName="BENE_CD_ID" />
                 <ScalarProperty Name="TIPE_CD_ID" ColumnName="TIPE_CD_ID" />
                 <ScalarProperty Name="SEXO_CD_ID" ColumnName="SEXO_CD_ID" />

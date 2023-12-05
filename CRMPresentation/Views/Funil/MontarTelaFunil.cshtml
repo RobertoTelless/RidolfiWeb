@@ -25,7 +25,6 @@
             </div>
         </div>
     </div>
-
     <div class="page-title">
         <h3 class="title">Funis de Processos</h3>
         <br />
@@ -60,7 +59,10 @@
                     <div class="row">
                         <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
                             <div class="col-lg-12 col-md-12 col-xs-12">
-                                @Html.ButtonLinkIndex(text: "Incluir Novo Funil", controller: "Funil", action: "IncluirFunil", buttonClass: "primary")
+                                @if (ViewBag.Perfil != "ADM")
+                                {
+                                    @Html.ButtonLinkIndex(text: "Incluir Novo Funil", controller: "Funil", action: "IncluirFunil", buttonClass: "primary")
+                                }
                                 @Html.ButtonLinkIndex(text: "Ver Ativos", controller: "Funil", action: "RetirarFiltroFunil")
                                 @Html.ButtonLinkIndex(text: "Ver Todos", controller: "Funil", action: "MostrarTudoFunil")
                                 @Html.ButtonLinkIndex(text: "Voltar", controller: "Funil", action: "VoltarDash")
@@ -76,8 +78,8 @@
                                         <th style="width: auto">Sigla</th>
                                         <th style="width: auto">Descrição</th>
                                         <th style="width: auto">Emite Proposta?</th>
-                                        <th style="width: auto">Mensagens para Cliente?</th>
                                         <th style="width: auto">Mensagens para Responsável?</th>
+                                        <th style="width: auto">Etapas</th>
                                         <th class="td-one-action">Ações</th>
                                     </tr>
                                 </thead>
@@ -96,14 +98,6 @@
                                             {
                                                 <td style="width: auto"><span class="badge badge-warning">Não</span></td>
                                             }
-                                            @if (cond.FUNI_IN_CLIENTE ==  1)
-                                            {
-                                                <td style="width: auto"><span class="badge badge-success">Sim</span></td>
-                                            }
-                                            else
-                                            {
-                                                <td style="width: auto"><span class="badge badge-warning">Não</span></td>
-                                            }
                                             @if (cond.FUNI_IN_RESPONSAVEL ==  1)
                                             {
                                                 <td style="width: auto"><span class="badge badge-success">Sim</span></td>
@@ -112,22 +106,35 @@
                                             {
                                                 <td style="width: auto"><span class="badge badge-warning">Não</span></td>
                                             }
+                                            <td style="width: auto">@cond.FUNIL_ETAPA.Where(p => p.FUET_IN_ATIVO == 1).ToList().Count</td>
                                             <td class="td-one-action">
                                                 @if (cond.FUNI_IN_FIXO == 0)
                                                 {
-                                                    @Html.TableLinkDetails(cond.FUNI_CD_ID, "EditarFunil", "fa-edit", "Editar")
+                                                    if (((EntitiesServices.Model.PERFIL)Session["PerfilUsuario"]).PERF_IN_ALTERACAO_FUNIL == 1)
+                                                    {
+                                                        @Html.TableLinkDetails(cond.FUNI_CD_ID, "EditarFunil", "fa-edit", "Editar")
+                                                    }
                                                     if (cond.FUNI_IN_ATIVO == 1)
                                                     {
-                                                        <span style="color: #337ab7; cursor:pointer;" alt="Excluir" class="tbl-link fa-lg fa fa-trash-o" onclick="ShowModalExcluir('/Funil/ExcluirFunil/@cond.FUNI_CD_ID')" title="Excluir"></span>
+                                                        if (((EntitiesServices.Model.PERFIL)Session["PerfilUsuario"]).PERF_IN_EXCLUSAO_FUNIL == 1)
+                                                        {
+                                                            <span style="color: #337ab7; cursor:pointer;" alt="Excluir" class="tbl-link fa-lg fa fa-trash-o" onclick="ShowModalExcluir('/Funil/ExcluirFunil/@cond.FUNI_CD_ID')" title="Excluir"></span>
+                                                        }
                                                     }
                                                     else
                                                     {
-                                                        <span style="color: #337ab7; cursor:pointer;" alt="Reativar" class="tbl-link fa-lg fa fa-refresh" onclick="ShowModalReativar('/Funil/ReativarFunil/@cond.FUNI_CD_ID')" title="Reativar"></span>
+                                                        if (((EntitiesServices.Model.PERFIL)Session["PerfilUsuario"]).PERF_IN_REATIVA_FUNIL == 1)
+                                                        {
+                                                            <span style="color: #337ab7; cursor:pointer;" alt="Reativar" class="tbl-link fa-lg fa fa-refresh" onclick="ShowModalReativar('/Funil/ReativarFunil/@cond.FUNI_CD_ID')" title="Reativar"></span>
+                                                        }
                                                     }
                                                 }
                                                 else
                                                 {
-                                                    @Html.TableLinkDetails(cond.FUNI_CD_ID, "EditarFunil", "fa-search", "Consultar")
+                                                    if (((EntitiesServices.Model.PERFIL)Session["PerfilUsuario"]).PERF_IN_ALTERACAO_FUNIL == 1)
+                                                    {
+                                                        @Html.TableLinkDetails(cond.FUNI_CD_ID, "EditarFunil", "fa-search", "Consultar")
+                                                    }
                                                 }
                                             </td>
                                         </tr>
@@ -138,17 +145,13 @@
                         else
                         {
                             <div class="row">
-                                <div class="col-lg-4 col-md-4 col-xs-2">
-
+                                <div class="col-lg-3 col-md-3 col-xs-2">
                                 </div>
-                                <div style="border: 5px solid #F6A54A; padding: 10px; border-radius: 8px 8px; " class="col-lg-4 col-md-4 col-xs-8">
-                                    <h2 style="font-weight: bold">Sua pesquisa não retornou nenhum resultado</h2>
-                                    <p>Tente outras opções de pesquisa</p>
-
+                                <div style="border: 5px solid #F6A54A; padding: 10px; border-radius: 8px 8px; " class="col-lg-6 col-md-6 col-xs-8">
+                                    <h2 style="font-weight: bold">Sua pesquisa não retornou nenhum resultado ou nenhum funil cadastrado</h2>
                                     @Html.ButtonLinkIndex(text: "Retirar Filtro", controller: "Funil", action: "RetirarFiltroFunil")
                                 </div>
-                                <div class="col-lg-4 col-md-4 col-xs-2">
-
+                                <div class="col-lg-3 col-md-3 col-xs-2">
                                 </div>
                             </div>
                         }

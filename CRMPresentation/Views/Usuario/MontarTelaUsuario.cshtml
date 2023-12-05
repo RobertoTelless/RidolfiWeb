@@ -4,6 +4,18 @@
 @{
     Layout = "~/Views/Shared/_Layout_Admin.cshtml";
 }
+
+<div style="z-index: 999;" class="dotContainer">
+    <div style="top: 500px" class="dotWrapper">
+        <div class="circle"></div>
+        <div class="circle"></div>
+        <div class="circle"></div>
+        <div class="shadow"></div>
+        <div class="shadow"></div>
+        <div class="shadow"></div>
+    </div>
+</div>
+
 <div class="wrapper wrapper-content animated fadeInRight">
     <div class="modalContainer">
         <div id="modal" class="modal" tabindex="-1" role="dialog">
@@ -115,12 +127,11 @@
                                 @Html.ButtonActionSubmit(text: "Filtrar")
                                 @if ((ViewBag.Perfil == "ADM" || ViewBag.Perfil == "GER"))
                                 {
-                                    @Html.ButtonLinkIndex(text: "Incluir Novo Usuário", controller: "Usuario", action: "IncluirUsuario", buttonClass: "primary")
+                                    @Html.ButtonLinkIndex(text: "Novo Usuário", controller: "Usuario", action: "IncluirUsuario", buttonClass: "primary")
                                 }
                                 @Html.ButtonLinkIndex(text: "Retirar Filtro", controller: "Usuario", action: "RetirarFiltroUsuario")
                                 @Html.ButtonLinkIndex(text: "Exibir Inativos", controller: "Usuario", action: "MostrarTudoUsuario")
                                 @Html.ButtonLinkIndex(text: "Gerar Listagem", controller: "Usuario", action: "GerarRelatorioLista")
-                                @Html.ButtonLinkIndex(text: "Mensagens Enviadas", action: "VerMensagensEnviadas", controller: "Usuario", buttonClass: "success")
                                 @Html.ButtonLinkIndex(text: "Voltar", controller: "Usuario", action: "VoltarDash")
                             </div>
                         </div>
@@ -165,73 +176,233 @@
                                 <tbody>
                                     @foreach (var cond in (ViewBag.Listas as List<EntitiesServices.Model.USUARIO>))
                                     {
-                                        <tr>
-                                            @if (ViewBag.Perfil == "ADM" || ViewBag.Perfil == "GER")
+                                        if (cond.USUA_IN_ATIVO == 1)
+                                        {
+                                            if (cond.USUA_IN_BLOQUEADO != 1)
                                             {
-                                                <td style="width: auto"><a href="@Url.Action("EditarUsuario", "Usuario", new { id = cond.USUA_CD_ID })" />@cond.USUA_NM_NOME</td>
-                                            }
-                                            else
-                                            {
-                                                <td style="width: auto"><a href="@Url.Action("VerUsuario", "Usuario", new { id = cond.USUA_CD_ID })" />@cond.USUA_NM_NOME</td>
-                                            }
-                                            <td style="width: auto"><a href="@Url.Action("EnviarEMailUsuario", "Usuario", new { id = cond.USUA_CD_ID })" />@cond.USUA_NM_EMAIL</td>
-                                            <td style="width: auto"><a href="@Url.Action("EnviarSMSUsuario", "Usuario", new { id = cond.USUA_CD_ID })" />@cond.USUA_NR_CELULAR</td>
-                                            <td style="width: auto">@cond.USUA_NM_LOGIN</td>
-                                            @if (cond.CARGO != null)
-                                            {
-                                                <td style="width: auto">@cond.CARGO.CARG_NM_NOME</td>
-                                            }
-                                            else
-                                            {
-                                                <td style="width: auto">-</td>
-                                            }
-                                            <td style="width: auto; color: green; font-weight: bold">@cond.PERFIL.PERF_NM_NOME</td>
-                                            @if (cond.USUA_IN_BLOQUEADO == 1)
-                                            {
-                                                <td style="width: auto"><span class="badge badge-Danger">Sim</span></td>
+                                                <tr>
+                                                    @if (ViewBag.Perfil == "ADM" || ViewBag.Perfil == "GER")
+                                                    {
+                                                        <td style="width: auto"><a href="@Url.Action("EditarUsuario", "Usuario", new { id = cond.USUA_CD_ID })" />@cond.USUA_NM_NOME</td>
+                                                    }
+                                                    else
+                                                    {
+                                                        <td style="width: auto"><a href="@Url.Action("VerUsuario", "Usuario", new { id = cond.USUA_CD_ID })" />@cond.USUA_NM_NOME</td>
+                                                    }
+                                                    @if (ViewBag.EMail == 1)
+                                                    {
+                                                        <td style="width: auto"><a href="@Url.Action("EnviarEMailUsuario", "Usuario", new { id = cond.USUA_CD_ID })" />@cond.USUA_NM_EMAIL</td>
+                                                    }
+                                                    else
+                                                    {
+                                                        <td style="width: auto">@cond.USUA_NM_EMAIL</td>
+                                                    }
+                                                    @if (ViewBag.SMS == 1)
+                                                    {
+                                                        <td style="width: auto"><a href="@Url.Action("EnviarSMSUsuario", "Usuario", new { id = cond.USUA_CD_ID })" />@cond.USUA_NR_CELULAR</td>
+                                                    }
+                                                    else
+                                                    {
+                                                        <td style="width: auto">@cond.USUA_NR_CELULAR</td>
+                                                    }
+                                                    <td style="width: auto">@cond.USUA_NM_LOGIN</td>
+                                                    @if (cond.CARGO != null)
+                                                    {
+                                                        <td style="width: auto">@cond.CARGO.CARG_NM_NOME</td>
+                                                    }
+                                                    else
+                                                    {
+                                                        <td style="width: auto">-</td>
+                                                    }
+                                                    <td style="width: auto; color: green; font-weight: bold">@cond.PERFIL.PERF_NM_NOME</td>
+                                                    @if (cond.USUA_IN_BLOQUEADO == 1)
+                                                    {
+                                                        <td style="width: auto"><span class="badge badge-danger">Sim</span></td>
 
-                                            }
-                                            else
-                                            {
-                                                <td style="width: auto"><span class="badge badge-success">Não</span></td>
+                                                    }
+                                                    else
+                                                    {
+                                                        <td style="width: auto"><span class="badge badge-success">Não</span></td>
 
-                                            }
-                                            <td style="width: auto">@cond.USUA_NR_ACESSOS</td>
-                                            @if (!String.IsNullOrEmpty(cond.USUA_AQ_FOTO) && File.Exists(Server.MapPath(cond.USUA_AQ_FOTO)))
-                                            {
-                                                <td style="width: auto"><img src="@Url.Content(cond.USUA_AQ_FOTO)" style="width: auto; height: auto; max-height: 75px; max-width: 65px;" data-toggle="modal" data-target="#fotoModal" onclick="CriaModal('@Model.USUA_NM_NOME', '@Url.Content(cond.USUA_AQ_FOTO)')"></td>
+                                                    }
+                                                    <td style="width: auto">@cond.USUA_NR_ACESSOS</td>
+                                                    @if (!String.IsNullOrEmpty(cond.USUA_AQ_FOTO) && File.Exists(Server.MapPath(cond.USUA_AQ_FOTO)))
+                                                    {
+                                                        <td style="width: auto"><img src="@Url.Content(cond.USUA_AQ_FOTO)" style="width: auto; height: auto; max-height: 75px; max-width: 65px;" data-toggle="modal" data-target="#fotoModal" onclick="CriaModal('@Model.USUA_NM_NOME', '@Url.Content(cond.USUA_AQ_FOTO)')"></td>
+                                                    }
+                                                    else
+                                                    {
+                                                        <td style="width: auto"><img src="~/Imagens/Base/icone_imagem.jpg" style="width: auto; height: auto; max-height: 75px; max-width: 65px;" data-toggle="modal" data-target="#fotoModal" onclick="CriaModal('@Model.USUA_NM_NOME', '~/Images/a8.jpg')"></td>
+                                                    }
+                                                    <td class="td-one-action">
+                                                        @if (ViewBag.Perfil == "ADM" || ViewBag.Perfil == "GER")
+                                                        {
+                                                            @Html.TableLinkDetails(cond.USUA_CD_ID, "EditarUsuario", "fa-edit", "Editar/Ver")
+                                                            if (cond.USUA_IN_BLOQUEADO == 1)
+                                                            {
+                                                                <span style="color: #337ab7; cursor:pointer;" alt="Desbloquear" class="tbl-link fa-lg fa fa-thumbs-o-up" onclick="ShowModalDesbloquear('/Usuario/DesbloquearUsuario/@cond.USUA_CD_ID', '@cond.USUA_NM_NOME')" title="Desbloquear"></span>
+                                                            }
+                                                            else
+                                                            {
+                                                                <span style="color: #337ab7; cursor:pointer;" alt="Bloquear" class="tbl-link fa-lg fa fa-thumbs-o-down" onclick="ShowModalBloquear('/Usuario/BloquearUsuario/@cond.USUA_CD_ID', '@cond.USUA_NM_NOME')" title="Bloquear"></span>
+                                                            }
+                                                            if (cond.USUA_IN_ATIVO == 1)
+                                                            {
+                                                                <span style="color: #337ab7; cursor:pointer;" alt="Desativar" class="tbl-link fa-lg fa fa-trash-o" onclick="ShowModalExcluir('/Usuario/DesativarUsuario/@cond.USUA_CD_ID')" title="Desativar"></span>
+                                                            }
+                                                            else
+                                                            {
+                                                                <span style="color: #337ab7; cursor:pointer;" alt="Reativar" class="tbl-link fa-lg fa fa-refresh" onclick="ShowModalReativar('/Usuario/ReativarUsuario/@cond.USUA_CD_ID')" title="Reativar"></span>
+                                                            }
+                                                        }
+                                                        else
+                                                        {
+                                                            @Html.TableLinkDetails(cond.USUA_CD_ID, "VerUsuario", "fa-search", "Consultar")
+                                                        }
+                                                    </td>
+                                                </tr>
                                             }
                                             else
                                             {
-                                                <td style="width: auto"><img src="~/Images/gallery/10s.jpg" style="width: auto; height: auto; max-height: 75px; max-width: 65px;" data-toggle="modal" data-target="#fotoModal" onclick="CriaModal('@Model.USUA_NM_NOME', '~/Images/a8.jpg')"></td>
+                                                <tr style="background-color: lavender">
+                                                    @if (ViewBag.Perfil == "ADM" || ViewBag.Perfil == "GER")
+                                                    {
+                                                        <td style="width: auto"><a href="@Url.Action("EditarUsuario", "Usuario", new { id = cond.USUA_CD_ID })" />@cond.USUA_NM_NOME</td>
+                                                    }
+                                                    else
+                                                    {
+                                                        <td style="width: auto"><a href="@Url.Action("VerUsuario", "Usuario", new { id = cond.USUA_CD_ID })" />@cond.USUA_NM_NOME</td>
+                                                    }
+                                                    <td style="width: auto"><a href="@Url.Action("EnviarEMailUsuario", "Usuario", new { id = cond.USUA_CD_ID })" />@cond.USUA_NM_EMAIL</td>
+                                                    <td style="width: auto"><a href="@Url.Action("EnviarSMSUsuario", "Usuario", new { id = cond.USUA_CD_ID })" />@cond.USUA_NR_CELULAR</td>
+                                                    <td style="width: auto">@cond.USUA_NM_LOGIN</td>
+                                                    @if (cond.CARGO != null)
+                                                    {
+                                                        <td style="width: auto">@cond.CARGO.CARG_NM_NOME</td>
+                                                    }
+                                                    else
+                                                    {
+                                                        <td style="width: auto">-</td>
+                                                    }
+                                                    <td style="width: auto; color: green; font-weight: bold">@cond.PERFIL.PERF_NM_NOME</td>
+                                                    @if (cond.USUA_IN_BLOQUEADO == 1)
+                                                    {
+                                                        <td style="width: auto"><span class="badge badge-danger">Sim</span></td>
+
+                                                    }
+                                                    else
+                                                    {
+                                                        <td style="width: auto"><span class="badge badge-success">Não</span></td>
+
+                                                    }
+                                                    <td style="width: auto">@cond.USUA_NR_ACESSOS</td>
+                                                    @if (!String.IsNullOrEmpty(cond.USUA_AQ_FOTO) && File.Exists(Server.MapPath(cond.USUA_AQ_FOTO)))
+                                                    {
+                                                        <td style="width: auto"><img src="@Url.Content(cond.USUA_AQ_FOTO)" style="width: auto; height: auto; max-height: 75px; max-width: 65px;" data-toggle="modal" data-target="#fotoModal" onclick="CriaModal('@Model.USUA_NM_NOME', '@Url.Content(cond.USUA_AQ_FOTO)')"></td>
+                                                    }
+                                                    else
+                                                    {
+                                                        <td style="width: auto"><img src="~/Imagens/Base/icone_imagem.jpg" style="width: auto; height: auto; max-height: 75px; max-width: 65px;" data-toggle="modal" data-target="#fotoModal" onclick="CriaModal('@Model.USUA_NM_NOME', '~/Images/a8.jpg')"></td>
+                                                    }
+                                                    <td class="td-one-action">
+                                                        @if (ViewBag.Perfil == "ADM" || ViewBag.Perfil == "GER")
+                                                        {
+                                                            @Html.TableLinkDetails(cond.USUA_CD_ID, "EditarUsuario", "fa-edit", "Editar/Ver")
+                                                            if (cond.USUA_IN_BLOQUEADO == 1)
+                                                            {
+                                                                <span style="color: #337ab7; cursor:pointer;" alt="Desbloquear" class="tbl-link fa-lg fa fa-thumbs-o-up" onclick="ShowModalDesbloquear('/Usuario/DesbloquearUsuario/@cond.USUA_CD_ID', '@cond.USUA_NM_NOME')" title="Desbloquear"></span>
+                                                            }
+                                                            else
+                                                            {
+                                                                <span style="color: #337ab7; cursor:pointer;" alt="Bloquear" class="tbl-link fa-lg fa fa-thumbs-o-down" onclick="ShowModalBloquear('/Usuario/BloquearUsuario/@cond.USUA_CD_ID', '@cond.USUA_NM_NOME')" title="Bloquear"></span>
+                                                            }
+                                                            if (cond.USUA_IN_ATIVO == 1)
+                                                            {
+                                                                <span style="color: #337ab7; cursor:pointer;" alt="Desativar" class="tbl-link fa-lg fa fa-trash-o" onclick="ShowModalExcluir('/Usuario/DesativarUsuario/@cond.USUA_CD_ID')" title="Desativar"></span>
+                                                            }
+                                                            else
+                                                            {
+                                                                <span style="color: #337ab7; cursor:pointer;" alt="Reativar" class="tbl-link fa-lg fa fa-refresh" onclick="ShowModalReativar('/Usuario/ReativarUsuario/@cond.USUA_CD_ID')" title="Reativar"></span>
+                                                            }
+                                                        }
+                                                        else
+                                                        {
+                                                            @Html.TableLinkDetails(cond.USUA_CD_ID, "VerUsuario", "fa-search", "Consultar")
+                                                        }
+                                                    </td>
+                                                </tr>
                                             }
-                                            <td class="td-one-action">
+                                        }
+                                        else
+                                        {
+                                            <tr style="background-color: beige">
                                                 @if (ViewBag.Perfil == "ADM" || ViewBag.Perfil == "GER")
                                                 {
-                                                    @Html.TableLinkDetails(cond.USUA_CD_ID, "EditarUsuario", "fa-edit", "Editar/Ver")
-                                                    if (cond.USUA_IN_BLOQUEADO == 1)
-                                                    {
-                                                        <span style="color: #337ab7; cursor:pointer;" alt="Desbloquear" class="tbl-link fa-lg fa fa-thumbs-o-up" onclick="ShowModalDesbloquear('/Usuario/DesbloquearUsuario/@cond.USUA_CD_ID', '@cond.USUA_NM_NOME')" title="Desbloquear"></span>
-                                                    }
-                                                    else
-                                                    {
-                                                        <span style="color: #337ab7; cursor:pointer;" alt="Bloquear" class="tbl-link fa-lg fa fa-thumbs-o-down" onclick="ShowModalBloquear('/Usuario/BloquearUsuario/@cond.USUA_CD_ID', '@cond.USUA_NM_NOME')" title="Bloquear"></span>
-                                                    }
-                                                    if (cond.USUA_IN_ATIVO == 1)
-                                                    {
-                                                        <span style="color: #337ab7; cursor:pointer;" alt="Desativar" class="tbl-link fa-lg fa fa-trash-o" onclick="ShowModalExcluir('/Usuario/DesativarUsuario/@cond.USUA_CD_ID')" title="Desativar"></span>
-                                                    }
-                                                    else
-                                                    {
-                                                        <span style="color: #337ab7; cursor:pointer;" alt="Reativar" class="tbl-link fa-lg fa fa-refresh" onclick="ShowModalReativar('/Usuario/ReativarUsuario/@cond.USUA_CD_ID')" title="Reativar"></span>
-                                                    }
+                                                    <td style="width: auto"><a href="@Url.Action("EditarUsuario", "Usuario", new { id = cond.USUA_CD_ID })" />@cond.USUA_NM_NOME</td>
                                                 }
                                                 else
                                                 {
-                                                    @Html.TableLinkDetails(cond.USUA_CD_ID, "VerUsuario", "fa-search", "Consultar")
+                                                    <td style="width: auto"><a href="@Url.Action("VerUsuario", "Usuario", new { id = cond.USUA_CD_ID })" />@cond.USUA_NM_NOME</td>
                                                 }
-                                            </td>
-                                        </tr>
+                                                <td style="width: auto"><a href="@Url.Action("EnviarEMailUsuario", "Usuario", new { id = cond.USUA_CD_ID })" />@cond.USUA_NM_EMAIL</td>
+                                                <td style="width: auto"><a href="@Url.Action("EnviarSMSUsuario", "Usuario", new { id = cond.USUA_CD_ID })" />@cond.USUA_NR_CELULAR</td>
+                                                <td style="width: auto">@cond.USUA_NM_LOGIN</td>
+                                                @if (cond.CARGO != null)
+                                                {
+                                                    <td style="width: auto">@cond.CARGO.CARG_NM_NOME</td>
+                                                }
+                                                else
+                                                {
+                                                    <td style="width: auto">-</td>
+                                                }
+                                                <td style="width: auto; color: green; font-weight: bold">@cond.PERFIL.PERF_NM_NOME</td>
+                                                @if (cond.USUA_IN_BLOQUEADO == 1)
+                                                {
+                                                    <td style="width: auto"><span class="badge badge-danger">Sim</span></td>
+
+                                                }
+                                                else
+                                                {
+                                                    <td style="width: auto"><span class="badge badge-success">Não</span></td>
+
+                                                }
+                                                <td style="width: auto">@cond.USUA_NR_ACESSOS</td>
+                                                @if (!String.IsNullOrEmpty(cond.USUA_AQ_FOTO) && File.Exists(Server.MapPath(cond.USUA_AQ_FOTO)))
+                                                {
+                                                    <td style="width: auto"><img src="@Url.Content(cond.USUA_AQ_FOTO)" style="width: auto; height: auto; max-height: 75px; max-width: 65px;" data-toggle="modal" data-target="#fotoModal" onclick="CriaModal('@Model.USUA_NM_NOME', '@Url.Content(cond.USUA_AQ_FOTO)')"></td>
+                                                }
+                                                else
+                                                {
+                                                    <td style="width: auto"><img src="~/Imagens/Base/icone_imagem.jpg" style="width: auto; height: auto; max-height: 75px; max-width: 65px;" data-toggle="modal" data-target="#fotoModal" onclick="CriaModal('@Model.USUA_NM_NOME', '~/Images/a8.jpg')"></td>
+                                                }
+                                                <td class="td-one-action">
+                                                    @if (ViewBag.Perfil == "ADM" || ViewBag.Perfil == "GER")
+                                                    {
+                                                        @Html.TableLinkDetails(cond.USUA_CD_ID, "EditarUsuario", "fa-edit", "Editar/Ver")
+                                                        if (cond.USUA_IN_BLOQUEADO == 1)
+                                                        {
+                                                            <span style="color: #337ab7; cursor:pointer;" alt="Desbloquear" class="tbl-link fa-lg fa fa-thumbs-o-up" onclick="ShowModalDesbloquear('/Usuario/DesbloquearUsuario/@cond.USUA_CD_ID', '@cond.USUA_NM_NOME')" title="Desbloquear"></span>
+                                                        }
+                                                        else
+                                                        {
+                                                            <span style="color: #337ab7; cursor:pointer;" alt="Bloquear" class="tbl-link fa-lg fa fa-thumbs-o-down" onclick="ShowModalBloquear('/Usuario/BloquearUsuario/@cond.USUA_CD_ID', '@cond.USUA_NM_NOME')" title="Bloquear"></span>
+                                                        }
+                                                        if (cond.USUA_IN_ATIVO == 1)
+                                                        {
+                                                            <span style="color: #337ab7; cursor:pointer;" alt="Desativar" class="tbl-link fa-lg fa fa-trash-o" onclick="ShowModalExcluir('/Usuario/DesativarUsuario/@cond.USUA_CD_ID')" title="Desativar"></span>
+                                                        }
+                                                        else
+                                                        {
+                                                            <span style="color: #337ab7; cursor:pointer;" alt="Reativar" class="tbl-link fa-lg fa fa-refresh" onclick="ShowModalReativar('/Usuario/ReativarUsuario/@cond.USUA_CD_ID')" title="Reativar"></span>
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        @Html.TableLinkDetails(cond.USUA_CD_ID, "VerUsuario", "fa-search", "Consultar")
+                                                    }
+                                                </td>
+                                            </tr>
+                                        }
                                     }
                                 </tbody>
                             </table>
@@ -239,16 +410,14 @@
                         else
                         {
                             <div class="row">
-                                <div class="col-lg-4 col-md-4 col-xs-2">
+                                <div class="col-lg-3 col-md-3 col-xs-2">
 
                                 </div>
-                                <div style="border: 5px solid #F6A54A; padding: 10px; border-radius: 8px 8px; " class="col-lg-4 col-md-4 col-xs-8">
-                                    <h2 style="font-weight: bold">Sua pesquisa não retornou nenhum resultado</h2>
-                                    <p>Tente outras opções de pesquisa</p>
-
+                                <div style="border: 5px solid #F6A54A; padding: 10px; border-radius: 8px 8px; " class="col-lg-6 col-md-6 col-xs-8">
+                                    <h2 style="font-weight: bold">Sua pesquisa não retornou nenhum resultado ou nehum usuário cadastrado</h2>
                                     @Html.ButtonLinkIndex(text: "Retirar Filtro", controller: "Usuario", action: "RetirarFiltroUsuario")
                                 </div>
-                                <div class="col-lg-4 col-md-4 col-xs-2">
+                                <div class="col-lg-3 col-md-3 col-xs-2">
 
                                 </div>
                             </div>
@@ -320,7 +489,7 @@
                 dom: '<"html5buttons"B>lTfgitp',
                 buttons: [
                     { extend: 'excel', title: 'Usuario_Planilha' },
-                    { extend: 'pdf', title: 'Usuario_PDF' },
+                    { extend: 'pdf', title: 'Usuario_PDF'},
 
                     {
                         extend: 'print',

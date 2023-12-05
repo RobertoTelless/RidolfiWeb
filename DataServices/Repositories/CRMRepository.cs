@@ -56,8 +56,6 @@ namespace DataServices.Repositories
             query = query.Where(p => p.CRM1_CD_ID == id);
             query = query.Include(p => p.CRM_COMENTARIO);
             query = query.Include(p => p.USUARIO);
-            query = query.Include(p => p.CLIENTE);
-            query = query.Include(p => p.CLIENTE.UF);
             query = query.Include(p => p.CRM_PEDIDO_VENDA);
             query = query.Include(p => p.CRM_ACAO);
             query = query.Include(p => p.CRM_ANEXO);
@@ -140,10 +138,10 @@ namespace DataServices.Repositories
             {
                 query = query.Where(p => p.CRM1_NM_CAMPANHA.Contains(campanha));
             }
-            if (!String.IsNullOrEmpty(busca))
-            {
-                query = query.Where(p => p.CLIENTE.CLIE_NM_NOME.Contains(busca) || p.CLIENTE.CLIE_NM_RAZAO.Contains(busca) || p.CLIENTE.CLIE_NR_CPF.Contains(busca));
-            }
+            //if (!String.IsNullOrEmpty(busca))
+            //{
+            //    query = query.Where(p => p.CLIENTE.CLIE_NM_NOME.Contains(busca) || p.CLIENTE.CLIE_NM_RAZAO.Contains(busca) || p.CLIENTE.CLIE_NR_CPF.Contains(busca));
+            //}
 
             if (inicio != null)
             {

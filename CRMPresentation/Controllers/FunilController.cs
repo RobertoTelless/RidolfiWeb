@@ -31,6 +31,8 @@ using System.Reflection;
 using log4net.Config;
 using log4net.Core;
 using ERP_Condominios_Solution.Classes;
+using System.Diagnostics;
+using ApplicationServices.Services;
 
 namespace ERP_Condominios_Solution.Controllers
 {
@@ -40,6 +42,7 @@ namespace ERP_Condominios_Solution.Controllers
         private readonly IUsuarioAppService usuApp;
         private readonly IConfiguracaoAppService confApp;
         private readonly ICRMAppService crmApp;
+        private readonly ILogAppService logApp;
 
         private String msg;
         private Exception exception;
@@ -48,12 +51,13 @@ namespace ERP_Condominios_Solution.Controllers
         List<FUNIL> listaMaster = new List<FUNIL>();
         String extensao;
 
-        public FunilController(IFunilAppService baseApps, IConfiguracaoAppService confApps, ICRMAppService crmApps, IUsuarioAppService usuApps)
+        public FunilController(IFunilAppService baseApps, IConfiguracaoAppService confApps, ICRMAppService crmApps, IUsuarioAppService usuApps, LogAppService logApps)
         {
             baseApp = baseApps;
             usuApp = usuApps;
             confApp = confApps;
             crmApp = crmApps;
+            logApp = logApps;
         }
 
         [HttpGet]
@@ -86,76 +90,99 @@ namespace ERP_Condominios_Solution.Controllers
             return RedirectToAction("CarregarBase", "BaseAdmin");
         }
 
-        private void LogError(string message)
-        {
-            var logRepository = LogManager.GetRepository(Assembly.GetCallingAssembly());
-            XmlConfigurator.Configure(logRepository, new FileInfo("Log4Net.config"));
-            ILog _logger = LogManager.GetLogger(typeof(LoggerManager));
-            _logger.Info(message);
-        }
-
         [HttpGet]
         public ActionResult MontarTelaFunil()
         {
-            // Verifica se tem usuario logado
-            USUARIO usuario = new USUARIO();
-            if ((String)Session["Ativa"] == null)
+            try
             {
-                return RedirectToAction("Logout", "ControleAcesso");
-            }
-            if ((USUARIO)Session["UserCredentials"] != null)
-            {
-                usuario = (USUARIO)Session["UserCredentials"];
+                // Verifica se tem usuario logado
+                USUARIO usuario = new USUARIO();
+                if ((String)Session["Ativa"] == null)
+                {
+                    return RedirectToAction("Logout", "ControleAcesso");
+                }
+                if ((USUARIO)Session["UserCredentials"] != null)
+                {
+                    usuario = (USUARIO)Session["UserCredentials"];
 
-                // Verfifica permissão
-                if (usuario.PERFIL.PERF_SG_SIGLA == "VIS")
-                {
-                    Session["MensPermissao"] = 2;
-                    return RedirectToAction("CarregarBase", "BaseAdmin");
+                    // Verfifica permissão
                 }
-            }
-            else
-            {
-                return RedirectToAction("Logout", "ControleAcesso");
-            }
-            Int32 idAss = (Int32)Session["IdAssinante"];
+                else
+                {
+                    return RedirectToAction("Logout", "ControleAcesso");
+                }
+                Int32 idAss = (Int32)Session["IdAssinante"];
 
-            // Carrega listas
-            if ((List<FUNIL>)Session["ListaFunilX"] == null)
-            {
-                listaMaster = CarregaFunil();
-                Session["ListaFunilX"] = listaMaster;
-            }
-            ViewBag.Listas = (List<FUNIL>)Session["ListaFunilX"];
-            ViewBag.Title = "Funil";
+                // Carrega listas
+                if ((List<FUNIL>)Session["ListaFunilX"] == null)
+                {
+                    listaMaster = CarregaFunil();
+                    Session["ListaFunilX"] = listaMaster;
+                }
+                ViewBag.Listas = (List<FUNIL>)Session["ListaFunilX"];
+                ViewBag.Title = "Funil";
+                ViewBag.Perfil = usuario.PERFIL.PERF_SG_SIGLA;
 
-            // Mensagens
-            if (Session["MensFunil"] != null)
-            {
-                if ((Int32)Session["MensFunil"] == 1)
+                // Mensagens
+                if (Session["MensFunil"] != null)
                 {
-                    ModelState.AddModelError("", CRMSys_Base.ResourceManager.GetString("M0016", CultureInfo.CurrentCulture));
+                    if ((Int32)Session["MensFunil"] == 1)
+                    {
+                        ModelState.AddModelError("", CRMSys_Base.ResourceManager.GetString("M0016", CultureInfo.CurrentCulture));
+                    }
+                    if ((Int32)Session["MensFunil"] == 2)
+                    {
+                        ModelState.AddModelError("", CRMSys_Base.ResourceManager.GetString("M0011", CultureInfo.CurrentCulture));
+                    }
+                    if ((Int32)Session["MensFunil"] == 3)
+                    {
+                        ModelState.AddModelError("", CRMSys_Base.ResourceManager.GetString("M0193", CultureInfo.CurrentCulture));
+                    }
+                    if ((Int32)Session["MensFunil"] == 4)
+                    {
+                        ModelState.AddModelError("", CRMSys_Base.ResourceManager.GetString("M0194", CultureInfo.CurrentCulture));
+                    }
                 }
-                if ((Int32)Session["MensFunil"] == 2)
-                {
-                    ModelState.AddModelError("", CRMSys_Base.ResourceManager.GetString("M0011", CultureInfo.CurrentCulture));
-                }
-                if ((Int32)Session["MensFunil"] == 3)
-                {
-                    ModelState.AddModelError("", CRMSys_Base.ResourceManager.GetString("M0193", CultureInfo.CurrentCulture));
-                }
-                if ((Int32)Session["MensFunil"] == 4)
-                {
-                    ModelState.AddModelError("", CRMSys_Base.ResourceManager.GetString("M0194", CultureInfo.CurrentCulture));
-                }
-            }
 
-            // Abre view
-            Session["MensFunil"] = null;
-            Session["VoltaFunil"] = 1;
-            objeto = new FUNIL();
-            objeto.FUNI_IN_ATIVO = 1;
-            return View(objeto);
+                if ((Int32)Session["MensPermissao"] == 2)
+                {
+                    String mens = CRMSys_Base.ResourceManager.GetString("M0011", CultureInfo.CurrentCulture) + ". Módulo: " + (String)Session["ModuloPermissao"];
+                    ModelState.AddModelError("", mens);
+                    Session["MensPermissao"] = 0;
+                }
+
+                // Monta Log
+                LOG log = new LOG
+                {
+                    LOG_DT_DATA = DateTime.Now,
+                    ASSI_CD_ID = usuario.ASSI_CD_ID,
+                    USUA_CD_ID = usuario.USUA_CD_ID,
+                    LOG_NM_OPERACAO = "accFUNI",
+                    LOG_IN_ATIVO = 1,
+                    LOG_TX_REGISTRO = null,
+                    LOG_IN_SISTEMA = 1
+                };
+                Int32 volta1 = logApp.ValidateCreate(log);
+
+                // Abre view
+                Session["MensFunil"] = null;
+                Session["VoltaFunil"] = 1;
+                Session["TabFunil"] = 1;
+                objeto = new FUNIL();
+                objeto.FUNI_IN_ATIVO = 1;
+                return View(objeto);
+            }
+            catch (Exception ex)
+            {
+                ViewBag.Message = ex.Message;
+                Session["TipoVolta"] = 2;
+                Session["VoltaExcecao"] = "Funis";
+                Session["Excecao"] = ex;
+                Session["ExcecaoTipo"] = ex.GetType().ToString();
+                GravaLogExcecao grava = new GravaLogExcecao(usuApp);
+                Int32 voltaX = grava.GravarLogExcecao(ex, "Funis", "CRMSys", 1, (USUARIO)Session["UserCredentials"]);
+                return RedirectToAction("TrataExcecao", "BaseAdmin");
+            }
         }
 
         public ActionResult RetirarFiltroFunil()
@@ -164,20 +191,34 @@ namespace ERP_Condominios_Solution.Controllers
             {
                 return RedirectToAction("Logout", "ControleAcesso");
             }
-            Session["ListaFunil"] = null;
+            Session["ListaFunilX"] = null;
             return RedirectToAction("MontarTelaFunil");
         }
 
         public ActionResult MostrarTudoFunil()
         {
-            if ((String)Session["Ativa"] == null)
+            try
             {
-                return RedirectToAction("Logout", "ControleAcesso");
+                if ((String)Session["Ativa"] == null)
+                {
+                    return RedirectToAction("Logout", "ControleAcesso");
+                }
+                Int32 idAss = (Int32)Session["IdAssinante"];
+                listaMaster = baseApp.GetAllItensAdm(idAss);
+                Session["ListaFunilX"] = listaMaster;
+                return RedirectToAction("MontarTelaFunil");
             }
-            Int32 idAss = (Int32)Session["IdAssinante"];
-            listaMaster = baseApp.GetAllItensAdm(idAss);
-            Session["ListaFunil"] = listaMaster;
-            return RedirectToAction("MontarTelaFunil");
+            catch (Exception ex)
+            {
+                ViewBag.Message = ex.Message;
+                Session["TipoVolta"] = 2;
+                Session["VoltaExcecao"] = "Funis";
+                Session["Excecao"] = ex;
+                Session["ExcecaoTipo"] = ex.GetType().ToString();
+                GravaLogExcecao grava = new GravaLogExcecao(usuApp);
+                Int32 voltaX = grava.GravarLogExcecao(ex, "Funis", "CRMSys", 1, (USUARIO)Session["UserCredentials"]);
+                return RedirectToAction("TrataExcecao", "BaseAdmin");
+            }
         }
 
         public ActionResult VoltarBaseFunil()
@@ -186,57 +227,79 @@ namespace ERP_Condominios_Solution.Controllers
             {
                 return RedirectToAction("Logout", "ControleAcesso");
             }
+            Session["ListaFunilX"] = null;
             return RedirectToAction("MontarTelaFunil");
         }
 
        [HttpGet]
         public ActionResult IncluirFunil()
         {
-            // Verifica se tem usuario logado
-            USUARIO usuario = new USUARIO();
-            if ((String)Session["Ativa"] == null)
+            try
             {
-                return RedirectToAction("Logout", "ControleAcesso");
-            }
-            if ((USUARIO)Session["UserCredentials"] != null)
-            {
-                usuario = (USUARIO)Session["UserCredentials"];
-
-                // Verfifica permissão
-                if (usuario.PERFIL.PERF_SG_SIGLA == "FUN" || usuario.PERFIL.PERF_SG_SIGLA == "VIS")
+                // Verifica se tem usuario logado
+                USUARIO usuario = new USUARIO();
+                if ((String)Session["Ativa"] == null)
                 {
-                    Session["MensCliente"] = 2;
-                    return RedirectToAction("MontarTelaCliente");
+                    return RedirectToAction("Logout", "ControleAcesso");
                 }
+                if ((USUARIO)Session["UserCredentials"] != null)
+                {
+                    usuario = (USUARIO)Session["UserCredentials"];
+
+                    // Verfifica permissão
+                    if (usuario.PERFIL.PERF_SG_SIGLA != "ADM")
+                    {
+                        Session["MensPermissao"] = 2;
+                        Session["ModuloPermissao"] = "Funis";
+                        return RedirectToAction("MontarTelaFunil", "Funil");
+                    }
+                }
+                else
+                {
+                    return RedirectToAction("Logout", "ControleAcesso");
+                }
+                Int32 idAss = (Int32)Session["IdAssinante"];
+
+                // Prepara listas
+
+                // Prepara view
+                FUNIL item = new FUNIL();
+                FunilViewModel vm = Mapper.Map<FUNIL, FunilViewModel>(item);
+                vm.ASSI_CD_ID = idAss;
+                vm.FUNI_DT_CADASTRO = DateTime.Today;
+                vm.FUNI_IN_ATIVO = 1;
+                vm.FUNI_IN_FIXO = 0;
+                vm.FUNI_IN_TIPO = 1;
+                vm.FUNI_IN_CLIENTE = 0;
+                return View(vm);
             }
-            else
+            catch (Exception ex)
             {
-                return RedirectToAction("Logout", "ControleAcesso");
+                ViewBag.Message = ex.Message;
+                Session["TipoVolta"] = 2;
+                Session["VoltaExcecao"] = "Funis";
+                Session["Excecao"] = ex;
+                Session["ExcecaoTipo"] = ex.GetType().ToString();
+                GravaLogExcecao grava = new GravaLogExcecao(usuApp);
+                Int32 voltaX = grava.GravarLogExcecao(ex, "Funis", "CRMSys", 1, (USUARIO)Session["UserCredentials"]);
+                return RedirectToAction("TrataExcecao", "BaseAdmin");
             }
-            Int32 idAss = (Int32)Session["IdAssinante"];
-
-            // Prepara listas
-
-            // Prepara view
-            FUNIL item = new FUNIL();
-            FunilViewModel vm = Mapper.Map<FUNIL, FunilViewModel>(item);
-            vm.ASSI_CD_ID = idAss;
-            vm.FUNI_DT_CADASTRO = DateTime.Today;
-            vm.FUNI_IN_ATIVO = 1;
-            vm.FUNI_IN_FIXO = 0;
-            vm.FUNI_IN_TIPO = 1;
-            return View(vm);
         }
 
         [HttpPost]
         public ActionResult IncluirFunil(FunilViewModel vm)
         {
-            Int32 idAss = (Int32)Session["IdAssinante"];
             if (ModelState.IsValid)
             {
                 try
                 {
+                    // Sanitização
+                    vm.FUNI_DS_DESCRICAO = CrossCutting.UtilitariosGeral.CleanStringGeral(vm.FUNI_DS_DESCRICAO);
+                    vm.FUNI_NM_NOME = CrossCutting.UtilitariosGeral.CleanStringGeral(vm.FUNI_NM_NOME);
+                    vm.FUNI_SG_SIGLA = CrossCutting.UtilitariosGeral.CleanStringGeral(vm.FUNI_SG_SIGLA);
+
                     // Executa a operação
+                    Int32 idAss = (Int32)Session["IdAssinante"];
                     FUNIL item = Mapper.Map<FunilViewModel, FUNIL>(vm);
                     USUARIO usuario = (USUARIO)Session["UserCredentials"];
                     Int32 volta = baseApp.ValidateCreate(item, usuario);
@@ -254,11 +317,11 @@ namespace ERP_Condominios_Solution.Controllers
                     Session["ListaFunilX"] = null;
                     Session["IdFunil"] = item.FUNI_CD_ID;
                     Session["FunilAlterada"] = 1;
+                    Session["TabFunil"] = 2;
                     return RedirectToAction("VoltarAnexoFunil");
                 }
                 catch (Exception ex)
                 {
-                    LogError(ex.Message);
                     ViewBag.Message = ex.Message;
                     Session["TipoVolta"] = 2;
                     Session["VoltaExcecao"] = "Funil";
@@ -278,68 +341,87 @@ namespace ERP_Condominios_Solution.Controllers
         [HttpGet]
         public ActionResult EditarFunil(Int32 id)
         {
-            // Verifica se tem usuario logado
-            USUARIO usuario = new USUARIO();
-            if ((String)Session["Ativa"] == null)
+            try
             {
-                return RedirectToAction("Logout", "ControleAcesso");
-            }
-            if ((USUARIO)Session["UserCredentials"] != null)
-            {
-                usuario = (USUARIO)Session["UserCredentials"];
-
-                // Verfifica permissão
-                if (usuario.PERFIL.PERF_SG_SIGLA == "FUN" || usuario.PERFIL.PERF_SG_SIGLA == "VIS")
+                // Verifica se tem usuario logado
+                USUARIO usuario = new USUARIO();
+                if ((String)Session["Ativa"] == null)
                 {
-                    Session["MensFunil"] = 2;
-                    return RedirectToAction("MontarTelaFunil");
+                    return RedirectToAction("Logout", "ControleAcesso");
                 }
-            }
-            else
-            {
-                return RedirectToAction("Logout", "ControleAcesso");
-            }
-            Int32 idAss = (Int32)Session["IdAssinante"];
-
-            // Mensagens
-            if (Session["MensFunil"] != null)
-            {
-                if ((Int32)Session["MensFunil"] == 5)
+                if ((USUARIO)Session["UserCredentials"] != null)
                 {
-                    ModelState.AddModelError("", CRMSys_Base.ResourceManager.GetString("M0195", CultureInfo.CurrentCulture));
+                    usuario = (USUARIO)Session["UserCredentials"];
+
+                    // Verfifica permissão
+                    if (usuario.PERFIL.PERF_SG_SIGLA != "ADM")
+                    {
+                        Session["MensPermissao"] = 2;
+                        Session["ModuloPermissao"] = "Funis";
+                        return RedirectToAction("MontarTelaFunil", "Funil");
+                    }
                 }
-            }
+                else
+                {
+                    return RedirectToAction("Logout", "ControleAcesso");
+                }
+                Int32 idAss = (Int32)Session["IdAssinante"];
 
-            // Prepara view
-            FUNIL item = baseApp.GetItemById(id);
-            CONFIGURACAO conf = confApp.GetItemById(idAss);
-            Int32 etapa = 0;
-            if (item.FUNIL_ETAPA.Count < conf.CONF_IN_ETAPAS_CRM)
+                // Mensagens
+                if (Session["MensFunil"] != null)
+                {
+                    if ((Int32)Session["MensFunil"] == 5)
+                    {
+                        ModelState.AddModelError("", CRMSys_Base.ResourceManager.GetString("M0195", CultureInfo.CurrentCulture));
+                    }
+                }
+
+                // Prepara view
+                FUNIL item = baseApp.GetItemById(id);
+                CONFIGURACAO conf = confApp.GetItemById(idAss);
+                Int32 etapa = 0;
+                if (item.FUNIL_ETAPA.Where(p => p.FUET_IN_ATIVO == 1).ToList().Count < conf.CONF_IN_ETAPAS_CRM)
+                {
+                    etapa = 1;
+                }
+                ViewBag.Etapa = etapa;
+
+                // Indicadores
+                Session["VoltaFunil"] = 1;
+                objetoAntes = item;
+                Session["Funil"] = item;
+                Session["IdFunil"] = id;
+                FunilViewModel vm = Mapper.Map<FUNIL, FunilViewModel>(item);
+                return View(vm);
+
+            }
+            catch (Exception ex)
             {
-                etapa = 1;
+                ViewBag.Message = ex.Message;
+                Session["TipoVolta"] = 2;
+                Session["VoltaExcecao"] = "Funil";
+                Session["Excecao"] = ex;
+                Session["ExcecaoTipo"] = ex.GetType().ToString();
+                GravaLogExcecao grava = new GravaLogExcecao(usuApp);
+                Int32 voltaX = grava.GravarLogExcecao(ex, "Funil", "CRMSys", 1, (USUARIO)Session["UserCredentials"]);
+                return RedirectToAction("TrataExcecao", "BaseAdmin");
             }
-            ViewBag.Etapa = etapa;
-
-            // Indicadores
-            Session["VoltaFunil"] = 1;
-            objetoAntes = item;
-            Session["Funil"] = item;
-            Session["IdFunil"] = id;
-            FunilViewModel vm = Mapper.Map<FUNIL, FunilViewModel>(item);
-            return View(vm);
-
         }
 
         [HttpPost]
         public ActionResult EditarFunil(FunilViewModel vm)
         {
-            Int32 idAss = (Int32)Session["IdAssinante"];
-
             if (ModelState.IsValid)
-            {   
+            {
                 try
                 {
+                    // Sanitização
+                    vm.FUNI_DS_DESCRICAO = CrossCutting.UtilitariosGeral.CleanStringGeral(vm.FUNI_DS_DESCRICAO);
+                    vm.FUNI_NM_NOME = CrossCutting.UtilitariosGeral.CleanStringGeral(vm.FUNI_NM_NOME);
+                    vm.FUNI_SG_SIGLA = CrossCutting.UtilitariosGeral.CleanStringGeral(vm.FUNI_SG_SIGLA);
+
                     // Executa a operação
+                    Int32 idAss = (Int32)Session["IdAssinante"];
                     USUARIO usuarioLogado = (USUARIO)Session["UserCredentials"];
                     FUNIL item = Mapper.Map<FunilViewModel, FUNIL>(vm);
                     Int32 volta = baseApp.ValidateEdit(item, objetoAntes, usuarioLogado);
@@ -354,7 +436,6 @@ namespace ERP_Condominios_Solution.Controllers
                 }
                 catch (Exception ex)
                 {
-                    LogError(ex.Message);
                     ViewBag.Message = ex.Message;
                     Session["TipoVolta"] = 2;
                     Session["VoltaExcecao"] = "Funil";
@@ -374,31 +455,33 @@ namespace ERP_Condominios_Solution.Controllers
         [HttpGet]
         public ActionResult ExcluirFunil(Int32 id)
         {
-            // Valida acesso
-            USUARIO usuario = new USUARIO();
-            if ((String)Session["Ativa"] == null)
-            {
-                return RedirectToAction("Logout", "ControleAcesso");
-            }
-            if ((USUARIO)Session["UserCredentials"] != null)
-            {
-                usuario = (USUARIO)Session["UserCredentials"];
-                //Verfifica permissão
-                if (usuario.PERFIL.PERF_SG_SIGLA == "FUN" || usuario.PERFIL.PERF_SG_SIGLA == "VIS")
-                {
-                    Session["MensFunil"] = 2;
-                    return RedirectToAction("MontarTelaFunil");
-                }
-            }
-            else
-            {
-                return RedirectToAction("Logout", "ControleAcesso");
-            }
-            Int32 idAss = (Int32)Session["IdAssinante"];
-
-            // Executar
             try
             {
+                // Verifica se tem usuario logado
+                USUARIO usuario = new USUARIO();
+                if ((String)Session["Ativa"] == null)
+                {
+                    return RedirectToAction("Logout", "ControleAcesso");
+                }
+                if ((USUARIO)Session["UserCredentials"] != null)
+                {
+                    usuario = (USUARIO)Session["UserCredentials"];
+
+                    // Verfifica permissão
+                    if (usuario.PERFIL.PERF_SG_SIGLA != "ADM")
+                    {
+                        Session["MensPermissao"] = 2;
+                        Session["ModuloPermissao"] = "Funis";
+                        return RedirectToAction("MontarTelaFunil", "Funil");
+                    }
+                }
+                else
+                {
+                    return RedirectToAction("Logout", "ControleAcesso");
+                }
+                Int32 idAss = (Int32)Session["IdAssinante"];
+
+                // Executar
                 FUNIL item = baseApp.GetItemById(id);
                 objetoAntes = (FUNIL)Session["Funil"];
                 item.FUNI_IN_ATIVO = 0;
@@ -409,13 +492,12 @@ namespace ERP_Condominios_Solution.Controllers
                     return RedirectToAction("MontarTelaFunil", "Funil");
                 }
                 listaMaster = new List<FUNIL>();
-                Session["ListaFunil"] = null;
+                Session["ListaFunilX"] = null;
                 Session["FunilAlterada"] = 1;
                 return RedirectToAction("MontarTelaFunil");
             }
             catch (Exception ex)
             {
-                LogError(ex.Message);
                 ViewBag.Message = ex.Message;
                 Session["TipoVolta"] = 2;
                 Session["VoltaExcecao"] = "Funil";
@@ -430,43 +512,44 @@ namespace ERP_Condominios_Solution.Controllers
         [HttpGet]
         public ActionResult ReativarFunil(Int32 id)
         {
-            // Valida acesso
-            USUARIO usuario = new USUARIO();
-            if ((String)Session["Ativa"] == null)
-            {
-                return RedirectToAction("Logout", "ControleAcesso");
-            }
-            if ((USUARIO)Session["UserCredentials"] != null)
-            {
-                usuario = (USUARIO)Session["UserCredentials"];
-                //Verfifica permissão
-                if (usuario.PERFIL.PERF_SG_SIGLA == "FUN" || usuario.PERFIL.PERF_SG_SIGLA == "VIS")
-                {
-                    Session["MensFunil"] = 2;
-                    return RedirectToAction("MontarTelaFunil");
-                }
-            }
-            else
-            {
-                return RedirectToAction("Logout", "ControleAcesso");
-            }
-            Int32 idAss = (Int32)Session["IdAssinante"];
-
-            // Executar
             try
             {
+                // Verifica se tem usuario logado
+                USUARIO usuario = new USUARIO();
+                if ((String)Session["Ativa"] == null)
+                {
+                    return RedirectToAction("Logout", "ControleAcesso");
+                }
+                if ((USUARIO)Session["UserCredentials"] != null)
+                {
+                    usuario = (USUARIO)Session["UserCredentials"];
+
+                    // Verfifica permissão
+                    if (usuario.PERFIL.PERF_SG_SIGLA != "ADM")
+                    {
+                        Session["MensPermissao"] = 2;
+                        Session["ModuloPermissao"] = "Funis";
+                        return RedirectToAction("MontarTelaFunil", "Funil");
+                    }
+                }
+                else
+                {
+                    return RedirectToAction("Logout", "ControleAcesso");
+                }
+                Int32 idAss = (Int32)Session["IdAssinante"];
+
+                // Executar
                 FUNIL item = baseApp.GetItemById(id);
                 objetoAntes = (FUNIL)Session["Funil"];
                 item.FUNI_IN_ATIVO = 1;
                 Int32 volta = baseApp.ValidateReativar(item, usuario);
                 listaMaster = new List<FUNIL>();
-                Session["ListaFunil"] = null;
+                Session["ListaFunilX"] = null;
                 Session["FunilAlterada"] = 1;
                 return RedirectToAction("MontarTelaFunil");
             }
             catch (Exception ex)
             {
-                LogError(ex.Message);
                 ViewBag.Message = ex.Message;
                 Session["TipoVolta"] = 2;
                 Session["VoltaExcecao"] = "Funil";
@@ -499,62 +582,133 @@ namespace ERP_Condominios_Solution.Controllers
         [HttpGet]
         public ActionResult EditarEtapa(Int32 id)
         {
-            if ((String)Session["Ativa"] == null)
+            try
             {
-                return RedirectToAction("Logout", "ControleAcesso");
-            }
-            Int32 idAss = (Int32)Session["IdAssinante"];
+                // Verifica se tem usuario logado
+                USUARIO usuario = new USUARIO();
+                if ((String)Session["Ativa"] == null)
+                {
+                    return RedirectToAction("Logout", "ControleAcesso");
+                }
+                if ((USUARIO)Session["UserCredentials"] != null)
+                {
+                    usuario = (USUARIO)Session["UserCredentials"];
 
-            // Mensagens
-            if (Session["MensFunil"] != null)
-            {
-                if ((Int32)Session["MensFunil"] == 5)
-                {
-                    ModelState.AddModelError("", CRMSys_Base.ResourceManager.GetString("M0196", CultureInfo.CurrentCulture));
+                    // Verfifica permissão
+                    if (usuario.PERFIL.PERF_SG_SIGLA != "ADM")
+                    {
+                        Session["MensPermissao"] = 2;
+                        Session["ModuloPermissao"] = "Funis";
+                        return RedirectToAction("MontarTelaFunil", "Funil");
+                    }
                 }
-                if ((Int32)Session["MensFunil"] == 6)
+                else
                 {
-                    ModelState.AddModelError("", CRMSys_Base.ResourceManager.GetString("M0197", CultureInfo.CurrentCulture));
+                    return RedirectToAction("Logout", "ControleAcesso");
                 }
-                if ((Int32)Session["MensFunil"] == 8)
+                Int32 idAss = (Int32)Session["IdAssinante"];
+
+                // Mensagens
+                if (Session["MensFunil"] != null)
                 {
-                    ModelState.AddModelError("", CRMSys_Base.ResourceManager.GetString("M0198", CultureInfo.CurrentCulture));
+                    if ((Int32)Session["MensFunil"] == 5)
+                    {
+                        ModelState.AddModelError("", CRMSys_Base.ResourceManager.GetString("M0196", CultureInfo.CurrentCulture));
+                    }
+                    if ((Int32)Session["MensFunil"] == 6)
+                    {
+                        ModelState.AddModelError("", CRMSys_Base.ResourceManager.GetString("M0197", CultureInfo.CurrentCulture));
+                    }
+                    if ((Int32)Session["MensFunil"] == 8)
+                    {
+                        ModelState.AddModelError("", CRMSys_Base.ResourceManager.GetString("M0198", CultureInfo.CurrentCulture));
+                    }
+                    if ((Int32)Session["MensFunil"] == 9)
+                    {
+                        ModelState.AddModelError("", CRMSys_Base.ResourceManager.GetString("M0199", CultureInfo.CurrentCulture));
+                    }
                 }
-                if ((Int32)Session["MensFunil"] == 9)
-                {
-                    ModelState.AddModelError("", CRMSys_Base.ResourceManager.GetString("M0199", CultureInfo.CurrentCulture));
-                }
-            }
                 Session["MensFunil"] = null;
 
-            // Recupera ultima etapa
-            FUNIL funil = (FUNIL)Session["Funil"];
-            Int32? ordem = funil.FUNIL_ETAPA.OrderByDescending(p => p.FUET_IN_ORDEM).FirstOrDefault().FUET_IN_ORDEM;
-            Session["Ordem"] = ordem;
+                // Recupera ultima etapa
+                FUNIL funil = (FUNIL)Session["Funil"];
+                Int32? ordem = 1;
+                List<FUNIL_ETAPA> etapas = funil.FUNIL_ETAPA.Where(p => p.FUET_IN_ATIVO == 1).ToList();
+                if (etapas.Count > 0)
+                {
+                    ordem = etapas.OrderByDescending(p => p.FUET_IN_ORDEM).FirstOrDefault().FUET_IN_ORDEM;
+                }
+                Session["Ordem"] = ordem;
+                Session["Etapas"] = etapas;
 
-            // Recupera maximo
-            CONFIGURACAO conf = confApp.GetItemById(idAss);
-            Session["OrdemMax"] = conf.CONF_IN_ETAPAS_CRM;
+                // Verifica
+                CONFIGURACAO conf = confApp.GetItemById(idAss);
+                if (etapas.Count > conf.CONF_IN_ETAPAS_CRM)
+                {
+                    Session["MensFunil"] = 5;
+                    return RedirectToAction("VoltarAnexoFunil");
+                }
+                Session["OrdemMax"] = conf.CONF_IN_ETAPAS_CRM;
 
-            // Prepara view
-            FUNIL_ETAPA item = baseApp.GetEtapaById(id);
-            objetoAntes = (FUNIL)Session["Funil"];
-            FunilEtapaViewModel vm = Mapper.Map<FUNIL_ETAPA, FunilEtapaViewModel>(item);
-            return View(vm);
+                // Prepara view
+                FUNIL_ETAPA item = baseApp.GetEtapaById(id);
+                objetoAntes = (FUNIL)Session["Funil"];
+                FunilEtapaViewModel vm = Mapper.Map<FUNIL_ETAPA, FunilEtapaViewModel>(item);
+                return View(vm);
+            }
+            catch (Exception ex)
+            {
+                ViewBag.Message = ex.Message;
+                Session["TipoVolta"] = 2;
+                Session["VoltaExcecao"] = "Funil";
+                Session["Excecao"] = ex;
+                Session["ExcecaoTipo"] = ex.GetType().ToString();
+                GravaLogExcecao grava = new GravaLogExcecao(usuApp);
+                Int32 voltaX = grava.GravarLogExcecao(ex, "Funil", "CRMSys", 1, (USUARIO)Session["UserCredentials"]);
+                return RedirectToAction("TrataExcecao", "BaseAdmin");
+            }
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult EditarEtapa(FunilEtapaViewModel vm)
         {
-            if ((String)Session["Ativa"] == null)
-            {
-                return RedirectToAction("Logout", "ControleAcesso");
-            }
             if (ModelState.IsValid)
             {
                 try
                 {
+                    if ((String)Session["Ativa"] == null)
+                    {
+                        return RedirectToAction("Logout", "ControleAcesso");
+                    }
+
+                    // Sanitização
+                    vm.FUET_DS_DESCRICAO = CrossCutting.UtilitariosGeral.CleanStringGeral(vm.FUET_DS_DESCRICAO);
+                    vm.FUET_NM_NOME = CrossCutting.UtilitariosGeral.CleanStringGeral(vm.FUET_NM_NOME);
+                    vm.FUET_SG_SIGLA = CrossCutting.UtilitariosGeral.CleanStringGeral(vm.FUET_SG_SIGLA);
+
+                    // Recupera ordem
+                    Int32 ordem = (Int32)Session["Ordem"];
+                    Int32 ordemMax = (Int32)Session["OrdemMax"];
+                    List<FUNIL_ETAPA> etapas = (List<FUNIL_ETAPA>)Session["Etapas"];
+                    Int32? atual = vm.FUET_IN_ORDEM;
+
+                    // Verifica existencia da ordem
+                    Int32 flagOrdem = 0;
+                    FUNIL_ETAPA etapa = etapas.Find(p => p.FUET_IN_ORDEM == atual);
+                    if (etapa != null)
+                    {
+                        flagOrdem = 1;
+                    }
+
+                    // Verifica ultima
+                    if (atual > ordem)
+                    {
+                        Session["MensFunil"] = 6;
+                        ModelState.AddModelError("", CRMSys_Base.ResourceManager.GetString("M0197", CultureInfo.CurrentCulture));
+                        return View(vm);
+                    }
+
                     // Valida flags
                     Int32 id = vm.FUET_CD_ID;
                     List<FUNIL_ETAPA> lista = baseApp.GetItemById(vm.FUNI_CD_ID).FUNIL_ETAPA.ToList();
@@ -568,17 +722,34 @@ namespace ERP_Condominios_Solution.Controllers
                         }
                     }
 
+
                     // Executa a operação
                     USUARIO usuarioLogado = (USUARIO)Session["UserCredentials"];
                     FUNIL_ETAPA item = Mapper.Map<FunilEtapaViewModel, FUNIL_ETAPA>(vm);
                     Int32 volta = baseApp.ValidateEditEtapa(item);
+                    FUNIL funil = baseApp.GetItemById(item.FUNI_CD_ID);
+                    etapas = funil.FUNIL_ETAPA.ToList();
+                    Int32 indice = item.FUET_CD_ID;
+
+                    // Rearruma etapas
+                    Int32? nova = 0;
+                    if (flagOrdem == 1)
+                    {
+                        etapas = etapas.Where(p => p.FUET_IN_ORDEM >= atual & p.FUET_CD_ID != indice).OrderBy(x => x.FUET_IN_ORDEM).ToList();
+                        foreach (FUNIL_ETAPA eta in etapas)
+                        {
+                            nova = eta.FUET_IN_ORDEM + 1;
+                            eta.FUET_IN_ORDEM = nova;
+                            Int32 volta1 = GravaOrdem(eta);
+                        }
+                    }
 
                     // Verifica retorno
+                    Session["TabFunil"] = 2;
                     return RedirectToAction("VoltarAnexoFunil");
                 }
                 catch (Exception ex)
                 {
-                    LogError(ex.Message);
                     ViewBag.Message = ex.Message;
                     Session["TipoVolta"] = 2;
                     Session["VoltaExcecao"] = "Funil";
@@ -598,22 +769,41 @@ namespace ERP_Condominios_Solution.Controllers
         [HttpGet]
         public ActionResult ExcluirEtapa(Int32 id)
         {
-            if ((String)Session["Ativa"] == null)
-            {
-                return RedirectToAction("Logout", "ControleAcesso");
-            }
-
             try
             {
+                // Verifica se tem usuario logado
+                USUARIO usuario = new USUARIO();
+                if ((String)Session["Ativa"] == null)
+                {
+                    return RedirectToAction("Logout", "ControleAcesso");
+                }
+                if ((USUARIO)Session["UserCredentials"] != null)
+                {
+                    usuario = (USUARIO)Session["UserCredentials"];
+
+                    // Verfifica permissão
+                    if (usuario.PERFIL.PERF_SG_SIGLA != "ADM")
+                    {
+                        Session["MensPermissao"] = 2;
+                        Session["ModuloPermissao"] = "Funis";
+                        return RedirectToAction("MontarTelaFunil", "Funil");
+                    }
+                }
+                else
+                {
+                    return RedirectToAction("Logout", "ControleAcesso");
+                }
+                Int32 idAss = (Int32)Session["IdAssinante"];
+
                 FUNIL_ETAPA item = baseApp.GetEtapaById(id);
                 objetoAntes = (FUNIL)Session["Funil"];
                 item.FUET_IN_ATIVO = 0;
                 Int32 volta = baseApp.ValidateEditEtapa(item);
+                Session["TabFunil"] = 2;
                 return RedirectToAction("VoltarAnexoFunil");
             }
             catch (Exception ex)
             {
-                LogError(ex.Message);
                 ViewBag.Message = ex.Message;
                 Session["TipoVolta"] = 2;
                 Session["VoltaExcecao"] = "Funil";
@@ -628,12 +818,32 @@ namespace ERP_Condominios_Solution.Controllers
         [HttpGet]
         public ActionResult ReativarEtapa(Int32 id)
         {
-            if ((String)Session["Ativa"] == null)
-            {
-                return RedirectToAction("Logout", "ControleAcesso");
-            }
             try
             {
+                // Verifica se tem usuario logado
+                USUARIO usuario = new USUARIO();
+                if ((String)Session["Ativa"] == null)
+                {
+                    return RedirectToAction("Logout", "ControleAcesso");
+                }
+                if ((USUARIO)Session["UserCredentials"] != null)
+                {
+                    usuario = (USUARIO)Session["UserCredentials"];
+
+                    // Verfifica permissão
+                    if (usuario.PERFIL.PERF_SG_SIGLA != "ADM")
+                    {
+                        Session["MensPermissao"] = 2;
+                        Session["ModuloPermissao"] = "Funis";
+                        return RedirectToAction("MontarTelaFunil", "Funil");
+                    }
+                }
+                else
+                {
+                    return RedirectToAction("Logout", "ControleAcesso");
+                }
+                Int32 idAss = (Int32)Session["IdAssinante"];
+
                 FUNIL_ETAPA item = baseApp.GetEtapaById(id);
                 objetoAntes = (FUNIL)Session["Funil"];
                 item.FUET_IN_ATIVO = 1;
@@ -642,7 +852,6 @@ namespace ERP_Condominios_Solution.Controllers
             }
             catch (Exception ex)
             {
-                LogError(ex.Message);
                 ViewBag.Message = ex.Message;
                 Session["TipoVolta"] = 2;
                 Session["VoltaExcecao"] = "Funil";
@@ -657,88 +866,129 @@ namespace ERP_Condominios_Solution.Controllers
         [HttpGet]
         public ActionResult IncluirEtapa()
         {
-            if ((String)Session["Ativa"] == null)
+            try
             {
-                return RedirectToAction("Logout", "ControleAcesso");
-            }
-            Int32 idAss = (Int32)Session["IdAssinante"];
+                // Verifica se tem usuario logado
+                USUARIO usuario = new USUARIO();
+                if ((String)Session["Ativa"] == null)
+                {
+                    return RedirectToAction("Logout", "ControleAcesso");
+                }
+                if ((USUARIO)Session["UserCredentials"] != null)
+                {
+                    usuario = (USUARIO)Session["UserCredentials"];
 
-            // Mensagens
-            if (Session["MensFunil"] != null)
+                    // Verfifica permissão
+                    if (usuario.PERFIL.PERF_SG_SIGLA != "ADM")
+                    {
+                        Session["MensPermissao"] = 2;
+                        Session["ModuloPermissao"] = "Funis";
+                        return RedirectToAction("MontarTelaFunil", "Funil");
+                    }
+                }
+                else
+                {
+                    return RedirectToAction("Logout", "ControleAcesso");
+                }
+                Int32 idAss = (Int32)Session["IdAssinante"];
+
+                // Mensagens
+                if (Session["MensFunil"] != null)
+                {
+                    if ((Int32)Session["MensFunil"] == 5)
+                    {
+                        ModelState.AddModelError("", CRMSys_Base.ResourceManager.GetString("M0196", CultureInfo.CurrentCulture));
+                    }
+                    if ((Int32)Session["MensFunil"] == 6)
+                    {
+                        ModelState.AddModelError("", CRMSys_Base.ResourceManager.GetString("M0197", CultureInfo.CurrentCulture));
+                    }
+                    if ((Int32)Session["MensFunil"] == 8)
+                    {
+                        ModelState.AddModelError("", CRMSys_Base.ResourceManager.GetString("M0198", CultureInfo.CurrentCulture));
+                    }
+                    if ((Int32)Session["MensFunil"] == 9)
+                    {
+                        ModelState.AddModelError("", CRMSys_Base.ResourceManager.GetString("M0199", CultureInfo.CurrentCulture));
+                    }
+                }
+                Session["MensFunil"] = null;
+
+                // Recupera ultima etapa
+                FUNIL funil = baseApp.GetItemById((Int32)Session["IdFunil"]);
+                Int32? ordem = 1;
+                List<FUNIL_ETAPA> etapas = funil.FUNIL_ETAPA.Where(p => p.FUET_IN_ATIVO == 1).ToList();
+                if (etapas.Count > 0)
+                {
+                    ordem = etapas.OrderByDescending(p => p.FUET_IN_ORDEM).FirstOrDefault().FUET_IN_ORDEM;
+                    ordem++;
+                }
+                Session["Ordem"] = ordem;
+                Session["Etapas"] = etapas;
+
+                // Verifica
+                CONFIGURACAO conf = confApp.GetItemById(idAss);
+                if (etapas.Count > conf.CONF_IN_ETAPAS_CRM)
+                {
+                    Session["MensFunil"] = 5;
+                    return RedirectToAction("VoltarAnexoFunil");
+                }
+                Session["OrdemMax"] = conf.CONF_IN_ETAPAS_CRM;
+
+                // Prepara view
+                FUNIL_ETAPA item = new FUNIL_ETAPA();
+                FunilEtapaViewModel vm = Mapper.Map<FUNIL_ETAPA, FunilEtapaViewModel>(item);
+                vm.FUNI_CD_ID = (Int32)Session["IdFunil"];
+                vm.FUET_IN_ATIVO = 1;
+                vm.FUET_IN_ORDEM = ordem;
+                return View(vm);
+            }
+            catch (Exception ex)
             {
-                if ((Int32)Session["MensFunil"] == 5)
-                {
-                    ModelState.AddModelError("", CRMSys_Base.ResourceManager.GetString("M0196", CultureInfo.CurrentCulture));
-                }
-                if ((Int32)Session["MensFunil"] == 6)
-                {
-                    ModelState.AddModelError("", CRMSys_Base.ResourceManager.GetString("M0197", CultureInfo.CurrentCulture));
-                }
-                if ((Int32)Session["MensFunil"] == 8)
-                {
-                    ModelState.AddModelError("", CRMSys_Base.ResourceManager.GetString("M0198", CultureInfo.CurrentCulture));
-                }
-                if ((Int32)Session["MensFunil"] == 9)
-                {
-                    ModelState.AddModelError("", CRMSys_Base.ResourceManager.GetString("M0199", CultureInfo.CurrentCulture));
-                }
+                ViewBag.Message = ex.Message;
+                Session["TipoVolta"] = 2;
+                Session["VoltaExcecao"] = "Funil";
+                Session["Excecao"] = ex;
+                Session["ExcecaoTipo"] = ex.GetType().ToString();
+                GravaLogExcecao grava = new GravaLogExcecao(usuApp);
+                Int32 voltaX = grava.GravarLogExcecao(ex, "Funil", "CRMSys", 1, (USUARIO)Session["UserCredentials"]);
+                return RedirectToAction("TrataExcecao", "BaseAdmin");
             }
-            Session["MensFunil"] = null;
-
-            // Recupera ultima etapa
-            FUNIL funil = baseApp.GetItemById((Int32)Session["IdFunil"]);
-            Int32? ordem = 1;
-            if (funil.FUNIL_ETAPA.Count > 0)
-            {
-                ordem = funil.FUNIL_ETAPA.OrderByDescending(p => p.FUET_IN_ORDEM).FirstOrDefault().FUET_IN_ORDEM;
-                ordem++;
-            }
-            Session["Ordem"] = ordem;
-
-            // Verifica
-            CONFIGURACAO conf = confApp.GetItemById(idAss);
-            if (ordem > conf.CONF_IN_ETAPAS_CRM)
-            {
-                Session["MensFunil"] = 5;
-                return RedirectToAction("VoltarAnexoFunil");
-            }
-            Session["OrdemMax"] = conf.CONF_IN_ETAPAS_CRM;
-
-            // Prepara view
-            FUNIL_ETAPA item = new FUNIL_ETAPA();
-            FunilEtapaViewModel vm = Mapper.Map<FUNIL_ETAPA, FunilEtapaViewModel>(item);
-            vm.FUNI_CD_ID = (Int32)Session["IdFunil"];
-            vm.FUET_IN_ATIVO = 1;
-            vm.FUET_IN_ORDEM = ordem;
-            return View(vm);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult IncluirEtapa(FunilEtapaViewModel vm)
         {
-
             if (ModelState.IsValid)
             {
                 try
                 {
-                    // Valida ordem
+                    // Sanitização
+                    vm.FUET_DS_DESCRICAO = CrossCutting.UtilitariosGeral.CleanStringGeral(vm.FUET_DS_DESCRICAO);
+                    vm.FUET_NM_NOME = CrossCutting.UtilitariosGeral.CleanStringGeral(vm.FUET_NM_NOME);
+                    vm.FUET_SG_SIGLA = CrossCutting.UtilitariosGeral.CleanStringGeral(vm.FUET_SG_SIGLA);
+
+                    // Recupera ordem
                     Int32 ordem = (Int32)Session["Ordem"];
                     Int32 ordemMax = (Int32)Session["OrdemMax"];
-                    if (vm.FUET_IN_ORDEM < ordem)
+                    List<FUNIL_ETAPA> etapas = (List<FUNIL_ETAPA>)Session["Etapas"];
+                    Int32? atual = vm.FUET_IN_ORDEM;
+
+                    // Verifica existencia da ordem
+                    Int32 flagOrdem = 0;
+                    FUNIL_ETAPA etapa = etapas.Find(p => p.FUET_IN_ORDEM == atual);
+                    if (etapa != null)
+                    {
+                        flagOrdem = 1;
+                    }
+
+                    // Verifica ultima
+                    if (atual > ordem)
                     {
                         Session["MensFunil"] = 6;
-                        return RedirectToAction("IncluirEtapa");
-                    }
-                    if (vm.FUET_IN_ORDEM > ordemMax)
-                    {
-                        Session["MensFunil"] = 7;
-                        return RedirectToAction("IncluirEtapa");
-                    }
-                    if (vm.FUET_IN_ORDEM > ordem)
-                    {
-                        Session["MensFunil"] = 6;
-                        return RedirectToAction("IncluirEtapa");
+                        ModelState.AddModelError("", CRMSys_Base.ResourceManager.GetString("M0197", CultureInfo.CurrentCulture));
+                        return View(vm);
                     }
 
                     // Valida flags
@@ -749,28 +999,37 @@ namespace ERP_Condominios_Solution.Controllers
                         if (lista.Count > 0)
                         {
                             Session["MensFunil"] = 8;
-                            return RedirectToAction("IncluirEtapa");
+                            ModelState.AddModelError("", CRMSys_Base.ResourceManager.GetString("M0198", CultureInfo.CurrentCulture));
+                            return View(vm);
                         }
                     }
-                    //if (vm.FUET_IN_PROPOSTA == 1)
-                    //{
-                    //    lista = lista.Where(p => p.FUET_IN_PROPOSTA == 1).ToList();
-                    //    if (lista.Count > 0)
-                    //    {
-                    //        Session["MensFunil"] = 9;
-                    //        return RedirectToAction("IncluirEtapa");
-                    //    }
-                    //}
 
                     // Executa a operação
                     FUNIL_ETAPA item = Mapper.Map<FunilEtapaViewModel, FUNIL_ETAPA>(vm);
                     Int32 volta = baseApp.ValidateCreateEtapa(item);
+                    FUNIL funil = baseApp.GetItemById(item.FUNI_CD_ID);
+                    etapas = funil.FUNIL_ETAPA.ToList();
+                    Int32 indice = item.FUET_CD_ID;
+
+                    // Rearruma etapas
+                    Int32? nova = 0;
+                    if (flagOrdem == 1)
+                    {
+                        etapas = etapas.Where(p => p.FUET_IN_ORDEM >= atual & p.FUET_CD_ID != indice).OrderBy(x => x.FUET_IN_ORDEM).ToList();
+                        foreach (FUNIL_ETAPA eta in etapas)
+                        {
+                            nova = eta.FUET_IN_ORDEM + 1;
+                            eta.FUET_IN_ORDEM = nova;
+                            Int32 volta1 = GravaOrdem(eta);
+                        }
+                    }
+
                     // Verifica retorno
-                    return RedirectToAction("IncluirEtapa");
+                    Session["TabFunil"] = 2;
+                    return RedirectToAction("VoltarAnexoFunil");
                 }
                 catch (Exception ex)
                 {
-                    LogError(ex.Message);
                     ViewBag.Message = ex.Message;
                     Session["TipoVolta"] = 2;
                     Session["VoltaExcecao"] = "Funil";
@@ -787,29 +1046,62 @@ namespace ERP_Condominios_Solution.Controllers
             }
         }
 
+        public Int32 GravaOrdem(FUNIL_ETAPA etapa)
+        {   
+            FUNIL_ETAPA nova = new FUNIL_ETAPA();
+            nova.FUET_CD_ID = etapa.FUET_CD_ID;
+            nova.FUET_DS_DESCRICAO = etapa.FUET_DS_DESCRICAO;
+            nova.FUET_IN_ATIVO = etapa.FUET_IN_ATIVO;
+            nova.FUET_IN_EMAIL = etapa.FUET_IN_EMAIL;
+            nova.FUET_IN_ENCERRA = etapa.FUET_IN_ENCERRA;
+            nova.FUET_IN_ORDEM = etapa.FUET_IN_ORDEM;
+            nova.FUET_IN_PROPOSTA = etapa.FUET_IN_PROPOSTA;
+            nova.FUET_IN_SMS = etapa.FUET_IN_SMS;
+            nova.FUET_NM_NOME = etapa.FUET_NM_NOME;
+            nova.FUET_SG_SIGLA = etapa.FUET_SG_SIGLA;
+            nova.FUNI_CD_ID = etapa.FUNI_CD_ID;
+
+            Int32 volta = baseApp.ValidateEditEtapa(nova);
+            return volta;
+
+        }
+
         public List<FUNIL> CarregaFunil()
         {
-            Int32 idAss = (Int32)Session["IdAssinante"];
-            List<FUNIL> conf = new List<FUNIL>();
-            if (Session["Funis"] == null)
+            try
             {
-                conf = baseApp.GetAllItens(idAss);
-            }
-            else
-            {
-                if ((Int32)Session["FunilAlterada"] == 1)
+                Int32 idAss = (Int32)Session["IdAssinante"];
+                List<FUNIL> conf = new List<FUNIL>();
+                if (Session["Funis"] == null)
                 {
                     conf = baseApp.GetAllItens(idAss);
                 }
                 else
                 {
-                    conf = (List<FUNIL>)Session["Funis"];
+                    if ((Int32)Session["FunilAlterada"] == 1)
+                    {
+                        conf = baseApp.GetAllItens(idAss);
+                    }
+                    else
+                    {
+                        conf = (List<FUNIL>)Session["Funis"];
+                    }
                 }
+                Session["Funis"] = conf;
+                Session["FunilAlterada"] = 0;
+                return conf;
             }
-            Session["Funis"] = conf;
-            Session["FunilAlterada"] = 0;
-            return conf;
+            catch (Exception ex)
+            {
+                ViewBag.Message = ex.Message;
+                Session["TipoVolta"] = 2;
+                Session["VoltaExcecao"] = "Funil";
+                Session["Excecao"] = ex;
+                Session["ExcecaoTipo"] = ex.GetType().ToString();
+                GravaLogExcecao grava = new GravaLogExcecao(usuApp);
+                Int32 voltaX = grava.GravarLogExcecao(ex, "Funil", "CRMSys", 1, (USUARIO)Session["UserCredentials"]);
+                return null;
+            }
         }
-
     }
 }

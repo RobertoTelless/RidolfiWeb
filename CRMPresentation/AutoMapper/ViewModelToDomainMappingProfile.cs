@@ -73,6 +73,9 @@ namespace MvcMapping.Mappers
             CreateMap<VaraViewModel, VARA>();
             CreateMap<PrecatorioComentarioViewModel, PRECATORIO_ANOTACAO>();
             CreateMap<PrecatorioViewModel, PRECATORIO>();
+            CreateMap<AgendaContatoViewModel, AGENDA_CONTATO>();
+
+
         }
     }
 }

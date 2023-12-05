@@ -29,6 +29,7 @@ namespace EntitiesServices.Model
             this.MUNICIPIO = new HashSet<MUNICIPIO>();
             this.PACIENTE = new HashSet<PACIENTE>();
             this.TRF = new HashSet<TRF>();
+            this.BENEFICIARIO = new HashSet<BENEFICIARIO>();
         }
     
         public int UF_CD_ID { get; set; }
@@ -60,5 +61,7 @@ namespace EntitiesServices.Model
         public virtual ICollection<PACIENTE> PACIENTE { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<TRF> TRF { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<BENEFICIARIO> BENEFICIARIO { get; set; }
     }
 }

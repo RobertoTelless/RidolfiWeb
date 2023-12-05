@@ -202,7 +202,12 @@ namespace ApplicationServices.Services
             List<CRM_PEDIDO_VENDA> listaProp = new List<CRM_PEDIDO_VENDA>();
             if (permissoes[1] == 1)
             {
-                listaCRM = _crmService.GetAllItens(idAss).Where(p => p.CRM1_NM_NOME.Contains(parm) || p.CLIENTE.CLIE_NM_NOME.Contains(parm) || p.CRM1_DS_DESCRICAO.Contains(parm)).ToList();
+                //listaCRM = _crmService.GetAllItens(idAss).Where(p => p.CRM1_NM_NOME.Contains(parm) || p.CLIENTE.CLIE_NM_NOME.Contains(parm) || p.CRM1_DS_DESCRICAO.Contains(parm)).ToList();
+                //if (ValidarItensDiversos.IsDateTime(parm))
+                //{
+                //    listaCRM = listaCRM.Where(p => p.CRM1_DT_CRIACAO.Value.Date == Convert.ToDateTime(parm)).ToList();
+                //}
+                listaCRM = _crmService.GetAllItens(idAss).Where(p => p.CRM1_NM_NOME.Contains(parm) || p.CRM1_DS_DESCRICAO.Contains(parm)).ToList();
                 if (ValidarItensDiversos.IsDateTime(parm))
                 {
                     listaCRM = listaCRM.Where(p => p.CRM1_DT_CRIACAO.Value.Date == Convert.ToDateTime(parm)).ToList();
@@ -469,13 +474,13 @@ namespace ApplicationServices.Services
             try
             {
                 // Verifica integridade referencial
-                if (item.CRM.Count > 0)
-                {
-                    if (item.CRM.Where(p => p.CRM1_IN_ATIVO == 1).ToList().Count > 0)
-                    {
-                        return 1;
-                    }
-                }
+                //if (item.CRM.Count > 0)
+                //{
+                //    if (item.CRM.Where(p => p.CRM1_IN_ATIVO == 1).ToList().Count > 0)
+                //    {
+                //        return 1;
+                //    }
+                //}
                 if (item.CRM_PEDIDO_VENDA.Count > 0)
                 {
                     if (item.CRM_PEDIDO_VENDA.Where(p => p.CRPV_IN_ATIVO == 1 || p.CRPV_IN_ATIVO == 2).ToList().Count > 0)

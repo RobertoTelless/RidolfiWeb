@@ -80,14 +80,6 @@ namespace ERP_Condominios_Solution.Controllers
             return RedirectToAction("CarregarBase", "BaseAdmin");
         }
 
-        private void LogError(string message)
-        {
-            var logRepository = LogManager.GetRepository(Assembly.GetCallingAssembly());
-            XmlConfigurator.Configure(logRepository, new FileInfo("Log4Net.config"));
-            ILog _logger = LogManager.GetLogger(typeof(LoggerManager));
-            _logger.Info(message);
-        }
-
 
         public ActionResult VoltarGeral()
         {
@@ -112,11 +104,6 @@ namespace ERP_Condominios_Solution.Controllers
                 usuario = (USUARIO)Session["UserCredentials"];
 
                 // Verfifica permissão
-                if (usuario.PERFIL.PERF_SG_SIGLA == "VIS")
-                {
-                    Session["MensPermissao"] = 2;
-                    return RedirectToAction("MontarTelaDashboardCadastro", "BaseAdmin");
-                }
             }
             else
             {
@@ -215,7 +202,6 @@ namespace ERP_Condominios_Solution.Controllers
             }
             catch (Exception ex)
             {
-                LogError(ex.Message);
                 ViewBag.Message = ex.Message;
                 Session["TipoVolta"] = 2;
                 Session["VoltaExcecao"] = "Vara";
@@ -316,7 +302,6 @@ namespace ERP_Condominios_Solution.Controllers
                 }
                 catch (Exception ex)
                 {
-                    LogError(ex.Message);
                     ViewBag.Message = ex.Message;
                     Session["TipoVolta"] = 2;
                     Session["VoltaExcecao"] = "Vara";
@@ -406,7 +391,6 @@ namespace ERP_Condominios_Solution.Controllers
                 }
                 catch (Exception ex)
                 {
-                    LogError(ex.Message);
                     ViewBag.Message = ex.Message;
                     Session["TipoVolta"] = 2;
                     Session["VoltaExcecao"] = "Vara";
@@ -494,7 +478,6 @@ namespace ERP_Condominios_Solution.Controllers
             }
             catch (Exception ex)
             {
-                LogError(ex.Message);
                 ViewBag.Message = ex.Message;
                 Session["TipoVolta"] = 2;
                 Session["VoltaExcecao"] = "Vara";
@@ -539,7 +522,6 @@ namespace ERP_Condominios_Solution.Controllers
             }
             catch (Exception ex)
             {
-                LogError(ex.Message);
                 ViewBag.Message = ex.Message;
                 Session["TipoVolta"] = 2;
                 Session["VoltaExcecao"] = "Vara";

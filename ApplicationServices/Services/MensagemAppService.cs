@@ -48,12 +48,6 @@ namespace ApplicationServices.Services
             return lista;
         }
 
-        public List<RESULTADO_ROBOT> GetAllEnviosRobot(Int32 idAss)
-        {
-            List<RESULTADO_ROBOT> lista = _baseService.GetAllEnviosRobot(idAss);
-            return lista;
-        }
-
         public List<UF> GetAllUF()
         {
             List<UF> lista = _baseService.GetAllUF();

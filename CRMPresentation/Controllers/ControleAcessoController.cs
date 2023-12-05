@@ -162,6 +162,29 @@ namespace ERP_Condominios_Solution.Controllers
             Session["PlanosLista"] = null;
             Session["CRMAcoesAss"] = null;
             Session["PedidoVendasAss"] = null;
+            Session["Precatorios"] = null;
+            Session["PrecatorioAlterada"] = 0;
+            Session["Beneficiarios"] = null;
+            Session["BeneficiarioAlterada"] = 0;
+            Session["TRFs"] = null;
+            Session["TRFAlterada"] = 0;
+            Session["Varas"] = null;
+            Session["VaraAlterada"] = 0;
+            Session["Honorarios"] = null;
+            Session["HonorarioAlterada"] = 0;
+            Session["Contatos"] = null;
+            Session["ContatoAlterada"] = 0;
+            Session["Qualificacoes"] = null;
+            Session["QualificacaoAlterada"] = 0;
+            Session["Desligas"] = null;
+            Session["DesligaAlterada"] = 0;
+            Session["Escolaridades"] = null;
+            Session["Naturezas"] = null;
+            Session["EstadosCivil"] = null;
+            Session["Parentescos"] = null;
+            Session["Sexos"] = null;
+            Session["FlagBeneficiario"] = 1;
+            Session["FlagPrecatorio"] = 1;
 
             Session["ListaCliente"] = null;
             Session["ListaClienteUF"] = null;
@@ -192,8 +215,14 @@ namespace ERP_Condominios_Solution.Controllers
             Session["ListaAlerta"] = null;
             Session["ListaAlerta"] = null;
             Session["ListaAlerta"] = null;
+            Session["ListaBeneficiario"] = null;
+            Session["ListaBeneficiarioUF"] = null;
+            Session["ListaBeneficiarioCidade"] = null;
+            Session["ListaPrecatorio"] = null;
+            Session["ListaPrecatorioTRF"] = null;
 
-            Session["TotAcima"] = 0;
+
+
         }
 
         [HttpGet]
@@ -442,33 +471,6 @@ namespace ERP_Condominios_Solution.Controllers
                     return RedirectToAction("Login", "ControleAcesso");
                 }
 
-                // Verifica assinante
-                ASSINANTE assinante = assApp.GetItemById(usuario.ASSI_CD_ID);
-                if (assinante == null)
-                {
-                    Session["MensagemLogin"] = 90;
-                    ModelState.AddModelError("", CRMSys_Base.ResourceManager.GetString("M0341", CultureInfo.CurrentCulture));
-                    vm.USUA_NM_LOGIN = String.Empty;
-                    vm.USUA_NM_SENHA = String.Empty;
-                    return RedirectToAction("Login", "ControleAcesso");
-                }
-                if (assinante.ASSI_IN_BLOQUEADO == 1)
-                {
-                    Session["MensagemLogin"] = 91;
-                    ModelState.AddModelError("", CRMSys_Base.ResourceManager.GetString("M0342", CultureInfo.CurrentCulture));
-                    vm.USUA_NM_LOGIN = String.Empty;
-                    vm.USUA_NM_SENHA = String.Empty;
-                    return RedirectToAction("Login", "ControleAcesso");
-                }
-                if (assinante.ASSI_IN_ATIVO == 0)
-                {
-                    Session["MensagemLogin"] = 92;
-                    ModelState.AddModelError("", CRMSys_Base.ResourceManager.GetString("M0344", CultureInfo.CurrentCulture));
-                    vm.USUA_NM_LOGIN = String.Empty;
-                    vm.USUA_NM_SENHA = String.Empty;
-                    return RedirectToAction("Login", "ControleAcesso");
-                }
-
                 // Armazena credenciais para autorização
                 Session["UserCredentials"] = usuario;
                 Session["Usuario"] = usuario;
@@ -485,15 +487,6 @@ namespace ERP_Condominios_Solution.Controllers
                 Session["NomeEmpresaAssina"] = usuario.EMPRESA.EMPR_NM_NOME;
 
                 // Reseta flags de permissao e totais
-                Session["NumClientes"] = 0;
-                Session["NumCRM"] = 0;
-                Session["NumAcoes"] = 0;
-                Session["NumPropostas"] = 0;
-                Session["NumUsuarios"] = 0;
-                Session["PermGeral"] = 1;
-                Session["NumEMail"] = 0;
-                Session["NumSMS"] = 0;
-                Session["PermCRM"] = 1;
                 Session["FlagNotificacoes"] = 1;
                 Session["FlagTarefas"] = 1;
                 Session["FlagAgendas"] = 1;
@@ -734,7 +727,7 @@ namespace ERP_Condominios_Solution.Controllers
 
                 // Prepara rodape
                 ASSINANTE assi = (ASSINANTE)Session["Assinante"];
-                String rod = "<b>CRMSys</b>";
+                String rod = "<b>RidolfiWeb</b>";
 
                 // Prepara corpo do e-mail e trata link
                 String corpo = vm.MENS_TX_TEXTO + "<br /><br />";
@@ -775,7 +768,7 @@ namespace ERP_Condominios_Solution.Controllers
                 mensagem.EMAIL_TO_DESTINO = usuario.USUA_NM_EMAIL;
                 mensagem.NOME_EMISSOR_AZURE = emissor;
                 mensagem.ENABLE_SSL = true;
-                mensagem.NOME_EMISSOR = "SysPrec";
+                mensagem.NOME_EMISSOR = "RidolfiWeb";
                 mensagem.PORTA = conf.CONF_NM_PORTA_SMTP;
                 mensagem.PRIORIDADE = System.Net.Mail.MailPriority.High;
                 mensagem.SENHA_EMISSOR = conf.CONF_NM_SENDGRID_PWD;

@@ -80,14 +80,6 @@ namespace ERP_Condominios_Solution.Controllers
             return RedirectToAction("CarregarBase", "BaseAdmin");
         }
 
-        private void LogError(string message)
-        {
-            var logRepository = LogManager.GetRepository(Assembly.GetCallingAssembly());
-            XmlConfigurator.Configure(logRepository, new FileInfo("Log4Net.config"));
-            ILog _logger = LogManager.GetLogger(typeof(LoggerManager));
-            _logger.Info(message);
-        }
-
         public ActionResult VoltarGeral()
         {
             if ((String)Session["Ativa"] == null)
@@ -217,7 +209,6 @@ namespace ERP_Condominios_Solution.Controllers
             }
             catch (Exception ex)
             {
-                LogError(ex.Message);
                 ViewBag.Message = ex.Message;
                 Session["TipoVolta"] = 2;
                 Session["VoltaExcecao"] = "TRF";
@@ -302,7 +293,6 @@ namespace ERP_Condominios_Solution.Controllers
                 }
                 catch (Exception ex)
                 {
-                    LogError(ex.Message);
                     ViewBag.Message = ex.Message;
                     Session["TipoVolta"] = 2;
                     Session["VoltaExcecao"] = "TRF";
@@ -384,7 +374,6 @@ namespace ERP_Condominios_Solution.Controllers
                 }
                 catch (Exception ex)
                 {
-                    LogError(ex.Message);
                     ViewBag.Message = ex.Message;
                     Session["TipoVolta"] = 2;
                     Session["VoltaExcecao"] = "TRF";
@@ -469,7 +458,6 @@ namespace ERP_Condominios_Solution.Controllers
             }
             catch (Exception ex)
             {
-                LogError(ex.Message);
                 ViewBag.Message = ex.Message;
                 Session["TipoVolta"] = 2;
                 Session["VoltaExcecao"] = "TRF";
@@ -514,7 +502,6 @@ namespace ERP_Condominios_Solution.Controllers
             }
             catch (Exception ex)
             {
-                LogError(ex.Message);
                 ViewBag.Message = ex.Message;
                 Session["TipoVolta"] = 2;
                 Session["VoltaExcecao"] = "TRF";

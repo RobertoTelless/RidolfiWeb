@@ -22,6 +22,7 @@ using System.Text;
 using System.Net;
 using CrossCutting;
 
+
 namespace ERP_Condominios_Solution.Controllers
 {
     public class TabelaAuxiliarController : Controller

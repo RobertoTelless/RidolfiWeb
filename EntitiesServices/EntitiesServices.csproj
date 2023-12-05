@@ -302,7 +302,6 @@
     <Compile Include="Interfaces\Repositories\IPrecatorioRepository.cs" />
     <Compile Include="Interfaces\Repositories\IQualificacaoRepository.cs" />
     <Compile Include="Interfaces\Repositories\IQuemDesligouRepository.cs" />
-    <Compile Include="Interfaces\Repositories\IResultadoRobotRepository.cs" />
     <Compile Include="Interfaces\Repositories\IRecursividadeDataRepository.cs" />
     <Compile Include="Interfaces\Repositories\IRecursividadeDestinoRepository.cs" />
     <Compile Include="Interfaces\Repositories\IRecursividadeRepository.cs" />

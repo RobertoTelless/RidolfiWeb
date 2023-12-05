@@ -32,7 +32,6 @@ using log4net.Config;
 using log4net.Core;
 using ERP_Condominios_Solution.Classes;
 
-
 namespace ERP_Condominios_Solution.Controllers
 {
     public class PlanoController : Controller

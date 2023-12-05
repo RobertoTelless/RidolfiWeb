@@ -114,7 +114,7 @@
                             @if (ViewBag.Perfil == "ADM" || ViewBag.Perfil == "GER")
                             {
                                 <div class="col-lg-2 col-md-2 col-xs-12">
-                                    Usuário Responsável
+                                    Responsável
                                     @Html.DropDownListFor(m => m.USUA_CD_ID, (SelectList)ViewBag.Usuarios, "Selecionar", new { @class = "form-control" })
                                 </div>
                             }
@@ -137,7 +137,7 @@
         <div class="col-lg-12 col-md-12 col-xs-12">
             <div class="col-lg-12 col-md-12 col-xs-12 ibox float-e-margins">
                 <div class="ibox-title">
-                    <h5>Mensagens Enviadas pelo RidolfiWeb</h5>
+                    <h5>Mensagens Enviadas pelo CRMSys</h5>
                 </div>
                 <div class="ibox-content">
                     @if (!ViewData.ModelState.IsValid)
@@ -163,18 +163,17 @@
                                     <tr>
                                         <th style="width: auto">Situação</th>
                                         <th style="width: auto">Tipo</th>
-                                        <th style="width: auto">Escopo</th>
                                         <th style="width: auto">Emissão</th>
                                         <th style="width: auto">Origem</th>
                                         <th style="width: auto">E-Mail Destino</th>
                                         <th style="width: auto">Celular Destino</th>
                                         <th style="width: auto">Nome Destino</th>
-                                        <th style="width: auto">Usuário Responsável</th>
+                                        <th style="width: auto">Responsável</th>
                                         <th class="td-one-action">Ações</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach (var cond in (ViewBag.Listas as List<EntitiesServices.Model.MENSAGENS_ENVIADAS_SISTEMA>))
+                                    @foreach (var cond in (ViewBag.Listas as List<EntitiesServices.Model.MENSAGENS_ENVIADAS_SISTEMA>).OrderByDescending(p => p.MEEN_DT_DATA_ENVIO))
                                     {
                                         <tr>
                                             @if (cond.MEEN_IN_ENTREGUE == 1)
@@ -193,27 +192,6 @@
                                             else if (cond.MEEN_IN_TIPO == 2)
                                             {
                                                 <td style="width: auto"><span class="badge badge-success">SMS</span></td>
-                                            }
-                                            else
-                                            {
-                                                <td style="width: auto"><span class="badge badge-warning">WhatsApp</span></td>
-                                            }
-
-                                            @if (cond.MEEN_IN_ESCOPO == 1)
-                                            {
-                                                <td style="width: auto"><span class="badge badge-primary">Empresa</span></td>
-                                            }
-                                            else if (cond.MEEN_IN_ESCOPO == 2)
-                                            {
-                                                <td style="width: auto"><span class="badge badge-success">Clientes</span></td>
-                                            }
-                                            else if (cond.MEEN_IN_ESCOPO == 4)
-                                            {
-                                                <td style="width: auto"><span class="badge badge-warning">Usuário</span></td>
-                                            }
-                                            else if (cond.MEEN_IN_ESCOPO == 5)
-                                            {
-                                                <td style="width: auto"><span class="badge badge-warning">Processos</span></td>
                                             }
 
                                             <td>@cond.MEEN_DT_DATA_ENVIO.Value.ToShortDateString()</td>
@@ -236,32 +214,13 @@
                                                 <td>-</td>
                                             }
 
-                                            @if (cond.MEEN_IN_ESCOPO == 1)
+                                            @if (cond.BENE_CD_ID != null)
                                             {
-                                                <td>@cond.CLIENTE.CLIE_NM_NOME</td>
+                                                <td>@cond.BENEFICIARIO.BENE_NM_NOME</td>
                                             }
-                                            else if (cond.MEEN_IN_ESCOPO == 2)
-                                            {
-                                                <td>@cond.CLIENTE.CLIE_NM_NOME</td>
-                                            }
-                                            else if (cond.MEEN_IN_ESCOPO == 3)
-                                            {
-                                                <td>@cond.USUARIO1.USUA_NM_NOME</td>
-                                            }
-                                            else if (cond.MEEN_IN_ESCOPO == 4)
+                                            else
                                             {
                                                 <td>@cond.USUARIO.USUA_NM_NOME</td>
-                                            }
-                                            else if (cond.MEEN_IN_ESCOPO == 5)
-                                            {
-                                                if (cond.CLIE_CD_ID != null)
-                                                {
-                                                    <td>@cond.CLIENTE.CLIE_NM_NOME</td>
-                                                }
-                                                if (cond.CRCO_CD_ID != null)
-                                                {
-                                                    <td>@cond.CRM_CONTATO.CRCO_NM_NOME</td>
-                                                }
                                             }
                                             <td>@cond.USUARIO.USUA_NM_NOME</td>
                                             <td class="td-one-action">
@@ -280,8 +239,6 @@
                                 </div>
                                 <div style="border: 5px solid #F6A54A; padding: 10px; border-radius: 8px 8px; " class="col-lg-4 col-md-4 col-xs-8">
                                     <h2 style="font-weight: bold">Sua pesquisa não retornou nenhum resultado</h2>
-                                    <p>Tente outras opções de pesquisa</p>
-
                                     @Html.ButtonLinkIndex(text: "Retirar Filtro", controller: "BaseAdmin", action: "RetirarFiltroMensagensEnviadas")
                                 </div>
                                 <div class="col-lg-4 col-md-4 col-xs-2">
@@ -295,7 +252,6 @@
         </div>
     </div>
 </div>
-
 
 @section Styles {
     <link href="~/Content/themes/base/all.css" rel="stylesheet" />  

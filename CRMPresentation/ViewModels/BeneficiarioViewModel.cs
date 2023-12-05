@@ -60,6 +60,15 @@ namespace ERP_Condominios_Solution.ViewModels
         public string BENE_NR_CNPJ { get; set; }
         [StringLength(100, ErrorMessage = "O NOME DO PARENTE deve conter no máximo 100 caracteres.")]
         public string BENE_NM_PARENTESCO { get; set; }
+        public Nullable<int> UF_CD_ID { get; set; }
+        [StringLength(50, ErrorMessage = "A CIDADE deve conter no máximo 50 caracteres.")]
+        public string BENE_NM_CIDADE { get; set; }
+        [StringLength(100, ErrorMessage = "O ENDEREÇO deve conter no máximo 100 caracteres.")]
+        public string BENE_NM_ENDERECO { get; set; }
+        [StringLength(10, ErrorMessage = "O CEP deve conter no máximo 10 caracteres.")]
+        public string BENE_NR_CEP { get; set; }
+        [StringLength(50, ErrorMessage = "O BAIRRO deve conter no máximo 50 caracteres.")]
+        public string BENE_NM_BAIRRO { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<BENEFICIARIO_ANEXO> BENEFICIARIO_ANEXO { get; set; }
@@ -70,6 +79,8 @@ namespace ERP_Condominios_Solution.ViewModels
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ENDERECO> ENDERECO { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<MENSAGENS_ENVIADAS_SISTEMA> MENSAGENS_ENVIADAS_SISTEMA { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<TELEFONE> TELEFONE { get; set; }
         public virtual ESTADO_CIVIL ESTADO_CIVIL { get; set; }
         public virtual PARENTESCO PARENTESCO { get; set; }
@@ -78,5 +89,6 @@ namespace ERP_Condominios_Solution.ViewModels
         public virtual TIPO_PESSOA TIPO_PESSOA { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<PRECATORIO> PRECATORIO { get; set; }
+        public virtual UF UF { get; set; }
     }
 }

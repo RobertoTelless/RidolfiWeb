@@ -29,7 +29,6 @@ namespace ApplicationServices.Interfaces
         List<UF> GetAllUF();
         UF GetUFbySigla(String sigla);
         List<TEMPLATE_SMS> GetAllTemplatesSMS(Int32 idAss);
-        List<RESULTADO_ROBOT> GetAllEnviosRobot(Int32 idAss);
 
         MENSAGENS_DESTINOS GetDestinoById(Int32 id);
         Int32 ValidateEditDestino(MENSAGENS_DESTINOS item);

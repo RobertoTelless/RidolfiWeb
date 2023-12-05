@@ -4,6 +4,26 @@
     Layout = "~/Views/Shared/_Layout_Admin.cshtml";
 }
 <div class="wrapper wrapper-content animated fadeInRight">
+    <div class="modalContainer">
+        <div id="modal" class="modal" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        @*Titulo gerado dinamicamente*@
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        @*Gerado dinamicamente*@
+                    </div>
+                    <div class="modal-footer">
+                        <button onclick="limpaModal()" type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="page-title">
         <h3 class="title">Beneficiários</h3>
         <br />
@@ -35,10 +55,23 @@
                         </div>
                     }
                     <div class="tabs-container">
+                        <div class="form-group">
+                            @if (Model.BENE_EM_EMAIL != null)
+                            {
+                                @Html.ButtonLinkIndex(text: "Enviar E-Mail", action: "EnviarEmailBeneficiario", controller: "Beneficiario")
+                            }
+                            @if (Model.BENE_NR_CELULAR != null)
+                            {
+                                @Html.ButtonLinkIndex(text: "Enviar SMS", action: "EnviarSMSBeneficiario", controller: "Beneficiario")
+                            }
+                            @Html.ButtonLinkIndex(text: "Voltar", action: "VoltarBaseBeneficiario", controller: "Beneficiario")
+                        </div>
+                        
                         <ul class="nav nav-tabs">
                             <li class="active"><a data-toggle="tab" href="#tab-1">Dados Gerais</a></li>
                             <li class=""><a data-toggle="tab" href="#tab-2">Anexos</a></li>
                             <li class=""><a data-toggle="tab" href="#tab-3">Anotações</a></li>
+                            <li class=""><a data-toggle="tab" href="#tab-8">Contatos</a></li>
                         </ul>
 
                         <div class="tab-content">
@@ -47,131 +80,174 @@
                                 <div class="panel-body">
                                     @using (Html.BeginForm("VerBeneficiario", "Beneficiario", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", @id = "pwd-container1" }))
                                     {
-                                        <div class="form-group">
-                                            @Html.ButtonLinkIndex(text: "Enviar E-Mail", action: "EnviarEmailBeneficiario", controller: "Beneficiario")
-                                            @Html.ButtonLinkIndex(text: "Enviar SMS", action: "EnviarSMSBeneficiario", controller: "Beneficiario")
-                                            @Html.ButtonLinkIndex(text: "Voltar", action: "VoltarBaseBeneficiario", controller: "Beneficiario")
-                                        </div>
                                         <div class="row">
+                                            <h4 style="margin-left: 0px; color:saddlebrown; background-color: beige; font-weight:bold">Identificação</h4>
                                             <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
                                                 <div class="col-lg-2 col-md-2 col-xs-12">
                                                     @Html.HiddenFor(m => m.BENE_DT_CADASTRO)
                                                     @Html.HiddenFor(m => m.BENE_IN_ATIVO)
                                                     @Html.HiddenFor(m => m.BENE_CD_ID)
+                                                    @Html.HiddenFor(m => m.TIPE_CD_ID)
                                                     Tipo de Pessoa
-                                                    @Html.TextBoxFor(m => m.TIPO_PESSOA.TIPE_NM_NOME, new { @class = "form-control", autofocus = true, @readonly="readonly" })
+                                                    @Html.TextBoxFor(m => m.TIPO_PESSOA.TIPE_NM_NOME, new { @class = "form-control", @readonly="readonly", @style = "color:green; font-weight:bold"  })
                                                 </div>
                                                 <div class="col-lg-4 col-md-4 col-xs-12">
-                                                    Nome*
-                                                    @Html.TextBoxFor(m => m.BENE_NM_NOME, new { @class = "form-control", autofocus = true, @readonly="readonly" })
-                                                    @Html.ValidationMessageFor(m => m.BENE_NM_NOME, "", new { @style = "color:red" })
+                                                    Nome
+                                                    @Html.TextBoxFor(m => m.BENE_NM_NOME, new { @class = "form-control", autofocus = true, @style = "color:green; font-weight:bold", @readonly="readonly" })
                                                 </div>
                                                 @if (Model.TIPE_CD_ID == 2)
                                                 {
-                                                    <div class="col-lg-4 col-md-4 col-xs-12">
+                                                    <div class="col-lg-4 col-md-4 col-xs-12" id="PJ">
                                                         Razão Social
                                                         @Html.TextBoxFor(m => m.MOME_NM_RAZAO_SOCIAL, new { @class = "form-control", autofocus = true, @readonly="readonly" })
-                                                        @Html.ValidationMessageFor(m => m.MOME_NM_RAZAO_SOCIAL, "", new { @style = "color:red" })
                                                     </div>
                                                 }
                                             </div>
-                                            <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
-                                                @if (Model.TIPE_CD_ID == 1)
-                                                {
-                                                    <div class="col-lg-2 col-md-2 col-xs-12"  id="PF">
-                                                        CPF
-                                                        @Html.TextBoxFor(m => m.BENE_NR_CPF, new { @class = "form-control", autofocus = true, @id = "cpf", @readonly="readonly" })
-                                                    </div>
-                                                    <div class="col-lg-2 col-md-2 col-xs-12" id="PF1">
-                                                        RG
-                                                        @Html.TextBoxFor(m => m.BENE_NR_RG, new { @class = "form-control", autofocus = true, @readonly="readonly" })
-                                                    </div>
-                                                }
-                                                else
-                                                {
-                                                    <div class="col-lg-2 col-md-2 col-xs-12"  id="PJ1">
-                                                        CNPJ
-                                                        @Html.TextBoxFor(m => m.BENE_NR_CNPJ, new { @class = "form-control", autofocus = true, @id = "cnpj", @readonly="readonly" })
-                                                    </div>
-                                                }
-                                                <div class="col-lg-2 col-md-2 col-xs-12">
-                                                    Telefone Principal
-                                                    @Html.TextBoxFor(m => m.BENE_NR_TELEFONE, new { @class = "form-control", autofocus = true, @id = "tel", @readonly="readonly" })
-                                                </div>
-                                                <div class="col-lg-2 col-md-2 col-xs-12">
-                                                    Celular Principal
-                                                    @Html.TextBoxFor(m => m.BENE_NR_CELULAR, new { @class = "form-control", autofocus = true, @id = "cel", @readonly="readonly" })
-                                                </div>
-                                                <div class="col-lg-4 col-md-4 col-xs-12">
-                                                    E-Mail
-                                                    @Html.TextBoxFor(m => m.BENE_EM_EMAIL, new { @class = "form-control", autofocus = true, @readonly="readonly" })
+                                            <div class="row">
+                                            <h4 style="margin-left: 0px; color:saddlebrown; background-color: beige; font-weight:bold">Documentação</h4>
+                                                <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
+                                                    @if (Model.TIPE_CD_ID == 2)
+                                                    {
+                                                        <div class="col-lg-2 col-md-2 col-xs-12"  id="PJ1">
+                                                            CNPJ
+                                                            @Html.TextBoxFor(m => m.BENE_NR_CNPJ, new { @class = "form-control", autofocus = true, @id = "cnpj", @readonly="readonly" })
+                                                        </div>
+                                                    }
+                                                    else
+                                                    {
+                                                        <div class="col-lg-2 col-md-2 col-xs-12"  id="PF">
+                                                            CPF
+                                                            @Html.TextBoxFor(m => m.BENE_NR_CPF, new { @class = "form-control", autofocus = true, @id = "cpf", @readonly="readonly" })
+                                                        </div>
+                                                        <div class="col-lg-2 col-md-2 col-xs-12" id="PF1">
+                                                            RG
+                                                            @Html.TextBoxFor(m => m.BENE_NR_RG, new { @class = "form-control", autofocus = true, @readonly="readonly" })
+                                                        </div>
+                                                    }
                                                 </div>
                                             </div>
-                                            <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
-                                                <div class="col-lg-2 col-md-2 col-xs-12">
-                                                    Telefone 2
-                                                    @Html.TextBoxFor(m => m.BENE_NR_TELEFONE2, new { @class = "form-control", autofocus = true, @readonly="readonly" })
-                                                </div>
-                                                <div class="col-lg-2 col-md-2 col-xs-12">
-                                                    Telefone 3
-                                                    @Html.TextBoxFor(m => m.BENE_NR_TELEFONE3, new { @class = "form-control", autofocus = true, @readonly="readonly" })
-                                                </div>
-                                                <div class="col-lg-2 col-md-2 col-xs-12">
-                                                    Telefone 4
-                                                    @Html.TextBoxFor(m => m.BENE_NR_TELEFONE4, new { @class = "form-control", autofocus = true, @readonly="readonly" })
-                                                </div>
-                                                <div class="col-lg-2 col-md-2 col-xs-12">
-                                                    Celular 2
-                                                    @Html.TextBoxFor(m => m.BENE_NR_CELULAR2, new { @class = "form-control", autofocus = true, @readonly="readonly" })
-                                                </div>
-                                                <div class="col-lg-2 col-md-2 col-xs-12">
-                                                    Celular 3
-                                                    @Html.TextBoxFor(m => m.BENE_NR_CELULAR3, new { @class = "form-control", autofocus = true, @readonly="readonly" })
-                                                </div>
-                                                <div class="col-lg-2 col-md-2 col-xs-12">
-                                                    Celular 4
-                                                    @Html.TextBoxFor(m => m.BENE_NR_CELULAR4, new { @class = "form-control", autofocus = true, @readonly="readonly" })
-                                                </div>
-                                            </div>
+
                                             @if (Model.TIPE_CD_ID == 1)
                                             {
-                                                <div class="form-group" style=" margin-left: -15px; margin-right: -15px;" id="PF">
-                                                    <div class="col-lg-2 col-md-2 col-xs-12">
-                                                        Sexo    
-                                                        @Html.TextBoxFor(m => m.SEXO.SEXO_NM_NOME, new { @class = "form-control", autofocus = true, @readonly="readonly" })
-                                                    </div>
-                                                    <div class="col-lg-2 col-md-2 col-xs-12">
-                                                        Estado Civil
-                                                        @Html.TextBoxFor(m => m.ESTADO_CIVIL.ESCI_NM_NOME, new { @class = "form-control", autofocus = true, @readonly="readonly" })
-                                                    </div>
-                                                    <div class="col-lg-2 col-md-2 col-xs-12">
-                                                        Escolaridade
-                                                        @Html.TextBoxFor(m => m.ESCOLARIDADE.ESCO_NM_NOME, new { @class = "form-control", autofocus = true, @readonly="readonly" })
-                                                    </div>
-                                                    <div class="col-lg-2 col-md-2 col-xs-12">
-                                                        Data Nascimento
-                                                        @Html.TextBoxFor(m => m.BENE_DT_NASCIMENTO, "{0:dd/MM/yyyy}", new { @class = "form-control", autofocus = true, @readonly="readonly" })
+                                                <div class="row">
+                                                <h4 style="margin-left: 0px; color:saddlebrown; background-color: beige; font-weight:bold"  id="PF4">Dados Pessoais</h4>
+                                                    <div class="form-group" style=" margin-left: -15px; margin-right: -15px;" id="PF4">
+                                                        <div class="col-lg-2 col-md-2 col-xs-12" >
+                                                            Sexo    
+                                                            @Html.TextBoxFor(m => m.SEXO.SEXO_NM_NOME, new { @class = "form-control date-picker", autofocus = true, @readonly="readonly" })
+                                                        </div>
+                                                        <div class="col-lg-2 col-md-2 col-xs-12">
+                                                            Estado Civil
+                                                            @Html.TextBoxFor(m => m.ESTADO_CIVIL.ESCI_NM_NOME, new { @class = "form-control", autofocus = true, @readonly="readonly" })
+                                                        </div>
+                                                        <div class="col-lg-2 col-md-2 col-xs-12">
+                                                            Escolaridade
+                                                            @Html.TextBoxFor(m => m.ESCOLARIDADE.ESCO_NM_NOME, new { @class = "form-control", autofocus = true, @readonly="readonly" })
+                                                        </div>
+                                                        <div class="col-lg-2 col-md-2 col-xs-12">
+                                                            Data Nascimento
+                                                            @Html.TextBoxFor(m => m.BENE_DT_NASCIMENTO, "{0:dd/MM/yyyy}", new { @class = "form-control", autofocus = true, @readonly="readonly" })
+                                                        </div>
                                                     </div>
                                                 </div>
-                                                <div class="form-group" style=" margin-left: -15px; margin-right: -15px;" id="PF">
-                                                    <div class="col-lg-2 col-md-2 col-xs-12">
-                                                        Grau de Parentesco
-                                                        @Html.TextBoxFor(m => m.PARENTESCO.PARE_NM_NOME, new { @class = "form-control", autofocus = true, @readonly="readonly" })
-                                                    </div>
-                                                    <div class="col-lg-4 col-md-4 col-xs-12">
-                                                        Nome do Parente
-                                                        @Html.TextBoxFor(m => m.BENE_NM_PARENTESCO, new { @class = "form-control", autofocus = true, @readonly="readonly" })
+
+                                                <div class="row">
+                                                    <h4 style="margin-left: 0px; color:saddlebrown; background-color: beige; font-weight:bold"  id="PF5">Parentesco</h4>
+                                                    <div class="form-group" style=" margin-left: -15px; margin-right: -15px;" id="PF5">
+                                                        <div class="col-lg-2 col-md-2 col-xs-12">
+                                                            Grau de Parentesco
+                                                            @Html.TextBoxFor(m => m.PARENTESCO.PARE_NM_NOME, new { @class = "form-control", autofocus = true, @readonly="readonly" })
+                                                            @Html.ValidationMessageFor(m => m.PARE_CD_ID, "", new { @style = "color:red" })
+                                                        </div>
+                                                        <div class="col-lg-4 col-md-4 col-xs-12">
+                                                            Nome do Parente
+                                                            @Html.TextBoxFor(m => m.BENE_NM_PARENTESCO, new { @class = "form-control", autofocus = true, @readonly="readonly" })
+                                                        </div>
                                                     </div>
                                                 </div>
                                             }
-                                            <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
-                                                <div class="col-lg-2 col-md-2 col-xs-12">
-                                                    Renda (R$)    
-                                                    @Html.TextBoxFor(m => m.BENE_VL_RENDA, new { @class = "form-control", autofocus = true, @readonly="readonly" })
+
+                                            <div class="row">
+                                                <h4 style="margin-left: 0px; color:saddlebrown; background-color: beige; font-weight:bold">Endereço</h4>
+                                                <div class="form-group" style=" margin-left: -15px; margin-right: -15px;" id="PF5">
+                                                    <div class="col-lg-3 col-md-3 col-xs-12">
+                                                        Endereço
+                                                        @Html.TextBoxFor(m => m.BENE_NM_ENDERECO, new { @class = "form-control", autofocus = true, @readonly="readonly" })
+                                                    </div>
+                                                    <div class="col-lg-3 col-md-3 col-xs-12">
+                                                        Bairro
+                                                        @Html.TextBoxFor(m => m.BENE_NM_BAIRRO, new { @class = "form-control", autofocus = true, @readonly="readonly" })
+                                                    </div>
+                                                    <div class="col-lg-2 col-md-2 col-xs-12">
+                                                        Cidade
+                                                        @Html.TextBoxFor(m => m.BENE_NM_CIDADE, new { @class = "form-control", autofocus = true, @readonly="readonly" })
+                                                    </div>
+                                                    <div class="col-lg-2 col-md-2 col-xs-12">
+                                                        UF
+                                                        @Html.TextBoxFor(m => m.UF.UF_NM_NOME, new { @class = "form-control", autofocus = true, @id = "cep" , @readonly="readonly"})
+                                                    </div>
+                                                    <div class="col-lg-2 col-md-2 col-xs-12">
+                                                        CEP
+                                                        @Html.TextBoxFor(m => m.BENE_NR_CEP, new { @class = "form-control", autofocus = true, @id = "cep" , @readonly="readonly"})
+                                                    </div>
                                                 </div>
-                                                <div class="col-lg-2 col-md-2 col-xs-12">
-                                                    Renda Estimada (R$)    
-                                                    @Html.TextBoxFor(m => m.BENE_VL_RENDA_ESTIMADA, new { @class = "form-control", autofocus = true, @readonly="readonly" })
+                                            </div>
+
+                                            <div class="row">
+                                                <h4 style="margin-left: 0px; color:saddlebrown; background-color: beige; font-weight:bold">Contatos</h4>
+                                                <div class="form-group" style=" margin-left: -15px; margin-right: -15px;" id="PF5">
+                                                    <div class="col-lg-3 col-md-3 col-xs-12">
+                                                        E-Mail
+                                                        @Html.TextBoxFor(m => m.BENE_EM_EMAIL, new { @class = "form-control", autofocus = true , @readonly="readonly"})
+                                                    </div>
+                                                    <div class="col-lg-2 col-md-2 col-xs-12">
+                                                        Telefone #1
+                                                        @Html.TextBoxFor(m => m.BENE_NR_TELEFONE, new { @class = "form-control", autofocus = true, @id = "tel1", @readonly="readonly" })
+                                                    </div>
+                                                    <div class="col-lg-2 col-md-2 col-xs-12">
+                                                        Telefone #2
+                                                        @Html.TextBoxFor(m => m.BENE_NR_TELEFONE2, new { @class = "form-control", autofocus = true , @id = "tel2", @readonly="readonly"})
+                                                    </div>
+                                                    <div class="col-lg-2 col-md-2 col-xs-12">
+                                                        Telefone #3
+                                                        @Html.TextBoxFor(m => m.BENE_NR_TELEFONE3, new { @class = "form-control", autofocus = true, @id = "tel3", @readonly="readonly" })
+                                                    </div>
+                                                    <div class="col-lg-2 col-md-2 col-xs-12">
+                                                        Telefone #4
+                                                        @Html.TextBoxFor(m => m.BENE_NR_TELEFONE4, new { @class = "form-control", autofocus = true, @id = "tel4", @readonly="readonly"})
+                                                    </div>
+                                                </div>
+                                                <div class="form-group" style=" margin-left: -15px; margin-right: -15px;" id="PF5">
+                                                    <div class="col-lg-2 col-md-2 col-xs-12">
+                                                        Celular #1
+                                                        @Html.TextBoxFor(m => m.BENE_NR_CELULAR, new { @class = "form-control", autofocus = true, @id = "cel1", @readonly="readonly" })
+                                                    </div>
+                                                    <div class="col-lg-2 col-md-2 col-xs-12">
+                                                        Celular #2
+                                                        @Html.TextBoxFor(m => m.BENE_NR_CELULAR2, new { @class = "form-control", autofocus = true , @id = "cel2", @readonly="readonly"})
+                                                    </div>
+                                                    <div class="col-lg-2 col-md-2 col-xs-12">
+                                                        Celular #3
+                                                        @Html.TextBoxFor(m => m.BENE_NR_CELULAR3, new { @class = "form-control", autofocus = true, @id = "cel3" , @readonly="readonly"})
+                                                    </div>
+                                                    <div class="col-lg-2 col-md-2 col-xs-12">
+                                                        Celular #4
+                                                        @Html.TextBoxFor(m => m.BENE_NR_CELULAR4, new { @class = "form-control", autofocus = true, @id = "cel4", @readonly="readonly"})
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <h4 style="margin-left: 0px; color:saddlebrown; background-color: beige; font-weight:bold">Renda</h4>
+                                                <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
+                                                    <div class="col-lg-2 col-md-2 col-xs-12">
+                                                        Renda (R$)    
+                                                        @Html.TextBoxFor(m => m.BENE_VL_RENDA, new { @class = "form-control", autofocus = true, @readonly="readonly" })
+                                                    </div>
+                                                    <div class="col-lg-2 col-md-2 col-xs-12">
+                                                        Renda Estimada (R$)    
+                                                        @Html.TextBoxFor(m => m.BENE_VL_RENDA_ESTIMADA, new { @class = "form-control", autofocus = true, @readonly="readonly" })
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -261,7 +337,7 @@
                                 <div class="panel-body">
                                     <div class="ibox float-e-margins" style="border-bottom: solid; border-bottom-color: darkblue; border-bottom-width: 1px; border-left: solid; border-left-color: darkblue; border-left-width: 1px; border-right: solid; border-right-color: darkblue; border-right-width: 1px; border-top: solid; border-top-color: darkblue; border-top-width: 1px; height: 800px" >
                                         <div class="ibox-title"  style="color: black">
-                                            <h5>Anotações - Follow-Up</h5>
+                                            <h5>Anotações</h5>
                                         </div>
                                         <div class="ibox-content" style="color: black; overflow: auto">
                                             <div class="row">
@@ -309,12 +385,73 @@
                                             </div>
                                             <br />
                                             <div class="form-group">
-                                                @Html.ButtonLinkIndex(text: "Incluir Novo Comentário", action: "IncluirComentario", controller: "Beneficiario")
+                                                @Html.ButtonLinkIndex(text: "Incluir Nova Anotação", action: "IncluirComentario", controller: "Beneficiario")
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>                    
+                            </div>                   
+                        
+                            @*Contatos*@
+                            <div id="tab-8" class="tab-pane">
+                                <div class="panel-body">
+                                    <div class="row">
+                                        <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
+                                            <div class="col-lg-12 col-md-12 col-xs-12">
+                                                <h4>Contatos Telefônicos</h4>
+                                                <br />
+                                                @if (Model.CONTATO.Count > 0)
+                                                {
+                                                    <table class="table table-striped table-bordered table-hover dataTables-example">
+                                                        <thead style="background-color:lightsteelblue">
+                                                            <tr>
+                                                                <th>Data</th>
+                                                                <th>Qualificação</th>
+                                                                <th>Quem Desligou</th>
+                                                                <th>Agente</th>
+                                                                <th>Telefone</th>
+                                                                <th>Protocolo</th>
+                                                                <th class="td-one-action">Ações</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            @foreach (var cond in (Model.CONTATO))
+                                                            {
+                                                                <tr>
+                                                                    <td>@cond.CONT_DT_CONTATO.Value.ToShortDateString()</td>
+                                                                    <td>@cond.QUALIFICACAO.QUAL_NM_NOME</td>
+                                                                    <td>@cond.QUEM_DESLIGOU.QUDE_NM_NOME</td>
+                                                                    <td>@cond.CONT_NM_AGENTE</td>
+                                                                    <td>@cond.CONT_NR_TELEFONE</td>
+                                                                    <td>@cond.CONT_NR_PROTOCOLO</td>
+                                                                    <td class="td-one-action">
+                                                                        @Html.TableLinkDetails(cond.CONT_CD_ID, "VerContato", "fa-edit", "Consultar")
+                                                                    </td>
+                                                                </tr>
+                                                            }
+                                                        </tbody>
+                                                    </table>
+                                                }
+                                                else
+                                                {
+                                                    <div class="row">
+                                                        <div class="col-lg-4 col-md-4 col-xs-2">
+
+                                                        </div>
+                                                        <div style="border: 5px solid #F6A54A; padding: 10px; border-radius: 8px 8px; " class="col-lg-4 col-md-4 col-xs-8">
+                                                            <h2 style="font-weight: bold">Nenhum contato registrado nesse beneficiário</h2>
+                                                        </div>
+                                                        <div class="col-lg-4 col-md-4 col-xs-2">
+
+                                                        </div>
+                                                    </div>
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        
                         </div>
                     </div>
                 </div>
@@ -326,18 +463,93 @@
 @section Styles {
     <link href="~/Content/themes/base/jquery-ui.min.css" rel="stylesheet" />
     <link href="~/Content/themes/base/all.css" rel="stylesheet" />
+    <link href="~/Content/jquery.datetimepicker.css" rel="stylesheet" />
     @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
     @Styles.Render("~/plugins/jasnyBootstrapStyles")
     @Styles.Render("~/plugins/toastrStyles")
 }
 @section Scripts {
+    <script src="~/Scripts/jquery.datetimepicker.full.min.js"></script>
+    <script type="text/javascript" src="~/Scripts/moment.min.js"></script>
+    <script type="text/javascript" src="~/Scripts/bootstrap.min.js"></script>
+    <script type="text/javascript" src="~/Scripts/jquery.datetimepicker"></script>
+
     @Scripts.Render("~/plugins/toastr")
+    <script src="~/Scripts/jquery-ui-1.12.1.min.js"></script>
     @Scripts.Render("~/plugins/dataTables")
     @Scripts.Render("~/bundles/inputmask")
     @Scripts.Render("~/plugins/jasnyBootstrap")
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.maskedinput/1.4.1/jquery.maskedinput.js"></script>
     <script src="~/Scripts/uploadAnexo.js"></script>
 
+    <script type="text/javascript">
+        $(function () {
+            $("#cpf").mask("999.999.999-99");
+            $("#cnpj").mask("99.999.999/9999-99");
+            $("#cep").mask("99999-999");
+            $('#tel').mask('(99)9999-9999');
+            $('#dn').mask('99/99/9999');
+            $('#cel').mask('(99)99999-9999');
+            $('#tel2').mask('(99)9999-9999');
+            $('#tel3').mask('(99)9999-9999');
+            $('#tel4').mask('(99)9999-9999');
+            $('#cel2').mask('(99)99999-9999');
+            $('#cel3').mask('(99)99999-9999');
+            $('#cel4').mask('(99)99999-9999');
+        });
+    </script>
+
+    <script>
+        $(function () {
+            limpaModal();
+        });
+
+        function limpaModal() {
+            $('#btnModal').remove();
+            $('#modalTitle').remove();
+        }
+        function ShowModalExcluirEndereco(url) {
+            $('#modal').find('.modal-footer').prepend('<a id="btnModal" alt="Desativar" class="btn btn-primary" href="' + url + '" target="_self" title="Desativar">Confirmar</a>');
+            $('#modal').find('.modal-body').html('Confirma exclusão de Endereço?');
+            $('#modal').find('.modal-header').prepend('<h5 id="modalTitle" class="modal-title">Confimar Exclusão</h5>');
+            $('#modal').modal('show');
+        }
+
+        function ShowModalReativarEndereco(url) {
+            $('#modal').find('.modal-footer').prepend('<a id="btnModal" alt="Reativar" class="btn btn-primary" href="' + url + '" target="_self" title="Reativar">Confirmar</a>');
+            $('#modal').find('.modal-body').html('Confirma reativação de Endereço?');
+            $('#modal').find('.modal-header').prepend('<h5 id="modalTitle" class="modal-title">Confimar Reativação</h5>');
+            $('#modal').modal('show');
+        }
+
+        function ShowModalExcluirEMail(url) {
+            $('#modal').find('.modal-footer').prepend('<a id="btnModal" alt="Desativar" class="btn btn-primary" href="' + url + '" target="_self" title="Desativar">Confirmar</a>');
+            $('#modal').find('.modal-body').html('Confirma exclusão de E-Mail?');
+            $('#modal').find('.modal-header').prepend('<h5 id="modalTitle" class="modal-title">Confimar Exclusão</h5>');
+            $('#modal').modal('show');
+        }
+
+        function ShowModalReativarEMail(url) {
+            $('#modal').find('.modal-footer').prepend('<a id="btnModal" alt="Reativar" class="btn btn-primary" href="' + url + '" target="_self" title="Reativar">Confirmar</a>');
+            $('#modal').find('.modal-body').html('Confirma reativação de E-Mail?');
+            $('#modal').find('.modal-header').prepend('<h5 id="modalTitle" class="modal-title">Confimar Reativação</h5>');
+            $('#modal').modal('show');
+        }
+
+                function ShowModalExcluirTelefone(url) {
+            $('#modal').find('.modal-footer').prepend('<a id="btnModal" alt="Desativar" class="btn btn-primary" href="' + url + '" target="_self" title="Desativar">Confirmar</a>');
+            $('#modal').find('.modal-body').html('Confirma exclusão de Telefone?');
+            $('#modal').find('.modal-header').prepend('<h5 id="modalTitle" class="modal-title">Confimar Exclusão</h5>');
+            $('#modal').modal('show');
+        }
+
+        function ShowModalReativarTelefone(url) {
+            $('#modal').find('.modal-footer').prepend('<a id="btnModal" alt="Reativar" class="btn btn-primary" href="' + url + '" target="_self" title="Reativar">Confirmar</a>');
+            $('#modal').find('.modal-body').html('Confirma reativação de Telefone?');
+            $('#modal').find('.modal-header').prepend('<h5 id="modalTitle" class="modal-title">Confimar Reativação</h5>');
+            $('#modal').modal('show');
+        }
+    </script>
     <script type="text/javascript">
         $(document).ready(function () {
 
@@ -474,13 +686,22 @@
         function ValidaDiv(valPessoa) {
             if (valPessoa == '2') {
                 $("#PF").hide();
+                $("#PF1").hide();
                 $("#PJ").show();
+                $("#PJ1").show();
+                $("#PJ2").show();
             } else if (valPessoa == '1') { //Se o tempo for mé igual a 2 mostra a divCpf
                 $("#PJ").hide();
+                $("#PJ1").hide();
+                $("#PJ2").hide();
                 $("#PF").show();
+                $("#PF1").show();
             } else { //Se não for 1, 2 ou 4 esconde as duas
                 $("#PJ").hide();
+                $("#PJ1").hide();
+                $("#PJ2").hide();
                 $("#PF").hide();
+                $("#PF1").hide();
             }
         }
 

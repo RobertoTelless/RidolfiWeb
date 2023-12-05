@@ -711,6 +711,7 @@
         <AssociationConnector Association="RidolfiDB_WebModel.FK_VENDA_MENSAL_COMISSAO_VENDA_MENSAL" ManuallyRouted="false" />
         <AssociationConnector Association="RidolfiDB_WebModel.FK_VENDA_MENSAL_PARTES_VENDA_MENSAL" ManuallyRouted="false" />
         <AssociationConnector Association="RidolfiDB_WebModel.FK_VIDEO_COMENTARIO_VIDEO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_BENEFICIARIO_UF" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

@@ -50,7 +50,7 @@
                                                 <br />
                                                 @Html.ButtonActionSubmit(text: "Confirma Edição da Configuração", htmlAttributes: new { id = "basictoast" })
                                                 @Html.ButtonLinkIndex(text: "Voltar", action: "VoltarDash", controller: "Configuracao")
-                                                @Html.ButtonLinkIndex(text: "Criptografar Chaves", action: "CriptoChave", controller: "Configuracao", buttonClass: "warning")
+                                                @*@Html.ButtonLinkIndex(text: "Criptografar Chaves", action: "CriptoChave", controller: "Configuracao", buttonClass: "warning")*@
                                             </div>
                                             <div class="row">
                                                 <div class="form-group">
@@ -117,24 +117,14 @@
                                                 <div class="form-group">
                                                     <h4 style="margin-left: 15px; color:saddlebrown; font-weight:bold">Cadastros</h4>
                                                     <div class="col-lg-3 col-md-3 col-xs-12">
+                                                        Permite CNPJ Duplicado*
+                                                        @Html.DropDownListFor(m => m.CONF_IN_CNPJ_DUPLICADO, (SelectList)ViewBag.CNPJ, "Selecionar", new { @class = "form-control", autofocus = true })
+                                                        @Html.ValidationMessageFor(m => m.CONF_IN_CNPJ_DUPLICADO, "", new { @style = "color:red" })
+                                                    </div>
+                                                    <div class="col-lg-3 col-md-3 col-xs-12">
                                                         Usa Logotipo da Empresa*
                                                         @Html.DropDownListFor(m => m.CONF_IN_LOGO_EMPRESA, (SelectList)ViewBag.Logotipo, "Selecionar", new { @class = "form-control", autofocus = true })
                                                         @Html.ValidationMessageFor(m => m.CONF_IN_LOGO_EMPRESA, "", new { @style = "color:red" })
-                                                    </div>
-                                                    <div class="col-lg-3 col-md-3 col-xs-12">
-                                                        Clientes - Limite no Grid*
-                                                        @Html.TextBoxFor(m => m.CONF_NR_GRID_CLIENTE, new { @class = "form-control", autofocus = true })
-                                                        @Html.ValidationMessageFor(m => m.CONF_NR_GRID_CLIENTE, "", new { @style = "color:red" })
-                                                    </div>
-                                                    <div class="col-lg-3 col-md-3 col-xs-12">
-                                                        Mensagens - Limite no Grid*
-                                                        @Html.TextBoxFor(m => m.CONF_NR_GRID_MENSAGEM, new { @class = "form-control", autofocus = true })
-                                                        @Html.ValidationMessageFor(m => m.CONF_NR_GRID_MENSAGEM, "", new { @style = "color:red" })
-                                                    </div>
-                                                    <div class="col-lg-3 col-md-3 col-xs-12">
-                                                        Audio Telefone - Ponto de Coleta
-                                                        @Html.TextBoxFor(m => m.CONF_NM_LOCAL_AUDIO, new { @class = "form-control", autofocus = true })
-                                                        @Html.ValidationMessageFor(m => m.CONF_NM_LOCAL_AUDIO, "", new { @style = "color:red" })
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
@@ -176,7 +166,7 @@
                                                         @Html.CheckBoxFor(m => m.NotifAcaoGer, new { @class = "checkbox i-checks", autofocus = true})
                                                     </div>                                                
                                                     <div class="col-lg-2 col-md-2 col-xs-12">
-                                                        Vendedor
+                                                        Usuário Sr.
                                                         <br />
                                                         @Html.CheckBoxFor(m => m.NotifAcaoVen, new { @class = "checkbox i-checks", autofocus = true})
                                                     </div>                                                

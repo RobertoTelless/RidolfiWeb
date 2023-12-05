@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-    <title>Ridolfi Web</title>
+    <title>CRMSys</title>
 
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700' rel='stylesheet' type='text/css'>
     <!-- Add local styles, mostly for plugins css file -->
@@ -27,25 +27,13 @@
     <script src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.10.15/js/dataTables.bootstrap4.min.js "></script>
     <script src="https://kit.fontawesome.com/d16e0d1211.js" crossorigin="anonymous"></script>
-    <script src="~/scripts/tinymce/tinymce.min.js"></script>  
 
-    <script type="text/javascript">  
-        // Initialize your tinyMCE Editor with your preferred options  
-        tinymce.init({
-          selector: 'textarea#basic-example',
-          height: 500,
-          plugins: [
-            'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
-            'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
-            'insertdatetime', 'media', 'table', 'help', 'wordcount'
-          ],
-          toolbar: 'undo redo | blocks | ' +
-          'bold italic backcolor | alignleft aligncenter ' +
-          'alignright alignjustify | bullist numlist outdent indent | ' +
-          'removeformat | help',
-          content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:16px }'
-        });    
-    </script>  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.maskedinput/1.4.1/jquery.maskedinput.js "></script>
+    <script src="~/Scripts/moment.min.js"></script>
+
+    <link href="~/Content/themes/base/jquery-ui.min.css" rel="stylesheet" />
+    <link href="~/Content/themes/base/all.css" rel="stylesheet" />
+    <link href="~/Content/jquery.datetimepicker.css" rel="stylesheet" />
 
     <!-- Primary Inspinia style -->
     @Styles.Render("~/Content/css")
@@ -92,13 +80,53 @@
     @Scripts.Render("~/plugins/slimScroll")
     @Scripts.Render("~/bundles/inspinia")
     @Scripts.Render("~/bundles/js")
- 
+
+    @Scripts.Render("~/plugins/dataTables")
+    @Scripts.Render("~/bundles/inputmask")
+    @Scripts.Render("~/plugins/jasnyBootstrap")
+    @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
+    @Styles.Render("~/plugins/jasnyBootstrapStyles")
+    @Styles.Render("~/Content/fullcalendar.min.css")
+
+    @Styles.Render("~/plugins/sweetAlertStyles")
+    @Styles.Render("~/Content/loadingDots.css")
 
     <!--NOTIFICACAO & CHARACTER COUNT-->
     @Scripts.Render("~/Scripts/characterCount.js")
-    @*@Scripts.Render("~/Scripts/notifier.js")
-        @Scripts.Render("~/Scripts/notificationHandler.js")*@
+    @Scripts.Render("~/Scripts/notifier.js")
+    @Scripts.Render("~/Scripts/notificationHandler.js")
     @Scripts.Render("~/Scripts/ImagemModal.js")
+    @Scripts.Render("~/Scripts/ScriptsBase.js")
+    @Scripts.Render("~/Scripts/datetime-moment.js")
+    @Scripts.Render("~/Scripts/jquery-ui-1.12.1.min.js")
+
+    @Scripts.Render("~/plugins/videoResponsible")
+    @Scripts.Render("~/plugins/gridFormat")
+
+    @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
+    @Styles.Render("~/plugins/touchSpinStyles")
+    @Styles.Render("~/plugins/toastrStyles")
+    @Scripts.Render("~/plugins/toastr")
+    @Scripts.Render("~/plugins/sparkline")
+    @Scripts.Render("~/plugins/switchery")
+    @Scripts.Render("~/plugins/touchSpin")
+    @Scripts.Render("~/plugins/iCheck")
+
+    @Scripts.Render("~/Scripts/jquery.datetimepicker.full.min.js")
+    @Scripts.Render("~/Scripts/moment.min.js")
+    @Scripts.Render("~/Scripts/bootstrap.min.js")
+    @Scripts.Render("~/Scripts/jquery.datetimepicker")
+
+    @Scripts.Render("~/Scripts/jquery-ui-1.12.1.min.js")
+    @Scripts.Render("~/Scripts/jquery.datetimepicker")
+    @Scripts.Render("~/Scripts/jquery.datetimepicker")
+    @Scripts.Render("~/Scripts/jquery.datetimepicker")
+
+    <script src="~/Scripts/uploadAnexo.js"></script>
+    @Scripts.Render("~/Scripts/plugins/fullcalendar/moment.min.js")
+    @Scripts.Render("~/Scripts/plugins/fullcalendar/fullcalendar.min.js")
+    @Scripts.Render("~/plugins/chartjs")
+
 
     <!-- Skin config script - only for demo purpose-->
     @Scripts.Render("~/bundles/skinConfig")
@@ -106,4 +134,17 @@
     <!-- Handler for local scripts -->
     @RenderSection("scripts", required: false)
 
-</html>
+    <!--Start of Tawk.to Script-->
+    @*<script type="text/javascript">*@
+        //var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+        //(function(){
+        //var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+        //s1.async=true;
+        //s1.src='https://embed.tawk.to/620408acb9e4e21181be4a8d/1frfs3ojj';
+        //s1.charset='UTF-8';
+        //s1.setAttribute('crossorigin','*');
+        //s0.parentNode.insertBefore(s1,s0);
+        //})();
+    @*</script>*@
+</body>
+<!--End of Tawk.to Script--></html>

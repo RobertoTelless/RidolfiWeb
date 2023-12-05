@@ -3,6 +3,7 @@
 @{
     Layout = "~/Views/Shared/_Layout_Admin.cshtml";
 }
+
 <div class="wrapper wrapper-content animated fadeInRight">
     <div class="page-title">
         <h3 class="title">Funis de Processos</h3>
@@ -23,7 +24,6 @@
         </ol>
         <br />
     </div>
-
     <div class="row">
         <div class="col-lg-12 col-md-12 col-xs-12">
             <div class="col-lg-12 col-md-12 col-xs-12 ibox float-e-margins">
@@ -44,160 +44,316 @@
                     </div>
                     <div class="tabs-container">
                         <ul class="nav nav-tabs">
-                            <li class="active"><a data-toggle="tab" href="#tab-1">Dados Gerais</a></li>
-                            <li class=""><a data-toggle="tab" href="#tab-4">Etapas</a></li>
+                            @if ((Int32)Session["TabFunil"] == 1)
+                            {
+                                <li class="active"><a data-toggle="tab" href="#tab-1">Dados Gerais</a></li>
+                                <li class=""><a data-toggle="tab" href="#tab-4">Etapas</a></li>
+                            }
+                            @if ((Int32)Session["TabFunil"] == 2)
+                            {
+                                <li class=""><a data-toggle="tab" href="#tab-1">Dados Gerais</a></li>
+                                <li class="active"><a data-toggle="tab" href="#tab-4">Etapas</a></li>
+                            }
                         </ul>
                         <div class="tab-content">
                             @*Dados Gerais*@
-                            <div id="tab-1" class="tab-pane active">
-                                <div class="panel-body">
-                                    @using (Html.BeginForm("EditarFunil", "Funil", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", @id = "pwd-container1" }))
-                                    {
-                                        <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
-                                            <div class="col-lg-3 col-md-3 col-xs-12">
-                                                @Html.HiddenFor(m => m.ASSI_CD_ID)
-                                                @Html.HiddenFor(m => m.FUNI_DT_CADASTRO)
-                                                @Html.HiddenFor(m => m.FUNI_IN_ATIVO)
-                                                @Html.HiddenFor(m => m.FUNI_CD_ID)
-                                                @Html.HiddenFor(m => m.FUNI_IN_FIXO)
-                                                @Html.HiddenFor(m => m.FUNI_IN_TIPO)
-                                                Nome*
-                                                @Html.TextBoxFor(m => m.FUNI_NM_NOME, new { @class = "form-control", autofocus = true })
-                                                @Html.ValidationMessageFor(m => m.FUNI_NM_NOME, "", new { @style = "color:red" })
-                                            </div>
-                                            <div class="col-lg-2 col-md-2 col-xs-12">
-                                                Sigla*
-                                                @Html.TextBoxFor(m => m.FUNI_SG_SIGLA, new { @class = "form-control", autofocus = true })
-                                                @Html.ValidationMessageFor(m => m.FUNI_SG_SIGLA, "", new { @style = "color:red" })
-                                            </div>
-                                            <div class="col-lg-3 col-md-3 col-xs-12">
-                                                Processo com geração de proposta?
-                                                <br />
-                                                @Html.CheckBoxFor(m => m.Proposta, new { @class = "checkbox i-checks", autofocus = true })
-                                            </div>                                                
-                                                <div class="col-lg-2 col-md-2 col-xs-12">
-                                                Mensagem para Cliente?
-                                                <br />
-                                                @Html.CheckBoxFor(m => m.Cliente, new { @class = "checkbox i-checks", autofocus = true })
-                                            </div>                                                
-                                            <div class="col-lg-2 col-md-2 col-xs-12">
-                                                Mensagem para Responsável?
-                                                <br />
-                                                @Html.CheckBoxFor(m => m.Responsavel, new { @class = "checkbox i-checks", autofocus = true })
-                                            </div>                                                
-                                        </div>
-                                        <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
-                                            <div class="col-lg-12 col-md-12 col-xs-12">
-                                                Descrição
-                                                @Html.TextAreaFor(m => m.FUNI_DS_DESCRICAO, new { @class = "form-control", style = "width: 100%; height: 100px;", autofocus = true })
-                                                @Html.ValidationMessageFor(m => m.FUNI_DS_DESCRICAO, "", new { @style = "color:red" })
-                                            </div>
-                                        </div>
-                                        if (Model.FUNI_IN_FIXO == 0)
+                            @if ((Int32)Session["TabFunil"] == 1)
+                            {
+                                <div id="tab-1" class="tab-pane active">
+                                    <div class="panel-body">
+                                        @using (Html.BeginForm("EditarFunil", "Funil", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", @id = "pwd-container1" }))
                                         {
-                                            <div class="form-group">
-                                                @Html.ButtonActionSubmit(text: "Confirma edição de Funil de Processo", htmlAttributes: new { id = "basictoast" })
+                                            <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
+                                                <div class="col-lg-3 col-md-3 col-xs-12">
+                                                    @Html.HiddenFor(m => m.ASSI_CD_ID)
+                                                    @Html.HiddenFor(m => m.FUNI_DT_CADASTRO)
+                                                    @Html.HiddenFor(m => m.FUNI_IN_ATIVO)
+                                                    @Html.HiddenFor(m => m.FUNI_CD_ID)
+                                                    @Html.HiddenFor(m => m.FUNI_IN_FIXO)
+                                                    @Html.HiddenFor(m => m.FUNI_IN_TIPO)
+                                                    @Html.HiddenFor(m => m.FUNI_IN_CLIENTE)
+                                                    Nome*
+                                                    @Html.TextBoxFor(m => m.FUNI_NM_NOME, new { @class = "form-control", autofocus = true })
+                                                    @Html.ValidationMessageFor(m => m.FUNI_NM_NOME, "", new { @style = "color:red" })
+                                                </div>
+                                                <div class="col-lg-2 col-md-2 col-xs-12">
+                                                    Sigla*
+                                                    @Html.TextBoxFor(m => m.FUNI_SG_SIGLA, new { @class = "form-control", autofocus = true })
+                                                    @Html.ValidationMessageFor(m => m.FUNI_SG_SIGLA, "", new { @style = "color:red" })
+                                                </div>
+                                                <div class="col-lg-3 col-md-3 col-xs-12">
+                                                    Processo com geração de proposta?
+                                                    <br />
+                                                    @Html.CheckBoxFor(m => m.Proposta, new { @class = "checkbox i-checks", autofocus = true })
+                                                </div>                                                
+                                                <div class="col-lg-2 col-md-2 col-xs-12">
+                                                    Notificação para Responsável?
+                                                    <br />
+                                                    @Html.CheckBoxFor(m => m.Responsavel, new { @class = "checkbox i-checks", autofocus = true })
+                                                </div>                                                
                                             </div>
+                                            <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
+                                                <div class="col-lg-12 col-md-12 col-xs-12">
+                                                    Descrição
+                                                    @Html.TextAreaFor(m => m.FUNI_DS_DESCRICAO, new { @class = "form-control", style = "width: 100%; height: 100px;", autofocus = true })
+                                                    @Html.ValidationMessageFor(m => m.FUNI_DS_DESCRICAO, "", new { @style = "color:red" })
+                                                </div>
+                                            </div>
+                                            if (Model.FUNI_IN_FIXO == 0)
+                                            {
+                                                <div class="form-group">
+                                                    @Html.ButtonActionSubmit(text: "Confirma edição de Funil de Processo", htmlAttributes: new { id = "basictoast" })
+                                                </div>
+                                            }
                                         }
-                                    }
+                                    </div>
                                 </div>
-                            </div>
+                            }
+                            else
+                            {
+                                <div id="tab-1" class="tab-pane">
+                                    <div class="panel-body">
+                                        @using (Html.BeginForm("EditarFunil", "Funil", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", @id = "pwd-container1" }))
+                                        {
+                                            <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
+                                                <div class="col-lg-3 col-md-3 col-xs-12">
+                                                    @Html.HiddenFor(m => m.ASSI_CD_ID)
+                                                    @Html.HiddenFor(m => m.FUNI_DT_CADASTRO)
+                                                    @Html.HiddenFor(m => m.FUNI_IN_ATIVO)
+                                                    @Html.HiddenFor(m => m.FUNI_CD_ID)
+                                                    @Html.HiddenFor(m => m.FUNI_IN_FIXO)
+                                                    @Html.HiddenFor(m => m.FUNI_IN_TIPO)
+                                                    Nome*
+                                                    @Html.TextBoxFor(m => m.FUNI_NM_NOME, new { @class = "form-control", autofocus = true })
+                                                    @Html.ValidationMessageFor(m => m.FUNI_NM_NOME, "", new { @style = "color:red" })
+                                                </div>
+                                                <div class="col-lg-2 col-md-2 col-xs-12">
+                                                    Sigla*
+                                                    @Html.TextBoxFor(m => m.FUNI_SG_SIGLA, new { @class = "form-control", autofocus = true })
+                                                    @Html.ValidationMessageFor(m => m.FUNI_SG_SIGLA, "", new { @style = "color:red" })
+                                                </div>
+                                                <div class="col-lg-3 col-md-3 col-xs-12">
+                                                    Processo com geração de proposta?
+                                                    <br />
+                                                    @Html.CheckBoxFor(m => m.Proposta, new { @class = "checkbox i-checks", autofocus = true })
+                                                </div>                                                
+                                                <div class="col-lg-2 col-md-2 col-xs-12">
+                                                    Mensagem para Responsável?
+                                                    <br />
+                                                    @Html.CheckBoxFor(m => m.Responsavel, new { @class = "checkbox i-checks", autofocus = true })
+                                                </div>                                                
+                                            </div>
+                                            <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
+                                                <div class="col-lg-12 col-md-12 col-xs-12">
+                                                    Descrição
+                                                    @Html.TextAreaFor(m => m.FUNI_DS_DESCRICAO, new { @class = "form-control", style = "width: 100%; height: 100px;", autofocus = true })
+                                                    @Html.ValidationMessageFor(m => m.FUNI_DS_DESCRICAO, "", new { @style = "color:red" })
+                                                </div>
+                                            </div>
+                                            if (Model.FUNI_IN_FIXO == 0)
+                                            {
+                                                <div class="form-group">
+                                                    @Html.ButtonActionSubmit(text: "Confirma edição de Funil de Processo", htmlAttributes: new { id = "basictoast" })
+                                                </div>
+                                            }
+                                        }
+                                    </div>
+                                </div>
+                            }
                                 
                             @*Etapas*@
-                            <div id="tab-4" class="tab-pane">
-                                <div class="panel-body">
-                                    <div class="row">
-                                        <hr />
-                                        <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
-                                            <div class="col-lg-12 col-md-12 col-xs-12">
-                                                <h4>Etapas do Funil</h4>
-                                                <br />
-                                                @if (Model.FUNIL_ETAPA.Count > 0)
-                                                {
-                                                    <table class="table table-striped table-bordered table-hover dataTables-example">
-                                                        <thead style="background-color:lightsteelblue">
-                                                            <tr>
-                                                                <th style="width: auto">Ordem</th>
-                                                                <th style="width: auto">Nome</th>
-                                                                <th style="width: auto">Sigla</th>
-                                                                <th style="width: auto">Descrição</th>
-                                                                <th style="width: auto">Permite Encerramento?</th>
-                                                                <th style="width: auto">Etapa após envio de Proposta?</th>
-                                                                <th style="width: auto">Envia E-Mail?</th>
-                                                                <th style="width: auto">Envia SMS?</th>
-                                                                <th class="td-one-action">Ações</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            @foreach (var cond in (Model.FUNIL_ETAPA).OrderBy(p => p.FUET_IN_ORDEM))
-                                                            {
+                            @if ((Int32)Session["TabFunil"] == 2)
+                            {
+                                <div id="tab-4" class="tab-pane active">
+                                    <div class="panel-body">
+                                        <div class="row">
+                                            <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
+                                                <div class="col-lg-12 col-md-12 col-xs-12">
+                                                    <h4>Etapas do Funil</h4>
+                                                    <br />
+                                                    @if (Model.FUNIL_ETAPA.Where(p => p.FUET_IN_ATIVO == 1).ToList().Count > 0)
+                                                    {
+                                                        <table class="table table-striped table-bordered table-hover dataTables-example">
+                                                            <thead style="background-color:lightsteelblue">
                                                                 <tr>
-                                                                    <td style="width: auto; color: green; font-weight: bold">@cond.FUET_IN_ORDEM</td>
-                                                                    <td style="width: auto"><a href="@Url.Action("EditarEtapa", "Funil", new { id = cond.FUET_CD_ID })" />@cond.FUET_NM_NOME</td>
-                                                                    <td style="width: auto">@cond.FUET_SG_SIGLA</td>
-                                                                    <td style="width: auto">@cond.FUET_DS_DESCRICAO</td>
-                                                                    @if (cond.FUET_IN_ENCERRA ==  1)
-                                                                    {
-                                                                        <td style="width: auto"><span class="badge badge-success">Sim</span></td>
-                                                                    }
-                                                                    else
-                                                                    {
-                                                                        <td style="width: auto"><span class="badge badge-warning">Não</span></td>
-                                                                    }
-                                                                    @if (cond.FUET_IN_PROPOSTA ==  1)
-                                                                    {
-                                                                        <td style="width: auto"><span class="badge badge-success">Sim</span></td>
-                                                                    }
-                                                                    else
-                                                                    {
-                                                                        <td style="width: auto"><span class="badge badge-warning">Não</span></td>
-                                                                    }
-                                                                    @if (cond.FUET_IN_EMAIL ==  1)
-                                                                    {
-                                                                        <td style="width: auto"><span class="badge badge-success">Sim</span></td>
-                                                                    }
-                                                                    else
-                                                                    {
-                                                                        <td style="width: auto"><span class="badge badge-warning">Não</span></td>
-                                                                    }
-                                                                    @if (cond.FUET_IN_SMS ==  1)
-                                                                    {
-                                                                        <td style="width: auto"><span class="badge badge-success">Sim</span></td>
-                                                                    }
-                                                                    else
-                                                                    {
-                                                                        <td style="width: auto"><span class="badge badge-warning">Não</span></td>
-                                                                    }
-                                                                    <td class="td-one-action">
-                                                                        @if (Model.FUNI_IN_FIXO == 0)
-                                                                        {
-                                                                            @Html.TableLinkDetails(cond.FUET_CD_ID, "EditarEtapa", "fa-edit", "Editar")
-                                                                            if (cond.FUET_IN_ATIVO == 1)
-                                                                            {
-                                                                                @Html.TableLinkDetails(cond.FUET_CD_ID, "ExcluirEtapa", "fa-trash-o", "Desativar")
-                                                                            }
-                                                                            else
-                                                                            {
-                                                                                @Html.TableLinkDetails(cond.FUET_CD_ID, "ReativarEtapa", "fa-refresh", "Reativar")
-                                                                            }
-                                                                        }
-                                                                    </td>
+                                                                    <th style="width: auto">Ordem</th>
+                                                                    <th style="width: auto">Nome</th>
+                                                                    <th style="width: auto">Sigla</th>
+                                                                    <th style="width: auto">Descrição</th>
+                                                                    <th style="width: auto">Permite Encerramento?</th>
+                                                                    <th style="width: auto">Etapa após envio de Proposta?</th>
+                                                                    <th style="width: auto">Envia E-Mail?</th>
+                                                                    <th style="width: auto">Envia SMS?</th>
+                                                                    <th class="td-one-action">Ações</th>
                                                                 </tr>
-                                                            }
-                                                        </tbody>
-                                                    </table>
-                                                }
+                                                            </thead>
+                                                            <tbody>
+                                                                @foreach (var cond in (Model.FUNIL_ETAPA.Where(p => p.FUET_IN_ATIVO == 1).ToList()).OrderBy(p => p.FUET_IN_ORDEM))
+                                                                {
+                                                                    <tr>
+                                                                        <td style="width: auto; color: green; font-weight: bold">@cond.FUET_IN_ORDEM</td>
+                                                                        <td style="width: auto"><a href="@Url.Action("EditarEtapa", "Funil", new { id = cond.FUET_CD_ID })" />@cond.FUET_NM_NOME</td>
+                                                                        <td style="width: auto">@cond.FUET_SG_SIGLA</td>
+                                                                        <td style="width: auto">@cond.FUET_DS_DESCRICAO</td>
+                                                                        @if (cond.FUET_IN_ENCERRA ==  1)
+                                                                        {
+                                                                            <td style="width: auto"><span class="badge badge-success">Sim</span></td>
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            <td style="width: auto"><span class="badge badge-warning">Não</span></td>
+                                                                        }
+                                                                        @if (cond.FUET_IN_PROPOSTA ==  1)
+                                                                        {
+                                                                            <td style="width: auto"><span class="badge badge-success">Sim</span></td>
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            <td style="width: auto"><span class="badge badge-warning">Não</span></td>
+                                                                        }
+                                                                        @if (cond.FUET_IN_EMAIL ==  1)
+                                                                        {
+                                                                            <td style="width: auto"><span class="badge badge-success">Sim</span></td>
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            <td style="width: auto"><span class="badge badge-warning">Não</span></td>
+                                                                        }
+                                                                        @if (cond.FUET_IN_SMS ==  1)
+                                                                        {
+                                                                            <td style="width: auto"><span class="badge badge-success">Sim</span></td>
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            <td style="width: auto"><span class="badge badge-warning">Não</span></td>
+                                                                        }
+                                                                        <td class="td-one-action">
+                                                                            @if (Model.FUNI_IN_FIXO == 0)
+                                                                            {
+                                                                                @Html.TableLinkDetails(cond.FUET_CD_ID, "EditarEtapa", "fa-edit", "Editar")
+                                                                                if (cond.FUET_IN_ATIVO == 1)
+                                                                                {
+                                                                                    @Html.TableLinkDetails(cond.FUET_CD_ID, "ExcluirEtapa", "fa-trash-o", "Desativar")
+                                                                                }
+                                                                                else
+                                                                                {
+                                                                                    @Html.TableLinkDetails(cond.FUET_CD_ID, "ReativarEtapa", "fa-refresh", "Reativar")
+                                                                                }
+                                                                            }
+                                                                        </td>
+                                                                    </tr>
+                                                                }
+                                                            </tbody>
+                                                        </table>
+                                                    }
+                                                </div>
                                             </div>
                                         </div>
+                                        @if (ViewBag.Etapa == 1 & Model.FUNI_IN_FIXO == 0)
+                                        {
+                                            <div class="form-group">
+                                                @Html.ButtonLinkIndex(text: "Incluir Nova Etapa do Funil", action: "IncluirEtapa", controller: "Funil")
+                                            </div>
+                                        }
                                     </div>
-                                    @if (ViewBag.Etapa == 1 & Model.FUNI_IN_FIXO == 0)
-                                    {
-                                        <div class="form-group">
-                                            @Html.ButtonLinkIndex(text: "Incluir Nova Etapa do Funil", action: "IncluirEtapa", controller: "Funil")
-                                        </div>
-                                    }
                                 </div>
-                            </div>
+                            }
+                            else
+                            {
+                                <div id="tab-4" class="tab-pane">
+                                    <div class="panel-body">
+                                        <div class="row">
+                                            <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
+                                                <div class="col-lg-12 col-md-12 col-xs-12">
+                                                    <h4>Etapas do Funil</h4>
+                                                    <br />
+                                                    @if (Model.FUNIL_ETAPA.Where(p => p.FUET_IN_ATIVO == 1).ToList().Count > 0)
+                                                    {
+                                                        <table class="table table-striped table-bordered table-hover dataTables-example">
+                                                            <thead style="background-color:lightsteelblue">
+                                                                <tr>
+                                                                    <th style="width: auto">Ordem</th>
+                                                                    <th style="width: auto">Nome</th>
+                                                                    <th style="width: auto">Sigla</th>
+                                                                    <th style="width: auto">Descrição</th>
+                                                                    <th style="width: auto">Permite Encerramento?</th>
+                                                                    <th style="width: auto">Etapa após envio de Proposta?</th>
+                                                                    <th style="width: auto">Envia E-Mail?</th>
+                                                                    <th style="width: auto">Envia SMS?</th>
+                                                                    <th class="td-one-action">Ações</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                @foreach (var cond in (Model.FUNIL_ETAPA.Where(p => p.FUET_IN_ATIVO == 1).ToList()).OrderBy(p => p.FUET_IN_ORDEM))
+                                                                {
+                                                                    <tr>
+                                                                        <td style="width: auto; color: green; font-weight: bold">@cond.FUET_IN_ORDEM</td>
+                                                                        <td style="width: auto"><a href="@Url.Action("EditarEtapa", "Funil", new { id = cond.FUET_CD_ID })" />@cond.FUET_NM_NOME</td>
+                                                                        <td style="width: auto">@cond.FUET_SG_SIGLA</td>
+                                                                        <td style="width: auto">@cond.FUET_DS_DESCRICAO</td>
+                                                                        @if (cond.FUET_IN_ENCERRA ==  1)
+                                                                        {
+                                                                            <td style="width: auto"><span class="badge badge-success">Sim</span></td>
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            <td style="width: auto"><span class="badge badge-warning">Não</span></td>
+                                                                        }
+                                                                        @if (cond.FUET_IN_PROPOSTA ==  1)
+                                                                        {
+                                                                            <td style="width: auto"><span class="badge badge-success">Sim</span></td>
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            <td style="width: auto"><span class="badge badge-warning">Não</span></td>
+                                                                        }
+                                                                        @if (cond.FUET_IN_EMAIL ==  1)
+                                                                        {
+                                                                            <td style="width: auto"><span class="badge badge-success">Sim</span></td>
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            <td style="width: auto"><span class="badge badge-warning">Não</span></td>
+                                                                        }
+                                                                        @if (cond.FUET_IN_SMS ==  1)
+                                                                        {
+                                                                            <td style="width: auto"><span class="badge badge-success">Sim</span></td>
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            <td style="width: auto"><span class="badge badge-warning">Não</span></td>
+                                                                        }
+                                                                        <td class="td-one-action">
+                                                                            @if (Model.FUNI_IN_FIXO == 0)
+                                                                            {
+                                                                                @Html.TableLinkDetails(cond.FUET_CD_ID, "EditarEtapa", "fa-edit", "Editar")
+                                                                                if (cond.FUET_IN_ATIVO == 1)
+                                                                                {
+                                                                                    @Html.TableLinkDetails(cond.FUET_CD_ID, "ExcluirEtapa", "fa-trash-o", "Desativar")
+                                                                                }
+                                                                                else
+                                                                                {
+                                                                                    @Html.TableLinkDetails(cond.FUET_CD_ID, "ReativarEtapa", "fa-refresh", "Reativar")
+                                                                                }
+                                                                            }
+                                                                        </td>
+                                                                    </tr>
+                                                                }
+                                                            </tbody>
+                                                        </table>
+                                                    }
+                                                </div>
+                                            </div>
+                                        </div>
+                                        @if (ViewBag.Etapa == 1 & Model.FUNI_IN_FIXO == 0)
+                                        {
+                                            <div class="form-group">
+                                                @Html.ButtonLinkIndex(text: "Incluir Nova Etapa do Funil", action: "IncluirEtapa", controller: "Funil")
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            }
 
                         </div>
                     </div>

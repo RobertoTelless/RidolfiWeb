@@ -3,6 +3,7 @@
 @{
     Layout = "~/Views/Shared/_Layout_Admin.cshtml";
 }
+
 <div class="wrapper wrapper-content animated fadeInRight">
     <div class="page-title">
         <h3 class="title">Funis de Processos</h3>
@@ -23,7 +24,6 @@
         </ol>
         <br />
     </div>
-
     <div class="row">
         <div class="col-lg-12 col-md-12 col-xs-12">
             <div class="col-lg-12 col-md-12 col-xs-12 ibox float-e-margins">
@@ -61,6 +61,7 @@
                                                                     @Html.HiddenFor(m => m.FUNI_IN_ATIVO)
                                                                     @Html.HiddenFor(m => m.FUNI_IN_FIXO)
                                                                     @Html.HiddenFor(m => m.FUNI_IN_TIPO)
+                                                                    @Html.HiddenFor(m => m.FUNI_IN_CLIENTE)
                                                                     Nome*
                                                                     @Html.TextBoxFor(m => m.FUNI_NM_NOME, new { @class = "form-control", autofocus = true })
                                                                     @Html.ValidationMessageFor(m => m.FUNI_NM_NOME, "", new { @style = "color:red" })
@@ -76,12 +77,7 @@
                                                                     @Html.CheckBoxFor(m => m.Proposta, new { @class = "checkbox i-checks", autofocus = true })
                                                                 </div>                                                
                                                                 <div class="col-lg-2 col-md-2 col-xs-12">
-                                                                    Mensagem para Cliente?
-                                                                    <br />
-                                                                    @Html.CheckBoxFor(m => m.Cliente, new { @class = "checkbox i-checks", autofocus = true })
-                                                                </div>                                                
-                                                                <div class="col-lg-2 col-md-2 col-xs-12">
-                                                                    Mensagem para Responsável?
+                                                                    Notificação para Responsável?
                                                                     <br />
                                                                     @Html.CheckBoxFor(m => m.Responsavel, new { @class = "checkbox i-checks", autofocus = true })
                                                                 </div>                                                

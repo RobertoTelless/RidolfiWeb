@@ -26,10 +26,9 @@ namespace ModelServices.EntitiesServices
         private readonly IMensagemAnexoRepository _anexoRepository;
         private readonly IMensagemDestinoRepository _destRepository;
         private readonly ITemplateSMSRepository _tsmsRepository;
-        private readonly IResultadoRobotRepository _robRepository;
         protected RidolfiDB_WebEntities Db = new RidolfiDB_WebEntities();
 
-        public MensagemService(IMensagemRepository baseRepository, ILogRepository logRepository, ITemplateRepository tempRepository, ICategoriaClienteRepository tipoRepository, IUFRepository ufRepository, IMensagemAnexoRepository anexoRepository, IMensagemDestinoRepository destRepository, ITemplateSMSRepository tsmsRepository, IResultadoRobotRepository robRepository) : base(baseRepository)
+        public MensagemService(IMensagemRepository baseRepository, ILogRepository logRepository, ITemplateRepository tempRepository, ICategoriaClienteRepository tipoRepository, IUFRepository ufRepository, IMensagemAnexoRepository anexoRepository, IMensagemDestinoRepository destRepository, ITemplateSMSRepository tsmsRepository) : base(baseRepository)
         {
             _baseRepository = baseRepository;
             _logRepository = logRepository;
@@ -39,7 +38,6 @@ namespace ModelServices.EntitiesServices
             _anexoRepository = anexoRepository;
             _tsmsRepository = tsmsRepository;
             _destRepository = destRepository;
-            _robRepository = robRepository;
         }
 
         public MENSAGENS CheckExist(MENSAGENS conta, Int32 idAss)
@@ -79,10 +77,6 @@ namespace ModelServices.EntitiesServices
             return _baseRepository.GetAllItens(idAss);
         }
 
-        public List<RESULTADO_ROBOT> GetAllEnviosRobot(Int32 idAss)
-        {
-            return _robRepository.GetAllItens(idAss);
-        }
 
         public List<MENSAGENS> GetAllItensAdm(Int32 idAss)
         {

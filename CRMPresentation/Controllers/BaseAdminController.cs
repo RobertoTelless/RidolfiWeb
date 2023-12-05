@@ -55,6 +55,10 @@ namespace ERP_Condominios_Solution.Controllers
         private readonly ITemplateSMSAppService smsApp;
         private readonly IEmpresaAppService empApp;
         private readonly IFunilAppService funApp;
+        private readonly IBeneficiarioAppService benApp;
+        private readonly IPrecatorioAppService preApp;
+        private readonly ITRFAppService trfApp;
+        private readonly IVaraAppService varaApp;
 
         private String msg;
         private Exception exception;
@@ -65,7 +69,7 @@ namespace ERP_Condominios_Solution.Controllers
         MENSAGENS_ENVIADAS_SISTEMA objetEnviadaoAntes = new MENSAGENS_ENVIADAS_SISTEMA();
         List<MENSAGENS_ENVIADAS_SISTEMA> listaMasterEnviada = new List<MENSAGENS_ENVIADAS_SISTEMA>();
 
-        public BaseAdminController(IUsuarioAppService baseApps, ILogAppService logApps, INoticiaAppService notApps, ITarefaAppService tarApps, INotificacaoAppService notfApps, IUsuarioAppService usuApps, IAgendaAppService ageApps, IConfiguracaoAppService confApps, IClienteAppService cliApps, IGrupoAppService gruApps, ITemplatePropostaAppService tpApps, IAssinanteAppService assiApps, IPlanoAppService planApps, ICRMAppService crmApps, ITemplateAppService temApps, IMensagemEnviadaSistemaAppService envApps, ITemplateEMailAppService mailApps, ITemplateSMSAppService smsApps, IEmpresaAppService empApps, IFunilAppService funApps)
+        public BaseAdminController(IUsuarioAppService baseApps, ILogAppService logApps, INoticiaAppService notApps, ITarefaAppService tarApps, INotificacaoAppService notfApps, IUsuarioAppService usuApps, IAgendaAppService ageApps, IConfiguracaoAppService confApps, IClienteAppService cliApps, IGrupoAppService gruApps, ITemplatePropostaAppService tpApps, IAssinanteAppService assiApps, IPlanoAppService planApps, ICRMAppService crmApps, ITemplateAppService temApps, IMensagemEnviadaSistemaAppService envApps, ITemplateEMailAppService mailApps, ITemplateSMSAppService smsApps, IEmpresaAppService empApps, IFunilAppService funApps, IBeneficiarioAppService benApps, IPrecatorioAppService preApps,ITRFAppService trfApps, IVaraAppService varaApps)
         {
             baseApp = baseApps;
             logApp = logApps;
@@ -87,6 +91,10 @@ namespace ERP_Condominios_Solution.Controllers
             smsApp = smsApps;
             empApp = empApps;
             funApp = funApps;
+            benApp = benApps;
+            preApp = preApps;
+            trfApp = trfApps;
+            varaApp = varaApps;
         }
 
         public ActionResult CarregarAdmin()
@@ -98,14 +106,6 @@ namespace ERP_Condominios_Solution.Controllers
             ViewBag.LogsLista = logApp.GetAllItens(idAss.Value);
             return View();
 
-        }
-
-        private void LogError(string message)
-        {
-            var logRepository = LogManager.GetRepository(Assembly.GetCallingAssembly());
-            XmlConfigurator.Configure(logRepository, new FileInfo("Log4Net.config"));
-            ILog _logger = LogManager.GetLogger(typeof(LoggerManager));
-            _logger.Info(message);
         }
 
         public ActionResult CarregarLandingPage()
@@ -231,10 +231,6 @@ namespace ERP_Condominios_Solution.Controllers
             Session["VoltaCRM"] = 0;
             Session["MensagensEnviadas"] = null;
 
-            // Permissoes
-            ViewBag.PermCRM = (Int32)Session["PermCRM"];
-            ViewBag.Empresas = new SelectList(CarregaEmpresa(), "EMPR_CD_ID", "EMPR_NM_NOME");
-
             // Carrega Cabecalho
             if (Session["PerfilUsuario"] == null)
             {
@@ -281,17 +277,26 @@ namespace ERP_Condominios_Solution.Controllers
             DateTime limite = (DateTime)Session["Limite"];
             List<DateTime> datas = lm.Select(p => p.CRM1_DT_CRIACAO.Value.Date).Distinct().ToList();
 
-            // Recupera clientes
-            List<CLIENTE> cliente = new List<CLIENTE>();
-            if ((Int32)Session["ClienteAlterada"] == 1 || (Int32)Session["FlagCliente"] == 1 || Session["ListaCliente"] == null)
+            // Recupera beneficiarios
+            List<BENEFICIARIO> cliente = new List<BENEFICIARIO>();
+            if ((Int32)Session["BeneficiarioAlterada"] == 1 || (Int32)Session["FlagBeneficiario"] == 1 || Session["ListaBeneficiario"] == null)
             {
-                cliente = CarregaCliente().Where(p => p.ASSI_CD_ID == idAss).ToList();
-                Session["ListaCliente"] = cliente;
+                cliente = CarregaBeneficiario().ToList();
+                Session["ListaBeneficiario"] = cliente;
                 Int32 clientes = cliente.Count;
             }
 
-            // Recupera clientes por UF
-            if ((Int32)Session["ClienteAlterada"] == 1 || (Int32)Session["FlagCliente"] == 1 || Session["ListaClienteUF"] == null)
+            // Recupera precatorios
+            List<PRECATORIO> precatorio = new List<PRECATORIO>();
+            if ((Int32)Session["PrecatorioAlterada"] == 1 || (Int32)Session["FlagPrecatorio"] == 1 || Session["ListaPrecatorio"] == null)
+            {
+                precatorio = CarregaPrecatorio().ToList();
+                Session["ListaPrecatorio"] = precatorio;
+                Int32 precatorios = precatorio.Count;
+            }
+
+            // Recupera Beneficiario por UF
+            if ((Int32)Session["BeneficiarioAlterada"] == 1 || (Int32)Session["FlagBeneficiario"] == 1 || Session["ListaBeneficiarioUF"] == null)
             {
                 List<ModeloViewModel> lista5 = new List<ModeloViewModel>();
                 List<UF> ufs = CarregaUF();
@@ -306,59 +311,57 @@ namespace ERP_Condominios_Solution.Controllers
                         lista5.Add(mod);
                     }
                 }
-                ViewBag.ListaClienteUF = lista5;
-                Session["ListaClienteUF"] = lista5;
+                ViewBag.ListaBeneficiarioUF = lista5;
+                Session["ListaBeneficiarioUF"] = lista5;
             }
             else
             {
-                ViewBag.ListaClienteUF = (List<ModeloViewModel>)Session["ListaClienteUF"];
+                ViewBag.ListaBeneficiarioUF = (List<ModeloViewModel>)Session["ListaBeneficiarioUF"];
             }
 
-            // Recupera clientes por Cidade
-            if ((Int32)Session["ClienteAlterada"] == 1 || (Int32)Session["FlagCliente"] == 1 || Session["ListaClienteCidade"] == null)
+            // Recupera beneficarios por Cidade
+            if ((Int32)Session["BeneficiarioAlterada"] == 1 || (Int32)Session["FlagBeneficiario"] == 1 || Session["ListaBeneficiarioCidade"] == null)
             {
                 List<ModeloViewModel> lista6 = new List<ModeloViewModel>();
-                List<String> cids = cliente.Select(p => p.CLIE_NM_CIDADE).Distinct().ToList();
+                List<String> cids = cliente.Select(p => p.BENE_NM_CIDADE).Distinct().ToList();
                 foreach (String item in cids)
                 {
-                    Int32 num = cliente.Where(p => p.CLIE_NM_CIDADE == item).ToList().Count;
+                    Int32 num = cliente.Where(p => p.BENE_NM_CIDADE == item).ToList().Count;
                     ModeloViewModel mod = new ModeloViewModel();
                     mod.Nome = item;
                     mod.Valor = num;
                     lista6.Add(mod);
                 }
-                ViewBag.ListaClienteCidade = lista6;
-                Session["ListaClienteCidade"] = lista6;
+                ViewBag.ListaBeneficiarioCidade = lista6;
+                Session["ListaBeneficiarioCidade"] = lista6;
             }
             else
             {
-                ViewBag.ListaClienteCidade = (List<ModeloViewModel>)Session["ListaClienteCidade"];
+                ViewBag.ListaBeneficiarioCidade = (List<ModeloViewModel>)Session["ListaBeneficiarioCidade"];
             }
 
-            // Recupera clientes por Categoria
-            if ((Int32)Session["ClienteAlterada"] == 1 || (Int32)Session["FlagCliente"] == 1 || Session["ListaClienteCats"] == null)
+            // Recupera precatorio por TRF
+            if ((Int32)Session["PrecatorioAlterada"] == 1 || (Int32)Session["FlagPrecatorio"] == 1 || Session["ListaPrecatorioTRF"] == null)
             {
-                List<ModeloViewModel> lista7 = new List<ModeloViewModel>();
-                List<CATEGORIA_CLIENTE> catc = CarregaCatCliente();
-                foreach (CATEGORIA_CLIENTE item in catc)
+                List<ModeloViewModel> lista5 = new List<ModeloViewModel>();
+                List<TRF> trfs = CarregaTRF();
+                foreach (TRF item in trfs)
                 {
-                    Int32 num = cliente.Where(p => p.CACL_CD_ID == item.CACL_CD_ID).ToList().Count;
+                    Int32 num = precatorio.Where(p => p.TRF1_CD_ID == item.TRF1_CD_ID).ToList().Count;
                     if (num > 0)
                     {
                         ModeloViewModel mod = new ModeloViewModel();
-                        mod.Nome = item.CACL_NM_NOME;
+                        mod.Nome = item.TRF1_NM_NOME;
                         mod.Valor = num;
-                        lista7.Add(mod);
+                        lista5.Add(mod);
                     }
                 }
-                ViewBag.ListaClienteCats = lista7;
-                Session["ListaClienteCats"] = lista7;
-                Session["FlagAlteraCliente"] = 0;
+                ViewBag.ListaPrecatorioTRF = lista5;
+                Session["ListaPrecatorioTRF"] = lista5;
             }
             else
             {
-                ViewBag.ListaClienteCats = (List<ModeloViewModel>)Session["ListaClienteCats"];
-                Session["FlagAlteraCliente"] = 0;
+                ViewBag.ListaPrecatorioTRF = (List<ModeloViewModel>)Session["ListaPrecatorioTRF"];
             }
 
             // Resumo Diario CRM
@@ -755,21 +758,8 @@ namespace ERP_Condominios_Solution.Controllers
             Session["FlagCliente"] = 0;
             Session["FlagCRM"] = 0;
             Session["FlagCRMPedido"] = 0;
-
-            // Planos
-            Session["Planos"] = assi.ASSINANTE_PLANO;
-            Session["PlanosVencidos"] = assi.ASSINANTE_PLANO.Where(p => p.ASPL_DT_VALIDADE.Value.Date < DateTime.Today.Date).ToList();
-            Session["PlanosVencer30"] = assi.ASSINANTE_PLANO.Where(p => p.ASPL_DT_VALIDADE.Value.Date < DateTime.Today.Date.AddDays(30)).ToList();
-            Session["NumPlanos"] = assi.ASSINANTE_PLANO.Count;
-            Session["NumPlanosVencidos"] = assi.ASSINANTE_PLANO.Where(p => p.ASPL_DT_VALIDADE.Value.Date < DateTime.Today.Date).ToList().Count();
-            Session["NumPlanosVencer30"] = assi.ASSINANTE_PLANO.Where(p => p.ASPL_DT_VALIDADE.Value.Date < DateTime.Today.Date.AddDays(30)).ToList().Count();
-
-            // Pagamentos
-            List<ASSINANTE_PAGAMENTO> pags = assiApp.GetAllPagamentos();
-            pags = pags.Where(p => p.ASPA_IN_PAGO == 0 & p.ASPA_NR_ATRASO > 0 & p.ASSI_CD_ID == idAss).ToList();
-            Int32 atraso = pags.Count;
-            Session["Atrasos"] = pags;
-            Session["NumAtrasos"] = pags.Count;
+            Session["FlagBeneficiario"] = 0;
+            Session["FlagPrecatorio"] = 0;
 
             // Apresentação
             String frase = String.Empty;
@@ -790,17 +780,6 @@ namespace ERP_Condominios_Solution.Controllers
             Session["Greeting"] = frase;
             Session["Foto"] = usuario.USUA_AQ_FOTO;
 
-            // Mensagens de Planos
-            if ((Int32)Session["MensEnvioLogin"] == 0)
-            {
-                if ((String)Session["Vence30"] == "Sim")
-                {
-                    String frase1 = "O plano " + (String)Session["NomePlano"] + " vence em menos de 30 dias.";
-                    ModelState.AddModelError("", frase);
-                    Session["MensEnvioLogin"] = 1;
-                }
-            }
-
             // Mensagem de permissão
             if ((Int32)Session["MensPermissao"] == 2)
             {
@@ -809,9 +788,7 @@ namespace ERP_Condominios_Solution.Controllers
                 Session["MensPermissao"] = 0;
             }
 
-
             // Finalização
-            ViewBag.NomeEmpresa = (String)Session["NomeEmpresa"];
             Session["MensPermissao"] = 0;
             Session["NotificacaoAlterada"] = 0;
             Session["NoticiaAlterada"] = 0;
@@ -1109,7 +1086,6 @@ namespace ERP_Condominios_Solution.Controllers
                 }
                 catch (Exception ex)
                 {
-                    LogError(ex.Message);
                     ViewBag.Message = ex.Message;
                     Session["TipoVolta"] = 2;
                     Session["VoltaExcecao"] = "Pesquisa";
@@ -1257,7 +1233,6 @@ namespace ERP_Condominios_Solution.Controllers
             }
             catch (Exception ex)
             {
-                LogError(ex.Message);
                 ViewBag.Message = ex.Message;
                 Session["TipoVolta"] = 2;
                 Session["VoltaExcecao"] = "Base";
@@ -1283,7 +1258,6 @@ namespace ERP_Condominios_Solution.Controllers
             }
             catch (Exception ex)
             {
-                LogError(ex.Message);
                 ViewBag.Message = ex.Message;
                 Session["TipoVolta"] = 2;
                 Session["VoltaExcecao"] = "Base";
@@ -1331,7 +1305,6 @@ namespace ERP_Condominios_Solution.Controllers
             }
             catch (Exception ex)
             {
-                LogError(ex.Message);
                 ViewBag.Message = ex.Message;
                 Session["TipoVolta"] = 2;
                 Session["VoltaExcecao"] = "Base";
@@ -1390,22 +1363,24 @@ namespace ERP_Condominios_Solution.Controllers
             List<TEMPLATE_EMAIL> tempMail = CarregaTemplateEMail();
             Int32 mails = tempMail.Count;
 
-            Session["TempsConta"] = temps;
+            List<TRF> trf = CarregaTRF();
+            Int32 trfs = trf.Count;
+
+            List<VARA> vara = CarregaVara();
+            Int32 varas = vara.Count;
+
             ViewBag.Temps = temps;
             ViewBag.TempMail= mails;
-
-            ViewBag.Permissoes = (Int32[])Session["Permissoes"];
-            ViewBag.PermCRM = (Int32)Session["PermCRM"];
+            ViewBag.TRFs = trfs;
+            ViewBag.Varas = varas;
 
             // Encerra
-            Session["FlagAlteraCliente"] = 0;
-            Session["FlagMensagensEnviadas"] = 1;
             return View(usuario);
         }
 
-        public JsonResult GetDadosClienteUF()
+        public JsonResult GetDadosBeneficarioUF()
         {
-            List<ModeloViewModel> lista = (List<ModeloViewModel>)Session["ListaClienteUF"];
+            List<ModeloViewModel> lista = (List<ModeloViewModel>)Session["ListaBeneficiarioUF"];
             List<String> desc = new List<String>();
             List<Int32> quant = new List<Int32>();
             List<String> cor = new List<String>();
@@ -1431,9 +1406,9 @@ namespace ERP_Condominios_Solution.Controllers
             return Json(result);
         }
 
-        public JsonResult GetDadosClienteCidade()
+        public JsonResult GetDadosBeneficarioCidade()
         {
-            List<ModeloViewModel> lista = (List<ModeloViewModel>)Session["ListaClienteCidade"];
+            List<ModeloViewModel> lista = (List<ModeloViewModel>)Session["ListaBeneficarioCidade"];
             List<String> desc = new List<String>();
             List<Int32> quant = new List<Int32>();
             List<String> cor = new List<String>();
@@ -1459,9 +1434,9 @@ namespace ERP_Condominios_Solution.Controllers
             return Json(result);
         }
 
-        public JsonResult GetDadosClienteCategoria()
+        public JsonResult GetDadosPrecatorioTRF()
         {
-            List<ModeloViewModel> lista = (List<ModeloViewModel>)Session["ListaClienteCats"];
+            List<ModeloViewModel> lista = (List<ModeloViewModel>)Session["ListaPrecatorioTRF"];
             List<String> desc = new List<String>();
             List<Int32> quant = new List<Int32>();
             List<String> cor = new List<String>();
@@ -1487,9 +1462,9 @@ namespace ERP_Condominios_Solution.Controllers
             return Json(result);
         }
 
-        public JsonResult GetDadosClienteUFLista()
+        public JsonResult GetDadosBeneficarioUFLista()
         {
-            List<ModeloViewModel> lista = (List<ModeloViewModel>)Session["ListaClienteUF"];
+            List<ModeloViewModel> lista = (List<ModeloViewModel>)Session["ListaBeneficarioUF"];
             List<String> uf = new List<String>();
             List<Int32> valor = new List<Int32>();
             uf.Add(" ");
@@ -1507,9 +1482,9 @@ namespace ERP_Condominios_Solution.Controllers
             return Json(result);
         }
 
-        public JsonResult GetDadosClienteCidadeLista()
+        public JsonResult GetDadosBeneficarioCidadeLista()
         {
-            List<ModeloViewModel> lista = (List<ModeloViewModel>)Session["ListaClienteCidade"];
+            List<ModeloViewModel> lista = (List<ModeloViewModel>)Session["ListaBeneficarioCidade"];
             List<String> cidade = new List<String>();
             List<Int32> valor = new List<Int32>();
             cidade.Add(" ");
@@ -1527,9 +1502,9 @@ namespace ERP_Condominios_Solution.Controllers
             return Json(result);
         }
 
-        public JsonResult GetDadosClienteCategoriaLista()
+        public JsonResult GetDadosPrecatorioTRFLista()
         {
-            List<ModeloViewModel> lista = (List<ModeloViewModel>)Session["ListaClienteCats"];
+            List<ModeloViewModel> lista = (List<ModeloViewModel>)Session["ListaPrecatorioTRF"];
             List<String> cidade = new List<String>();
             List<Int32> valor = new List<Int32>();
             cidade.Add(" ");
@@ -1547,14 +1522,22 @@ namespace ERP_Condominios_Solution.Controllers
             return Json(result);
         }
 
-        public ActionResult EditarClienteMark(Int32 id)
+        public ActionResult EditarBeneficarioMark(Int32 id)
         {
-            Session["NivelCliente"] = 1;
+            Session["NivelBeneficario"] = 1;
             Session["VoltaMsg"] = 55;
-            Session["VoltaClienteCRM"] = 99;
-            Session["IncluirCliente"] = 0;
-            Session["AbaCliente"] = 1;
-            return RedirectToAction("EditarCliente", "Cliente", new { id = id });
+            Session["VoltaBeneficarioCRM"] = 99;
+            Session["AbaBeneficario"] = 1;
+            return RedirectToAction("EditarBeneficario", "Beneficiario", new { id = id });
+        }
+
+        public ActionResult EditarPrecatorioMark(Int32 id)
+        {
+            Session["NivelPrecatorio"] = 1;
+            Session["VoltaMsg"] = 55;
+            Session["VoltaPrecatorioCRM"] = 99;
+            Session["AbaPrecatorio"] = 1;
+            return RedirectToAction("EditarPrecatorio", "Precatorio", new { id = id });
         }
 
         public ActionResult AcompanhamentoProcessoCRMMark(Int32 id)
@@ -1601,20 +1584,6 @@ namespace ERP_Condominios_Solution.Controllers
             result.Add("valores", quant);
             result.Add("cores", cor);
             return Json(result);
-        }
-
-        public JsonResult GetPlanos(Int32 id)
-        {
-            PLANO forn = assiApp.GetPlanoBaseById(id);
-            var hash = new Hashtable();
-            hash.Add("nome", forn.PLAN_NM_NOME);
-            hash.Add("periodicidade", forn.PLANO_PERIODICIDADE.PLPE_NM_NOME);
-            hash.Add("valor", CrossCutting.Formatters.DecimalFormatter(forn.PLAN_VL_PRECO.Value));
-            hash.Add("promo", CrossCutting.Formatters.DecimalFormatter(forn.PLAN_VL_PROMOCAO.Value));
-            DateTime data = DateTime.Today.Date.AddDays(Convert.ToDouble(forn.PLANO_PERIODICIDADE.PLPE_NR_DIAS));
-            hash.Add("data", data.ToShortDateString());
-            hash.Add("duracao", forn.PLAN_IN_DURACAO);
-            return Json(hash);
         }
 
         public async Task<ActionResult> TrataExcecao()
@@ -1671,7 +1640,7 @@ namespace ERP_Condominios_Solution.Controllers
                 Int32 volta = await ProcessaEnvioEMailSuporte(mens, usuario);
 
                 // Mensagem
-                ModelState.AddModelError("", "O processamento do CRMSys detectou uma falha. Uma mensagem urgente já foi enviada ao suporte com as informações abaixo e logo voce receberá a resposta. Se desejar reenvie a mensagem usando os botões disponíveis nesta página." + " ID do envio: " + (String)Session["IdMail"]);
+                ModelState.AddModelError("", "O processamento do RidolfiWeb detectou uma falha. Uma mensagem urgente já foi enviada ao suporte com as informações abaixo e logo voce receberá a resposta. Se desejar reenvie a mensagem usando os botões disponíveis nesta página." + " ID do envio: " + (String)Session["IdMail"]);
                 return View(exc);
             }
             catch (Exception ex)
@@ -1719,7 +1688,6 @@ namespace ERP_Condominios_Solution.Controllers
             }
             catch (Exception ex)
             {
-                LogError(ex.Message);
                 ViewBag.Message = ex.Message;
                 Session["TipoVolta"] = 2;
                 Session["VoltaExcecao"] = "Suporte";
@@ -1809,7 +1777,7 @@ namespace ERP_Condominios_Solution.Controllers
             String intro = "Por favor verifiquem a exceção abaixo e as condições em que ela ocorreu.<br />";
             String contato = "Para mais informações entre em contato pelo telefone <b>" + conf.CONF_NR_SUPORTE_ZAP + "</b> ou pelo e-mail <b>" + conf.CONF_EM_CRMSYS + ".</b><br /><br />";
             String final = "<br />Atenciosamente,<br /><br />";
-            String aplicacao = "<b>Aplicação: </b> RidolfiNet" + "<br />";
+            String aplicacao = "<b>Aplicação: </b> RidolfiWeb" + "<br />";
             String assinante = "<b>Assinante: </b>" + nome + "<br />";
             String data = "<b>Data: </b>" + DateTime.Today.Date.ToShortDateString() + " " + DateTime.Now.ToShortTimeString() + "<br />";
             String modulo = "<b>Módulo: </b>" + vm.EXCECAO.Gerador + "<br />";
@@ -1840,7 +1808,7 @@ namespace ERP_Condominios_Solution.Controllers
             mensagem.EMAIL_TO_DESTINO = conf.CONF_EM_CRMSYS;
             mensagem.NOME_EMISSOR_AZURE = conf.CONF_NM_EMISSOR_AZURE;
             mensagem.ENABLE_SSL = true;
-            mensagem.NOME_EMISSOR = "RidolfiNet";
+            mensagem.NOME_EMISSOR = "RidolfiWeb";
             mensagem.PORTA = conf.CONF_NM_PORTA_SMTP;
             mensagem.PRIORIDADE = System.Net.Mail.MailPriority.High;
             mensagem.SENHA_EMISSOR = conf.CONF_NM_SENDGRID_PWD;
@@ -1987,7 +1955,7 @@ namespace ERP_Condominios_Solution.Controllers
             String contato = "Para mais informações entre em contato pelo telefone " + conf.CONF_NR_SUPORTE_ZAP + " ou pelo e-mail " + conf.CONF_EM_CRMSYS + ". ";
             String aviso = "Veja e-mail enviado para o suporte com maiores detalhes. ";
 
-            String aplicacao = " Aplicação: SysPrec. ";
+            String aplicacao = " Aplicação: RidolfiWeb ";
             String assinante = "Assinante: " + nome + ". ";
             String data = "Data: " + DateTime.Today.Date.ToShortDateString() + " " + DateTime.Now.ToShortTimeString() + ", ";
             String modulo = "Módulo: " + vm.EXCECAO.Gerador + ". ";
@@ -3011,7 +2979,6 @@ namespace ERP_Condominios_Solution.Controllers
             }
             catch (Exception ex)
             {
-                LogError(ex.Message);
                 ViewBag.Message = ex.Message;
                 Session["TipoVolta"] = 2;
                 Session["VoltaExcecao"] = "Mensagens";
@@ -3054,7 +3021,6 @@ namespace ERP_Condominios_Solution.Controllers
             }
             catch (Exception ex)
             {
-                LogError(ex.Message);
                 ViewBag.Message = ex.Message;
                 Session["TipoVolta"] = 2;
                 Session["VoltaExcecao"] = "Mensagens";
@@ -3232,7 +3198,6 @@ namespace ERP_Condominios_Solution.Controllers
                     }
                     catch (Exception ex)
                     {
-                        LogError(ex.Message);
                         ViewBag.Message = ex.Message;
                         Session["TipoVolta"] = 2;
                         Session["VoltaExcecao"] = "Pesquisa";
@@ -3453,7 +3418,6 @@ namespace ERP_Condominios_Solution.Controllers
             }
             catch (Exception ex)
             {
-                LogError(ex.Message);
                 ViewBag.Message = ex.Message;
                 Session["TipoVolta"] = 2;
                 Session["VoltaExcecao"] = "Pesquisa";
@@ -3462,6 +3426,158 @@ namespace ERP_Condominios_Solution.Controllers
                 GravaLogExcecao grava = new GravaLogExcecao(usuApp);
                 Int32 voltaX = grava.GravarLogExcecao(ex, "Importação", "CRMSys", 1, (USUARIO)Session["UserCredentials"]);
                 return 0;
+            }
+        }
+
+        public List<BENEFICIARIO> CarregaBeneficiario()
+        {
+            try
+            {
+                Int32 idAss = (Int32)Session["IdAssinante"];
+                List<BENEFICIARIO> conf = new List<BENEFICIARIO>();
+                if (Session["Beneficiarios"] == null)
+                {
+                    conf = benApp.GetAllItens();
+                }
+                else
+                {
+                    if ((Int32)Session["BeneficiarioAlterada"] == 1)
+                    {
+                        conf = benApp.GetAllItens();
+                    }
+                    else
+                    {
+                        conf = (List<BENEFICIARIO>)Session["Beneficiarios"];
+                    }
+                }
+                Session["Beneficiarios"] = conf;
+                Session["BeneficiarioAlterada"] = 0;
+                return conf;
+            }
+            catch (Exception ex)
+            {
+                ViewBag.Message = ex.Message;
+                Session["TipoVolta"] = 2;
+                Session["VoltaExcecao"] = "Pesquisa";
+                Session["Excecao"] = ex;
+                Session["ExcecaoTipo"] = ex.GetType().ToString();
+                GravaLogExcecao grava = new GravaLogExcecao(usuApp);
+                Int32 voltaX = grava.GravarLogExcecao(ex, "Importação", "CRMSys", 1, (USUARIO)Session["UserCredentials"]);
+                return null;
+            }
+        }
+
+        public List<PRECATORIO> CarregaPrecatorio()
+        {
+            try
+            {
+                Int32 idAss = (Int32)Session["IdAssinante"];
+                List<PRECATORIO> conf = new List<PRECATORIO>();
+                if (Session["Precatorios"] == null)
+                {
+                    conf = preApp.GetAllItens();
+                }
+                else
+                {
+                    if ((Int32)Session["PrecatorioAlterada"] == 1)
+                    {
+                        conf = preApp.GetAllItens();
+                    }
+                    else
+                    {
+                        conf = (List<PRECATORIO>)Session["Precatorios"];
+                    }
+                }
+                Session["Precatorios"] = conf;
+                Session["PrecatorioAlterada"] = 0;
+                return conf;
+            }
+            catch (Exception ex)
+            {
+                ViewBag.Message = ex.Message;
+                Session["TipoVolta"] = 2;
+                Session["VoltaExcecao"] = "Pesquisa";
+                Session["Excecao"] = ex;
+                Session["ExcecaoTipo"] = ex.GetType().ToString();
+                GravaLogExcecao grava = new GravaLogExcecao(usuApp);
+                Int32 voltaX = grava.GravarLogExcecao(ex, "Importação", "CRMSys", 1, (USUARIO)Session["UserCredentials"]);
+                return null;
+            }
+        }
+
+        public List<TRF> CarregaTRF()
+        {
+            try
+            {
+                Int32 idAss = (Int32)Session["IdAssinante"];
+                List<TRF> conf = new List<TRF>();
+                if (Session["TRFs"] == null)
+                {
+                    conf = trfApp.GetAllItens();
+                }
+                else
+                {
+                    if ((Int32)Session["TRFAlterada"] == 1)
+                    {
+                        conf = trfApp.GetAllItens();
+                    }
+                    else
+                    {
+                        conf = (List<TRF>)Session["TRFs"];
+                    }
+                }
+                Session["TRFs"] = conf;
+                Session["TRFAlterada"] = 0;
+                return conf;
+            }
+            catch (Exception ex)
+            {
+                ViewBag.Message = ex.Message;
+                Session["TipoVolta"] = 2;
+                Session["VoltaExcecao"] = "Pesquisa";
+                Session["Excecao"] = ex;
+                Session["ExcecaoTipo"] = ex.GetType().ToString();
+                GravaLogExcecao grava = new GravaLogExcecao(usuApp);
+                Int32 voltaX = grava.GravarLogExcecao(ex, "Importação", "CRMSys", 1, (USUARIO)Session["UserCredentials"]);
+                return null;
+            }
+        }
+
+        public List<VARA> CarregaVara()
+        {
+            try
+            {
+                Int32 idAss = (Int32)Session["IdAssinante"];
+                List<VARA> conf = new List<VARA>();
+                if (Session["Varas"] == null)
+                {
+                    conf = varaApp.GetAllItens();
+                }
+                else
+                {
+                    if ((Int32)Session["VaraAlterada"] == 1)
+                    {
+                        conf = varaApp.GetAllItens();
+                    }
+                    else
+                    {
+                        conf = (List<VARA>)Session["Varas"];
+                    }
+                }
+                Session["Varas"] = conf;
+                Session["VaraAlterada"] = 0;
+                return conf;
+            }
+            catch (Exception ex)
+            {
+                ViewBag.Message = ex.Message;
+                Session["TipoVolta"] = 2;
+                Session["VoltaExcecao"] = "Pesquisa";
+                Session["Excecao"] = ex;
+                Session["ExcecaoTipo"] = ex.GetType().ToString();
+                GravaLogExcecao grava = new GravaLogExcecao(usuApp);
+                Int32 voltaX = grava.GravarLogExcecao(ex, "Importação", "CRMSys", 1, (USUARIO)Session["UserCredentials"]);
+                return null;
             }
         }
 
@@ -3492,7 +3608,6 @@ namespace ERP_Condominios_Solution.Controllers
             }
             catch (Exception ex)
             {
-                LogError(ex.Message);
                 ViewBag.Message = ex.Message;
                 Session["TipoVolta"] = 2;
                 Session["VoltaExcecao"] = "Pesquisa";
@@ -3531,7 +3646,6 @@ namespace ERP_Condominios_Solution.Controllers
             }
             catch (Exception ex)
             {
-                LogError(ex.Message);
                 ViewBag.Message = ex.Message;
                 Session["TipoVolta"] = 2;
                 Session["VoltaExcecao"] = "Pesquisa";
@@ -3570,7 +3684,6 @@ namespace ERP_Condominios_Solution.Controllers
             }
             catch (Exception ex)
             {
-                LogError(ex.Message);
                 ViewBag.Message = ex.Message;
                 Session["TipoVolta"] = 2;
                 Session["VoltaExcecao"] = "Pesquisa";
@@ -3609,7 +3722,6 @@ namespace ERP_Condominios_Solution.Controllers
             }
             catch (Exception ex)
             {
-                LogError(ex.Message);
                 ViewBag.Message = ex.Message;
                 Session["TipoVolta"] = 2;
                 Session["VoltaExcecao"] = "Pesquisa";
@@ -3667,7 +3779,6 @@ namespace ERP_Condominios_Solution.Controllers
             }
             catch (Exception ex)
             {
-                LogError(ex.Message);
                 ViewBag.Message = ex.Message;
                 Session["TipoVolta"] = 2;
                 Session["VoltaExcecao"] = "CRM";
@@ -3731,7 +3842,6 @@ namespace ERP_Condominios_Solution.Controllers
                 }
                 catch (Exception ex)
                 {
-                    LogError(ex.Message);
                     ViewBag.Message = ex.Message;
                     Session["TipoVolta"] = 2;
                     Session["VoltaExcecao"] = "CRM";

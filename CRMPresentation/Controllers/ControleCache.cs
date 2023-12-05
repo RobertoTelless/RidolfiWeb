@@ -9,7 +9,6 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 
-
 namespace CRMPresentation.Controllers
 {
     public class ControleCache : Controller

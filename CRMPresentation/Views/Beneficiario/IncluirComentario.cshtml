@@ -15,7 +15,7 @@
                 <a href="@Url.Action("VoltarAnexoBeneficiario", "Beneficiario")">Beneficiários - Edição</a>
             </li>
             <li class="active">
-                <strong>Beneficiários - Comentário</strong>
+                <strong>Beneficiários - Anotação</strong>
             </li>
         </ol>
         <br />
@@ -24,14 +24,11 @@
         <div class="col-lg-12 col-md-12 col-xs-12">
             <div class="col-lg-12 col-md-12 col-xs-12 ibox float-e-margins">
                 <div class="ibox-title">
-                    <h5>Beneficiários - Comentário</h5>
+                    <h5>Beneficiários - Anotação</h5>
                 </div>
                 @using (Html.BeginForm("IncluirComentario", "Beneficiario", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", @id="pwd-container1" }))
                 {
                     <div class="ibox-content">
-                        <div class="form-group">
-                            @Html.ButtonLinkIndex(text: "Voltar", action: "VoltarBase", controller: "Noticia")
-                        </div>
                         @if (!ViewData.ModelState.IsValid)
                         {
                             <div class="alert alert-danger">
@@ -78,7 +75,7 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            @Html.ButtonActionSubmit(text: "Confirma Criação de Comentário")
+                            @Html.ButtonActionSubmit(text: "Confirma Criação de Anotação")
                             @Html.ButtonLinkIndex(text: "Voltar", action: "VoltarAnexoBeneficiario", controller: "Beneficiario")
                         </div>
                     </div>

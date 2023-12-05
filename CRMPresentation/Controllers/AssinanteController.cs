@@ -33,6 +33,7 @@ using log4net.Core;
 using Azure.Communication.Email;
 using ERP_Condominios_Solution.Classes;
 
+
 namespace ERP_Condominios_Solution.Controllers
 {
     public class AssinanteController : Controller

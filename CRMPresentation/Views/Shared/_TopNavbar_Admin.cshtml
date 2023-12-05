@@ -9,9 +9,6 @@
         </div>
         <ul class="nav navbar-top-links navbar-right">
             <li>
-                <span class="m-r-sm text-muted welcome-message" data-i18n="topnav.welcometext" style="color: green; font-weight: bold; margin-right: 10px">@((String)Session["NomeEmpresa"])</span>
-            </li>
-            <li>
                 <span class="m-r-sm text-muted welcome-message" data-i18n="topnav.welcometext">@((String)Session["Greeting"])</span>
             </li>
             <li class="dropdown">
@@ -109,72 +106,6 @@
                         <div class="text-center link-block">
                             <a href="@Url.Action("MontarTelaTarefa", "Tarefa")" class="pull-left btn-link">
                                 <i class="fa fa-tasks"></i> <strong>Veja outras tarefas...</strong>
-                            </a>
-                        </div>
-                    </li>
-                </ul>
-            </li>
-
-            <li class="dropdown">
-                <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
-                    <i class="fa fa-newspaper-o"></i>  <span class="label label-warning">@((Int32)Session["NoticiasNumero"])</span>
-                </a>
-                <ul class="dropdown-menu dropdown-messages">
-                    @foreach (var cond in (((List<NOTICIA>)Session["Noticias"]) as List<EntitiesServices.Model.NOTICIA>).Take(5))
-                    {
-                        <li>
-                            <div class="dropdown-messages-box">
-                                <a href="@Url.Action("VerNoticia", "Noticia", new { id = cond.NOTC_CD_ID })" class="pull-left btn-link">
-                                    @if (cond.NOTC_NM_TITULO.Length > 30)
-                                    {
-                                        @cond.NOTC_NM_TITULO.Substring(0, 29)
-                                    }
-                                    else
-                                    {
-                                        @cond.NOTC_NM_TITULO
-                                    }
-
-                                </a>
-                            </div>
-                        </li>
-                    }
-                    <li>
-                        <div class="text-center link-block">
-                            <a href="@Url.Action("MontarTelaUsuario", "Noticia")" class="pull-left btn-link">
-                                <i class="fa fa-newspaper-o"></i> <strong>Veja outras notícias...</strong>
-                            </a>
-                        </div>
-                    </li>
-                </ul>
-            </li>
-
-            <li class="dropdown">
-                <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
-                    <i class="fa fa-video-camera"></i>  <span class="label label-warning">@((Int32)Session["VideosNumero"])</span>
-                </a>
-                <ul class="dropdown-menu dropdown-messages">
-                    @foreach (var cond in (((List<VIDEO>)Session["Videos"]) as List<EntitiesServices.Model.VIDEO>).Take(5))
-                    {
-                        <li>
-                            <div class="dropdown-messages-box">
-                                <a href="@Url.Action("VerVideo", "Video", new { id = cond.VIDE_CD_ID })" class="pull-left btn-link">
-                                    @if (cond.VIDE_NM_TITULO.Length > 30)
-                                    {
-                                        @cond.VIDE_NM_TITULO.Substring(0, 29)
-                                    }
-                                    else
-                                    {
-                                        @cond.VIDE_NM_TITULO
-                                    }
-
-                                </a>
-                            </div>
-                        </li>
-                    }
-                    <li>
-                        <div class="text-center link-block">
-                            <a href="@Url.Action("MontarTelaUsuario", "Video")" class="pull-left btn-link">
-                                <i class="fa fa-newspaper-o"></i> <strong>Veja outros vídeos...</strong>
                             </a>
                         </div>
                     </li>

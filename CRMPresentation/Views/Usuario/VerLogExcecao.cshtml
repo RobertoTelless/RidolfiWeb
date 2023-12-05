@@ -1,0 +1,141 @@
+﻿@using Presentation.Extensions
+@using CrossCutting;
+@model EntitiesServices.Model.LOG_EXCECAO_NOVO
+@{
+    Layout = "~/Views/Shared/_Layout_Admin.cshtml";
+}
+<div style="z-index: 999;" class="dotContainer">
+    <div style="top: 500px" class="dotWrapper">
+        <div class="circle"></div>
+        <div class="circle"></div>
+        <div class="circle"></div>
+        <div class="shadow"></div>
+        <div class="shadow"></div>
+        <div class="shadow"></div>
+    </div>
+</div>
+
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="page-title"> 
+        <h3 class="title">Registro de Log - Consulta</h3> 
+        <br />
+        <ol class="breadcrumb">
+            <li>
+                <a href="@Url.Action("CarregarBase", "BaseAdmin")">Dashboard</a>
+            </li>
+            <li>
+                <a href="@Url.Action("MontarTelaLog", "Auditoria")">Auditoria</a>
+            </li>
+            <li class="active">
+                <strong>Log de Exceção - Visualização</strong>
+            </li>
+        </ol>
+        <br />
+    </div>
+
+    <div class="row">
+        <div class="col-lg-12 col-md-12 col-xs-12 ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>Log de Exceção - Visualização</h5>
+            </div>           
+            <div class="ibox-content">
+                <div class="form-group">
+                    @Html.ButtonLinkIndex(text: "Voltar", action: "MontarTelaLogExcecao", controller: "Usuario")
+                </div>
+                <div class="row">
+                    <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
+                        <div class="col-lg-2 col-md-2 col-xs-12">
+                            Data/Hora da Exceção
+                            @Html.TextBoxFor(m => m.LOEX_DT_DATA, new { @class = "form-control", autofocus = true, @readonly = "readonly" })
+                        </div>
+                        <div class="col-lg-2 col-md-2 col-xs-12">
+                            Aplicação
+                            @Html.TextBoxFor(m => m.LOEX_NM_APLICACAO, new { @class = "form-control", autofocus = true, @readonly = "readonly" })
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-xs-12">
+                            Tipo de Exceção
+                            @Html.TextBoxFor(m => m.LOEX_NM_TIPO_EXCECAO, new { @class = "form-control", autofocus = true, @readonly = "readonly" })
+                        </div>
+                        <div class="col-lg-2 col-md-2 col-xs-12">
+                            Módulo Gerador da Exceção
+                            @Html.TextBoxFor(m => m.LOEX_NM_GERADOR, new { @class = "form-control", autofocus = true, @readonly = "readonly" })
+                        </div>
+                        <div class="col-lg-2 col-md-2 col-xs-12">
+                            Usuário
+                            @Html.TextBoxFor(m => m.USUARIO.USUA_NM_NOME, new { @class = "form-control", autofocus = true, @readonly = "readonly" })
+                        </div>
+                    </div>
+                </div>
+                <br />
+                <div class="row">
+                    <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">                
+                        <div class="col-lg-12 col-md-12 col-xs-12">
+                            Mensagem da Exceção
+                            @Html.TextAreaFor(m => m.LOEX_DS_MENSAGEM, new { @class = "form-control", style = "width: 100%; height: 200px;", autofocus = true, @readonly="readonly" })
+                        </div>
+                    </div>
+                </div>
+                <br />
+                <div class="row">
+                    @if (Model.LOEX_NM_INNER_TIPO_EXCECAO != null)
+                    {
+                        <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">                
+                            <div class="col-lg-12 col-md-12 col-xs-12">
+                                Exceção Embutida (Inner Exception)
+                                @Html.TextAreaFor(m => m.LOEX_DS_INNER, new { @class = "form-control", style = "width: 100%; height: 200px;", autofocus = true, @readonly="readonly"})
+                            </div>
+                        </div>
+                    }
+                </div>
+                <div class="row">
+                    @if (Model.LOEX_DS_SOURCE != null)
+                    {
+                        <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">                
+                            <div class="col-lg-12 col-md-12 col-xs-12">
+                                Origem (Source)
+                                @Html.TextBoxFor(m => m.LOEX_DS_SOURCE, new { @class = "form-control", autofocus = true, @readonly="readonly"})
+                            </div>
+                        </div>
+                    }
+                </div>
+                <br />
+                <div class="row">
+                    @if (Model.LOEX_DS_STACK_TRACE != null)
+                    {
+                        <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">                
+                            <div class="col-lg-12 col-md-12 col-xs-12">
+                                Pilha de Execução (Stack Trace)
+                                @Html.TextAreaFor(m => m.LOEX_DS_STACK_TRACE, new { @class = "form-control", style = "width: 100%; height: 300px;", autofocus = true, @readonly="readonly"})
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <link href="~/Content/themes/base/all.css" rel="stylesheet" />  
+    @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
+    @Styles.Render("~/plugins/jasnyBootstrapStyles")
+}
+
+@section Scripts {
+
+    @Scripts.Render("~/plugins/dataTables")
+    @Scripts.Render("~/bundles/inputmask")
+    @Scripts.Render("~/plugins/jasnyBootstrap")
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.maskedinput/1.4.1/jquery.maskedinput.js"></script>
+
+}
+
+@if (ViewBag.Message != null)
+{
+    <script type="text/javascript">
+            window.onload = function () {
+                alert("@ViewBag.Message");
+            };
+    </script>
+}
+

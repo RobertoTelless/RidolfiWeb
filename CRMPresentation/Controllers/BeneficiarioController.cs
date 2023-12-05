@@ -81,14 +81,6 @@ namespace ERP_Condominios_Solution.Controllers
             return RedirectToAction("MontarTelaDashboardCadastros", "BaseAdmin");
         }
 
-        private void LogError(string message)
-        {
-            var logRepository = LogManager.GetRepository(Assembly.GetCallingAssembly());
-            XmlConfigurator.Configure(logRepository, new FileInfo("Log4Net.config"));
-            ILog _logger = LogManager.GetLogger(typeof(LoggerManager));
-            _logger.Info(message);
-        }
-
         [HttpGet]
         public ActionResult MontarTelaBeneficiario()
         {
@@ -128,6 +120,7 @@ namespace ERP_Condominios_Solution.Controllers
             ViewBag.EstadoCivil = new SelectList(CarregaEstadoCivil().OrderBy(p => p.ESCI_NM_NOME), "ESCI_CD_ID", "ESCI_NM_NOME");
             ViewBag.Escolaridade = new SelectList(CarregaEscolaridade().OrderBy(p => p.ESCO_NM_NOME), "ESCO_CD_ID", "ESCO_NM_NOME");
             ViewBag.Parentesco = new SelectList(CarregaParentesco().OrderBy(p => p.PARE_NM_NOME), "PARE_CD_ID", "PARE_NM_NOME");
+            ViewBag.UF = new SelectList(CarregaUF().OrderBy(p => p.UF_NM_NOME), "UF_CD_ID", "UF_NM_NOME");
             ViewBag.Perfil = usuario.PERFIL.PERF_SG_SIGLA;
 
             if (Session["MensBeneficiario"] != null)
@@ -204,7 +197,6 @@ namespace ERP_Condominios_Solution.Controllers
             }
             catch (Exception ex)
             {
-                LogError(ex.Message);
                 ViewBag.Message = ex.Message;
                 Session["TipoVolta"] = 2;
                 Session["VoltaExcecao"] = "Beneficiário";
@@ -238,7 +230,7 @@ namespace ERP_Condominios_Solution.Controllers
                 usuario = (USUARIO)Session["UserCredentials"];
 
                 // Verfifica permissão
-                if (usuario.PERFIL.PERF_SG_SIGLA == "VIS")
+                if (usuario.PERFIL.PERF_SG_SIGLA == "USU" || usuario.PERFIL.PERF_SG_SIGLA == "OPR")
                 {
                     Session["MensPermissao"] = 2;
                     return RedirectToAction("MontarTelaBeneficiario", "Beneficiario");
@@ -256,6 +248,7 @@ namespace ERP_Condominios_Solution.Controllers
             ViewBag.EstadoCivil = new SelectList(CarregaEstadoCivil().OrderBy(p => p.ESCI_NM_NOME), "ESCI_CD_ID", "ESCI_NM_NOME");
             ViewBag.Escolaridade = new SelectList(CarregaEscolaridade().OrderBy(p => p.ESCO_NM_NOME), "ESCO_CD_ID", "ESCO_NM_NOME");
             ViewBag.Parentesco = new SelectList(CarregaParentesco().OrderBy(p => p.PARE_NM_NOME), "PARE_CD_ID", "PARE_NM_NOME");
+            ViewBag.UF = new SelectList(CarregaUF().OrderBy(p => p.UF_NM_NOME), "UF_CD_ID", "UF_NM_NOME");
 
             // Prepara view
             BENEFICIARIO item = new BENEFICIARIO();
@@ -280,6 +273,7 @@ namespace ERP_Condominios_Solution.Controllers
             ViewBag.EstadoCivil = new SelectList(CarregaEstadoCivil().OrderBy(p => p.ESCI_NM_NOME), "ESCI_CD_ID", "ESCI_NM_NOME");
             ViewBag.Escolaridade = new SelectList(CarregaEscolaridade().OrderBy(p => p.ESCO_NM_NOME), "ESCO_CD_ID", "ESCO_NM_NOME");
             ViewBag.Parentesco = new SelectList(CarregaParentesco().OrderBy(p => p.PARE_NM_NOME), "PARE_CD_ID", "PARE_NM_NOME");
+            ViewBag.UF = new SelectList(CarregaUF().OrderBy(p => p.UF_NM_NOME), "UF_CD_ID", "UF_NM_NOME");
             if (ModelState.IsValid)
             {
                 try
@@ -316,7 +310,6 @@ namespace ERP_Condominios_Solution.Controllers
                 }
                 catch (Exception ex)
                 {
-                    LogError(ex.Message);
                     ViewBag.Message = ex.Message;
                     Session["TipoVolta"] = 2;
                     Session["VoltaExcecao"] = "Beneficiário";
@@ -364,7 +357,7 @@ namespace ERP_Condominios_Solution.Controllers
                 usuario = (USUARIO)Session["UserCredentials"];
 
                 // Verfifica permissão
-                if (usuario.PERFIL.PERF_SG_SIGLA == "VIS")
+                if (usuario.PERFIL.PERF_SG_SIGLA == "USU" || usuario.PERFIL.PERF_SG_SIGLA == "OPR")
                 {
                     Session["MensPermissao"] = 2;
                     return RedirectToAction("MontarTelaBeneficiario", "Beneficiario");
@@ -382,6 +375,7 @@ namespace ERP_Condominios_Solution.Controllers
             ViewBag.EstadoCivil = new SelectList(CarregaEstadoCivil().OrderBy(p => p.ESCI_NM_NOME), "ESCI_CD_ID", "ESCI_NM_NOME");
             ViewBag.Escolaridade = new SelectList(CarregaEscolaridade().OrderBy(p => p.ESCO_NM_NOME), "ESCO_CD_ID", "ESCO_NM_NOME");
             ViewBag.Parentesco = new SelectList(CarregaParentesco().OrderBy(p => p.PARE_NM_NOME), "PARE_CD_ID", "PARE_NM_NOME");
+            ViewBag.UF = new SelectList(CarregaUF().OrderBy(p => p.UF_NM_NOME), "UF_CD_ID", "UF_NM_NOME");
 
             BENEFICIARIO item = tranApp.GetItemById(id);
             objetoTranAntes = item;
@@ -406,6 +400,7 @@ namespace ERP_Condominios_Solution.Controllers
             ViewBag.EstadoCivil = new SelectList(CarregaEstadoCivil().OrderBy(p => p.ESCI_NM_NOME), "ESCI_CD_ID", "ESCI_NM_NOME");
             ViewBag.Escolaridade = new SelectList(CarregaEscolaridade().OrderBy(p => p.ESCO_NM_NOME), "ESCO_CD_ID", "ESCO_NM_NOME");
             ViewBag.Parentesco = new SelectList(CarregaParentesco().OrderBy(p => p.PARE_NM_NOME), "PARE_CD_ID", "PARE_NM_NOME");
+            ViewBag.UF = new SelectList(CarregaUF().OrderBy(p => p.UF_NM_NOME), "UF_CD_ID", "UF_NM_NOME");
             if (ModelState.IsValid)
             {
                 try
@@ -424,7 +419,6 @@ namespace ERP_Condominios_Solution.Controllers
                 }
                 catch (Exception ex)
                 {
-                    LogError(ex.Message);
                     ViewBag.Message = ex.Message;
                     Session["TipoVolta"] = 2;
                     Session["VoltaExcecao"] = "Beneficiário";
@@ -454,7 +448,7 @@ namespace ERP_Condominios_Solution.Controllers
                 usuario = (USUARIO)Session["UserCredentials"];
 
                 // Verfifica permissão
-                if (usuario.PERFIL.PERF_SG_SIGLA == "VIS")
+                if (usuario.PERFIL.PERF_SG_SIGLA == "USU" || usuario.PERFIL.PERF_SG_SIGLA == "OPR")
                 {
                     Session["MensPermissao"] = 2;
                     return RedirectToAction("MontarTelaBeneficiario", "Beneficiario");
@@ -484,7 +478,6 @@ namespace ERP_Condominios_Solution.Controllers
             }
             catch (Exception ex)
             {
-                LogError(ex.Message);
                 ViewBag.Message = ex.Message;
                 Session["TipoVolta"] = 2;
                 Session["VoltaExcecao"] = "Beneficiário";
@@ -509,7 +502,7 @@ namespace ERP_Condominios_Solution.Controllers
                 usuario = (USUARIO)Session["UserCredentials"];
 
                 // Verfifica permissão
-                if (usuario.PERFIL.PERF_SG_SIGLA == "VIS")
+                if (usuario.PERFIL.PERF_SG_SIGLA == "USU" || usuario.PERFIL.PERF_SG_SIGLA == "OPR")
                 {
                     Session["MensPermissao"] = 2;
                     return RedirectToAction("MontarTelaBeneficiario", "Beneficiario");
@@ -534,7 +527,6 @@ namespace ERP_Condominios_Solution.Controllers
             }
             catch (Exception ex)
             {
-                LogError(ex.Message);
                 ViewBag.Message = ex.Message;
                 Session["TipoVolta"] = 2;
                 Session["VoltaExcecao"] = "Beneficiário";
@@ -615,24 +607,58 @@ namespace ERP_Condominios_Solution.Controllers
 
         public FileResult DownloadBeneficiario(Int32 id)
         {
-            BENEFICIARIO_ANEXO item = tranApp.GetAnexoById(id);
-            String arquivo = item.BEAN_AQ_ARQUIVO;
-            Int32 pos = arquivo.LastIndexOf("/") + 1;
-            String nomeDownload = arquivo.Substring(pos);
-            String contentType = string.Empty;
-            if (arquivo.Contains(".pdf"))
+            try
             {
-                contentType = "application/pdf";
+                BENEFICIARIO_ANEXO item = tranApp.GetAnexoById(id);
+                String arquivo = item.BEAN_AQ_ARQUIVO;
+                Int32 pos = arquivo.LastIndexOf("/") + 1;
+                String nomeDownload = arquivo.Substring(pos);
+                String contentType = string.Empty;
+                if (arquivo.Contains(".pdf"))
+                {
+                    contentType = "application/pdf";
+                }
+                else if (arquivo.Contains(".jpg"))
+                {
+                    contentType = "image/jpg";
+                }
+                else if (arquivo.Contains(".png"))
+                {
+                    contentType = "image/png";
+                }
+                else if (arquivo.Contains(".docx"))
+                {
+                    contentType = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+                }
+                else if (arquivo.Contains(".xlsx"))
+                {
+                    contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+                }
+                else if (arquivo.Contains(".pptx"))
+                {
+                    contentType = "application/vnd.openxmlformats-officedocument.presentationml.presentation";
+                }
+                else if (arquivo.Contains(".mp3"))
+                {
+                    contentType = "audio/mpeg";
+                }
+                else if (arquivo.Contains(".mpeg"))
+                {
+                    contentType = "audio/mpeg";
+                }
+                return File(arquivo, contentType, nomeDownload);
             }
-            else if (arquivo.Contains(".jpg"))
+            catch (Exception ex)
             {
-                contentType = "image/jpg";
+                ViewBag.Message = ex.Message;
+                Session["TipoVolta"] = 2;
+                Session["VoltaExcecao"] = "Agenda";
+                Session["Excecao"] = ex;
+                Session["ExcecaoTipo"] = ex.GetType().ToString();
+                GravaLogExcecao grava = new GravaLogExcecao(usuApp);
+                Int32 voltaX = grava.GravarLogExcecao(ex, "Agenda", "CRMSys", 1, (USUARIO)Session["UserCredentials"]);
+                return null;
             }
-            else if (arquivo.Contains(".png"))
-            {
-                contentType = "image/png";
-            }
-            return File(arquivo, contentType, nomeDownload);
         }
 
         [HttpPost]
@@ -838,7 +864,6 @@ namespace ERP_Condominios_Solution.Controllers
                 }
                 catch (Exception ex)
                 {
-                    LogError(ex.Message);
                     ViewBag.Message = ex.Message;
                     Session["TipoVolta"] = 2;
                     Session["VoltaExcecao"] = "Beneficiário";
@@ -895,7 +920,6 @@ namespace ERP_Condominios_Solution.Controllers
                 }
                 catch (Exception ex)
                 {
-                    LogError(ex.Message);
                     ViewBag.Message = ex.Message;
                     Session["TipoVolta"] = 2;
                     Session["VoltaExcecao"] = "Beneficiário";
@@ -933,7 +957,6 @@ namespace ERP_Condominios_Solution.Controllers
             }
             catch (Exception ex)
             {
-                LogError(ex.Message);
                 ViewBag.Message = ex.Message;
                 Session["TipoVolta"] = 2;
                 Session["VoltaExcecao"] = "Beneficiário";
@@ -1465,7 +1488,7 @@ namespace ERP_Condominios_Solution.Controllers
 
         [HttpPost]
         [ValidateInput(false)]
-        public ActionResult EnviarEMailBeneficiario(MensagemViewModel vm)
+        public async Task<ActionResult> EnviarEMailBeneficiario(MensagemViewModel vm)
         {
             if ((String)Session["Ativa"] == null)
             {
@@ -1487,7 +1510,7 @@ namespace ERP_Condominios_Solution.Controllers
 
                     // Executa a operação
                     USUARIO usuarioLogado = (USUARIO)Session["UserCredentials"];
-                    Int32 volta = ProcessaEnvioEMailBeneficiario(vm, usuarioLogado);
+                    Int32 volta = await ProcessaEnvioEMailBeneficiario(vm, usuarioLogado);
 
                     // Verifica retorno
                     if (volta == 1)
@@ -1500,7 +1523,6 @@ namespace ERP_Condominios_Solution.Controllers
                 }
                 catch (Exception ex)
                 {
-                    LogError(ex.Message);
                     ViewBag.Message = ex.Message;
                     Session["TipoVolta"] = 2;
                     Session["VoltaExcecao"] = "Beneficiário";
@@ -1518,7 +1540,7 @@ namespace ERP_Condominios_Solution.Controllers
         }
 
         [ValidateInput(false)]
-        public Int32 ProcessaEnvioEMailBeneficiario(MensagemViewModel vm, USUARIO usuario)
+        public async Task<Int32> ProcessaEnvioEMailBeneficiario(MensagemViewModel vm, USUARIO usuario)
         {
             // Recupera cliente
             Int32 idAss = (Int32)Session["IdAssinante"];
@@ -1577,13 +1599,13 @@ namespace ERP_Condominios_Solution.Controllers
             // Envia mensagem
             try
             {
-                Tuple<EmailSendStatus, String, Boolean> voltaMail = CrossCutting.CommunicationAzurePackage.SendMail(mensagem, null);
-                status = voltaMail.Item1.ToString();
-                iD = voltaMail.Item2;
+                await CrossCutting.CommunicationAzurePackage.SendMailAsync(mensagem, null);
+                status = "Success";
+                String guid = new Guid().ToString();
+                iD = guid;
             }
             catch (Exception ex)
             {
-                LogError(ex.Message);
                 ViewBag.Message = ex.Message;
                 Session["TipoVolta"] = 2;
                 Session["VoltaExcecao"] = "Beneficiário";
@@ -1621,7 +1643,6 @@ namespace ERP_Condominios_Solution.Controllers
                 }
                 env.MEEN_SG_STATUS = status;
                 env.MEEN_GU_ID_MENSAGEM = iD;
-                env.EMPR_CD_ID = 3;
                 Int32 volta5 = meApp.ValidateCreate(env);
                 Session["MensBeneficiario"] = 100;
                 Session["IdMail"] = iD;
@@ -1675,7 +1696,6 @@ namespace ERP_Condominios_Solution.Controllers
                 }
                 catch (Exception ex)
                 {
-                    LogError(ex.Message);
                     ViewBag.Message = ex.Message;
                     Session["TipoVolta"] = 2;
                     Session["VoltaExcecao"] = "Beneficiário";
@@ -1765,7 +1785,6 @@ namespace ERP_Condominios_Solution.Controllers
             }
             catch (Exception ex)
             {
-                LogError(ex.Message);
                 ViewBag.Message = ex.Message;
                 Session["TipoVolta"] = 2;
                 Session["VoltaExcecao"] = "Beneficiário";
@@ -1790,7 +1809,6 @@ namespace ERP_Condominios_Solution.Controllers
             env.MEEN_IN_ANEXOS = 0;
             env.MEEN_IN_ATIVO = 1;
             env.MEEN_IN_ESCOPO = 2;
-            env.EMPR_CD_ID = 3;
             if (erro == null)
             {
                 env.MEEN_IN_ENTREGUE = 1;
@@ -1843,7 +1861,6 @@ namespace ERP_Condominios_Solution.Controllers
                 }
                 catch (Exception ex)
                 {
-                    LogError(ex.Message);
                     ViewBag.Message = ex.Message;
                     Session["TipoVolta"] = 2;
                     Session["VoltaExcecao"] = "Beneficiário";
@@ -1921,7 +1938,6 @@ namespace ERP_Condominios_Solution.Controllers
                 }
                 catch (Exception ex)
                 {
-                    LogError(ex.Message);
                     ViewBag.Message = ex.Message;
                     Session["TipoVolta"] = 2;
                     Session["VoltaExcecao"] = "Beneficiário";
