@@ -18,6 +18,7 @@ namespace EntitiesServices.Model
         public CRM_ACAO()
         {
             this.DIARIO_PROCESSO = new HashSet<DIARIO_PROCESSO>();
+            this.AGENDA = new HashSet<AGENDA>();
         }
     
         public int CRAC_CD_ID { get; set; }
@@ -34,6 +35,7 @@ namespace EntitiesServices.Model
         public Nullable<int> CRAC_IN_STATUS { get; set; }
         public Nullable<int> CRAC_IN_ATIVO { get; set; }
         public Nullable<int> CRAC_NR_ATRASO { get; set; }
+        public Nullable<int> AGEN_CD_ID { get; set; }
     
         public virtual CRM CRM { get; set; }
         public virtual EMPRESA EMPRESA { get; set; }
@@ -42,5 +44,7 @@ namespace EntitiesServices.Model
         public virtual USUARIO USUARIO1 { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<DIARIO_PROCESSO> DIARIO_PROCESSO { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<AGENDA> AGENDA { get; set; }
     }
 }

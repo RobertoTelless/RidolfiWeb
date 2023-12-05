@@ -5,7 +5,6 @@
 @{
     Layout = "~/Views/Shared/_Layout_Admin.cshtml";
 }
-
 <div class="wrapper wrapper-content animated fadeInRight">
     <div class="modalContainer">
         <div id="modal" class="modal" tabindex="-1" role="dialog">
@@ -47,7 +46,6 @@
             </div>
         </div>
     </div>
-
     <div class="page-title">
         <h3 class="title">Processos</h3>
         <br />
@@ -83,7 +81,7 @@
                                 @Html.ButtonLinkIndex(text: "Ações do Usuário", controller: "CRM", action: "VerAcoesUsuarioCRMPrevia1")
                                 @Html.ButtonLinkIndex(text: "Propostas", action: "VerPedidosUsuarioCRMPrevia", controller: "CRM")
                                 @Html.ButtonLinkIndex(text: "Gerar Listagem", controller: "CRM", action: "GerarRelatorioListaCRM")
-                                @Html.ButtonLinkIndex(text: "Voltar", action: "MontarTelaDashboardCRMNovo", controller: "CRM")
+                                @Html.ButtonLinkIndex(text: "Voltar", action: "MontarTelaVoltaKanban", controller: "CRM")
                             </div>
                         </div>
                     </div>
@@ -340,7 +338,7 @@
             $('#kanbanContainer').html('');
 
             $.ajax({
-                url: '..    '
+                url: '../CRM/GetEtapaFunil'
                 , type: 'POST'
                 , data: { idFunil: $('#txtFunil').val()}
                 , success: function (r) {

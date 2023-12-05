@@ -12,6 +12,7 @@ namespace ERP_Condominios_Solution.ViewModels
         [Key]
         public int CRM1_CD_ID { get; set; }
         public int ASSI_CD_ID { get; set; }
+        public Nullable<int> PREC_CD_ID { get; set; }
         public Nullable<int> FUNI_CD_ID { get; set; }
         public int CLIE_CD_ID { get; set; }
         public Nullable<int> TICR_CD_ID { get; set; }
@@ -164,7 +165,6 @@ namespace ERP_Condominios_Solution.ViewModels
         public virtual ICollection<AGENDA> AGENDA { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ATENDIMENTO_CRM> ATENDIMENTO_CRM { get; set; }
-        public virtual CLIENTE CLIENTE { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<CONTA_RECEBER> CONTA_RECEBER { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
@@ -186,6 +186,7 @@ namespace ERP_Condominios_Solution.ViewModels
         public virtual PEDIDO_VENDA PEDIDO_VENDA { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<CRM_PEDIDO_VENDA> CRM_PEDIDO_VENDA { get; set; }
+        public virtual PRECATORIO PRECATORIO { get; set; }
         public virtual TIPO_CRM TIPO_CRM { get; set; }
         public virtual USUARIO USUARIO { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

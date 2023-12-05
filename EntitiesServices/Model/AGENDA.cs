@@ -45,6 +45,7 @@ namespace EntitiesServices.Model
         public Nullable<int> AGEN_IN_CORPORATIVA { get; set; }
         public string AGEN_LK_REUNIAO { get; set; }
         public Nullable<int> AGEN_IN_CONFIRMADO { get; set; }
+        public Nullable<int> CRAC_CD_ID { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<AGENDA_ANEXO> AGENDA_ANEXO { get; set; }
@@ -63,5 +64,6 @@ namespace EntitiesServices.Model
         public virtual ICollection<DIARIO_PROCESSO> DIARIO_PROCESSO { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ORDEM_SERVICO_AGENDA> ORDEM_SERVICO_AGENDA { get; set; }
+        public virtual CRM_ACAO CRM_ACAO { get; set; }
     }
 }

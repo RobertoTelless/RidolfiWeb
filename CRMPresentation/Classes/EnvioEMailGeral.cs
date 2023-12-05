@@ -43,7 +43,7 @@ namespace ERP_Condominios_Solution.Controllers
             String rod = String.Empty;
             if (vm.MENS_NM_ASSINATURA == null)
             {
-                rod = "<b>" + "Enviado por CRMSys" + "</b>";
+                rod = "<b>" + "Enviado por RidolfiWeb" + "</b>";
             }
             else
             {

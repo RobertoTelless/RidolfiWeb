@@ -70,6 +70,8 @@ namespace EntitiesServices.Model
         public Nullable<System.DateTime> CRM1_DT_DATA_SAIDA { get; set; }
         public Nullable<int> CRM1_IN_ENTREGA_CONFIRMADA { get; set; }
         public string CRM_DS_INFORMACOES_SAIDA { get; set; }
+        public string CRM1_GU_GUID { get; set; }
+        public Nullable<int> CRM1_IN_ENCERRADO { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<AGENDA> AGENDA { get; set; }

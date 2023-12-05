@@ -28,6 +28,7 @@ namespace EntitiesServices.Model
         public string DIPR_NM_OPERACAO { get; set; }
         public string DIPR_DS_DESCRICAO { get; set; }
         public Nullable<System.DateTime> DIPR_DT_DUMMY { get; set; }
+        public Nullable<System.DateTime> DIPR_DT_DUMMY_1 { get; set; }
     
         public virtual AGENDA AGENDA { get; set; }
         public virtual CRM CRM { get; set; }

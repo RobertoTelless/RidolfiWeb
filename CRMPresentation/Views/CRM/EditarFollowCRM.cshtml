@@ -3,6 +3,7 @@
 @{
     Layout = "~/Views/Shared/_Layout_Admin.cshtml";
 }
+
 <div style="z-index: 999;" class="dotContainer">
     <div style="top: 500px" class="dotWrapper">
         <div class="circle"></div>
@@ -36,6 +37,7 @@
         </ol>
         <br />
     </div>
+
     <div class="row">
         <div class="col-lg-12 col-md-12 col-xs-12">
             <div class="col-lg-12 col-md-12 col-xs-12 ibox float-e-margins">
@@ -80,6 +82,7 @@
                                         @Html.HiddenFor(m => m.CRFL_DT_FOLLOW)
                                         @Html.HiddenFor(m => m.CRFL_CD_ID)
                                         @Html.HiddenFor(m => m.ASSI_CD_ID)
+                                        @Html.HiddenFor(m => m.TIFL_CD_ID)
                                         Data
                                         @Html.TextBoxFor(m => m.CRFL_DT_FOLLOW, "{0:dd/MM/yyyy HH:mm}", new { @class = "form-control", autofocus = true , @readonly="readonly"})
                                     </div>

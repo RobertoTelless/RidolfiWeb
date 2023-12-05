@@ -29,6 +29,7 @@
           <Property Name="AGEN_IN_CORPORATIVA" Type="int" />
           <Property Name="AGEN_LK_REUNIAO" Type="varchar" MaxLength="250" />
           <Property Name="AGEN_IN_CONFIRMADO" Type="int" />
+          <Property Name="CRAC_CD_ID" Type="int" />
         </EntityType>
         <EntityType Name="AGENDA_ANEXO">
           <Key>
@@ -400,6 +401,7 @@
           <Property Name="BENE_NM_ENDERECO" Type="varchar" MaxLength="150" />
           <Property Name="BENE_NR_CEP" Type="varchar" MaxLength="10" />
           <Property Name="BENE_NM_BAIRRO" Type="varchar" MaxLength="50" />
+          <Property Name="PREC_CD_ID" Type="int" />
         </EntityType>
         <EntityType Name="BENEFICIARIO_ANEXO">
           <Key>
@@ -1227,6 +1229,8 @@
           <Property Name="CRM1_DT_DATA_SAIDA" Type="datetime" />
           <Property Name="CRM1_IN_ENTREGA_CONFIRMADA" Type="int" />
           <Property Name="CRM_DS_INFORMACOES_SAIDA" Type="varchar" MaxLength="1000" />
+          <Property Name="CRM1_GU_GUID" Type="varchar" MaxLength="150" />
+          <Property Name="CRM1_IN_ENCERRADO" Type="int" />
         </EntityType>
         <EntityType Name="CRM_ACAO">
           <Key>
@@ -1246,6 +1250,7 @@
           <Property Name="CRAC_IN_STATUS" Type="int" />
           <Property Name="CRAC_IN_ATIVO" Type="int" />
           <Property Name="CRAC_NR_ATRASO" Type="int" StoreGeneratedPattern="Computed" />
+          <Property Name="AGEN_CD_ID" Type="int" />
         </EntityType>
         <EntityType Name="CRM_ANEXO">
           <Key>
@@ -1373,6 +1378,7 @@
           <Property Name="CRPV_TX_INTRODUCAO_1" Type="text" />
           <Property Name="CRPV_TX_INFORMACOES_GERAIS_1" Type="text" />
           <Property Name="CRPV_TX_OUTROS_ITENS_1" Type="text" />
+          <Property Name="CRPV_GU_GUID" Type="varchar" MaxLength="150" />
         </EntityType>
         <EntityType Name="CRM_PEDIDO_VENDA_ACOMPANHAMENTO">
           <Key>
@@ -1530,6 +1536,7 @@
           <Property Name="DIPR_NM_OPERACAO" Type="varchar" MaxLength="50" Nullable="false" />
           <Property Name="DIPR_DS_DESCRICAO" Type="varchar" MaxLength="500" />
           <Property Name="DIPR_DT_DUMMY" Type="date" />
+          <Property Name="DIPR_DT_DUMMY_1" Type="date" />
         </EntityType>
         <EntityType Name="EMAIL_AGENDAMENTO">
           <Key>
@@ -4073,6 +4080,18 @@
             </Principal>
             <Dependent Role="AGENDA">
               <PropertyRef Name="CRM1_CD_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_AGENDA_CRM_ACAO">
+          <End Role="CRM_ACAO" Type="Self.CRM_ACAO" Multiplicity="0..1" />
+          <End Role="AGENDA" Type="Self.AGENDA" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CRM_ACAO">
+              <PropertyRef Name="CRAC_CD_ID" />
+            </Principal>
+            <Dependent Role="AGENDA">
+              <PropertyRef Name="CRAC_CD_ID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -9705,6 +9724,10 @@
             <End Role="CRM" EntitySet="CRM" />
             <End Role="AGENDA" EntitySet="AGENDA" />
           </AssociationSet>
+          <AssociationSet Name="FK_AGENDA_CRM_ACAO" Association="Self.FK_AGENDA_CRM_ACAO">
+            <End Role="CRM_ACAO" EntitySet="CRM_ACAO" />
+            <End Role="AGENDA" EntitySet="AGENDA" />
+          </AssociationSet>
           <AssociationSet Name="FK_AGENDA_PACIENTE" Association="Self.FK_AGENDA_PACIENTE">
             <End Role="PACIENTE" EntitySet="PACIENTE" />
             <End Role="AGENDA" EntitySet="AGENDA" />
@@ -11529,6 +11552,8 @@
           <NavigationProperty Name="ATENDIMENTO_AGENDA" Relationship="Self.FK_ATENDIMENTO_AGENDA_AGENDA" FromRole="AGENDA" ToRole="ATENDIMENTO_AGENDA" />
           <NavigationProperty Name="DIARIO_PROCESSO" Relationship="Self.FK_DIARIO_PROCESSO_AGENDA" FromRole="AGENDA" ToRole="DIARIO_PROCESSO" />
           <NavigationProperty Name="ORDEM_SERVICO_AGENDA" Relationship="Self.FK_ORDEM_SERVICO_AGENDA_AGENDA" FromRole="AGENDA" ToRole="ORDEM_SERVICO_AGENDA" />
+          <Property Name="CRAC_CD_ID" Type="Int32" />
+          <NavigationProperty Name="CRM_ACAO" Relationship="RidolfiDB_WebModel.FK_AGENDA_CRM_ACAO" FromRole="AGENDA" ToRole="CRM_ACAO" />
         </EntityType>
         <EntityType Name="AGENDA_ANEXO">
           <Key>
@@ -12020,6 +12045,7 @@
           <Property Name="BENE_NM_ENDERECO" Type="String" MaxLength="150" FixedLength="false" Unicode="false" />
           <Property Name="BENE_NR_CEP" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
           <Property Name="BENE_NM_BAIRRO" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="PREC_CD_ID" Type="Int32" />
         </EntityType>
         <EntityType Name="BENEFICIARIO_ANEXO">
           <Key>
@@ -12996,6 +13022,8 @@
           <NavigationProperty Name="USUARIO" Relationship="Self.FK_CRM_USUARIO" FromRole="CRM" ToRole="USUARIO" />
           <NavigationProperty Name="DIARIO_PROCESSO" Relationship="Self.FK_DIARIO_PROCESSO_CRM" FromRole="CRM" ToRole="DIARIO_PROCESSO" />
           <NavigationProperty Name="MENSAGENS_ENVIADAS_SISTEMA" Relationship="Self.FK_MENSAGENS_ENVIADAS_SISTEMA_CRM" FromRole="CRM" ToRole="MENSAGENS_ENVIADAS_SISTEMA" />
+          <Property Name="CRM1_GU_GUID" Type="String" MaxLength="150" FixedLength="false" Unicode="false" />
+          <Property Name="CRM1_IN_ENCERRADO" Type="Int32" />
         </EntityType>
         <EntityType Name="CRM_ACAO">
           <Key>
@@ -13021,6 +13049,8 @@
           <NavigationProperty Name="USUARIO" Relationship="Self.FK_CRM_ACAO_USUARIO" FromRole="CRM_ACAO" ToRole="USUARIO" />
           <NavigationProperty Name="USUARIO1" Relationship="Self.FK_CRM_ACAO_USUARIO1" FromRole="CRM_ACAO" ToRole="USUARIO" />
           <NavigationProperty Name="DIARIO_PROCESSO" Relationship="Self.FK_DIARIO_PROCESSO_CRM_ACAO" FromRole="CRM_ACAO" ToRole="DIARIO_PROCESSO" />
+          <Property Name="AGEN_CD_ID" Type="Int32" />
+          <NavigationProperty Name="AGENDA" Relationship="RidolfiDB_WebModel.FK_AGENDA_CRM_ACAO" FromRole="CRM_ACAO" ToRole="AGENDA" />
         </EntityType>
         <EntityType Name="CRM_ANEXO">
           <Key>
@@ -13173,6 +13203,7 @@
           <NavigationProperty Name="TEMPLATE_PROPOSTA1" Relationship="Self.FK_CRM_PEDIDO_VENDA_TEMPLATE_PROPOSTA1" FromRole="CRM_PEDIDO_VENDA" ToRole="TEMPLATE_PROPOSTA" />
           <NavigationProperty Name="USUARIO" Relationship="Self.FK_CRM_PEDIDO_VENDA_USUARIO" FromRole="CRM_PEDIDO_VENDA" ToRole="USUARIO" />
           <NavigationProperty Name="DIARIO_PROCESSO" Relationship="Self.FK_DIARIO_PROCESSO_CRM_PEDIDO_VENDA" FromRole="CRM_PEDIDO_VENDA" ToRole="DIARIO_PROCESSO" />
+          <Property Name="CRPV_GU_GUID" Type="String" MaxLength="150" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="CRM_PEDIDO_VENDA_ACOMPANHAMENTO">
           <Key>
@@ -13353,6 +13384,7 @@
           <NavigationProperty Name="CRM_FOLLOW" Relationship="Self.FK_DIARIO_PROCESSO_CRM_FOLLOW" FromRole="DIARIO_PROCESSO" ToRole="CRM_FOLLOW" />
           <NavigationProperty Name="CRM_PEDIDO_VENDA" Relationship="Self.FK_DIARIO_PROCESSO_CRM_PEDIDO_VENDA" FromRole="DIARIO_PROCESSO" ToRole="CRM_PEDIDO_VENDA" />
           <NavigationProperty Name="USUARIO" Relationship="Self.FK_DIARIO_PROCESSO_USUARIO" FromRole="DIARIO_PROCESSO" ToRole="USUARIO" />
+          <Property Name="DIPR_DT_DUMMY_1" Type="DateTime" Precision="0" />
         </EntityType>
         <EntityType Name="EMAIL_AGENDAMENTO">
           <Key>
@@ -23868,6 +23900,10 @@
             <End Role="UF" EntitySet="UF" />
             <End Role="BENEFICIARIO" EntitySet="BENEFICIARIO" />
           </AssociationSet>
+          <AssociationSet Name="FK_AGENDA_CRM_ACAO" Association="RidolfiDB_WebModel.FK_AGENDA_CRM_ACAO">
+            <End Role="CRM_ACAO" EntitySet="CRM_ACAO" />
+            <End Role="AGENDA" EntitySet="AGENDA" />
+          </AssociationSet>
         </EntityContainer>
         <Association Name="FK_BENEFICIARIO_UF">
           <End Type="RidolfiDB_WebModel.UF" Role="UF" Multiplicity="0..1" />
@@ -23881,6 +23917,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_AGENDA_CRM_ACAO">
+          <End Type="RidolfiDB_WebModel.CRM_ACAO" Role="CRM_ACAO" Multiplicity="0..1" />
+          <End Type="RidolfiDB_WebModel.AGENDA" Role="AGENDA" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CRM_ACAO">
+              <PropertyRef Name="CRAC_CD_ID" />
+            </Principal>
+            <Dependent Role="AGENDA">
+              <PropertyRef Name="CRAC_CD_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -23890,6 +23938,7 @@
           <EntitySetMapping Name="AGENDA">
             <EntityTypeMapping TypeName="RidolfiDB_WebModel.AGENDA">
               <MappingFragment StoreEntitySet="AGENDA">
+                <ScalarProperty Name="CRAC_CD_ID" ColumnName="CRAC_CD_ID" />
                 <ScalarProperty Name="AGEN_CD_ID" ColumnName="AGEN_CD_ID" />
                 <ScalarProperty Name="USUA_CD_ID" ColumnName="USUA_CD_ID" />
                 <ScalarProperty Name="EMPR_CD_ID" ColumnName="EMPR_CD_ID" />
@@ -24273,6 +24322,7 @@
           <EntitySetMapping Name="BENEFICIARIO">
             <EntityTypeMapping TypeName="RidolfiDB_WebModel.BENEFICIARIO">
               <MappingFragment StoreEntitySet="BENEFICIARIO">
+                <ScalarProperty Name="PREC_CD_ID" ColumnName="PREC_CD_ID" />
                 <ScalarProperty Name="BENE_NM_BAIRRO" ColumnName="BENE_NM_BAIRRO" />
                 <ScalarProperty Name="BENE_NR_CEP" ColumnName="BENE_NR_CEP" />
                 <ScalarProperty Name="BENE_NM_ENDERECO" ColumnName="BENE_NM_ENDERECO" />
@@ -25136,6 +25186,8 @@
           <EntitySetMapping Name="CRM">
             <EntityTypeMapping TypeName="RidolfiDB_WebModel.CRM">
               <MappingFragment StoreEntitySet="CRM">
+                <ScalarProperty Name="CRM1_IN_ENCERRADO" ColumnName="CRM1_IN_ENCERRADO" />
+                <ScalarProperty Name="CRM1_GU_GUID" ColumnName="CRM1_GU_GUID" />
                 <ScalarProperty Name="CRM1_CD_ID" ColumnName="CRM1_CD_ID" />
                 <ScalarProperty Name="ASSI_CD_ID" ColumnName="ASSI_CD_ID" />
                 <ScalarProperty Name="PREC_CD_ID" ColumnName="PREC_CD_ID" />
@@ -25182,6 +25234,7 @@
           <EntitySetMapping Name="CRM_ACAO">
             <EntityTypeMapping TypeName="RidolfiDB_WebModel.CRM_ACAO">
               <MappingFragment StoreEntitySet="CRM_ACAO">
+                <ScalarProperty Name="AGEN_CD_ID" ColumnName="AGEN_CD_ID" />
                 <ScalarProperty Name="CRAC_CD_ID" ColumnName="CRAC_CD_ID" />
                 <ScalarProperty Name="CRM1_CD_ID" ColumnName="CRM1_CD_ID" />
                 <ScalarProperty Name="ASSI_CD_ID" ColumnName="ASSI_CD_ID" />
@@ -25269,6 +25322,7 @@
           <EntitySetMapping Name="CRM_PEDIDO_VENDA">
             <EntityTypeMapping TypeName="RidolfiDB_WebModel.CRM_PEDIDO_VENDA">
               <MappingFragment StoreEntitySet="CRM_PEDIDO_VENDA">
+                <ScalarProperty Name="CRPV_GU_GUID" ColumnName="CRPV_GU_GUID" />
                 <ScalarProperty Name="CRPV_CD_ID" ColumnName="CRPV_CD_ID" />
                 <ScalarProperty Name="ASSI_CD_ID" ColumnName="ASSI_CD_ID" />
                 <ScalarProperty Name="CRM1_CD_ID" ColumnName="CRM1_CD_ID" />
@@ -25483,6 +25537,7 @@
           <EntitySetMapping Name="DIARIO_PROCESSO">
             <EntityTypeMapping TypeName="RidolfiDB_WebModel.DIARIO_PROCESSO">
               <MappingFragment StoreEntitySet="DIARIO_PROCESSO">
+                <ScalarProperty Name="DIPR_DT_DUMMY_1" ColumnName="DIPR_DT_DUMMY_1" />
                 <ScalarProperty Name="DIPR_CD_ID" ColumnName="DIPR_CD_ID" />
                 <ScalarProperty Name="ASSI_CD_ID" ColumnName="ASSI_CD_ID" />
                 <ScalarProperty Name="EMPR_CD_ID" ColumnName="EMPR_CD_ID" />

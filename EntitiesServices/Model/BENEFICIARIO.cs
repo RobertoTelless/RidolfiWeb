@@ -57,6 +57,7 @@ namespace EntitiesServices.Model
         public string BENE_NM_ENDERECO { get; set; }
         public string BENE_NR_CEP { get; set; }
         public string BENE_NM_BAIRRO { get; set; }
+        public Nullable<int> PREC_CD_ID { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<BENEFICIARIO_ANEXO> BENEFICIARIO_ANEXO { get; set; }

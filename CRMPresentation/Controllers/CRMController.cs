@@ -61,6 +61,8 @@ namespace ERP_Condominios_Solution.Controllers
         private readonly ITemplateEMailAppService teApp;
         private readonly IMotivoEncerramentoAppService encApp;
         private readonly IRecursividadeAppService recApp;
+        private readonly IPrecatorioAppService preApp;
+        private readonly IBeneficiarioAppService benApp;
 
         private String msg;
         private Exception exception;
@@ -75,7 +77,7 @@ namespace ERP_Condominios_Solution.Controllers
         DIARIO_PROCESSO objetoAntesDiario = new DIARIO_PROCESSO();
         String extensao;
 
-        public CRMController(ICRMAppService baseApps, ILogAppService logApps, IUsuarioAppService usuApps, IConfiguracaoAppService confApps, IAgendaAppService ageApps, IClienteAppService cliApps, ITemplateEMailAppService temaApps, ITemplateAppService tempApps, ICRMDiarioAppService diaApps, IFunilAppService funApps, ITemplatePropostaAppService tpApps, IMensagemEnviadaSistemaAppService meApps, IEmpresaAppService empApps, IMotivoCancelamentoAppService mcApps, ITemplateEMailAppService teApps, IMotivoEncerramentoAppService encApps, IRecursividadeAppService recApps)
+        public CRMController(ICRMAppService baseApps, ILogAppService logApps, IUsuarioAppService usuApps, IConfiguracaoAppService confApps, IAgendaAppService ageApps, IClienteAppService cliApps, ITemplateEMailAppService temaApps, ITemplateAppService tempApps, ICRMDiarioAppService diaApps, IFunilAppService funApps, ITemplatePropostaAppService tpApps, IMensagemEnviadaSistemaAppService meApps, IEmpresaAppService empApps, IMotivoCancelamentoAppService mcApps, ITemplateEMailAppService teApps, IMotivoEncerramentoAppService encApps, IRecursividadeAppService recApps, IPrecatorioAppService preApps, IBeneficiarioAppService benApps)
         {
             baseApp = baseApps;
             logApp = logApps;
@@ -94,6 +96,8 @@ namespace ERP_Condominios_Solution.Controllers
             teApp = teApps;
             encApp = encApps;
             recApp = recApps;
+            preApp = preApps;
+            benApp = benApps;
         }
 
         [HttpGet]
@@ -112,14 +116,6 @@ namespace ERP_Condominios_Solution.Controllers
             return RedirectToAction("CarregarBase", "BaseAdmin");
         }
 
-        private void LogError(string message)
-        {
-            var logRepository = LogManager.GetRepository(Assembly.GetCallingAssembly());
-            XmlConfigurator.Configure(logRepository, new FileInfo("Log4Net.config"));
-            ILog _logger = LogManager.GetLogger(typeof(LoggerManager));
-            _logger.Info(message);
-        }
-
         [HttpGet]
         public ActionResult MontarTelaCRM()
         {
@@ -136,12 +132,6 @@ namespace ERP_Condominios_Solution.Controllers
                     usuario = (USUARIO)Session["UserCredentials"];
 
                     // Verfifica permissão
-                    if (usuario.PERFIL.PERF_IN_ACESSO_CRM == 0)
-                    {
-                        Session["MensPermissao"] = 2;
-                        Session["ModuloPermissao"] = "CRM";
-                        return RedirectToAction("CarregarBase", "BaseAdmin");
-                    }
                 }
                 else
                 {
@@ -167,13 +157,6 @@ namespace ERP_Condominios_Solution.Controllers
                 visao.Add(new SelectListItem() { Text = "Lista", Value = "1" });
                 visao.Add(new SelectListItem() { Text = "Kanban", Value = "2" });
                 ViewBag.Visao = new SelectList(visao, "Value", "Text");
-                //List<SelectListItem> status = new List<SelectListItem>();
-                //status.Add(new SelectListItem() { Text = "Prospecção", Value = "1" });
-                //status.Add(new SelectListItem() { Text = "Contato Realizado", Value = "2" });
-                //status.Add(new SelectListItem() { Text = "Proposta Apresentada", Value = "3" });
-                //status.Add(new SelectListItem() { Text = "Em Negociação", Value = "4" });
-                //status.Add(new SelectListItem() { Text = "Encerrado", Value = "5" });
-                //ViewBag.Status = new SelectList(status, "Value", "Text");
                 List<SelectListItem> adic = new List<SelectListItem>();
                 adic.Add(new SelectListItem() { Text = "Ativo", Value = "1" });
                 adic.Add(new SelectListItem() { Text = "Arquivado", Value = "2" });
@@ -281,19 +264,6 @@ namespace ERP_Condominios_Solution.Controllers
                     Session["MensPermissao"] = 0;
                 }
 
-                // Monta Log
-                LOG log = new LOG
-                {
-                    LOG_DT_DATA = DateTime.Now,
-                    ASSI_CD_ID = usuario.ASSI_CD_ID,
-                    USUA_CD_ID = usuario.USUA_CD_ID,
-                    LOG_NM_OPERACAO = "accCRM1",
-                    LOG_IN_ATIVO = 1,
-                    LOG_TX_REGISTRO = null,
-                    LOG_IN_SISTEMA = 1
-                };
-                Int32 volta1 = logApp.ValidateCreate(log);
-
                 Session["IdCRM"] = null;
                 Session["MensCRM"] = null;
                 Session["VoltaCRM"] = 1;
@@ -321,7 +291,7 @@ namespace ERP_Condominios_Solution.Controllers
             }
         }
 
-        public ActionResult IncluirCliente()
+        public ActionResult IncluirPrecatorio()
         {
             try
             {
@@ -329,10 +299,10 @@ namespace ERP_Condominios_Solution.Controllers
                 {
                     return RedirectToAction("Logout", "ControleAcesso");
                 }
-                Session["VoltaClienteCRM"] = 1;
+                Session["VoltaPrecatorioCRM"] = 1;
                 Session["VoltaTela"] = 0;
                 ViewBag.Incluir = (Int32)Session["VoltaTela"];
-                return RedirectToAction("IncluirCliente", "Cliente");
+                return RedirectToAction("IncluirPrecatorio", "Precatorio");
             }
             catch (Exception ex)
             {
@@ -363,12 +333,6 @@ namespace ERP_Condominios_Solution.Controllers
                     usuario = (USUARIO)Session["UserCredentials"];
 
                     // Verfifica permissão
-                    if (usuario.PERFIL.PERF_IN_ACESSO_CRM == 0)
-                    {
-                        Session["MensPermissao"] = 2;
-                        Session["ModuloPermissao"] = "CRM";
-                        return RedirectToAction("CarregarBase", "BaseAdmin");
-                    }
                 }
                 else
                 {
@@ -468,16 +432,6 @@ namespace ERP_Condominios_Solution.Controllers
 
                 // Recupera etapas do funil
 
-
-
-
-
-
-                // Abre view
-                MontarLogGeral log = new MontarLogGeral();
-                String mensagem = log.MontarLog(19, 1, 0, usuario.USUA_NM_NOME);
-                Trace.WriteLine(mensagem);
-
                 Session["IdCRM"] = null;
                 Session["VoltaCRM"] = 2;
                 Session["IncluirCliente"] = 0;
@@ -511,12 +465,6 @@ namespace ERP_Condominios_Solution.Controllers
                     usuario = (USUARIO)Session["UserCredentials"];
 
                     // Verfifica permissão
-                    if (usuario.PERFIL.PERF_IN_ACESSO_CRM == 0)
-                    {
-                        Session["MensPermissao"] = 2;
-                        Session["ModuloPermissao"] = "CRM";
-                        return RedirectToAction("CarregarBase", "BaseAdmin");
-                    }
                 }
                 else
                 {
@@ -807,7 +755,7 @@ namespace ERP_Condominios_Solution.Controllers
                     usuario = (USUARIO)Session["UserCredentials"];
 
                     // Verfifica permissão
-                    if (usuario.PERFIL.PERF_IN_EXCLUSAO_CRM == 0)
+                    if (usuario.PERFIL.PERF_SG_SIGLA != "ADM" & usuario.PERFIL.PERF_SG_SIGLA != "GER")
                     {
                         Session["MensPermissao"] = 2;
                         Session["ModuloPermissao"] = "CRM";
@@ -867,7 +815,7 @@ namespace ERP_Condominios_Solution.Controllers
                     usuario = (USUARIO)Session["UserCredentials"];
 
                     // Verfifica permissão
-                    if (usuario.PERFIL.PERF_IN_REATIVA_CRM == 0)
+                    if (usuario.PERFIL.PERF_SG_SIGLA != "ADM" & usuario.PERFIL.PERF_SG_SIGLA != "GER")
                     {
                         Session["MensPermissao"] = 2;
                         Session["ModuloPermissao"] = "CRM";
@@ -879,16 +827,6 @@ namespace ERP_Condominios_Solution.Controllers
                     return RedirectToAction("Logout", "ControleAcesso");
                 }
                 Int32 idAss = (Int32)Session["IdAssinante"];
-
-                // Verifica possibilidade
-                List<CRM> lista = CarregaCRM();
-                lista = lista.Where(p => p.CRM1_IN_ATIVO == 1).ToList();
-                Int32 num = lista.Count;
-                if ((Int32)Session["NumProc"] <= num)
-                {
-                    Session["MensCRM"] = 50;
-                    return RedirectToAction("MontarTelaCRM", "CRM");
-                }
 
                 // Processa
                 CRM item = baseApp.GetItemById(id);
@@ -932,12 +870,6 @@ namespace ERP_Condominios_Solution.Controllers
                     usuario = (USUARIO)Session["UserCredentials"];
 
                     // Verfifica permissão
-                    if (usuario.PERFIL.PERF_IN_EDITAR_CRM == 0)
-                    {
-                        Session["MensPermissao"] = 2;
-                        Session["ModuloPermissao"] = "CRM";
-                        return RedirectToAction("MontarTelaCRM", "CRM");
-                    }
                 }
                 else
                 {
@@ -950,19 +882,6 @@ namespace ERP_Condominios_Solution.Controllers
                 objetoAntes = (CRM)Session["CRM"];
                 item.CRM1_IN_ESTRELA = 1;
                 Int32 volta = baseApp.ValidateEdit(item, item);
-
-                // Monta Log
-                LOG log = new LOG
-                {
-                    LOG_DT_DATA = DateTime.Now,
-                    ASSI_CD_ID = usuario.ASSI_CD_ID,
-                    USUA_CD_ID = usuario.USUA_CD_ID,
-                    LOG_NM_OPERACAO = "estCRM1",
-                    LOG_IN_ATIVO = 1,
-                    LOG_TX_REGISTRO = Serialization.SerializeJSON<CRM>(item),
-                    LOG_IN_SISTEMA = 1
-                };
-                Int32 volta1 = logApp.ValidateCreate(log);
 
                 Session["ListaCRM"] = null;
                 Session["CRMAlterada"] = 1;
@@ -997,12 +916,6 @@ namespace ERP_Condominios_Solution.Controllers
                     usuario = (USUARIO)Session["UserCredentials"];
 
                     // Verfifica permissão
-                    if (usuario.PERFIL.PERF_IN_EDITAR_CRM == 0)
-                    {
-                        Session["MensPermissao"] = 2;
-                        Session["ModuloPermissao"] = "CRM";
-                        return RedirectToAction("MontarTelaCRM", "CRM");
-                    }
                 }
                 else
                 {
@@ -1015,19 +928,6 @@ namespace ERP_Condominios_Solution.Controllers
                 objetoAntes = (CRM)Session["CRM"];
                 item.CRM1_IN_ESTRELA = 0;
                 Int32 volta = baseApp.ValidateEdit(item, item);
-
-                // Monta Log
-                LOG log = new LOG
-                {
-                    LOG_DT_DATA = DateTime.Now,
-                    ASSI_CD_ID = usuario.ASSI_CD_ID,
-                    USUA_CD_ID = usuario.USUA_CD_ID,
-                    LOG_NM_OPERACAO = "esnCRM1",
-                    LOG_IN_ATIVO = 1,
-                    LOG_TX_REGISTRO = Serialization.SerializeJSON<CRM>(item),
-                    LOG_IN_SISTEMA = 1
-                };
-                Int32 volta1 = logApp.ValidateCreate(log);
 
                 Session["ListaCRM"] = null;
                 Session["CRMAlterada"] = 1;
@@ -1062,12 +962,6 @@ namespace ERP_Condominios_Solution.Controllers
                     usuario = (USUARIO)Session["UserCredentials"];
 
                     // Verfifica permissão
-                    if (usuario.PERFIL.PERF_IN_ALTERACAO_ACAO == 0)
-                    {
-                        Session["MensPermissao"] = 2;
-                        Session["ModuloPermissao"] = "CRM";
-                        return RedirectToAction("AcompanhamentoProcessoCRM", "CRM");
-                    }
                 }
                 else
                 {
@@ -1094,20 +988,6 @@ namespace ERP_Condominios_Solution.Controllers
                 dia.DIPR_DS_DESCRICAO = "Encerramento de Ação " + item.CRAC_NM_TITULO + ". Processo: " + crm.CRM1_NM_NOME + ". Cliente: " + cli.CLIE_NM_NOME;
                 dia.EMPR_CD_ID = usuario.EMPR_CD_ID.Value;
                 Int32 volta3 = diaApp.ValidateCreate(dia);
-
-                // Monta Log
-                LOG log = new LOG
-                {
-                    LOG_DT_DATA = DateTime.Now,
-                    ASSI_CD_ID = usuario.ASSI_CD_ID,
-                    USUA_CD_ID = usuario.USUA_CD_ID,
-                    LOG_NM_OPERACAO = "encCRAC",
-                    LOG_IN_ATIVO = 1,
-                    LOG_TX_REGISTRO = "Processo: " + crm.CRM1_NM_NOME + " - Ação: " + item.CRAC_NM_TITULO,
-                    LOG_TX_REGISTRO_ANTES = null,
-                    LOG_IN_SISTEMA = 1
-                };
-                Int32 volta1 = logApp.ValidateCreate(log);
 
                 Session["VoltaTela"] = 1;
                 ViewBag.Incluir = (Int32)Session["VoltaTela"];
@@ -1218,7 +1098,7 @@ namespace ERP_Condominios_Solution.Controllers
                 };
                 cell.BackgroundColor = BaseColor.LIGHT_GRAY;
                 table.AddCell(cell);
-                cell = new PdfPCell(new Paragraph("Cliente", meuFont))
+                cell = new PdfPCell(new Paragraph("Precatório", meuFont))
                 {
                     VerticalAlignment = Element.ALIGN_MIDDLE,
                     HorizontalAlignment = Element.ALIGN_LEFT
@@ -1295,7 +1175,7 @@ namespace ERP_Condominios_Solution.Controllers
                     }
                     table.AddCell(cell);
 
-                    cell = new PdfPCell(new Paragraph(item.CLIENTE.CLIE_NM_NOME, meuFont))
+                    cell = new PdfPCell(new Paragraph(item.PRECATORIO.PREC_NM_PRECATORIO, meuFont))
                     {
                         VerticalAlignment = Element.ALIGN_MIDDLE,
                         HorizontalAlignment = Element.ALIGN_LEFT
@@ -1658,7 +1538,7 @@ namespace ERP_Condominios_Solution.Controllers
                     usuario = (USUARIO)Session["UserCredentials"];
 
                     // Verfifica permissão
-                    if (usuario.PERFIL.PERF_IN_INCLUSAO_CRM == 0)
+                    if (usuario.PERFIL.PERF_SG_SIGLA == "USU")
                     {
                         Session["MensPermissao"] = 2;
                         Session["ModuloPermissao"] = "CRM";
@@ -1670,17 +1550,6 @@ namespace ERP_Condominios_Solution.Controllers
                     return RedirectToAction("Logout", "ControleAcesso");
                 }
                 Int32 idAss = (Int32)Session["IdAssinante"];
-
-                // Verifica possibilidade
-                List<CRM> lista = CarregaCRM();
-                lista = lista.Where(p => p.CRM1_IN_ATIVO == 1).ToList();
-                Int32 num = lista.Count;
-                Int32 procBase = (Int32)Session["NumCRM"];
-                if ((Int32)Session["NumCRM"] <= num)
-                {
-                    Session["MensCRM"] = 50;
-                    return RedirectToAction("MontarTelaCRM", "CRM");
-                }
 
                 // Prepara listas
                 List<USUARIO> listaTotal = CarregaUsuario();
@@ -1787,7 +1656,7 @@ namespace ERP_Condominios_Solution.Controllers
                     }                  
                     
                     // Verifica cliente
-                    if (vm.CLIE_CD_ID == null || vm.CLIE_CD_ID == 0)
+                    if (vm.PREC_CD_ID == null || vm.PREC_CD_ID == 0)
                     {
                         ModelState.AddModelError("", CRMSys_Base.ResourceManager.GetString("M0141", CultureInfo.CurrentCulture));
                         return View(vm);
@@ -1807,7 +1676,7 @@ namespace ERP_Condominios_Solution.Controllers
 
                     // Executa a operação
                     vm.CRM1_GU_GUID = Guid.NewGuid().ToString();
-                    CLIENTE cli = cliApp.GetItemById(vm.CLIE_CD_ID);
+                    PRECATORIO cli = preApp.GetItemById(vm.PREC_CD_ID.Value);
                     CRM item = Mapper.Map<CRMViewModel, CRM>(vm);
                     USUARIO usuario = (USUARIO)Session["UserCredentials"];
                     Int32 volta = baseApp.ValidateCreate(item, usuario);
@@ -1853,7 +1722,7 @@ namespace ERP_Condominios_Solution.Controllers
                     info = info + "<br />A processo abaixo foi colocado sob sua responsabilidade em " + DateTime.Today.Date.ToShortDateString() + "<br />";
                     info = info + "<br />Informações do Processo:<br />";
                     info = info + "Processo: <b style='color: darkblue'>" + item.CRM1_NM_NOME + "</b><br />";
-                    info = info + "Cliente: <b style='color: grenn'>" + cli.CLIE_NM_NOME + "</b><br />";
+                    info = info + "Precatório: <b style='color: grenn'>" + cli.PREC_NM_PRECATORIO + "</b><br />";
                     info = info + "Data de Início: <b>" + item.CRM1_DT_CRIACAO.Value.ToShortDateString() + "</b><br />";
                     info = info + "Identificador: <b>" + item.CRM1_GU_GUID + "</b><br />";
 
@@ -2696,11 +2565,6 @@ namespace ERP_Condominios_Solution.Controllers
                     usuario = (USUARIO)Session["UserCredentials"];
 
                     // Verfifica permissão
-                    if (usuario.PERFIL.PERF_SG_SIGLA == "VIS")
-                    {
-                        Session["MensCRM"] = 2;
-                        return RedirectToAction("MontarTelaCRM", "CRM");
-                    }
                 }
                 else
                 {
@@ -2771,11 +2635,6 @@ namespace ERP_Condominios_Solution.Controllers
                     usuario = (USUARIO)Session["UserCredentials"];
 
                     // Verfifica permissão
-                    if (usuario.PERFIL.PERF_SG_SIGLA == "VIS")
-                    {
-                        Session["MensCRM"] = 2;
-                        return RedirectToAction("MontarTelaCRM", "CRM");
-                    }
                 }
                 else
                 {
@@ -2816,11 +2675,6 @@ namespace ERP_Condominios_Solution.Controllers
                     usuario = (USUARIO)Session["UserCredentials"];
 
                     // Verfifica permissão
-                    if (usuario.PERFIL.PERF_SG_SIGLA == "VIS")
-                    {
-                        Session["MensCRM"] = 2;
-                        return RedirectToAction("MontarTelaCRM", "CRM");
-                    }
                 }
                 else
                 {
@@ -3129,7 +2983,7 @@ namespace ERP_Condominios_Solution.Controllers
                     usuario = (USUARIO)Session["UserCredentials"];
 
                     // Verfifica permissão
-                    if (usuario.PERFIL.PERF_IN_CANCELA_CRM == 0)
+                    if (usuario.PERFIL.PERF_SG_SIGLA != "ADM" || usuario.PERFIL.PERF_SG_SIGLA != "GER")
                     {
                         Session["MensPermissao"] = 2;
                         Session["ModuloPermissao"] = "CRM";
@@ -3218,14 +3072,14 @@ namespace ERP_Condominios_Solution.Controllers
                     }
 
                     // Gera diario
-                    CLIENTE cli = cliApp.GetItemById(item.CLIE_CD_ID);
+                    PRECATORIO cli = preApp.GetItemById(item.PREC_CD_ID.Value);
                     DIARIO_PROCESSO dia = new DIARIO_PROCESSO();
                     dia.ASSI_CD_ID = usuario.ASSI_CD_ID;
                     dia.USUA_CD_ID = usuario.USUA_CD_ID;
                     dia.DIPR_DT_DATA = DateTime.Today.Date;
                     dia.CRM1_CD_ID = item.CRM1_CD_ID;
                     dia.DIPR_NM_OPERACAO = "Cancelamento de Processo";
-                    dia.DIPR_DS_DESCRICAO = "Cancelamento de Processo " + item.CRM1_NM_NOME + ". Cliente: " + cli.CLIE_NM_NOME;
+                    dia.DIPR_DS_DESCRICAO = "Cancelamento de Processo " + item.CRM1_NM_NOME + ". Precatório: " + cli.PREC_NM_PRECATORIO;
                     dia.EMPR_CD_ID = usuario.EMPR_CD_ID.Value;
                     Int32 volta3 = diaApp.ValidateCreate(dia);
 
@@ -3237,7 +3091,7 @@ namespace ERP_Condominios_Solution.Controllers
                     info = info + "Justificativa do Cancelamento: <b>" + item.CRM1_DS_MOTIVO_CANCELAMENTO + "</b><br />";
                     info = info + "<br />Informações do Processo:<br />";
                     info = info + "Processo: <b style='color: darkblue'>" + item.CRM1_NM_NOME + "</b><br />";
-                    info = info + "Cliente: <b style='color: grenn'>" + cli.CLIE_NM_NOME + "</b><br />";
+                    info = info + "Precatório: <b style='color: grenn'>" + cli.PREC_NM_PRECATORIO + "</b><br />";
                     info = info + "Data de Início: <b>" + item.CRM1_DT_CRIACAO.Value.ToShortDateString() + "</b><br />";
                     info = info + "Identificador: <b>" + item.CRM1_GU_GUID + "</b><br />";
 
@@ -3368,12 +3222,6 @@ namespace ERP_Condominios_Solution.Controllers
                     usuario = (USUARIO)Session["UserCredentials"];
 
                     // Verfifica permissão
-                    if (usuario.PERFIL.PERF_IN_ETAPA_CRM == 0)
-                    {
-                        Session["MensPermissao"] = 2;
-                        Session["ModuloPermissao"] = "CRM";
-                        return RedirectToAction("VoltarAcompanhamentoCRM", "CRM");
-                    }
                 }
                 else
                 {
@@ -3410,6 +3258,7 @@ namespace ERP_Condominios_Solution.Controllers
                 Int32 volta = baseApp.ValidateEdit(crm, crm, usuario);
 
                 // Processa 
+                PRECATORIO cli = preApp.GetItemById(crm.PREC_CD_ID.Value);
                 if (etapa.FUET_IN_EMAIL == 1)
                 {
                     // Monta Texto
@@ -3418,32 +3267,10 @@ namespace ERP_Condominios_Solution.Controllers
                     info = info + "Status Atual: <b style='color: darkblue'>" + etapaNova.FUET_NM_NOME + "</b><br />";
                     info = info + "<br />Informações do Processo:<br />";
                     info = info + "Processo: <b style='color: darkblue'>" + crm.CRM1_NM_NOME + "</b><br />";
-                    info = info + "Cliente: <b style='color: grenn'>" + crm.CLIENTE.CLIE_NM_NOME + "</b><br />";
+                    info = info + "Precatório: <b style='color: grenn'>" + cli.PREC_NM_PRECATORIO + "</b><br />";
                     info = info + "Data de Início: <b>" + crm.CRM1_DT_CRIACAO.Value.ToShortDateString() + "</b><br />";
                     info = info + "Identificador: <b>" + crm.CRM1_GU_GUID + "</b><br />";
                     EnvioEMailGeralBase envio = new EnvioEMailGeralBase(usuApp, confApp, meApp);
-
-                    // envia para cliente
-                    if (funil.FUNI_IN_CLIENTE == 1)
-                    {
-                        CLIENTE clie = (CLIENTE)Session["ClienteBase"];
-                        MensagemViewModel vm = new MensagemViewModel();
-                        vm.ASSI_CD_ID = idAss;
-                        vm.MENS_DT_CRIACAO = DateTime.Now;
-                        vm.MENS_IN_ATIVO = 1;
-                        vm.MENS_NM_NOME = "Processo - Mudança de Etapa";
-                        vm.ID = crm.CLIE_CD_ID;
-                        vm.MODELO = null;
-                        vm.USUA_CD_ID = usuario.USUA_CD_ID;
-                        vm.MENS_NM_CABECALHO = null;
-                        vm.MENS_NM_RODAPE = null;
-                        vm.MENS_IN_TIPO = 1;
-                        vm.MENS_TX_TEXTO = info;
-                        vm.CLIE_CD_ID = crm.CLIE_CD_ID;
-                        vm.MENS_NM_CAMPANHA = clie.CLIE_NM_EMAIL;
-
-                        Int32 voltaX = await envio.ProcessaEnvioEMailGeral(vm, usuario);
-                    }
 
                     // Envia para responsável
                     if (funil.FUNI_IN_RESPONSAVEL == 1)
@@ -3460,7 +3287,6 @@ namespace ERP_Condominios_Solution.Controllers
                         vm.MENS_NM_RODAPE = null;
                         vm.MENS_IN_TIPO = 1;
                         vm.MENS_TX_TEXTO = info;
-                        vm.CLIE_CD_ID = crm.CLIE_CD_ID;
                         vm.MENS_NM_CAMPANHA = usuario.USUA_NM_EMAIL;
 
                         Int32 voltaX = await envio.ProcessaEnvioEMailGeral(vm, usuario);
@@ -3468,29 +3294,15 @@ namespace ERP_Condominios_Solution.Controllers
                 }
 
                 // Gera diario
-                CLIENTE cli = cliApp.GetItemById(crm.CLIE_CD_ID);
                 DIARIO_PROCESSO dia = new DIARIO_PROCESSO();
                 dia.ASSI_CD_ID = usuario.ASSI_CD_ID;
                 dia.USUA_CD_ID = usuario.USUA_CD_ID;
                 dia.DIPR_DT_DATA = DateTime.Today.Date;
                 dia.CRM1_CD_ID = crm.CRM1_CD_ID;
                 dia.DIPR_NM_OPERACAO = "Mudança de Etapa";
-                dia.DIPR_DS_DESCRICAO = "Mudança de Etapa. Processo: " + crm.CRM1_NM_NOME + ". Cliente: " + cli.CLIE_NM_NOME + ". Para " + etapaNova.FUET_NM_NOME;
+                dia.DIPR_DS_DESCRICAO = "Mudança de Etapa. Processo: " + crm.CRM1_NM_NOME + ". Precatório: " + cli.PREC_NM_PRECATORIO + ". Para " + etapaNova.FUET_NM_NOME;
                 dia.EMPR_CD_ID = usuario.EMPR_CD_ID.Value;
                 Int32 volta3 = diaApp.ValidateCreate(dia);
-
-                // Monta Log
-                LOG log = new LOG
-                {
-                    LOG_DT_DATA = DateTime.Now,
-                    ASSI_CD_ID = usuario.ASSI_CD_ID,
-                    USUA_CD_ID = usuario.USUA_CD_ID,
-                    LOG_NM_OPERACAO = "etaCRM1",
-                    LOG_IN_ATIVO = 1,
-                    LOG_TX_REGISTRO = "Mudança de Etapa. Processo: " + crm.CRM1_NM_NOME + ". Cliente: " + cli.CLIE_NM_NOME + ". Para " + etapaNova.FUET_NM_NOME,
-                    LOG_IN_SISTEMA = 1
-                };
-                Int32 volta1 = logApp.ValidateCreate(log);
 
                 // Retorno
                 Session["CRMAlterada"] = 1;
@@ -3529,12 +3341,6 @@ namespace ERP_Condominios_Solution.Controllers
                     usuario = (USUARIO)Session["UserCredentials"];
 
                     // Verfifica permissão
-                    if (usuario.PERFIL.PERF_IN_ETAPA_CRM == 0)
-                    {
-                        Session["MensPermissao"] = 2;
-                        Session["ModuloPermissao"] = "CRM";
-                        return RedirectToAction("VoltarAcompanhamentoCRM", "CRM");
-                    }
                 }
                 else
                 {
@@ -3572,6 +3378,7 @@ namespace ERP_Condominios_Solution.Controllers
                 Int32 volta = baseApp.ValidateEdit(crm, crm, usuario);
 
                 // Processa mensagem
+                PRECATORIO cli = preApp.GetItemById(crm.PREC_CD_ID.Value);
                 if (etapa.FUET_IN_EMAIL == 1)
                 {
                     // Monta Texto
@@ -3580,32 +3387,10 @@ namespace ERP_Condominios_Solution.Controllers
                     info = info + "Status Atual: <b style='color: darkblue'>" + etapaNova.FUET_NM_NOME + "</b><br />";
                     info = info + "<br />Informações do Processo:<br />";
                     info = info + "Processo: <b style='color: darkblue'>" + crm.CRM1_NM_NOME + "</b><br />";
-                    info = info + "Cliente: <b style='color: grenn'>" + crm.CLIENTE.CLIE_NM_NOME + "</b><br />";
+                    info = info + "Precatório: <b style='color: grenn'>" + cli.PREC_NM_PRECATORIO + "</b><br />";
                     info = info + "Data de Início: <b>" + crm.CRM1_DT_CRIACAO.Value.ToShortDateString() + "</b><br />";
                     info = info + "Identificador: <b>" + crm.CRM1_GU_GUID + "</b><br />";
                     EnvioEMailGeralBase envio = new EnvioEMailGeralBase(usuApp, confApp, meApp);
-
-                    // Envia para cliente
-                    if (funil.FUNI_IN_CLIENTE == 1)
-                    {
-                        CLIENTE clie = (CLIENTE)Session["ClienteBase"];
-                        MensagemViewModel vm = new MensagemViewModel();
-                        vm.ASSI_CD_ID = idAss;
-                        vm.MENS_DT_CRIACAO = DateTime.Now;
-                        vm.MENS_IN_ATIVO = 1;
-                        vm.MENS_NM_NOME = "Processo - Mudança de Etapa";
-                        vm.ID = crm.CLIE_CD_ID;
-                        vm.MODELO = null;
-                        vm.USUA_CD_ID = usuario.USUA_CD_ID;
-                        vm.MENS_NM_CABECALHO = null;
-                        vm.MENS_NM_RODAPE = null;
-                        vm.MENS_IN_TIPO = 1;
-                        vm.MENS_TX_TEXTO = info;
-                        vm.CLIE_CD_ID = crm.CLIE_CD_ID;
-                        vm.MENS_NM_CAMPANHA = clie.CLIE_NM_EMAIL;
-
-                        Int32 voltaX = await envio.ProcessaEnvioEMailGeral(vm, usuario);
-                    }
 
                     // Envia para responsável
                     if (funil.FUNI_IN_RESPONSAVEL == 1)
@@ -3622,7 +3407,6 @@ namespace ERP_Condominios_Solution.Controllers
                         vm.MENS_NM_RODAPE = null;
                         vm.MENS_IN_TIPO = 1;
                         vm.MENS_TX_TEXTO = info;
-                        vm.CLIE_CD_ID = crm.CLIE_CD_ID;
                         vm.MENS_NM_CAMPANHA = usuario.USUA_NM_EMAIL;
 
                         Int32 voltaX = await envio.ProcessaEnvioEMailGeral(vm, usuario);
@@ -3630,30 +3414,15 @@ namespace ERP_Condominios_Solution.Controllers
                 }
 
                 // Gera diario
-                CLIENTE cli = cliApp.GetItemById(crm.CLIE_CD_ID);
                 DIARIO_PROCESSO dia = new DIARIO_PROCESSO();
                 dia.ASSI_CD_ID = usuario.ASSI_CD_ID;
                 dia.USUA_CD_ID = usuario.USUA_CD_ID;
                 dia.DIPR_DT_DATA = DateTime.Today.Date;
                 dia.CRM1_CD_ID = crm.CRM1_CD_ID;
                 dia.DIPR_NM_OPERACAO = "Mudança de Etapa";
-                dia.DIPR_DS_DESCRICAO = "Mudança de Etapa. Processo: " + crm.CRM1_NM_NOME + ". Cliente: " + cli.CLIE_NM_NOME + ". Para " + etapaNova.FUET_NM_NOME;
+                dia.DIPR_DS_DESCRICAO = "Mudança de Etapa. Processo: " + crm.CRM1_NM_NOME + ". Precatório: " + cli.PREC_NM_PRECATORIO + ". Para " + etapaNova.FUET_NM_NOME;
                 dia.EMPR_CD_ID = usuario.EMPR_CD_ID.Value;
                 Int32 volta3 = diaApp.ValidateCreate(dia);
-
-
-                // Monta Log
-                LOG log = new LOG
-                {
-                    LOG_DT_DATA = DateTime.Now,
-                    ASSI_CD_ID = usuario.ASSI_CD_ID,
-                    USUA_CD_ID = usuario.USUA_CD_ID,
-                    LOG_NM_OPERACAO = "petCRM1",
-                    LOG_IN_ATIVO = 1,
-                    LOG_TX_REGISTRO = "Mudança de Etapa. Processo: " + crm.CRM1_NM_NOME + ". Cliente: " + cli.CLIE_NM_NOME + ". Para " + etapaNova.FUET_NM_NOME,
-                    LOG_IN_SISTEMA = 1
-                };
-                Int32 volta1 = logApp.ValidateCreate(log);
 
                 // Retorno
                 Session["CRMAlterada"] = 1;
@@ -3675,26 +3444,6 @@ namespace ERP_Condominios_Solution.Controllers
             }
         }
 
-        public ActionResult EditarCR(Int32 id)
-        {
-            if ((String)Session["Ativa"] == null)
-            {
-                return RedirectToAction("Logout", "ControleAcesso");
-            }
-            Session["VoltaCRMCR"] = 10;
-            return RedirectToAction("EditarCR", "ContaReceber", new { id = id });
-        }
-
-        public ActionResult VerCR(Int32 id)
-        {
-            if ((String)Session["Ativa"] == null)
-            {
-                return RedirectToAction("Logout", "ControleAcesso");
-            }
-            Session["VoltaCRMCR"] = 10;
-            return RedirectToAction("VerCR", "ContaReceber", new { id = id });
-        }
-
         [HttpGet]
         public ActionResult EncerrarProcessoCRM(Int32 id)
         {
@@ -3711,7 +3460,7 @@ namespace ERP_Condominios_Solution.Controllers
                     usuario = (USUARIO)Session["UserCredentials"];
 
                     // Verfifica permissão
-                    if (usuario.PERFIL.PERF_IN_ENCERRA_CRM == 0)
+                    if (usuario.PERFIL.PERF_SG_SIGLA != "ADM" || usuario.PERFIL.PERF_SG_SIGLA != "GER")
                     {
                         Session["MensPermissao"] = 2;
                         Session["ModuloPermissao"] = "CRM";
@@ -3807,14 +3556,14 @@ namespace ERP_Condominios_Solution.Controllers
                     }
 
                     // Gera diario
-                    CLIENTE cli = cliApp.GetItemById(item.CLIE_CD_ID);
+                    PRECATORIO cli = preApp.GetItemById(item.PREC_CD_ID.Value);
                     DIARIO_PROCESSO dia = new DIARIO_PROCESSO();
                     dia.ASSI_CD_ID = usuario.ASSI_CD_ID;
                     dia.USUA_CD_ID = usuario.USUA_CD_ID;
                     dia.DIPR_DT_DATA = DateTime.Today.Date;
                     dia.CRM1_CD_ID = item.CRM1_CD_ID;
                     dia.DIPR_NM_OPERACAO = "Encerramento de Processo";
-                    dia.DIPR_DS_DESCRICAO = "Encerramento de Processo " + item.CRM1_NM_NOME + ". Cliente: " + cli.CLIE_NM_NOME;
+                    dia.DIPR_DS_DESCRICAO = "Encerramento de Processo " + item.CRM1_NM_NOME + ". Precatório: " + cli.PREC_NM_PRECATORIO;
                     dia.EMPR_CD_ID = usuario.EMPR_CD_ID.Value;
                     Int32 volta3 = diaApp.ValidateCreate(dia);
 
@@ -3825,7 +3574,7 @@ namespace ERP_Condominios_Solution.Controllers
                     info = info + "Motivo do Encerramento: <b>" + me.MOEN_NM_NOME + "</b><br />";
                     info = info + "<br />Informações do Processo:<br /  >";
                     info = info + "Processo: <b style='color: darkblue'>" + item.CRM1_NM_NOME + "</b><br />";
-                    info = info + "Cliente: <b style='color: grenn'>" + cli.CLIE_NM_NOME + "</b><br />";
+                    info = info + "Precatório: <b style='color: grenn'>" + cli.PREC_NM_PRECATORIO + "</b><br />";
                     info = info + "Data de Início: <b>" + item.CRM1_DT_CRIACAO.Value.ToShortDateString() + "</b><br />";
                     info = info + "Identificador: <b>" + item.CRM1_GU_GUID + "</b><br />";
 
@@ -3840,7 +3589,6 @@ namespace ERP_Condominios_Solution.Controllers
                     mens.MENS_NM_LINK = null;
                     mens.MENS_NM_NOME = "Encerramento de Processo CRM";
                     mens.MENS_NM_CAMPANHA = usuario.USUA_NM_EMAIL;
-                    mens.CLIE_CD_ID = item.CLIE_CD_ID;
 
                     EnvioEMailGeralBase envio = new EnvioEMailGeralBase(usuApp, confApp, meApp);
                     Int32 voltaX = await envio.ProcessaEnvioEMailGeral(mens, usuario);
@@ -3885,175 +3633,6 @@ namespace ERP_Condominios_Solution.Controllers
             }
         }
 
-        //[HttpGet]
-        //public ActionResult EditarProcessoCRM(Int32 id)
-        //{
-        //    // Verifica se tem usuario logado
-        //    USUARIO usuario = new USUARIO();
-        //    if ((String)Session["Ativa"] == null)
-        //    {
-        //        return RedirectToAction("Logout", "ControleAcesso");
-        //    }
-        //    if ((USUARIO)Session["UserCredentials"] != null)
-        //    {
-        //        usuario = (USUARIO)Session["UserCredentials"];
-
-        //        // Verfifica permissão
-        //        if (usuario.PERFIL.PERF_SG_SIGLA == "VIS")
-        //        {
-        //            Session["MensCRM"] = 2;
-        //            return RedirectToAction("MontarTelaCRM", "CRM");
-        //        }
-        //    }
-        //    else
-        //    {
-        //        return RedirectToAction("Logout", "ControleAcesso");
-        //    }
-        //    Int32 idAss = (Int32)Session["IdAssinante"];
-
-        //    // Monta listas
-        //    ViewBag.Origem = new SelectList(CarregaOrigem().OrderBy(p => p.CROR_NM_NOME), "CROR_CD_ID", "CROR_NM_NOME");
-        //    List<SelectListItem> adic = new List<SelectListItem>();
-        //    adic.Add(new SelectListItem() { Text = "Ativos", Value = "1" });
-        //    adic.Add(new SelectListItem() { Text = "Arquivados", Value = "2" });
-        //    adic.Add(new SelectListItem() { Text = "Cancelados", Value = "3" });
-        //    adic.Add(new SelectListItem() { Text = "Falhados", Value = "4" });
-        //    adic.Add(new SelectListItem() { Text = "Sucesso", Value = "5" });
-        //    //adic.Add(new SelectListItem() { Text = "Faturamento", Value = "6" });
-        //    //adic.Add(new SelectListItem() { Text = "Expedição", Value = "7" });
-        //    ViewBag.Adic = new SelectList(adic, "Value", "Text");
-        //    List<SelectListItem> fav = new List<SelectListItem>();
-        //    fav.Add(new SelectListItem() { Text = "Sim", Value = "1" });
-        //    fav.Add(new SelectListItem() { Text = "Não", Value = "0" });
-        //    ViewBag.Favorito = new SelectList(fav, "Value", "Text");
-        //    List<SelectListItem> temp = new List<SelectListItem>();
-        //    temp.Add(new SelectListItem() { Text = "Fria", Value = "1" });
-        //    temp.Add(new SelectListItem() { Text = "Morna", Value = "2" });
-        //    temp.Add(new SelectListItem() { Text = "Quente", Value = "3" });
-        //    temp.Add(new SelectListItem() { Text = "Muito Quente", Value = "4" });
-        //    ViewBag.Temp = new SelectList(temp, "Value", "Text");
-        //    Session["VoltaTela"] = 0;
-        //    ViewBag.Incluir = (Int32)Session["VoltaTela"];
-
-        //    // Recupera
-        //    CRM item = baseApp.GetItemById(id);
-        //    Session["CRM"] = item;
-        //    ViewBag.Incluir = (Int32)Session["IncluirCRM"];
-
-        //    // Mensagens
-        //    if (Session["MensCliente"] != null)
-        //    {
-        //        if ((Int32)Session["MensCRM"] == 10)
-        //        {
-        //            ModelState.AddModelError("", CRMSys_Base.ResourceManager.GetString("M0019", CultureInfo.CurrentCulture));
-        //        }
-        //        if ((Int32)Session["MensCRM"] == 11)
-        //        {
-        //            ModelState.AddModelError("", CRMSys_Base.ResourceManager.GetString("M0024", CultureInfo.CurrentCulture));
-        //        }
-        //        if ((Int32)Session["MensCRM"] == 50)
-        //        {
-        //            ModelState.AddModelError("", CRMSys_Base.ResourceManager.GetString("M0039", CultureInfo.CurrentCulture));
-        //        }
-        //    }
-
-        //    // Monta view
-        //    Session["VoltaCRM1"] = 1;
-        //    objetoAntes = item;
-        //    Session["IdCRM"] = id;
-        //    CRMViewModel vm = Mapper.Map<CRM, CRMViewModel>(item);
-        //    return View(vm);
-        //}
-
-        //[HttpPost]
-        ////[ValidateAntiForgeryToken]
-        //public ActionResult EditarProcessoCRM(CRMViewModel vm)
-        //{
-        //    Int32 idAss = (Int32)Session["IdAssinante"];
-        //    ViewBag.Origem = new SelectList(CarregaOrigem().OrderBy(p => p.CROR_NM_NOME), "CROR_CD_ID", "CROR_NM_NOME");
-        //    List<SelectListItem> adic = new List<SelectListItem>();
-        //    adic.Add(new SelectListItem() { Text = "Ativos", Value = "1" });
-        //    adic.Add(new SelectListItem() { Text = "Arquivados", Value = "2" });
-        //    adic.Add(new SelectListItem() { Text = "Cancelados", Value = "3" });
-        //    adic.Add(new SelectListItem() { Text = "Falhados", Value = "4" });
-        //    adic.Add(new SelectListItem() { Text = "Sucesso", Value = "5" });
-        //    ViewBag.Adic = new SelectList(adic, "Value", "Text");
-        //    List<SelectListItem> fav = new List<SelectListItem>();
-        //    fav.Add(new SelectListItem() { Text = "Sim", Value = "1" });
-        //    fav.Add(new SelectListItem() { Text = "Não", Value = "0" });
-        //    ViewBag.Favorito = new SelectList(fav, "Value", "Text");
-        //    List<SelectListItem> temp = new List<SelectListItem>();
-        //    temp.Add(new SelectListItem() { Text = "Fria", Value = "1" });
-        //    temp.Add(new SelectListItem() { Text = "Morna", Value = "2" });
-        //    temp.Add(new SelectListItem() { Text = "Quente", Value = "3" });
-        //    temp.Add(new SelectListItem() { Text = "Muito Quente", Value = "4" });
-        //    ViewBag.Temp = new SelectList(temp, "Value", "Text");
-
-        //    // Indicadores
-        //    ViewBag.Incluir = (Int32)Session["IncluirCRM"];
-        //    if (ModelState.IsValid)
-        //    {
-        //        try
-        //        {
-        //            // Executa a operação
-        //            USUARIO usuario = (USUARIO)Session["UserCredentials"];
-        //            CRM item = Mapper.Map<CRMViewModel, CRM>(vm);
-        //            Int32 volta = baseApp.ValidateEdit(item, (CRM)Session["CRM"], usuario);
-
-        //            // Verifica retorno
-        //            if (volta == 1)
-        //            {
-        //                Session["MensCRM"] = 60;
-        //                return RedirectToAction("MontarTelaCRM");
-        //            }
-        //            if (volta == 2)
-        //            {
-        //                Session["MensCRM"] = 61;
-        //                return RedirectToAction("MontarTelaCRM");
-        //            }
-        //            if (volta == 3)
-        //            {
-        //                Session["MensCRM"] = 62;
-        //                return RedirectToAction("MontarTelaCRM");
-        //            }
-        //            if (volta == 4)
-        //            {
-        //                Session["MensCRM"] = 63;
-        //                return RedirectToAction("MontarTelaCRM");
-        //            }
-
-        //            // Sucesso
-        //            listaMaster = new List<CRM>();
-        //            Session["ListaCRM"] = null;
-        //            Session["IncluirCRM"] = 0;
-        //            Session["VoltaTela"] = 0;
-        //            ViewBag.Incluir = (Int32)Session["VoltaTela"];
-
-        //            if (Session["FiltroCRM"] != null)
-        //            {
-        //                FiltrarCRM((CRM)Session["FiltroCRM"]);
-        //            }
-        //            return RedirectToAction("VoltarBaseCRM");
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            LogError(ex.Message);
-        //            ViewBag.Message = ex.Message;
-        //            Session["TipoVolta"] = 2;
-        //            Session["VoltaExcecao"] = "CRM";
-        //            Session["Excecao"] = ex;
-        //            Session["ExcecaoTipo"] = ex.GetType().ToString();
-        //            GravaLogExcecao grava = new GravaLogExcecao(usuApp);
-        //            Int32 voltaX = grava.GravarLogExcecao(ex, "CRM", "CRMSys", 1, (USUARIO)Session["UserCredentials"]);
-        //            return RedirectToAction("TrataExcecao", "BaseAdmin");
-        //        }
-        //    }
-        //    else
-        //    {
-        //        return View(vm);
-        //    }
-        //}
-
         [HttpGet]
         public ActionResult VisualizarProcessoCRM(Int32 id)
         {
@@ -4070,12 +3649,6 @@ namespace ERP_Condominios_Solution.Controllers
                     usuario = (USUARIO)Session["UserCredentials"];
 
                     // Verfifica permissão
-                    if (usuario.PERFIL.PERF_IN_ACESSO_CRM == 0)
-                    {
-                        Session["MensPermissao"] = 2;
-                        Session["ModuloPermissao"] = "CRM";
-                        return RedirectToAction("MontarTelaCRM", "CRM");
-                    }
                 }
                 else
                 {
@@ -4096,7 +3669,7 @@ namespace ERP_Condominios_Solution.Controllers
 
                 List<CRM_ACAO> acoes = item.CRM_ACAO.ToList().OrderByDescending(p => p.CRAC_DT_CRIACAO).ToList();
                 CRM_ACAO acao = acoes.Where(p => p.CRAC_IN_STATUS == 1).FirstOrDefault();
-                Session["ClienteCRM"] = item.CLIENTE.CLIE_NM_NOME;
+                Session["ClienteCRM"] = item.PRECATORIO.PREC_NM_PRECATORIO;
                 CLIENTE clie = cliApp.GetItemById(item.CRM1_CD_ID);
                 Session["ClienteBase"] = clie;
                 ViewBag.Acoes = acoes;
@@ -4160,12 +3733,6 @@ namespace ERP_Condominios_Solution.Controllers
                     usuario = (USUARIO)Session["UserCredentials"];
 
                     // Verfifica permissão
-                    if (usuario.PERFIL.PERF_IN_CONTATO_CRM == 0)
-                    {
-                        Session["MensPermissao"] = 2;
-                        Session["ModuloPermissao"] = "CRM";
-                        return RedirectToAction("VoltarAcompanhamentoCRM", "CRM");
-                    }
                 }
                 else
                 {
@@ -4242,21 +3809,6 @@ namespace ERP_Condominios_Solution.Controllers
                     CRM_CONTATO item = Mapper.Map<CRMContatoViewModel, CRM_CONTATO>(vm);
                     Int32 volta = baseApp.ValidateEditContato(item);
 
-
-                    // Monta Log
-                    LOG log = new LOG
-                    {
-                        LOG_DT_DATA = DateTime.Now,
-                        ASSI_CD_ID = usuario.ASSI_CD_ID,
-                        USUA_CD_ID = usuario.USUA_CD_ID,
-                        LOG_NM_OPERACAO = "ecoCRM1",
-                        LOG_IN_ATIVO = 1,
-                        LOG_TX_REGISTRO = cont.CRCO_NM_NOME,
-                        LOG_TX_REGISTRO_ANTES = null,
-                        LOG_IN_SISTEMA = 1
-                    };
-                    Int32 volta1 = logApp.ValidateCreate(log);
-
                     // Retorno
                     Session["CRMAlterada"] = 1;
                     Session["VoltaTela"] = 5;
@@ -4297,12 +3849,6 @@ namespace ERP_Condominios_Solution.Controllers
                     usuario = (USUARIO)Session["UserCredentials"];
 
                     // Verfifica permissão
-                    if (usuario.PERFIL.PERF_IN_CONTATO_CRM == 0)
-                    {
-                        Session["MensPermissao"] = 2;
-                        Session["ModuloPermissao"] = "CRM";
-                        return RedirectToAction("VoltarAcompanhamentoCRM", "CRM");
-                    }
                 }
                 else
                 {
@@ -4315,19 +3861,6 @@ namespace ERP_Condominios_Solution.Controllers
                 objetoAntes = (CRM)Session["CRM"];
                 item.CRCO_IN_ATIVO = 0;
                 Int32 volta = baseApp.ValidateEditContato(item);
-
-                // Monta Log
-                LOG log = new LOG
-                {
-                    LOG_DT_DATA = DateTime.Now,
-                    ASSI_CD_ID = usuario.ASSI_CD_ID,
-                    USUA_CD_ID = usuario.USUA_CD_ID,
-                    LOG_NM_OPERACAO = "xcoCRM1",
-                    LOG_IN_ATIVO = 1,
-                    LOG_TX_REGISTRO = item.CRCO_NM_NOME,
-                    LOG_IN_SISTEMA = 1
-                };
-                Int32 volta1 = logApp.ValidateCreate(log);
 
                 // Retorno
                 Session["CRMAlterada"] = 1;
@@ -4364,12 +3897,6 @@ namespace ERP_Condominios_Solution.Controllers
                     usuario = (USUARIO)Session["UserCredentials"];
 
                     // Verfifica permissão
-                    if (usuario.PERFIL.PERF_IN_CONTATO_CRM == 0)
-                    {
-                        Session["MensPermissao"] = 2;
-                        Session["ModuloPermissao"] = "CRM";
-                        return RedirectToAction("VoltarAcompanhamentoCRM", "CRM");
-                    }
                 }
                 else
                 {
@@ -4396,19 +3923,6 @@ namespace ERP_Condominios_Solution.Controllers
                 objetoAntes = (CRM)Session["CRM"];
                 item.CRCO_IN_ATIVO = 1;
                 Int32 volta = baseApp.ValidateEditContato(item);
-
-                // Monta Log
-                LOG log = new LOG
-                {
-                    LOG_DT_DATA = DateTime.Now,
-                    ASSI_CD_ID = usuario.ASSI_CD_ID,
-                    USUA_CD_ID = usuario.USUA_CD_ID,
-                    LOG_NM_OPERACAO = "rcoCRM1",
-                    LOG_IN_ATIVO = 1,
-                    LOG_TX_REGISTRO = item.CRCO_NM_NOME,
-                    LOG_IN_SISTEMA = 1
-                };
-                Int32 volta1 = logApp.ValidateCreate(log);
 
                 // Retorno
                 Session["CRMAlterada"] = 1;
@@ -4445,12 +3959,6 @@ namespace ERP_Condominios_Solution.Controllers
                     usuario = (USUARIO)Session["UserCredentials"];
 
                     // Verfifica permissão
-                    if (usuario.PERFIL.PERF_IN_CONTATO_CRM == 0)
-                    {
-                        Session["MensPermissao"] = 2;
-                        Session["ModuloPermissao"] = "CRM";
-                        return RedirectToAction("VoltarAcompanhamentoCRM", "CRM");
-                    }
                 }
                 else
                 {
@@ -4526,19 +4034,6 @@ namespace ERP_Condominios_Solution.Controllers
                     USUARIO usuarioLogado = (USUARIO)Session["UserCredentials"];
                     Int32 volta = baseApp.ValidateCreateContato(item);
 
-                    // Monta Log
-                    LOG log = new LOG
-                    {
-                        LOG_DT_DATA = DateTime.Now,
-                        ASSI_CD_ID = usuario.ASSI_CD_ID,
-                        USUA_CD_ID = usuario.USUA_CD_ID,
-                        LOG_NM_OPERACAO = "icoCRM1",
-                        LOG_IN_ATIVO = 1,
-                        LOG_TX_REGISTRO = Serialization.SerializeJSON<CRM_CONTATO>(item),
-                        LOG_IN_SISTEMA = 1
-                    };
-                    Int32 volta1 = logApp.ValidateCreate(log);
-
                     // Retorno
                     Session["CRMAlterada"] = 1;
                     Session["VoltaTela"] = 5;
@@ -4579,12 +4074,6 @@ namespace ERP_Condominios_Solution.Controllers
                     usuario = (USUARIO)Session["UserCredentials"];
 
                     // Verfifica permissão
-                    if (usuario.PERFIL.PERF_IN_ACOMPANHA_CRM == 0)
-                    {
-                        Session["MensPermissao"] = 2;
-                        Session["ModuloPermissao"] = "CRM";
-                        return RedirectToAction("MontarTelaCRM", "CRM");
-                    }
                 }
                 else
                 {
@@ -4594,19 +4083,9 @@ namespace ERP_Condominios_Solution.Controllers
 
                 // Verifica possibilidade E-Mail
                 ViewBag.EMail = 1;
-                Int32 num = CarregaMensagemEnviada().Where(p => p.MEEN_DT_DATA_ENVIO.Value.Month == DateTime.Today.Date.Month & p.MEEN_DT_DATA_ENVIO.Value.Year == DateTime.Today.Date.Year & p.MEEN_IN_TIPO == 1).ToList().Count;
-                if ((Int32)Session["NumEMail"] <= num)
-                {
-                    ViewBag.EMail = 0;
-                }
 
                 // Verifica possibilidade SMS
                 ViewBag.SMS = 1;
-                num = CarregaMensagemEnviada().Where(p => p.MEEN_DT_DATA_ENVIO.Value.Month == DateTime.Today.Date.Month & p.MEEN_DT_DATA_ENVIO.Value.Year == DateTime.Today.Date.Year & p.MEEN_IN_TIPO == 2).ToList().Count;
-                if ((Int32)Session["NumEMail"] <= num)
-                {
-                    ViewBag.SMS = 0;
-                }
 
                 // Mensagens
                 if (Session["MensCRM"] != null)
@@ -4715,9 +4194,25 @@ namespace ERP_Condominios_Solution.Controllers
                 CRMViewModel vm = Mapper.Map<CRM, CRMViewModel>(item);
                 List<CRM_ACAO> acoes = item.CRM_ACAO.ToList().OrderByDescending(p => p.CRAC_DT_CRIACAO).ToList();
                 CRM_ACAO acao = acoes.Where(p => p.CRAC_IN_STATUS == 1).FirstOrDefault();
-                Session["ClienteCRM"] = item.CLIENTE.CLIE_NM_NOME;
-                CLIENTE clie = cliApp.GetItemById(item.CRM1_CD_ID);
+                Session["ClienteCRM"] = item.PRECATORIO.PREC_NM_PRECATORIO;
+                PRECATORIO clie = preApp.GetItemById(item.PREC_CD_ID.Value);
                 Session["ClienteBase"] = clie;
+                BENEFICIARIO bene = null;
+                ViewBag.TemMail = 0;
+                ViewBag.TemSMS = 0;
+
+                if (clie.BENE_CD_ID != null)
+                {
+                    bene = benApp.GetItemById(clie.PREC_CD_ID);
+                    if (bene.BENE_EM_EMAIL != null)
+                    {
+                        ViewBag.TemMail = 1;
+                    }
+                    if (bene.BENE_NR_CELULAR != null)
+                    {
+                        ViewBag.TemSMS = 1;
+                    }
+                }
 
                 List<CRM_PEDIDO_VENDA> peds = CarregaPedidoVenda().Where(p => p.CRM1_CD_ID == item.CRM1_CD_ID).ToList();
                 CRM_PEDIDO_VENDA ped = peds.Where(p => p.CRPV_IN_STATUS == 2 || p.CRPV_IN_STATUS == 1 || p.CRPV_IN_STATUS == 5).FirstOrDefault();
@@ -4779,7 +4274,7 @@ namespace ERP_Condominios_Solution.Controllers
                 Session["CRM"] = item;
                 Session["VoltaCRM"] = 11;
                 Session["VoltaAgendaCRMCalend"] = 10;
-                Session["ClienteCRM"] = item.CLIENTE;
+                Session["ClienteCRM"] = item.PRECATORIO;
                 Session["VoltaAgenda"] = 22;
                 ViewBag.Acoes = acoes;
                 ViewBag.Acao = acao;
@@ -4935,12 +4430,6 @@ namespace ERP_Condominios_Solution.Controllers
                     usuario = (USUARIO)Session["UserCredentials"];
 
                     // Verfifica permissão
-                    if (usuario.PERFIL.PERF_IN_MENSAGEM_CONTATO_CRM == 0)
-                    {
-                        Session["MensPermissao"] = 2;
-                        Session["ModuloPermissao"] = "CRM";
-                        return RedirectToAction("VoltarAnexoAcompanhamento", "CRM");
-                    }
                 }
                 else
                 {
@@ -5014,19 +4503,6 @@ namespace ERP_Condominios_Solution.Controllers
                     String guid = new Guid().ToString();
                     Int32 volta1 = envio.GravarMensagemEnviada(vm, usuarioLogado, vm.MENS_TX_TEXTO, "Success", guid, null, "Mensagem de E-Mail para Contatos");
 
-                    // Monta Log
-                    LOG log = new LOG
-                    {
-                        LOG_DT_DATA = DateTime.Now,
-                        ASSI_CD_ID = usuarioLogado.ASSI_CD_ID,
-                        USUA_CD_ID = usuarioLogado.USUA_CD_ID,
-                        LOG_NM_OPERACAO = "mcoCRM1",
-                        LOG_IN_ATIVO = 1,
-                        LOG_TX_REGISTRO = cont.CRCO_NM_NOME + " - E-Mail: " + cont.CRCO_NM_EMAIL,
-                        LOG_IN_SISTEMA = 1
-                    };
-                    Int32 volta2 = logApp.ValidateCreate(log);
-
                     // Retorno
                     return RedirectToAction("AcompanhamentoProcessoCRM", new { id = idNot });
                 }
@@ -5064,12 +4540,6 @@ namespace ERP_Condominios_Solution.Controllers
                     usuario = (USUARIO)Session["UserCredentials"];
 
                     // Verfifica permissão
-                    if (usuario.PERFIL.PERF_IN_MENSAGEM_CONTATO_CRM == 0)
-                    {
-                        Session["MensPermissao"] = 2;
-                        Session["ModuloPermissao"] = "CRM";
-                        return RedirectToAction("VoltarAnexoAcompanhamento", "CRM");
-                    }
                 }
                 else
                 {
@@ -5135,19 +4605,6 @@ namespace ERP_Condominios_Solution.Controllers
                     USUARIO usuarioLogado = (USUARIO)Session["UserCredentials"];
                     Int32 volta = ProcessaEnvioSMSContato(vm, usuarioLogado);
 
-                    // Monta Log
-                    LOG log = new LOG
-                    {
-                        LOG_DT_DATA = DateTime.Now,
-                        ASSI_CD_ID = usuarioLogado.ASSI_CD_ID,
-                        USUA_CD_ID = usuarioLogado.USUA_CD_ID,
-                        LOG_NM_OPERACAO = "scoCRM1",
-                        LOG_IN_ATIVO = 1,
-                        LOG_TX_REGISTRO = cont.CRCO_NM_NOME + " - Celular: " + cont.CRCO_NR_CELULAR,
-                        LOG_IN_SISTEMA = 1
-                    };
-                    Int32 volta2 = logApp.ValidateCreate(log);
-
                     // Retorno
                     return RedirectToAction("AcompanhamentoProcessoCRM", new { id = idNot });
                 }
@@ -5185,12 +4642,6 @@ namespace ERP_Condominios_Solution.Controllers
                     usuario = (USUARIO)Session["UserCredentials"];
 
                     // Verfifica permissão
-                    if (usuario.PERFIL.PERF_IN_MENSAGEM_CLIENTE == 0)
-                    {
-                        Session["MensPermissao"] = 2;
-                        Session["ModuloPermissao"] = "CRM";
-                        return RedirectToAction("VoltarAnexoAcompanhamento", "CRM");
-                    }
                 }
                 else
                 {
@@ -5198,24 +4649,18 @@ namespace ERP_Condominios_Solution.Controllers
                 }
                 Int32 idAss = (Int32)Session["IdAssinante"];
 
-                // Verifica possibilidade
-                Int32 num = CarregaMensagemEnviada().Where(p => p.MEEN_DT_DATA_ENVIO.Value.Month == DateTime.Today.Date.Month & p.MEEN_DT_DATA_ENVIO.Value.Year == DateTime.Today.Date.Year & p.MEEN_IN_TIPO == 2).ToList().Count;
-                if ((Int32)Session["NumEMail"] <= num)
-                {
-                    Session["MensCRM"] = 201;
-                    return RedirectToAction("VoltarAcompanhamentoCRM");
-                }
-
                 // Prepara
                 Int32 crm = (Int32)Session["IdCRM"];
                 CRM item = baseApp.GetItemById(crm);
-                CLIENTE cont = cliApp.GetItemById(id);
-                Session["Cliente"] = cont;
+                PRECATORIO cont = preApp.GetItemById(id);
+                BENEFICIARIO bene = benApp.GetItemById(cont.BENE_CD_ID.Value);
+                Session["Cliente"] = bene;
                 ViewBag.Cliente = cont;
+
                 MensagemViewModel mens = new MensagemViewModel();
-                mens.NOME = cont.CLIE_NM_NOME;
+                mens.NOME = bene.BENE_NM_NOME;
                 mens.ID = id;
-                mens.MODELO = cont.CLIE_NR_CELULAR;
+                mens.MODELO = bene.BENE_NR_CELULAR;
                 mens.MENS_DT_CRIACAO = DateTime.Today.Date;
                 mens.MENS_IN_TIPO = 2;
                 return View(mens);
@@ -5247,27 +4692,14 @@ namespace ERP_Condominios_Solution.Controllers
                     Int32 idNot = (Int32)Session["IdCRM"];
 
                     // Sanitização
-                    CLIENTE cont = (CLIENTE)Session["Cliente"];
+                    BENEFICIARIO cont = (BENEFICIARIO)Session["Cliente"];
                     vm.MENS_TX_TEXTO = CrossCutting.UtilitariosGeral.CleanStringGeral(vm.MENS_TX_TEXTO);
                     vm.MENS_NM_LINK = CrossCutting.UtilitariosGeral.CleanStringGeral(vm.MENS_NM_LINK);
-                    vm.MENS_NM_NOME = "Mensagem para " + cont.CLIE_NM_NOME;
+                    vm.MENS_NM_NOME = "Mensagem para " + cont.BENE_NM_NOME;
 
                     // Executa a operação
                     USUARIO usuarioLogado = (USUARIO)Session["UserCredentials"];
                     Int32 volta = ProcessaEnvioSMSCliente(vm, usuarioLogado);
-
-                    // Monta Log
-                    LOG log = new LOG
-                    {
-                        LOG_DT_DATA = DateTime.Now,
-                        ASSI_CD_ID = usuarioLogado.ASSI_CD_ID,
-                        USUA_CD_ID = usuarioLogado.USUA_CD_ID,
-                        LOG_NM_OPERACAO = "smsCLIE",
-                        LOG_IN_ATIVO = 1,
-                        LOG_TX_REGISTRO = cont.CLIE_NM_NOME + " - Celular: " + cont.CLIE_NR_CELULAR,
-                        LOG_IN_SISTEMA = 1
-                    };
-                    Int32 volta2 = logApp.ValidateCreate(log);
 
                     // Retorno
                     Session["VoltaTela"] = 0;
@@ -5358,30 +4790,16 @@ namespace ERP_Condominios_Solution.Controllers
                     Int32 volta = baseApp.ValidateEdit(not, objetoAntes);
 
                     // Gera diario
-                    CLIENTE cli = cliApp.GetItemById(not.CLIE_CD_ID);
+                    PRECATORIO cli = preApp.GetItemById(not.PREC_CD_ID.Value);
                     DIARIO_PROCESSO dia = new DIARIO_PROCESSO();
                     dia.ASSI_CD_ID = usuarioLogado.ASSI_CD_ID;
                     dia.USUA_CD_ID = usuarioLogado.USUA_CD_ID;
                     dia.DIPR_DT_DATA = DateTime.Today.Date;
                     dia.CRM1_CD_ID = item.CRM1_CD_ID;
                     dia.CRCM_CD_ID = item.CRCM_CD_ID;
-                    dia.DIPR_NM_OPERACAO = "Comentário de Processo";
-                    dia.DIPR_DS_DESCRICAO = "Comentário de Processo " + not.CRM1_NM_NOME + ". Cliente: " + cli.CLIE_NM_NOME;
-                    dia.EMPR_CD_ID = usuarioLogado.EMPR_CD_ID.Value;
+                    dia.DIPR_NM_OPERACAO = "Anotação de Processo";
+                    dia.DIPR_DS_DESCRICAO = "Anotação de Processo " + not.CRM1_NM_NOME + ". Precatório: " + cli.PREC_NM_PRECATORIO;
                     Int32 volta3 = diaApp.ValidateCreate(dia);
-
-                    // Monta Log
-                    LOG log = new LOG
-                    {
-                        LOG_DT_DATA = DateTime.Now,
-                        ASSI_CD_ID = usuarioLogado.ASSI_CD_ID,
-                        USUA_CD_ID = usuarioLogado.USUA_CD_ID,
-                        LOG_NM_OPERACAO = "icmCRM1",
-                        LOG_IN_ATIVO = 1,
-                        LOG_TX_REGISTRO = "Processo: " + item.CRM.CRM1_NM_NOME + " - Anotação: " + item.CRCM_DS_COMENTARIO,
-                        LOG_IN_SISTEMA = 1
-                    };
-                    Int32 volta2 = logApp.ValidateCreate(log);
 
                     // Sucesso
                     Session["VoltaTela"] = 3;
@@ -5457,19 +4875,6 @@ namespace ERP_Condominios_Solution.Controllers
                     Int32 volta = baseApp.ValidateEditAnotacao(item);
                     CRM crm = (CRM)Session["CRM"];
 
-                    // Monta Log
-                    LOG log = new LOG
-                    {
-                        LOG_DT_DATA = DateTime.Now,
-                        ASSI_CD_ID = usuarioLogado.ASSI_CD_ID,
-                        USUA_CD_ID = usuarioLogado.USUA_CD_ID,
-                        LOG_NM_OPERACAO = "ecmCRM1",
-                        LOG_IN_ATIVO = 1,
-                        LOG_TX_REGISTRO = "Processo: " + crm.CRM1_NM_NOME + " - Anotação: " + item.CRCM_DS_COMENTARIO,
-                        LOG_IN_SISTEMA = 1
-                    };
-                    Int32 volta2 = logApp.ValidateCreate(log);
-
                     // Verifica retorno
                     Session["CRMAlterada"] = 1;
                     Session["VoltaTela"] = 3;
@@ -5512,25 +4917,11 @@ namespace ERP_Condominios_Solution.Controllers
                 Int32 volta = baseApp.ValidateEditAnotacao(item);
                 CRM crm = (CRM)Session["CRM"];
 
-                // Monta Log
-                LOG log = new LOG
-                {
-                    LOG_DT_DATA = DateTime.Now,
-                    ASSI_CD_ID = usuarioLogado.ASSI_CD_ID,
-                    USUA_CD_ID = usuarioLogado.USUA_CD_ID,
-                    LOG_NM_OPERACAO = "xcmCRM1",
-                    LOG_IN_ATIVO = 1,
-                    LOG_TX_REGISTRO = "Processo: " + crm.CRM1_NM_NOME + " - Anotação: " + item.CRCM_DS_COMENTARIO,
-                    LOG_IN_SISTEMA = 1
-                };
-                Int32 volta2 = logApp.ValidateCreate(log);
-
                 Session["CRMAlterada"] = 1;
                 return RedirectToAction("VoltarAcompanhamentoCRMBase");
             }
             catch (Exception ex)
             {
-                LogError(ex.Message);
                 ViewBag.Message = ex.Message;
                 Session["TipoVolta"] = 2;
                 Session["VoltaExcecao"] = "CRM";
@@ -5558,12 +4949,6 @@ namespace ERP_Condominios_Solution.Controllers
                     usuario = (USUARIO)Session["UserCredentials"];
 
                     // Verfifica permissão
-                    if (usuario.PERFIL.PERF_IN_ALTERACAO_ACAO == 0)
-                    {
-                        Session["MensPermissao"] = 2;
-                        Session["ModuloPermissao"] = "CRM";
-                        return RedirectToAction("VoltarAnexoAcompanhamento", "CRM");
-                    }
                 }
                 else
                 {
@@ -5609,7 +4994,6 @@ namespace ERP_Condominios_Solution.Controllers
             }
             catch (Exception ex)
             {
-                LogError(ex.Message);
                 ViewBag.Message = ex.Message;
                 Session["TipoVolta"] = 2;
                 Session["VoltaExcecao"] = "CRM";
@@ -5650,7 +5034,7 @@ namespace ERP_Condominios_Solution.Controllers
 
                     // Gera diario
                     CRM not = baseApp.GetItemById(item.CRM1_CD_ID);
-                    CLIENTE cli = cliApp.GetItemById(not.CLIE_CD_ID);
+                    PRECATORIO cli = preApp.GetItemById(not.PREC_CD_ID.Value);
                     DIARIO_PROCESSO dia = new DIARIO_PROCESSO();
                     dia.ASSI_CD_ID = usuarioLogado.ASSI_CD_ID;
                     dia.USUA_CD_ID = usuarioLogado.USUA_CD_ID;
@@ -5658,24 +5042,12 @@ namespace ERP_Condominios_Solution.Controllers
                     dia.CRM1_CD_ID = item.CRM1_CD_ID;
                     dia.CRAC_CD_ID = item.CRAC_CD_ID;
                     dia.DIPR_NM_OPERACAO = "Alteração de Ação";
-                    dia.DIPR_DS_DESCRICAO = "Alteração de Ação " + item.CRAC_NM_TITULO + ". Processo: " + not.CRM1_NM_NOME + ". Cliente: " + cli.CLIE_NM_NOME;
+                    dia.DIPR_DS_DESCRICAO = "Alteração de Ação " + item.CRAC_NM_TITULO + ". Processo: " + not.CRM1_NM_NOME + ". Precatório: " + cli.PREC_NM_PRECATORIO;
                     dia.EMPR_CD_ID = usuario.EMPR_CD_ID.Value;
                     Int32 volta3 = diaApp.ValidateCreate(dia);
 
                     // Monta Log
                     CRM_ACAO antes = (CRM_ACAO)Session["Acao"];
-                    LOG log = new LOG
-                    {
-                        LOG_DT_DATA = DateTime.Now,
-                        ASSI_CD_ID = usuarioLogado.ASSI_CD_ID,
-                        USUA_CD_ID = usuarioLogado.USUA_CD_ID,
-                        LOG_NM_OPERACAO = "edtCRAC",
-                        LOG_IN_ATIVO = 1,
-                        LOG_TX_REGISTRO = "Processo: " + not.CRM1_NM_NOME + " - Ação: " + item.CRAC_NM_TITULO,
-                        LOG_TX_REGISTRO_ANTES = null,
-                        LOG_IN_SISTEMA = 1
-                    };
-                    Int32 volta2 = logApp.ValidateCreate(log);
 
                     // Verifica retorno
                     Session["ListaCRM"] = null;
@@ -5720,12 +5092,6 @@ namespace ERP_Condominios_Solution.Controllers
                     usuario = (USUARIO)Session["UserCredentials"];
 
                     // Verfifica permissão
-                    if (usuario.PERFIL.PERF_IN_EXCLUSAO_ACAO == 0)
-                    {
-                        Session["MensPermissao"] = 2;
-                        Session["ModuloPermissao"] = "CRM";
-                        return RedirectToAction("VoltarAnexoAcompanhamento", "CRM");
-                    }
                 }
                 else
                 {
@@ -5771,7 +5137,7 @@ namespace ERP_Condominios_Solution.Controllers
 
                 // Gera diario
                 CRM not = baseApp.GetItemById(item.CRM1_CD_ID);
-                CLIENTE cli = cliApp.GetItemById(not.CLIE_CD_ID);
+                PRECATORIO cli = preApp.GetItemById(not.PREC_CD_ID.Value);
                 DIARIO_PROCESSO dia = new DIARIO_PROCESSO();
                 dia.ASSI_CD_ID = usuario.ASSI_CD_ID;
                 dia.USUA_CD_ID = usuario.USUA_CD_ID;
@@ -5779,24 +5145,9 @@ namespace ERP_Condominios_Solution.Controllers
                 dia.CRM1_CD_ID = item.CRM1_CD_ID;
                 dia.CRAC_CD_ID = item.CRAC_CD_ID;
                 dia.DIPR_NM_OPERACAO = "Exclusão de Ação";
-                dia.DIPR_DS_DESCRICAO = "Exclusão de Ação " + item.CRAC_NM_TITULO + ". Processo: " + not.CRM1_NM_NOME + ". Cliente: " + cli.CLIE_NM_NOME;
+                dia.DIPR_DS_DESCRICAO = "Exclusão de Ação " + item.CRAC_NM_TITULO + ". Processo: " + not.CRM1_NM_NOME + ". Precatório: " + cli.PREC_NM_PRECATORIO;
                 dia.EMPR_CD_ID = usuario.EMPR_CD_ID.Value;
                 Int32 volta3 = diaApp.ValidateCreate(dia);
-
-                // Monta Log
-                CRM_ACAO antes = (CRM_ACAO)Session["Acao"];
-                LOG log = new LOG
-                {
-                    LOG_DT_DATA = DateTime.Now,
-                    ASSI_CD_ID = usuario.ASSI_CD_ID,
-                    USUA_CD_ID = usuario.USUA_CD_ID,
-                    LOG_NM_OPERACAO = "delCRAC",
-                    LOG_IN_ATIVO = 1,
-                    LOG_TX_REGISTRO = "Processo: " + not.CRM1_NM_NOME + " - Ação: " + item.CRAC_NM_TITULO,
-                    LOG_TX_REGISTRO_ANTES = null,
-                    LOG_IN_SISTEMA = 1
-                };
-                Int32 volta2 = logApp.ValidateCreate(log);
 
                 Session["CRMAcaoAlterada"] = 1;
                 Session["VoltaTela"] = 1;
@@ -5834,12 +5185,6 @@ namespace ERP_Condominios_Solution.Controllers
                     usuario = (USUARIO)Session["UserCredentials"];
 
                     // Verfifica permissão
-                    if (usuario.PERFIL.PERF_IN_REATIVA_ACAO == 0)
-                    {
-                        Session["MensPermissao"] = 2;
-                        Session["ModuloPermissao"] = "CRM";
-                        return RedirectToAction("VoltarAnexoAcompanhamento", "CRM");
-                    }
                 }
                 else
                 {
@@ -5864,7 +5209,7 @@ namespace ERP_Condominios_Solution.Controllers
 
                 // Gera diario
                 CRM not = baseApp.GetItemById(item.CRM1_CD_ID);
-                CLIENTE cli = cliApp.GetItemById(not.CLIE_CD_ID);
+                PRECATORIO cli = preApp.GetItemById(not.PREC_CD_ID.Value);
                 DIARIO_PROCESSO dia = new DIARIO_PROCESSO();
                 dia.ASSI_CD_ID = usuario.ASSI_CD_ID;
                 dia.USUA_CD_ID = usuario.USUA_CD_ID;
@@ -5872,24 +5217,9 @@ namespace ERP_Condominios_Solution.Controllers
                 dia.CRM1_CD_ID = item.CRM1_CD_ID;
                 dia.CRAC_CD_ID = item.CRAC_CD_ID;
                 dia.DIPR_NM_OPERACAO = "Reativação de Ação";
-                dia.DIPR_DS_DESCRICAO = "Reativação de Ação " + item.CRAC_NM_TITULO + ". Processo: " + not.CRM1_NM_NOME + ". Cliente: " + cli.CLIE_NM_NOME;
+                dia.DIPR_DS_DESCRICAO = "Reativação de Ação " + item.CRAC_NM_TITULO + ". Processo: " + not.CRM1_NM_NOME + ". Precatório: " + cli.PREC_NM_PRECATORIO;
                 dia.EMPR_CD_ID = usuario.EMPR_CD_ID.Value;
                 Int32 volta3 = diaApp.ValidateCreate(dia);
-
-                // Monta Log
-                CRM_ACAO antes = (CRM_ACAO)Session["Acao"];
-                LOG log = new LOG
-                {
-                    LOG_DT_DATA = DateTime.Now,
-                    ASSI_CD_ID = usuario.ASSI_CD_ID,
-                    USUA_CD_ID = usuario.USUA_CD_ID,
-                    LOG_NM_OPERACAO = "reaCRAC",
-                    LOG_IN_ATIVO = 1,
-                    LOG_TX_REGISTRO = "Processo: " + not.CRM1_NM_NOME + " - Ação: " + item.CRAC_NM_TITULO,
-                    LOG_TX_REGISTRO_ANTES = null,
-                    LOG_IN_SISTEMA = 1
-                };
-                Int32 volta2 = logApp.ValidateCreate(log);
 
                 Session["FlagCRM"] = 1;
                 Session["CRMAlterada"] = 1;
@@ -5911,25 +5241,14 @@ namespace ERP_Condominios_Solution.Controllers
         }
 
         [HttpGet]
-        public ActionResult ConsultarEstoque()
-        {
-            if ((String)Session["Ativa"] == null)
-            {
-                return RedirectToAction("Logout", "ControleAcesso");
-            }
-            Session["VoltaClienteCRM"] = 1;
-            return RedirectToAction("MontarTelaEstoqueProduto", "Estoque");
-        }
-
-        [HttpGet]
         public ActionResult ConsultarCliente(Int32 id)
         {
             if ((String)Session["Ativa"] == null)
             {
                 return RedirectToAction("Logout", "ControleAcesso");
             }
-            Session["VoltaClienteCRM"] = 5;
-            return RedirectToAction("EditarCliente", new { id = id });
+            Session["VoltaPrecatorioCRM"] = 5;
+            return RedirectToAction("EditarPrecatorio", new { id = id });
         }
 
         [HttpGet]
@@ -5948,12 +5267,6 @@ namespace ERP_Condominios_Solution.Controllers
                     usuario = (USUARIO)Session["UserCredentials"];
 
                     // Verfifica permissão
-                    if (usuario.PERFIL.PERF_IN_ENCERRA_ACAO == 0)
-                    {
-                        Session["MensPermissao"] = 2;
-                        Session["ModuloPermissao"] = "CRM";
-                        return RedirectToAction("VoltarAnexoAcompanhamento", "CRM");
-                    }
                 }
                 else
                 {
@@ -5970,7 +5283,7 @@ namespace ERP_Condominios_Solution.Controllers
 
                 // Gera diario
                 CRM not = baseApp.GetItemById(item.CRM1_CD_ID);
-                CLIENTE cli = cliApp.GetItemById(not.CLIE_CD_ID);
+                PRECATORIO cli = preApp.GetItemById(not.PREC_CD_ID.Value);
                 DIARIO_PROCESSO dia = new DIARIO_PROCESSO();
                 dia.ASSI_CD_ID = usuario.ASSI_CD_ID;
                 dia.USUA_CD_ID = usuario.USUA_CD_ID;
@@ -5978,23 +5291,9 @@ namespace ERP_Condominios_Solution.Controllers
                 dia.CRM1_CD_ID = item.CRM1_CD_ID;
                 dia.CRAC_CD_ID = item.CRAC_CD_ID;
                 dia.DIPR_NM_OPERACAO = "Encerramento de Ação";
-                dia.DIPR_DS_DESCRICAO = "Encerramento de Ação " + item.CRAC_NM_TITULO + ". Processo: " + not.CRM1_NM_NOME + ". Cliente: " + cli.CLIE_NM_NOME;
+                dia.DIPR_DS_DESCRICAO = "Encerramento de Ação " + item.CRAC_NM_TITULO + ". Processo: " + not.CRM1_NM_NOME + ". Precatório: " + cli.PREC_NM_PRECATORIO;
                 dia.EMPR_CD_ID = usuario.EMPR_CD_ID.Value;
                 Int32 volta3 = diaApp.ValidateCreate(dia);
-
-                // Monta Log
-                LOG log = new LOG
-                {
-                    LOG_DT_DATA = DateTime.Now,
-                    ASSI_CD_ID = usuario.ASSI_CD_ID,
-                    USUA_CD_ID = usuario.USUA_CD_ID,
-                    LOG_NM_OPERACAO = "encCRAC",
-                    LOG_IN_ATIVO = 1,
-                    LOG_TX_REGISTRO = "Processo: " + not.CRM1_NM_NOME + " - Ação: " + item.CRAC_NM_TITULO,
-                    LOG_TX_REGISTRO_ANTES = null,
-                    LOG_IN_SISTEMA = 1
-                };
-                Int32 volta2 = logApp.ValidateCreate(log);
 
                 Session["CRMAcaoAlterada"] = 1;
                 Session["VoltaTela"] = 1;
@@ -6022,7 +5321,7 @@ namespace ERP_Condominios_Solution.Controllers
             Session["IdCliente"] = id;
             Session["VoltaTela"] = 0;
             ViewBag.Incluir = (Int32)Session["VoltaTela"];
-            return RedirectToAction("VoltarAnexoCliente", "Cliente");
+            return RedirectToAction("VoltarAnexoPrecatorio", "Precatorio");
         }
 
         [HttpGet]
@@ -6245,7 +5544,7 @@ namespace ERP_Condominios_Solution.Controllers
             Session["VoltaCliente"] = 0;
             Session["VoltaCRM"] = 0;
             Session["NivelCliente"] = 1;
-            return RedirectToAction("EditarCliente", new { id = id });
+            return RedirectToAction("EditarPrecatorio", new { id = id });
         }
 
         public ActionResult VerPropostasUsuarioCRMElaboracaoPrevia()
@@ -6318,12 +5617,6 @@ namespace ERP_Condominios_Solution.Controllers
                     usuario = (USUARIO)Session["UserCredentials"];
 
                     // Verfifica permissão
-                    if (usuario.PERFIL.PERF_IN_INCLUSAO_ACAO == 0)
-                    {
-                        Session["MensPermissao"] = 2;
-                        Session["ModuloPermissao"] = "CRM";
-                        return RedirectToAction("VoltarAnexoAcompanhamento", "CRM");
-                    }
                 }
                 else
                 {
@@ -6423,7 +5716,7 @@ namespace ERP_Condominios_Solution.Controllers
 
                     // Gera diario
                     CRM not = baseApp.GetItemById(item.CRM1_CD_ID);
-                    CLIENTE cli = cliApp.GetItemById(not.CLIE_CD_ID);
+                    PRECATORIO cli = preApp.GetItemById(not.PREC_CD_ID.Value);
                     DIARIO_PROCESSO dia = new DIARIO_PROCESSO();
                     dia.ASSI_CD_ID = usuarioLogado.ASSI_CD_ID;
                     dia.USUA_CD_ID = usuarioLogado.USUA_CD_ID;
@@ -6432,7 +5725,7 @@ namespace ERP_Condominios_Solution.Controllers
                     dia.CRAC_CD_ID = item.CRAC_CD_ID;
                     dia.EMPR_CD_ID = usuarioLogado.EMPR_CD_ID.Value;
                     dia.DIPR_NM_OPERACAO = "Criação de Ação";
-                    dia.DIPR_DS_DESCRICAO = "Criação de Ação " + item.CRAC_NM_TITULO + ". Processo: " + not.CRM1_NM_NOME + ". Cliente: " + cli.CLIE_NM_NOME;
+                    dia.DIPR_DS_DESCRICAO = "Criação de Ação " + item.CRAC_NM_TITULO + ". Processo: " + not.CRM1_NM_NOME + ". Precatório: " + cli.PREC_NM_PRECATORIO;
                     Int32 volta3 = diaApp.ValidateCreate(dia);
 
                     // Processa agenda
@@ -6466,7 +5759,7 @@ namespace ERP_Condominios_Solution.Controllers
                         dia.CRAC_CD_ID = item.CRAC_CD_ID;
                         dia.AGEN_CD_ID = ag.AGEN_CD_ID;
                         dia.DIPR_NM_OPERACAO = "Agendamento de Ação";
-                        dia.DIPR_DS_DESCRICAO = "Agendamento de Ação " + item.CRAC_NM_TITULO + ". Processo: " + not.CRM1_NM_NOME + ". Cliente: " + cli.CLIE_NM_NOME + ". Data: " + ag.AGEN_DT_DATA.ToLongDateString();
+                        dia.DIPR_DS_DESCRICAO = "Agendamento de Ação " + item.CRAC_NM_TITULO + ". Processo: " + not.CRM1_NM_NOME + ". Precatório: " + cli.PREC_NM_PRECATORIO + ". Data: " + ag.AGEN_DT_DATA.ToLongDateString();
                         dia.EMPR_CD_ID = usuarioLogado.EMPR_CD_ID.Value;
                         Int32 volta4 = diaApp.ValidateCreate(dia);
                     }
@@ -6573,7 +5866,7 @@ namespace ERP_Condominios_Solution.Controllers
                     
                 using (var streamWriter = new StreamWriter(httpWebRequest.GetRequestStream()))
                 {
-                    json = String.Concat("{\"destinations\": [{\"to\": \"", listaDest, "\", \"text\": \"", texto, "\", \"customId\": \"" + customId + "\", \"from\": \"ERPSys\"}]}");
+                    json = String.Concat("{\"destinations\": [{\"to\": \"", listaDest, "\", \"text\": \"", texto, "\", \"customId\": \"" + customId + "\", \"from\": \"RidolfiWeb\"}]}");
                     streamWriter.Write(json);
                 }
 
@@ -6633,7 +5926,7 @@ namespace ERP_Condominios_Solution.Controllers
             {
                 // Recupera contatos
                 Int32 idAss = (Int32)Session["IdAssinante"];
-                CLIENTE cont = (CLIENTE)Session["Cliente"];
+                BENEFICIARIO cont = (BENEFICIARIO)Session["Cliente"];
 
                 // Processa SMS
                 CONFIGURACAO conf = confApp.GetItemById(usuario.ASSI_CD_ID);
@@ -6678,7 +5971,7 @@ namespace ERP_Condominios_Solution.Controllers
                 String resposta = String.Empty;
 
                 // Monta destinatarios
-                String listaDest = "55" + Regex.Replace(cont.CLIE_NR_CELULAR, "[^a-zA-Z0-9_.]+", "", RegexOptions.Compiled).ToString();
+                String listaDest = "55" + Regex.Replace(cont.BENE_NR_CELULAR, "[^a-zA-Z0-9_.]+", "", RegexOptions.Compiled).ToString();
                 var httpWebRequest = (HttpWebRequest)WebRequest.Create("https://api-v2.smsfire.com.br/sms/send/bulk");
                 httpWebRequest.Headers["Authorization"] = auth;
                 httpWebRequest.ContentType = "application/json";
@@ -6704,12 +5997,11 @@ namespace ERP_Condominios_Solution.Controllers
                 MENSAGENS_ENVIADAS_SISTEMA env = new MENSAGENS_ENVIADAS_SISTEMA();
                 env.ASSI_CD_ID = idAss;
                 env.USUA_CD_ID = usuario.USUA_CD_ID;
-                env.CLIE_CD_ID = cont.CLIE_CD_ID;
                 env.CRM1_CD_ID = crm.CRM1_CD_ID;
                 env.MEEN_IN_TIPO = 2;
                 env.MEEN_DT_DATA_ENVIO = DateTime.Now;
-                env.MEEN__CELULAR_DESTINO = cont.CLIE_NR_CELULAR;
-                env.MEEN_NM_ORIGEM = "Mensagem SMS para Cliente do Processo";
+                env.MEEN__CELULAR_DESTINO = cont.BENE_NR_CELULAR;
+                env.MEEN_NM_ORIGEM = "Mensagem SMS para Beneficiário do Processo";
                 env.MEEN_TX_CORPO = vm.MENS_TX_SMS;
                 env.MEEN_TX_CORPO_COMPLETO = texto;
                 env.MEEN_IN_ANEXOS = 0;
@@ -6884,7 +6176,6 @@ namespace ERP_Condominios_Solution.Controllers
             }
             catch (Exception ex)
             {
-                LogError(ex.Message);
                 ViewBag.Message = ex.Message;
                 Session["TipoVolta"] = 2;
                 Session["VoltaExcecao"] = "CRM";
@@ -6929,8 +6220,8 @@ namespace ERP_Condominios_Solution.Controllers
                     hash.Add("CRM1_CD_ID", item.CRM1_CD_ID);
                     hash.Add("CRM1_NM_NOME", item.CRM1_NM_NOME);
                     hash.Add("CRM1_NR_TEMPERATURA", item.CRM1_NR_TEMPERATURA);
-                    hash.Add("CLIE_NM_NOME", item.CLIENTE.CLIE_NM_NOME);
-                    hash.Add("CLIE_IN_ATIVO", item.CLIENTE.CLIE_IN_ATIVO);
+                    hash.Add("CLIE_NM_NOME", item.PRECATORIO.PREC_NM_PRECATORIO);
+                    hash.Add("CLIE_IN_ATIVO", item.PRECATORIO.PREC_IN_ATIVO);
                     hash.Add("CROR_NM_NOME", item.CRM_ORIGEM.CROR_NM_NOME);
                     hash.Add("CRM1_DT_CRIACAO", item.CRM1_DT_CRIACAO.Value.ToString("dd/MM/yyyy"));
                     if (item.CRM1_DT_ENCERRAMENTO != null)
@@ -6941,7 +6232,7 @@ namespace ERP_Condominios_Solution.Controllers
                     {
                         hash.Add("CRM1_DT_ENCERRAMENTO", "-");
                     }
-                    hash.Add("CRM1_NM_CLIENTE", item.CLIENTE.CLIE_NM_NOME);
+                    hash.Add("CRM1_NM_CLIENTE", item.PRECATORIO.PREC_NM_PRECATORIO);
                     processos.Add(hash);
                 }
                 return Json(new
@@ -6988,7 +6279,7 @@ namespace ERP_Condominios_Solution.Controllers
                     {
                         hash.Add("CRM1_DT_ENCERRAMENTO", "-");
                     }
-                    hash.Add("CRM1_NM_CLIENTE", item.CLIENTE.CLIE_NM_NOME);
+                    hash.Add("CRM1_NM_CLIENTE", item.PRECATORIO.PREC_NM_PRECATORIO);
                     listaHash.Add(hash);
                 }
                 return Json(listaHash);
@@ -7022,14 +6313,14 @@ namespace ERP_Condominios_Solution.Controllers
                 Int32 volta = baseApp.ValidateEdit(crm, crm, usuarioLogado);
 
                 // Gera diario
-                CLIENTE cli = cliApp.GetItemById(crm.CLIE_CD_ID);
+                PRECATORIO cli = preApp.GetItemById(crm.PREC_CD_ID.Value);
                 DIARIO_PROCESSO dia = new DIARIO_PROCESSO();
                 dia.ASSI_CD_ID = usuarioLogado.ASSI_CD_ID;
                 dia.USUA_CD_ID = usuarioLogado.USUA_CD_ID;
                 dia.DIPR_DT_DATA = DateTime.Today.Date;
                 dia.CRM1_CD_ID = crm.CRM1_CD_ID;
                 dia.DIPR_NM_OPERACAO = "Alteração de Status de Processo";
-                dia.DIPR_DS_DESCRICAO = "Alteração de Status de processo " + crm.CRM1_NM_NOME + ". Cliente: " + cli.CLIE_NM_NOME;
+                dia.DIPR_DS_DESCRICAO = "Alteração de Status de processo " + crm.CRM1_NM_NOME + ". Precatório: " + cli.PREC_NM_PRECATORIO;
                 dia.EMPR_CD_ID = usuarioLogado.EMPR_CD_ID.Value;
                 Int32 volta3 = diaApp.ValidateCreate(dia);
 
@@ -7060,581 +6351,581 @@ namespace ERP_Condominios_Solution.Controllers
             }
         }
 
-        public ActionResult GerarRelatorioDetalhe()
-        {
-            try
-            {
-                // Prepara geração
-                CONFIGURACAO conf = CarregaConfiguracaoGeral();
-                Int32 idAss = (Int32)Session["IdAssinante"];
-                USUARIO usuario = (USUARIO)Session["UserCredentials"];
+        //public ActionResult GerarRelatorioDetalhe()
+        //{
+        //    try
+        //    {
+        //        // Prepara geração
+        //        CONFIGURACAO conf = CarregaConfiguracaoGeral();
+        //        Int32 idAss = (Int32)Session["IdAssinante"];
+        //        USUARIO usuario = (USUARIO)Session["UserCredentials"];
 
-                CRM aten = baseApp.GetItemById((Int32)Session["IdCRM"]);
-                String data = DateTime.Today.Date.ToShortDateString();
-                data = data.Substring(0, 2) + data.Substring(3, 2) + data.Substring(6, 4);
-                String nomeRel = "CRM" + aten.CRM1_CD_ID.ToString() + "_" + data + ".pdf";
-                Font meuFont = FontFactory.GetFont("Arial", 8, iTextSharp.text.Font.NORMAL, BaseColor.BLACK);
-                Font meuFont1 = FontFactory.GetFont("Arial", 9, iTextSharp.text.Font.NORMAL, BaseColor.BLACK);
-                Font meuFont2 = FontFactory.GetFont("Arial", 12, iTextSharp.text.Font.NORMAL, BaseColor.BLACK);
-                Font meuFontBold = FontFactory.GetFont("Arial", 8, iTextSharp.text.Font.BOLD, BaseColor.BLACK);
-                Font meuFontVerde = FontFactory.GetFont("Arial", 9, iTextSharp.text.Font.BOLD, BaseColor.GREEN);
-                Font meuFontAzul= FontFactory.GetFont("Arial", 9, iTextSharp.text.Font.BOLD, BaseColor.BLUE);
-                Font meuFontVermelho = FontFactory.GetFont("Arial", 9, iTextSharp.text.Font.BOLD, BaseColor.RED);
+        //        CRM aten = baseApp.GetItemById((Int32)Session["IdCRM"]);
+        //        String data = DateTime.Today.Date.ToShortDateString();
+        //        data = data.Substring(0, 2) + data.Substring(3, 2) + data.Substring(6, 4);
+        //        String nomeRel = "CRM" + aten.CRM1_CD_ID.ToString() + "_" + data + ".pdf";
+        //        Font meuFont = FontFactory.GetFont("Arial", 8, iTextSharp.text.Font.NORMAL, BaseColor.BLACK);
+        //        Font meuFont1 = FontFactory.GetFont("Arial", 9, iTextSharp.text.Font.NORMAL, BaseColor.BLACK);
+        //        Font meuFont2 = FontFactory.GetFont("Arial", 12, iTextSharp.text.Font.NORMAL, BaseColor.BLACK);
+        //        Font meuFontBold = FontFactory.GetFont("Arial", 8, iTextSharp.text.Font.BOLD, BaseColor.BLACK);
+        //        Font meuFontVerde = FontFactory.GetFont("Arial", 9, iTextSharp.text.Font.BOLD, BaseColor.GREEN);
+        //        Font meuFontAzul= FontFactory.GetFont("Arial", 9, iTextSharp.text.Font.BOLD, BaseColor.BLUE);
+        //        Font meuFontVermelho = FontFactory.GetFont("Arial", 9, iTextSharp.text.Font.BOLD, BaseColor.RED);
 
-                // Cria documento
-                Document pdfDoc = new Document(PageSize.A4, 10, 10, 10, 10);
-                PdfWriter pdfWriter = PdfWriter.GetInstance(pdfDoc, Response.OutputStream);
-                pdfDoc.Open();
+        //        // Cria documento
+        //        Document pdfDoc = new Document(PageSize.A4, 10, 10, 10, 10);
+        //        PdfWriter pdfWriter = PdfWriter.GetInstance(pdfDoc, Response.OutputStream);
+        //        pdfDoc.Open();
 
-                // Linha horizontal
-                Paragraph line1 = new Paragraph(new Chunk(new iTextSharp.text.pdf.draw.LineSeparator(0.0F, 100.0F, BaseColor.BLUE, Element.ALIGN_LEFT, 1)));
-                pdfDoc.Add(line1);
+        //        // Linha horizontal
+        //        Paragraph line1 = new Paragraph(new Chunk(new iTextSharp.text.pdf.draw.LineSeparator(0.0F, 100.0F, BaseColor.BLUE, Element.ALIGN_LEFT, 1)));
+        //        pdfDoc.Add(line1);
 
-                // Cabeçalho
-                PdfPTable table = new PdfPTable(5);
-                table.WidthPercentage = 100;
-                table.HorizontalAlignment = 1; //0=Left, 1=Centre, 2=Right
-                table.SpacingBefore = 1f;
-                table.SpacingAfter = 1f;
+        //        // Cabeçalho
+        //        PdfPTable table = new PdfPTable(5);
+        //        table.WidthPercentage = 100;
+        //        table.HorizontalAlignment = 1; //0=Left, 1=Centre, 2=Right
+        //        table.SpacingBefore = 1f;
+        //        table.SpacingAfter = 1f;
 
-                PdfPCell cell = new PdfPCell();
-                cell.Border = 0;
-                Image image = null;
-                if (conf.CONF_IN_LOGO_EMPRESA == 1)
-                {
-                    EMPRESA empresa = empApp.GetItemByAssinante(idAss);
-                    image = Image.GetInstance(Server.MapPath(empresa.EMPR_AQ_LOGO));
-                }
-                else
-                {
-                    image = Image.GetInstance(Server.MapPath("~/Images/CRM_Icon2.jpg"));
-                }
-                image.ScaleAbsolute(50, 50);
-                cell.AddElement(image);
-                table.AddCell(cell);
+        //        PdfPCell cell = new PdfPCell();
+        //        cell.Border = 0;
+        //        Image image = null;
+        //        if (conf.CONF_IN_LOGO_EMPRESA == 1)
+        //        {
+        //            EMPRESA empresa = empApp.GetItemByAssinante(idAss);
+        //            image = Image.GetInstance(Server.MapPath(empresa.EMPR_AQ_LOGO));
+        //        }
+        //        else
+        //        {
+        //            image = Image.GetInstance(Server.MapPath("~/Images/CRM_Icon2.jpg"));
+        //        }
+        //        image.ScaleAbsolute(50, 50);
+        //        cell.AddElement(image);
+        //        table.AddCell(cell);
 
-                cell = new PdfPCell(new Paragraph("Processo CRM - Detalhes", meuFont2))
-                {
-                    VerticalAlignment = Element.ALIGN_MIDDLE,
-                    HorizontalAlignment = Element.ALIGN_CENTER
-                };
-                cell.Border = 0;
-                cell.Colspan = 4;
-                table.AddCell(cell);
+        //        cell = new PdfPCell(new Paragraph("Processo CRM - Detalhes", meuFont2))
+        //        {
+        //            VerticalAlignment = Element.ALIGN_MIDDLE,
+        //            HorizontalAlignment = Element.ALIGN_CENTER
+        //        };
+        //        cell.Border = 0;
+        //        cell.Colspan = 4;
+        //        table.AddCell(cell);
 
-                pdfDoc.Add(table);
+        //        pdfDoc.Add(table);
 
-                // Linha Horizontal
-                line1 = new Paragraph(new Chunk(new iTextSharp.text.pdf.draw.LineSeparator(0.0F, 100.0F, BaseColor.BLUE, Element.ALIGN_LEFT, 1)));
-                pdfDoc.Add(line1);
-                line1 = new Paragraph("  ");
-                pdfDoc.Add(line1);
+        //        // Linha Horizontal
+        //        line1 = new Paragraph(new Chunk(new iTextSharp.text.pdf.draw.LineSeparator(0.0F, 100.0F, BaseColor.BLUE, Element.ALIGN_LEFT, 1)));
+        //        pdfDoc.Add(line1);
+        //        line1 = new Paragraph("  ");
+        //        pdfDoc.Add(line1);
 
-                // Dados do Cliente
-                table = new PdfPTable(new float[] { 120f, 120f, 120f, 120f });
-                table.WidthPercentage = 100;
-                table.HorizontalAlignment = 0;
-                table.SpacingBefore = 1f;
-                table.SpacingAfter = 1f;
+        //        // Dados do Cliente
+        //        table = new PdfPTable(new float[] { 120f, 120f, 120f, 120f });
+        //        table.WidthPercentage = 100;
+        //        table.HorizontalAlignment = 0;
+        //        table.SpacingBefore = 1f;
+        //        table.SpacingAfter = 1f;
 
-                cell = new PdfPCell(new Paragraph("Dados do Cliente", meuFontBold));
-                cell.Border = 0;
-                cell.Colspan = 4;
-                cell.VerticalAlignment = Element.ALIGN_MIDDLE;
-                cell.HorizontalAlignment = Element.ALIGN_LEFT;
-                table.AddCell(cell);
+        //        cell = new PdfPCell(new Paragraph("Dados do Cliente", meuFontBold));
+        //        cell.Border = 0;
+        //        cell.Colspan = 4;
+        //        cell.VerticalAlignment = Element.ALIGN_MIDDLE;
+        //        cell.HorizontalAlignment = Element.ALIGN_LEFT;
+        //        table.AddCell(cell);
 
-                cell = new PdfPCell(new Paragraph("Empresa/Filial: " + aten.EMPRESA.EMPR_NM_NOME, meuFontVerde));
-                cell.Border = 0;
-                cell.Colspan = 4;
-                cell.VerticalAlignment = Element.ALIGN_MIDDLE;
-                cell.HorizontalAlignment = Element.ALIGN_LEFT;
-                table.AddCell(cell);
+        //        cell = new PdfPCell(new Paragraph("Empresa/Filial: " + aten.EMPRESA.EMPR_NM_NOME, meuFontVerde));
+        //        cell.Border = 0;
+        //        cell.Colspan = 4;
+        //        cell.VerticalAlignment = Element.ALIGN_MIDDLE;
+        //        cell.HorizontalAlignment = Element.ALIGN_LEFT;
+        //        table.AddCell(cell);
 
-                cell = new PdfPCell(new Paragraph("Nome: " + aten.CLIENTE.CLIE_NM_NOME, meuFontVerde));
-                cell.Border = 0;
-                cell.Colspan = 4;
-                cell.VerticalAlignment = Element.ALIGN_MIDDLE;
-                cell.HorizontalAlignment = Element.ALIGN_LEFT;
-                table.AddCell(cell);
+        //        cell = new PdfPCell(new Paragraph("Nome: " + aten.CLIENTE.CLIE_NM_NOME, meuFontVerde));
+        //        cell.Border = 0;
+        //        cell.Colspan = 4;
+        //        cell.VerticalAlignment = Element.ALIGN_MIDDLE;
+        //        cell.HorizontalAlignment = Element.ALIGN_LEFT;
+        //        table.AddCell(cell);
 
-                if (aten.CLIENTE.CLIE_NM_ENDERECO != null)
-                {
-                    cell = new PdfPCell(new Paragraph("Endereço: " + aten.CLIENTE.CLIE_NM_ENDERECO + " " + aten.CLIENTE.CLIE_NR_NUMERO + " " + aten.CLIENTE.CLIE_NM_COMPLEMENTO, meuFont));
-                    cell.Border = 0;
-                    cell.Colspan = 4;
-                    cell.VerticalAlignment = Element.ALIGN_MIDDLE;
-                    cell.HorizontalAlignment = Element.ALIGN_LEFT;
-                    table.AddCell(cell);
+        //        if (aten.CLIENTE.CLIE_NM_ENDERECO != null)
+        //        {
+        //            cell = new PdfPCell(new Paragraph("Endereço: " + aten.CLIENTE.CLIE_NM_ENDERECO + " " + aten.CLIENTE.CLIE_NR_NUMERO + " " + aten.CLIENTE.CLIE_NM_COMPLEMENTO, meuFont));
+        //            cell.Border = 0;
+        //            cell.Colspan = 4;
+        //            cell.VerticalAlignment = Element.ALIGN_MIDDLE;
+        //            cell.HorizontalAlignment = Element.ALIGN_LEFT;
+        //            table.AddCell(cell);
 
-                    if (aten.CLIENTE.UF != null)
-                    {
-                        cell = new PdfPCell(new Paragraph("          " + aten.CLIENTE.CLIE_NM_BAIRRO + " - " + aten.CLIENTE.CLIE_NM_CIDADE + " - " + aten.CLIENTE.UF.UF_SG_SIGLA + " - " + aten.CLIENTE.CLIE_NR_CEP, meuFont));
-                        cell.Border = 0;
-                        cell.Colspan = 4;
-                        cell.VerticalAlignment = Element.ALIGN_MIDDLE;
-                        cell.HorizontalAlignment = Element.ALIGN_LEFT;
-                        table.AddCell(cell);
-                    }
-                    else
-                    {
-                        cell = new PdfPCell(new Paragraph("          " + aten.CLIENTE.CLIE_NM_BAIRRO + " - " + aten.CLIENTE.CLIE_NM_CIDADE + " - " + aten.CLIENTE.CLIE_NR_CEP, meuFont));
-                        cell.Border = 0;
-                        cell.Colspan = 4;
-                        cell.VerticalAlignment = Element.ALIGN_MIDDLE;
-                        cell.HorizontalAlignment = Element.ALIGN_LEFT;
-                        table.AddCell(cell);
-                    }
-                }
-                else
-                {
-                    cell = new PdfPCell(new Paragraph("Endereço: -", meuFont));
-                    cell.Border = 0;
-                    cell.Colspan = 4;
-                    cell.VerticalAlignment = Element.ALIGN_MIDDLE;
-                    cell.HorizontalAlignment = Element.ALIGN_LEFT;
-                    table.AddCell(cell);
-                }
+        //            if (aten.CLIENTE.UF != null)
+        //            {
+        //                cell = new PdfPCell(new Paragraph("          " + aten.CLIENTE.CLIE_NM_BAIRRO + " - " + aten.CLIENTE.CLIE_NM_CIDADE + " - " + aten.CLIENTE.UF.UF_SG_SIGLA + " - " + aten.CLIENTE.CLIE_NR_CEP, meuFont));
+        //                cell.Border = 0;
+        //                cell.Colspan = 4;
+        //                cell.VerticalAlignment = Element.ALIGN_MIDDLE;
+        //                cell.HorizontalAlignment = Element.ALIGN_LEFT;
+        //                table.AddCell(cell);
+        //            }
+        //            else
+        //            {
+        //                cell = new PdfPCell(new Paragraph("          " + aten.CLIENTE.CLIE_NM_BAIRRO + " - " + aten.CLIENTE.CLIE_NM_CIDADE + " - " + aten.CLIENTE.CLIE_NR_CEP, meuFont));
+        //                cell.Border = 0;
+        //                cell.Colspan = 4;
+        //                cell.VerticalAlignment = Element.ALIGN_MIDDLE;
+        //                cell.HorizontalAlignment = Element.ALIGN_LEFT;
+        //                table.AddCell(cell);
+        //            }
+        //        }
+        //        else
+        //        {
+        //            cell = new PdfPCell(new Paragraph("Endereço: -", meuFont));
+        //            cell.Border = 0;
+        //            cell.Colspan = 4;
+        //            cell.VerticalAlignment = Element.ALIGN_MIDDLE;
+        //            cell.HorizontalAlignment = Element.ALIGN_LEFT;
+        //            table.AddCell(cell);
+        //        }
 
-                cell = new PdfPCell(new Paragraph("Telefone: " + aten.CLIENTE.CLIE_NR_TELEFONE, meuFont));
-                cell.Border = 0;
-                cell.Colspan = 1;
-                cell.VerticalAlignment = Element.ALIGN_MIDDLE;
-                cell.HorizontalAlignment = Element.ALIGN_LEFT;
-                table.AddCell(cell);
-                cell = new PdfPCell(new Paragraph("Celular: " + aten.CLIENTE.CLIE_NR_CELULAR, meuFont));
-                cell.Border = 0;
-                cell.Colspan = 1;
-                cell.VerticalAlignment = Element.ALIGN_MIDDLE;
-                cell.HorizontalAlignment = Element.ALIGN_LEFT;
-                table.AddCell(cell);
-                cell = new PdfPCell(new Paragraph("E-Mail: " + aten.CLIENTE.CLIE_NM_EMAIL, meuFont));
-                cell.Border = 0;
-                cell.Colspan = 2;
-                cell.VerticalAlignment = Element.ALIGN_MIDDLE;
-                cell.HorizontalAlignment = Element.ALIGN_LEFT;
-                table.AddCell(cell);
-                pdfDoc.Add(table);
+        //        cell = new PdfPCell(new Paragraph("Telefone: " + aten.CLIENTE.CLIE_NR_TELEFONE, meuFont));
+        //        cell.Border = 0;
+        //        cell.Colspan = 1;
+        //        cell.VerticalAlignment = Element.ALIGN_MIDDLE;
+        //        cell.HorizontalAlignment = Element.ALIGN_LEFT;
+        //        table.AddCell(cell);
+        //        cell = new PdfPCell(new Paragraph("Celular: " + aten.CLIENTE.CLIE_NR_CELULAR, meuFont));
+        //        cell.Border = 0;
+        //        cell.Colspan = 1;
+        //        cell.VerticalAlignment = Element.ALIGN_MIDDLE;
+        //        cell.HorizontalAlignment = Element.ALIGN_LEFT;
+        //        table.AddCell(cell);
+        //        cell = new PdfPCell(new Paragraph("E-Mail: " + aten.CLIENTE.CLIE_NM_EMAIL, meuFont));
+        //        cell.Border = 0;
+        //        cell.Colspan = 2;
+        //        cell.VerticalAlignment = Element.ALIGN_MIDDLE;
+        //        cell.HorizontalAlignment = Element.ALIGN_LEFT;
+        //        table.AddCell(cell);
+        //        pdfDoc.Add(table);
 
-                // Linha Horizontal
-                line1 = new Paragraph(new Chunk(new iTextSharp.text.pdf.draw.LineSeparator(0.0F, 100.0F, BaseColor.BLUE, Element.ALIGN_LEFT, 1)));
-                pdfDoc.Add(line1);
+        //        // Linha Horizontal
+        //        line1 = new Paragraph(new Chunk(new iTextSharp.text.pdf.draw.LineSeparator(0.0F, 100.0F, BaseColor.BLUE, Element.ALIGN_LEFT, 1)));
+        //        pdfDoc.Add(line1);
 
-                // Dados do Processo
-                table = new PdfPTable(new float[] { 120f, 120f, 120f, 120f });
-                table.WidthPercentage = 100;
-                table.HorizontalAlignment = 0;
-                table.SpacingBefore = 1f;
-                table.SpacingAfter = 1f;
+        //        // Dados do Processo
+        //        table = new PdfPTable(new float[] { 120f, 120f, 120f, 120f });
+        //        table.WidthPercentage = 100;
+        //        table.HorizontalAlignment = 0;
+        //        table.SpacingBefore = 1f;
+        //        table.SpacingAfter = 1f;
 
-                cell = new PdfPCell(new Paragraph("Dados do Processo", meuFontBold));
-                cell.Border = 0;
-                cell.Colspan = 4;
-                cell.VerticalAlignment = Element.ALIGN_MIDDLE;
-                cell.HorizontalAlignment = Element.ALIGN_LEFT;
-                table.AddCell(cell);
+        //        cell = new PdfPCell(new Paragraph("Dados do Processo", meuFontBold));
+        //        cell.Border = 0;
+        //        cell.Colspan = 4;
+        //        cell.VerticalAlignment = Element.ALIGN_MIDDLE;
+        //        cell.HorizontalAlignment = Element.ALIGN_LEFT;
+        //        table.AddCell(cell);
 
-                cell = new PdfPCell(new Paragraph("Nome: " + aten.CRM1_NM_NOME, meuFontVerde));
-                cell.Border = 0;
-                cell.Colspan = 3;
-                cell.VerticalAlignment = Element.ALIGN_MIDDLE;
-                cell.HorizontalAlignment = Element.ALIGN_LEFT;
-                table.AddCell(cell);
-                if (aten.CRM1_IN_STATUS == 1)
-                {
-                    cell = new PdfPCell(new Paragraph("Status: Prospecção", meuFontAzul));
-                }
-                else if (aten.CRM1_IN_STATUS == 2)
-                {
-                    cell = new PdfPCell(new Paragraph("Status: Contato Realizado", meuFontAzul));
-                }
-                else if (aten.CRM1_IN_STATUS == 3)
-                {
-                    cell = new PdfPCell(new Paragraph("Status: Proposta Enviada", meuFontAzul));
-                }
-                else if (aten.CRM1_IN_STATUS == 4)
-                {
-                    cell = new PdfPCell(new Paragraph("Status: Em Negociação", meuFontAzul));
-                }
-                else if (aten.CRM1_IN_STATUS == 5)
-                {
-                    cell = new PdfPCell(new Paragraph("Status: Encerrado", meuFontAzul));
-                }
-                cell.Border = 0;
-                cell.Colspan = 1;
-                cell.VerticalAlignment = Element.ALIGN_MIDDLE;
-                cell.HorizontalAlignment = Element.ALIGN_LEFT;
-                table.AddCell(cell);
+        //        cell = new PdfPCell(new Paragraph("Nome: " + aten.CRM1_NM_NOME, meuFontVerde));
+        //        cell.Border = 0;
+        //        cell.Colspan = 3;
+        //        cell.VerticalAlignment = Element.ALIGN_MIDDLE;
+        //        cell.HorizontalAlignment = Element.ALIGN_LEFT;
+        //        table.AddCell(cell);
+        //        if (aten.CRM1_IN_STATUS == 1)
+        //        {
+        //            cell = new PdfPCell(new Paragraph("Status: Prospecção", meuFontAzul));
+        //        }
+        //        else if (aten.CRM1_IN_STATUS == 2)
+        //        {
+        //            cell = new PdfPCell(new Paragraph("Status: Contato Realizado", meuFontAzul));
+        //        }
+        //        else if (aten.CRM1_IN_STATUS == 3)
+        //        {
+        //            cell = new PdfPCell(new Paragraph("Status: Proposta Enviada", meuFontAzul));
+        //        }
+        //        else if (aten.CRM1_IN_STATUS == 4)
+        //        {
+        //            cell = new PdfPCell(new Paragraph("Status: Em Negociação", meuFontAzul));
+        //        }
+        //        else if (aten.CRM1_IN_STATUS == 5)
+        //        {
+        //            cell = new PdfPCell(new Paragraph("Status: Encerrado", meuFontAzul));
+        //        }
+        //        cell.Border = 0;
+        //        cell.Colspan = 1;
+        //        cell.VerticalAlignment = Element.ALIGN_MIDDLE;
+        //        cell.HorizontalAlignment = Element.ALIGN_LEFT;
+        //        table.AddCell(cell);
 
-                cell = new PdfPCell(new Paragraph("Descrição: " + aten.CRM1_DS_DESCRICAO, meuFontVerde));
-                cell.Border = 0;
-                cell.Colspan = 4;
-                cell.VerticalAlignment = Element.ALIGN_MIDDLE;
-                cell.HorizontalAlignment = Element.ALIGN_LEFT;
-                table.AddCell(cell);
+        //        cell = new PdfPCell(new Paragraph("Descrição: " + aten.CRM1_DS_DESCRICAO, meuFontVerde));
+        //        cell.Border = 0;
+        //        cell.Colspan = 4;
+        //        cell.VerticalAlignment = Element.ALIGN_MIDDLE;
+        //        cell.HorizontalAlignment = Element.ALIGN_LEFT;
+        //        table.AddCell(cell);
 
-                cell = new PdfPCell(new Paragraph("Informações: " + aten.CRM1_TX_INFORMACOES_GERAIS, meuFontVerde));
-                cell.Border = 0;
-                cell.Colspan = 4;
-                cell.VerticalAlignment = Element.ALIGN_MIDDLE;
-                cell.HorizontalAlignment = Element.ALIGN_LEFT;
-                table.AddCell(cell);
+        //        cell = new PdfPCell(new Paragraph("Informações: " + aten.CRM1_TX_INFORMACOES_GERAIS, meuFontVerde));
+        //        cell.Border = 0;
+        //        cell.Colspan = 4;
+        //        cell.VerticalAlignment = Element.ALIGN_MIDDLE;
+        //        cell.HorizontalAlignment = Element.ALIGN_LEFT;
+        //        table.AddCell(cell);
 
-                cell = new PdfPCell(new Paragraph("Criação: " + aten.CRM1_DT_CRIACAO.Value.ToShortDateString(), meuFont));
-                cell.Border = 0;
-                cell.Colspan = 1;
-                cell.VerticalAlignment = Element.ALIGN_MIDDLE;
-                cell.HorizontalAlignment = Element.ALIGN_LEFT;
-                table.AddCell(cell);
-                cell = new PdfPCell(new Paragraph("Responsável: " + aten.USUARIO.USUA_NM_NOME, meuFont));
-                cell.Border = 0;
-                cell.Colspan = 1;
-                cell.VerticalAlignment = Element.ALIGN_MIDDLE;
-                cell.HorizontalAlignment = Element.ALIGN_LEFT;
-                table.AddCell(cell);
-                cell = new PdfPCell(new Paragraph("Origem: " + aten.CRM_ORIGEM.CROR_NM_NOME, meuFont));
-                cell.Border = 0;
-                cell.Colspan = 2;
-                cell.VerticalAlignment = Element.ALIGN_MIDDLE;
-                cell.HorizontalAlignment = Element.ALIGN_LEFT;
-                table.AddCell(cell);
+        //        cell = new PdfPCell(new Paragraph("Criação: " + aten.CRM1_DT_CRIACAO.Value.ToShortDateString(), meuFont));
+        //        cell.Border = 0;
+        //        cell.Colspan = 1;
+        //        cell.VerticalAlignment = Element.ALIGN_MIDDLE;
+        //        cell.HorizontalAlignment = Element.ALIGN_LEFT;
+        //        table.AddCell(cell);
+        //        cell = new PdfPCell(new Paragraph("Responsável: " + aten.USUARIO.USUA_NM_NOME, meuFont));
+        //        cell.Border = 0;
+        //        cell.Colspan = 1;
+        //        cell.VerticalAlignment = Element.ALIGN_MIDDLE;
+        //        cell.HorizontalAlignment = Element.ALIGN_LEFT;
+        //        table.AddCell(cell);
+        //        cell = new PdfPCell(new Paragraph("Origem: " + aten.CRM_ORIGEM.CROR_NM_NOME, meuFont));
+        //        cell.Border = 0;
+        //        cell.Colspan = 2;
+        //        cell.VerticalAlignment = Element.ALIGN_MIDDLE;
+        //        cell.HorizontalAlignment = Element.ALIGN_LEFT;
+        //        table.AddCell(cell);
 
-                if (aten.CRM1_IN_ATIVO == 3)
-                {
-                    cell = new PdfPCell(new Paragraph("Data Cancelamento: " + aten.CRM1_DT_CANCELAMENTO.Value.ToShortDateString(), meuFont));
-                    cell.Border = 0;
-                    cell.Colspan = 1;
-                    cell.VerticalAlignment = Element.ALIGN_MIDDLE;
-                    cell.HorizontalAlignment = Element.ALIGN_LEFT;
-                    table.AddCell(cell);
-                    cell = new PdfPCell(new Paragraph("Motivo: " + aten.MOTIVO_CANCELAMENTO.MOCA_NM_NOME, meuFont));
-                    cell.Border = 0;
-                    cell.Colspan = 1;
-                    cell.VerticalAlignment = Element.ALIGN_MIDDLE;
-                    cell.HorizontalAlignment = Element.ALIGN_LEFT;
-                    table.AddCell(cell);
-                    cell = new PdfPCell(new Paragraph("Descrição: " + aten.CRM1_DS_MOTIVO_CANCELAMENTO, meuFont));
-                    cell.Border = 0;
-                    cell.Colspan = 2;
-                    cell.VerticalAlignment = Element.ALIGN_MIDDLE;
-                    cell.HorizontalAlignment = Element.ALIGN_LEFT;
-                    table.AddCell(cell);
-                }
+        //        if (aten.CRM1_IN_ATIVO == 3)
+        //        {
+        //            cell = new PdfPCell(new Paragraph("Data Cancelamento: " + aten.CRM1_DT_CANCELAMENTO.Value.ToShortDateString(), meuFont));
+        //            cell.Border = 0;
+        //            cell.Colspan = 1;
+        //            cell.VerticalAlignment = Element.ALIGN_MIDDLE;
+        //            cell.HorizontalAlignment = Element.ALIGN_LEFT;
+        //            table.AddCell(cell);
+        //            cell = new PdfPCell(new Paragraph("Motivo: " + aten.MOTIVO_CANCELAMENTO.MOCA_NM_NOME, meuFont));
+        //            cell.Border = 0;
+        //            cell.Colspan = 1;
+        //            cell.VerticalAlignment = Element.ALIGN_MIDDLE;
+        //            cell.HorizontalAlignment = Element.ALIGN_LEFT;
+        //            table.AddCell(cell);
+        //            cell = new PdfPCell(new Paragraph("Descrição: " + aten.CRM1_DS_MOTIVO_CANCELAMENTO, meuFont));
+        //            cell.Border = 0;
+        //            cell.Colspan = 2;
+        //            cell.VerticalAlignment = Element.ALIGN_MIDDLE;
+        //            cell.HorizontalAlignment = Element.ALIGN_LEFT;
+        //            table.AddCell(cell);
+        //        }
 
-                if (aten.CRM1_IN_STATUS == 5)
-                {
-                    cell = new PdfPCell(new Paragraph("Data Encerramento: " + aten.CRM1_DT_ENCERRAMENTO.Value.ToShortDateString(), meuFont));
-                    cell.Border = 0;
-                    cell.Colspan = 1;
-                    cell.VerticalAlignment = Element.ALIGN_MIDDLE;
-                    cell.HorizontalAlignment = Element.ALIGN_LEFT;
-                    table.AddCell(cell);
-                    cell = new PdfPCell(new Paragraph("Motivo: " + aten.MOTIVO_ENCERRAMENTO.MOEN_NM_NOME, meuFont));
-                    cell.Border = 0;
-                    cell.Colspan = 1;
-                    cell.VerticalAlignment = Element.ALIGN_MIDDLE;
-                    cell.HorizontalAlignment = Element.ALIGN_LEFT;
-                    table.AddCell(cell);
-                    cell = new PdfPCell(new Paragraph("Descrição: " + aten.CRM1_DS_INFORMACOES_ENCERRAMENTO, meuFont));
-                    cell.Border = 0;
-                    cell.Colspan = 2;
-                    cell.VerticalAlignment = Element.ALIGN_MIDDLE;
-                    cell.HorizontalAlignment = Element.ALIGN_LEFT;
-                    table.AddCell(cell);
-                }
-                pdfDoc.Add(table);
+        //        if (aten.CRM1_IN_STATUS == 5)
+        //        {
+        //            cell = new PdfPCell(new Paragraph("Data Encerramento: " + aten.CRM1_DT_ENCERRAMENTO.Value.ToShortDateString(), meuFont));
+        //            cell.Border = 0;
+        //            cell.Colspan = 1;
+        //            cell.VerticalAlignment = Element.ALIGN_MIDDLE;
+        //            cell.HorizontalAlignment = Element.ALIGN_LEFT;
+        //            table.AddCell(cell);
+        //            cell = new PdfPCell(new Paragraph("Motivo: " + aten.MOTIVO_ENCERRAMENTO.MOEN_NM_NOME, meuFont));
+        //            cell.Border = 0;
+        //            cell.Colspan = 1;
+        //            cell.VerticalAlignment = Element.ALIGN_MIDDLE;
+        //            cell.HorizontalAlignment = Element.ALIGN_LEFT;
+        //            table.AddCell(cell);
+        //            cell = new PdfPCell(new Paragraph("Descrição: " + aten.CRM1_DS_INFORMACOES_ENCERRAMENTO, meuFont));
+        //            cell.Border = 0;
+        //            cell.Colspan = 2;
+        //            cell.VerticalAlignment = Element.ALIGN_MIDDLE;
+        //            cell.HorizontalAlignment = Element.ALIGN_LEFT;
+        //            table.AddCell(cell);
+        //        }
+        //        pdfDoc.Add(table);
 
-                // Linha Horizontal
-                line1 = new Paragraph(new Chunk(new iTextSharp.text.pdf.draw.LineSeparator(0.0F, 100.0F, BaseColor.BLUE, Element.ALIGN_LEFT, 1)));
-                pdfDoc.Add(line1);
+        //        // Linha Horizontal
+        //        line1 = new Paragraph(new Chunk(new iTextSharp.text.pdf.draw.LineSeparator(0.0F, 100.0F, BaseColor.BLUE, Element.ALIGN_LEFT, 1)));
+        //        pdfDoc.Add(line1);
 
-                // Contatos
-                table = new PdfPTable(new float[] { 120f, 120f, 120f, 120f });
-                table.WidthPercentage = 100;
-                table.HorizontalAlignment = 0;
-                table.SpacingBefore = 1f;
-                table.SpacingAfter = 1f;
+        //        // Contatos
+        //        table = new PdfPTable(new float[] { 120f, 120f, 120f, 120f });
+        //        table.WidthPercentage = 100;
+        //        table.HorizontalAlignment = 0;
+        //        table.SpacingBefore = 1f;
+        //        table.SpacingAfter = 1f;
 
-                cell = new PdfPCell(new Paragraph("Contatos", meuFontBold));
-                cell.Border = 0;
-                cell.Colspan = 4;
-                cell.VerticalAlignment = Element.ALIGN_MIDDLE;
-                cell.HorizontalAlignment = Element.ALIGN_LEFT;
-                table.AddCell(cell);
+        //        cell = new PdfPCell(new Paragraph("Contatos", meuFontBold));
+        //        cell.Border = 0;
+        //        cell.Colspan = 4;
+        //        cell.VerticalAlignment = Element.ALIGN_MIDDLE;
+        //        cell.HorizontalAlignment = Element.ALIGN_LEFT;
+        //        table.AddCell(cell);
 
-                if (aten.CRM_CONTATO.Count > 0)
-                {
-                    table = new PdfPTable(new float[] { 130f, 100f, 100f, 80f, 80f });
-                    table.WidthPercentage = 100;
-                    table.HorizontalAlignment = 0;
-                    table.SpacingBefore = 1f;
-                    table.SpacingAfter = 1f;
+        //        if (aten.CRM_CONTATO.Count > 0)
+        //        {
+        //            table = new PdfPTable(new float[] { 130f, 100f, 100f, 80f, 80f });
+        //            table.WidthPercentage = 100;
+        //            table.HorizontalAlignment = 0;
+        //            table.SpacingBefore = 1f;
+        //            table.SpacingAfter = 1f;
 
-                    cell = new PdfPCell(new Paragraph("Nome", meuFont))
-                    {
-                        VerticalAlignment = Element.ALIGN_MIDDLE,
-                        HorizontalAlignment = Element.ALIGN_LEFT
-                    };
-                    cell.BackgroundColor = BaseColor.LIGHT_GRAY;
-                    table.AddCell(cell);
-                    cell = new PdfPCell(new Paragraph("Cargo", meuFont))
-                    {
-                        VerticalAlignment = Element.ALIGN_MIDDLE,
-                        HorizontalAlignment = Element.ALIGN_LEFT
-                    };
-                    cell.BackgroundColor = BaseColor.LIGHT_GRAY;
-                    table.AddCell(cell);
-                    cell = new PdfPCell(new Paragraph("E-Mail", meuFont))
-                    {
-                        VerticalAlignment = Element.ALIGN_MIDDLE,
-                        HorizontalAlignment = Element.ALIGN_LEFT
-                    };
-                    cell.BackgroundColor = BaseColor.LIGHT_GRAY;
-                    table.AddCell(cell);
-                    cell = new PdfPCell(new Paragraph("Telefone", meuFont))
-                    {
-                        VerticalAlignment = Element.ALIGN_MIDDLE,
-                        HorizontalAlignment = Element.ALIGN_LEFT
-                    };
-                    cell.BackgroundColor = BaseColor.LIGHT_GRAY;
-                    table.AddCell(cell);
-                    cell = new PdfPCell(new Paragraph("Celular", meuFont))
-                    {
-                        VerticalAlignment = Element.ALIGN_MIDDLE,
-                        HorizontalAlignment = Element.ALIGN_LEFT
-                    };
-                    cell.BackgroundColor = BaseColor.LIGHT_GRAY;
-                    table.AddCell(cell);
+        //            cell = new PdfPCell(new Paragraph("Nome", meuFont))
+        //            {
+        //                VerticalAlignment = Element.ALIGN_MIDDLE,
+        //                HorizontalAlignment = Element.ALIGN_LEFT
+        //            };
+        //            cell.BackgroundColor = BaseColor.LIGHT_GRAY;
+        //            table.AddCell(cell);
+        //            cell = new PdfPCell(new Paragraph("Cargo", meuFont))
+        //            {
+        //                VerticalAlignment = Element.ALIGN_MIDDLE,
+        //                HorizontalAlignment = Element.ALIGN_LEFT
+        //            };
+        //            cell.BackgroundColor = BaseColor.LIGHT_GRAY;
+        //            table.AddCell(cell);
+        //            cell = new PdfPCell(new Paragraph("E-Mail", meuFont))
+        //            {
+        //                VerticalAlignment = Element.ALIGN_MIDDLE,
+        //                HorizontalAlignment = Element.ALIGN_LEFT
+        //            };
+        //            cell.BackgroundColor = BaseColor.LIGHT_GRAY;
+        //            table.AddCell(cell);
+        //            cell = new PdfPCell(new Paragraph("Telefone", meuFont))
+        //            {
+        //                VerticalAlignment = Element.ALIGN_MIDDLE,
+        //                HorizontalAlignment = Element.ALIGN_LEFT
+        //            };
+        //            cell.BackgroundColor = BaseColor.LIGHT_GRAY;
+        //            table.AddCell(cell);
+        //            cell = new PdfPCell(new Paragraph("Celular", meuFont))
+        //            {
+        //                VerticalAlignment = Element.ALIGN_MIDDLE,
+        //                HorizontalAlignment = Element.ALIGN_LEFT
+        //            };
+        //            cell.BackgroundColor = BaseColor.LIGHT_GRAY;
+        //            table.AddCell(cell);
 
-                    foreach (CRM_CONTATO item in aten.CRM_CONTATO)
-                    {
-                        cell = new PdfPCell(new Paragraph(item.CRCO_NM_NOME, meuFont))
-                        {
-                            VerticalAlignment = Element.ALIGN_MIDDLE,
-                            HorizontalAlignment = Element.ALIGN_LEFT
-                        };
-                        table.AddCell(cell);
-                        cell = new PdfPCell(new Paragraph(item.CRCO_NM_CARGO, meuFont))
-                        {
-                            VerticalAlignment = Element.ALIGN_MIDDLE,
-                            HorizontalAlignment = Element.ALIGN_LEFT
-                        };
-                        table.AddCell(cell);
-                        cell = new PdfPCell(new Paragraph(item.CRCO_NM_EMAIL, meuFont))
-                        {
-                            VerticalAlignment = Element.ALIGN_MIDDLE,
-                            HorizontalAlignment = Element.ALIGN_LEFT
-                        };
-                        table.AddCell(cell);
-                        cell = new PdfPCell(new Paragraph(item.CRCO_NR_TELEFONE, meuFont))
-                        {
-                            VerticalAlignment = Element.ALIGN_MIDDLE,
-                            HorizontalAlignment = Element.ALIGN_LEFT
-                        };
-                        cell = new PdfPCell(new Paragraph(item.CRCO_NR_CELULAR, meuFont))
-                        {
-                            VerticalAlignment = Element.ALIGN_MIDDLE,
-                            HorizontalAlignment = Element.ALIGN_LEFT
-                        };
-                        table.AddCell(cell);
-                    }
-                    pdfDoc.Add(table);
-                }
+        //            foreach (CRM_CONTATO item in aten.CRM_CONTATO)
+        //            {
+        //                cell = new PdfPCell(new Paragraph(item.CRCO_NM_NOME, meuFont))
+        //                {
+        //                    VerticalAlignment = Element.ALIGN_MIDDLE,
+        //                    HorizontalAlignment = Element.ALIGN_LEFT
+        //                };
+        //                table.AddCell(cell);
+        //                cell = new PdfPCell(new Paragraph(item.CRCO_NM_CARGO, meuFont))
+        //                {
+        //                    VerticalAlignment = Element.ALIGN_MIDDLE,
+        //                    HorizontalAlignment = Element.ALIGN_LEFT
+        //                };
+        //                table.AddCell(cell);
+        //                cell = new PdfPCell(new Paragraph(item.CRCO_NM_EMAIL, meuFont))
+        //                {
+        //                    VerticalAlignment = Element.ALIGN_MIDDLE,
+        //                    HorizontalAlignment = Element.ALIGN_LEFT
+        //                };
+        //                table.AddCell(cell);
+        //                cell = new PdfPCell(new Paragraph(item.CRCO_NR_TELEFONE, meuFont))
+        //                {
+        //                    VerticalAlignment = Element.ALIGN_MIDDLE,
+        //                    HorizontalAlignment = Element.ALIGN_LEFT
+        //                };
+        //                cell = new PdfPCell(new Paragraph(item.CRCO_NR_CELULAR, meuFont))
+        //                {
+        //                    VerticalAlignment = Element.ALIGN_MIDDLE,
+        //                    HorizontalAlignment = Element.ALIGN_LEFT
+        //                };
+        //                table.AddCell(cell);
+        //            }
+        //            pdfDoc.Add(table);
+        //        }
 
-                // Linha Horizontal
-                line1 = new Paragraph(new Chunk(new iTextSharp.text.pdf.draw.LineSeparator(0.0F, 100.0F, BaseColor.BLUE, Element.ALIGN_LEFT, 1)));
-                pdfDoc.Add(line1);
+        //        // Linha Horizontal
+        //        line1 = new Paragraph(new Chunk(new iTextSharp.text.pdf.draw.LineSeparator(0.0F, 100.0F, BaseColor.BLUE, Element.ALIGN_LEFT, 1)));
+        //        pdfDoc.Add(line1);
 
-                // Dados Ações
-                table = new PdfPTable(new float[] { 120f, 120f, 120f, 120f });
-                table.WidthPercentage = 100;
-                table.HorizontalAlignment = 0;
-                table.SpacingBefore = 1f;
-                table.SpacingAfter = 1f;
+        //        // Dados Ações
+        //        table = new PdfPTable(new float[] { 120f, 120f, 120f, 120f });
+        //        table.WidthPercentage = 100;
+        //        table.HorizontalAlignment = 0;
+        //        table.SpacingBefore = 1f;
+        //        table.SpacingAfter = 1f;
 
-                cell = new PdfPCell(new Paragraph("Ações", meuFontBold));
-                cell.Border = 0;
-                cell.Colspan = 4;
-                cell.VerticalAlignment = Element.ALIGN_MIDDLE;
-                cell.HorizontalAlignment = Element.ALIGN_LEFT;
-                table.AddCell(cell);
+        //        cell = new PdfPCell(new Paragraph("Ações", meuFontBold));
+        //        cell.Border = 0;
+        //        cell.Colspan = 4;
+        //        cell.VerticalAlignment = Element.ALIGN_MIDDLE;
+        //        cell.HorizontalAlignment = Element.ALIGN_LEFT;
+        //        table.AddCell(cell);
 
-                if (aten.CRM_ACAO.Count > 0)
-                {
-                    table = new PdfPTable(new float[] { 120f, 80f, 80f, 100f, 80f });
-                    table.WidthPercentage = 100;
-                    table.HorizontalAlignment = 0;
-                    table.SpacingBefore = 1f;
-                    table.SpacingAfter = 1f;
+        //        if (aten.CRM_ACAO.Count > 0)
+        //        {
+        //            table = new PdfPTable(new float[] { 120f, 80f, 80f, 100f, 80f });
+        //            table.WidthPercentage = 100;
+        //            table.HorizontalAlignment = 0;
+        //            table.SpacingBefore = 1f;
+        //            table.SpacingAfter = 1f;
 
-                    cell = new PdfPCell(new Paragraph("Título", meuFont))
-                    {
-                        VerticalAlignment = Element.ALIGN_MIDDLE,
-                        HorizontalAlignment = Element.ALIGN_LEFT
-                    };
-                    cell.BackgroundColor = BaseColor.LIGHT_GRAY;
-                    table.AddCell(cell);
-                    cell = new PdfPCell(new Paragraph("Criação", meuFont))
-                    {
-                        VerticalAlignment = Element.ALIGN_MIDDLE,
-                        HorizontalAlignment = Element.ALIGN_LEFT
-                    };
-                    cell.BackgroundColor = BaseColor.LIGHT_GRAY;
-                    table.AddCell(cell);
-                    cell = new PdfPCell(new Paragraph("Previsão", meuFont))
-                    {
-                        VerticalAlignment = Element.ALIGN_MIDDLE,
-                        HorizontalAlignment = Element.ALIGN_LEFT
-                    };
-                    cell.BackgroundColor = BaseColor.LIGHT_GRAY;
-                    table.AddCell(cell);
-                    cell = new PdfPCell(new Paragraph("Dias (Prevista)", meuFont))
-                    {
-                        VerticalAlignment = Element.ALIGN_MIDDLE,
-                        HorizontalAlignment = Element.ALIGN_LEFT
-                    };
-                    cell.BackgroundColor = BaseColor.LIGHT_GRAY;
-                    table.AddCell(cell);
-                    cell = new PdfPCell(new Paragraph("Status", meuFont))
-                    {
-                        VerticalAlignment = Element.ALIGN_MIDDLE,
-                        HorizontalAlignment = Element.ALIGN_LEFT
-                    };
-                    cell.BackgroundColor = BaseColor.LIGHT_GRAY;
-                    table.AddCell(cell);
+        //            cell = new PdfPCell(new Paragraph("Título", meuFont))
+        //            {
+        //                VerticalAlignment = Element.ALIGN_MIDDLE,
+        //                HorizontalAlignment = Element.ALIGN_LEFT
+        //            };
+        //            cell.BackgroundColor = BaseColor.LIGHT_GRAY;
+        //            table.AddCell(cell);
+        //            cell = new PdfPCell(new Paragraph("Criação", meuFont))
+        //            {
+        //                VerticalAlignment = Element.ALIGN_MIDDLE,
+        //                HorizontalAlignment = Element.ALIGN_LEFT
+        //            };
+        //            cell.BackgroundColor = BaseColor.LIGHT_GRAY;
+        //            table.AddCell(cell);
+        //            cell = new PdfPCell(new Paragraph("Previsão", meuFont))
+        //            {
+        //                VerticalAlignment = Element.ALIGN_MIDDLE,
+        //                HorizontalAlignment = Element.ALIGN_LEFT
+        //            };
+        //            cell.BackgroundColor = BaseColor.LIGHT_GRAY;
+        //            table.AddCell(cell);
+        //            cell = new PdfPCell(new Paragraph("Dias (Prevista)", meuFont))
+        //            {
+        //                VerticalAlignment = Element.ALIGN_MIDDLE,
+        //                HorizontalAlignment = Element.ALIGN_LEFT
+        //            };
+        //            cell.BackgroundColor = BaseColor.LIGHT_GRAY;
+        //            table.AddCell(cell);
+        //            cell = new PdfPCell(new Paragraph("Status", meuFont))
+        //            {
+        //                VerticalAlignment = Element.ALIGN_MIDDLE,
+        //                HorizontalAlignment = Element.ALIGN_LEFT
+        //            };
+        //            cell.BackgroundColor = BaseColor.LIGHT_GRAY;
+        //            table.AddCell(cell);
 
-                    foreach (CRM_ACAO item in aten.CRM_ACAO)
-                    {
-                        cell = new PdfPCell(new Paragraph(item.CRAC_NM_TITULO, meuFont))
-                        {
-                            VerticalAlignment = Element.ALIGN_MIDDLE,
-                            HorizontalAlignment = Element.ALIGN_LEFT
-                        };
-                        table.AddCell(cell);
-                        cell = new PdfPCell(new Paragraph(item.CRAC_DT_CRIACAO.Value.ToShortDateString(), meuFont))
-                        {
-                            VerticalAlignment = Element.ALIGN_MIDDLE,
-                            HorizontalAlignment = Element.ALIGN_LEFT
-                        };
-                        table.AddCell(cell);
-                        if (item.CRAC_DT_PREVISTA > DateTime.Today.Date)
-                        {
-                            cell = new PdfPCell(new Paragraph(item.CRAC_DT_PREVISTA.Value.ToShortDateString(), meuFontVerde))
-                            {
-                                VerticalAlignment = Element.ALIGN_MIDDLE,
-                                HorizontalAlignment = Element.ALIGN_LEFT
-                            };
-                        }
-                        else if (item.CRAC_DT_PREVISTA == DateTime.Today.Date)
-                        {
-                            cell = new PdfPCell(new Paragraph(item.CRAC_DT_PREVISTA.Value.ToShortDateString(), meuFontAzul))
-                            {
-                                VerticalAlignment = Element.ALIGN_MIDDLE,
-                                HorizontalAlignment = Element.ALIGN_LEFT
-                            };
-                        }
-                        else
-                        {
-                            cell = new PdfPCell(new Paragraph(item.CRAC_DT_PREVISTA.Value.ToShortDateString(), meuFontAzul))
-                            {
-                                VerticalAlignment = Element.ALIGN_MIDDLE,
-                                HorizontalAlignment = Element.ALIGN_LEFT
-                            };
-                        }
-                        table.AddCell(cell);
+        //            foreach (CRM_ACAO item in aten.CRM_ACAO)
+        //            {
+        //                cell = new PdfPCell(new Paragraph(item.CRAC_NM_TITULO, meuFont))
+        //                {
+        //                    VerticalAlignment = Element.ALIGN_MIDDLE,
+        //                    HorizontalAlignment = Element.ALIGN_LEFT
+        //                };
+        //                table.AddCell(cell);
+        //                cell = new PdfPCell(new Paragraph(item.CRAC_DT_CRIACAO.Value.ToShortDateString(), meuFont))
+        //                {
+        //                    VerticalAlignment = Element.ALIGN_MIDDLE,
+        //                    HorizontalAlignment = Element.ALIGN_LEFT
+        //                };
+        //                table.AddCell(cell);
+        //                if (item.CRAC_DT_PREVISTA > DateTime.Today.Date)
+        //                {
+        //                    cell = new PdfPCell(new Paragraph(item.CRAC_DT_PREVISTA.Value.ToShortDateString(), meuFontVerde))
+        //                    {
+        //                        VerticalAlignment = Element.ALIGN_MIDDLE,
+        //                        HorizontalAlignment = Element.ALIGN_LEFT
+        //                    };
+        //                }
+        //                else if (item.CRAC_DT_PREVISTA == DateTime.Today.Date)
+        //                {
+        //                    cell = new PdfPCell(new Paragraph(item.CRAC_DT_PREVISTA.Value.ToShortDateString(), meuFontAzul))
+        //                    {
+        //                        VerticalAlignment = Element.ALIGN_MIDDLE,
+        //                        HorizontalAlignment = Element.ALIGN_LEFT
+        //                    };
+        //                }
+        //                else
+        //                {
+        //                    cell = new PdfPCell(new Paragraph(item.CRAC_DT_PREVISTA.Value.ToShortDateString(), meuFontAzul))
+        //                    {
+        //                        VerticalAlignment = Element.ALIGN_MIDDLE,
+        //                        HorizontalAlignment = Element.ALIGN_LEFT
+        //                    };
+        //                }
+        //                table.AddCell(cell);
 
-                        if ((item.CRAC_DT_PREVISTA.Value.Date - DateTime.Today.Date).Days > 0)
-                        {
-                            cell = new PdfPCell(new Paragraph((item.CRAC_DT_PREVISTA.Value.Date - DateTime.Today.Date).Days.ToString(), meuFontVerde))
-                            {
-                                VerticalAlignment = Element.ALIGN_MIDDLE,
-                                HorizontalAlignment = Element.ALIGN_LEFT
-                            };
-                        }
-                        else
-                        {
-                            cell = new PdfPCell(new Paragraph((item.CRAC_DT_PREVISTA.Value.Date - DateTime.Today.Date).Days.ToString(), meuFontVermelho))
-                            {
-                                VerticalAlignment = Element.ALIGN_MIDDLE,
-                                HorizontalAlignment = Element.ALIGN_LEFT
-                            };
-                        }
-                        table.AddCell(cell);
+        //                if ((item.CRAC_DT_PREVISTA.Value.Date - DateTime.Today.Date).Days > 0)
+        //                {
+        //                    cell = new PdfPCell(new Paragraph((item.CRAC_DT_PREVISTA.Value.Date - DateTime.Today.Date).Days.ToString(), meuFontVerde))
+        //                    {
+        //                        VerticalAlignment = Element.ALIGN_MIDDLE,
+        //                        HorizontalAlignment = Element.ALIGN_LEFT
+        //                    };
+        //                }
+        //                else
+        //                {
+        //                    cell = new PdfPCell(new Paragraph((item.CRAC_DT_PREVISTA.Value.Date - DateTime.Today.Date).Days.ToString(), meuFontVermelho))
+        //                    {
+        //                        VerticalAlignment = Element.ALIGN_MIDDLE,
+        //                        HorizontalAlignment = Element.ALIGN_LEFT
+        //                    };
+        //                }
+        //                table.AddCell(cell);
 
-                        if (item.CRAC_IN_STATUS == 1)
-                        {
-                            cell = new PdfPCell(new Paragraph("Ativa", meuFontVerde))
-                            {
-                                VerticalAlignment = Element.ALIGN_MIDDLE,
-                                HorizontalAlignment = Element.ALIGN_LEFT
-                            };
-                        }
-                        else if (item.CRAC_IN_STATUS == 2)
-                        {
-                            cell = new PdfPCell(new Paragraph("Pendente", meuFont))
-                            {
-                                VerticalAlignment = Element.ALIGN_MIDDLE,
-                                HorizontalAlignment = Element.ALIGN_LEFT
-                            };
-                        }
-                        else if (item.CRAC_IN_STATUS == 3)
-                        {
-                            cell = new PdfPCell(new Paragraph("Encerrada", meuFontAzul))
-                            {
-                                VerticalAlignment = Element.ALIGN_MIDDLE,
-                                HorizontalAlignment = Element.ALIGN_LEFT
-                            };
-                        }
-                        else if (item.CRAC_IN_STATUS == 4)
-                        {
-                            cell = new PdfPCell(new Paragraph("Excluída", meuFontVermelho))
-                            {
-                                VerticalAlignment = Element.ALIGN_MIDDLE,
-                                HorizontalAlignment = Element.ALIGN_LEFT
-                            };
-                        }
-                        table.AddCell(cell);
-                    }
-                    pdfDoc.Add(table);
-                }
+        //                if (item.CRAC_IN_STATUS == 1)
+        //                {
+        //                    cell = new PdfPCell(new Paragraph("Ativa", meuFontVerde))
+        //                    {
+        //                        VerticalAlignment = Element.ALIGN_MIDDLE,
+        //                        HorizontalAlignment = Element.ALIGN_LEFT
+        //                    };
+        //                }
+        //                else if (item.CRAC_IN_STATUS == 2)
+        //                {
+        //                    cell = new PdfPCell(new Paragraph("Pendente", meuFont))
+        //                    {
+        //                        VerticalAlignment = Element.ALIGN_MIDDLE,
+        //                        HorizontalAlignment = Element.ALIGN_LEFT
+        //                    };
+        //                }
+        //                else if (item.CRAC_IN_STATUS == 3)
+        //                {
+        //                    cell = new PdfPCell(new Paragraph("Encerrada", meuFontAzul))
+        //                    {
+        //                        VerticalAlignment = Element.ALIGN_MIDDLE,
+        //                        HorizontalAlignment = Element.ALIGN_LEFT
+        //                    };
+        //                }
+        //                else if (item.CRAC_IN_STATUS == 4)
+        //                {
+        //                    cell = new PdfPCell(new Paragraph("Excluída", meuFontVermelho))
+        //                    {
+        //                        VerticalAlignment = Element.ALIGN_MIDDLE,
+        //                        HorizontalAlignment = Element.ALIGN_LEFT
+        //                    };
+        //                }
+        //                table.AddCell(cell);
+        //            }
+        //            pdfDoc.Add(table);
+        //        }
 
-                // Finaliza
-                pdfWriter.CloseStream = false;
-                pdfDoc.Close();
-                Response.Buffer = true;
-                Response.ContentType = "application/pdf";
-                Response.AddHeader("content-disposition", "attachment;filename=" + nomeRel);
-                Response.Cache.SetCacheability(HttpCacheability.NoCache);
-                Response.Write(pdfDoc);
-                Response.End();
+        //        // Finaliza
+        //        pdfWriter.CloseStream = false;
+        //        pdfDoc.Close();
+        //        Response.Buffer = true;
+        //        Response.ContentType = "application/pdf";
+        //        Response.AddHeader("content-disposition", "attachment;filename=" + nomeRel);
+        //        Response.Cache.SetCacheability(HttpCacheability.NoCache);
+        //        Response.Write(pdfDoc);
+        //        Response.End();
 
-                // Monta Log
-                LOG log = new LOG
-                {
-                    LOG_DT_DATA = DateTime.Now,
-                    ASSI_CD_ID = usuario.ASSI_CD_ID,
-                    USUA_CD_ID = usuario.USUA_CD_ID,
-                    LOG_NM_OPERACAO = "relCRM1",
-                    LOG_IN_ATIVO = 1,
-                    LOG_TX_REGISTRO = null,
-                    LOG_IN_SISTEMA = 1
-                };
-                Int32 volta2 = logApp.ValidateCreate(log);
+        //        // Monta Log
+        //        LOG log = new LOG
+        //        {
+        //            LOG_DT_DATA = DateTime.Now,
+        //            ASSI_CD_ID = usuario.ASSI_CD_ID,
+        //            USUA_CD_ID = usuario.USUA_CD_ID,
+        //            LOG_NM_OPERACAO = "relCRM1",
+        //            LOG_IN_ATIVO = 1,
+        //            LOG_TX_REGISTRO = null,
+        //            LOG_IN_SISTEMA = 1
+        //        };
+        //        Int32 volta2 = logApp.ValidateCreate(log);
 
-                return RedirectToAction("VoltarAnexoCRM");
-            }
-            catch (Exception ex)
-            {
-                ViewBag.Message = ex.Message;
-                Session["TipoVolta"] = 2;
-                Session["VoltaExcecao"] = "CRM";
-                Session["Excecao"] = ex;
-                Session["ExcecaoTipo"] = ex.GetType().ToString();
-                GravaLogExcecao grava = new GravaLogExcecao(usuApp);
-                Int32 voltaX = grava.GravarLogExcecao(ex, "CRM", "CRMSys", 1, (USUARIO)Session["UserCredentials"]);
-                return RedirectToAction("TrataExcecao", "BaseAdmin");
-            }
-        }
+        //        return RedirectToAction("VoltarAnexoCRM");
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        ViewBag.Message = ex.Message;
+        //        Session["TipoVolta"] = 2;
+        //        Session["VoltaExcecao"] = "CRM";
+        //        Session["Excecao"] = ex;
+        //        Session["ExcecaoTipo"] = ex.GetType().ToString();
+        //        GravaLogExcecao grava = new GravaLogExcecao(usuApp);
+        //        Int32 voltaX = grava.GravarLogExcecao(ex, "CRM", "CRMSys", 1, (USUARIO)Session["UserCredentials"]);
+        //        return RedirectToAction("TrataExcecao", "BaseAdmin");
+        //    }
+        //}
 
         public ActionResult GerarPropostaLine(Int32 id)
         {
@@ -7661,7 +6952,8 @@ namespace ERP_Condominios_Solution.Controllers
                 String data = DateTime.Today.Date.ToShortDateString();
                 data = data.Substring(0, 2) + data.Substring(3, 2) + data.Substring(6, 4);
                 String nomeRel = "CRM_Proposta_" + aten.CRPV_IN_NUMERO_GERADO.ToString() + "_" + data + ".pdf";
-                CLIENTE cliente = cliApp.GetItemById(crm.CLIE_CD_ID);
+                PRECATORIO cliente = preApp.GetItemById(crm.PREC_CD_ID.Value);
+                BENEFICIARIO bene = benApp.GetItemById(cliente.BENE_CD_ID.Value);
                 Session["VoltaCRM"] = 0;
                 ASSINANTE assi = (ASSINANTE)Session["Assinante"];
 
@@ -7701,7 +6993,7 @@ namespace ERP_Condominios_Solution.Controllers
                 comercial1 = comercial1.Replace("<p>", "");
                 comercial1 = comercial1.Replace("</p>", "<br />");
 
-                intro1 = intro1.Replace("{Nome}", cliente.CLIE_NM_NOME);
+                intro1 = intro1.Replace("{Nome}", cliente.PREC_NM_PRECATORIO);
                 rodape1 = rodape1.Replace("{Assinatura}", assi.ASSI_NM_NOME);
 
                 // Cria documento
@@ -7767,7 +7059,7 @@ namespace ERP_Condominios_Solution.Controllers
                 table.SpacingBefore = 1f;
                 table.SpacingAfter = 1f;
 
-                cell = new PdfPCell(new Paragraph("Dados do Cliente", meuFontGreen));
+                cell = new PdfPCell(new Paragraph("Dados do Beneficiário", meuFontGreen));
                 cell.Border = 0;
                 cell.Colspan = 4;
                 cell.VerticalAlignment = Element.ALIGN_MIDDLE;
@@ -7781,25 +7073,25 @@ namespace ERP_Condominios_Solution.Controllers
                 cell.HorizontalAlignment = Element.ALIGN_LEFT;
                 table.AddCell(cell);
 
-                cell = new PdfPCell(new Paragraph("Nome: " + cliente.CLIE_NM_NOME, meuFontGreen));
+                cell = new PdfPCell(new Paragraph("Nome: " + bene.BENE_NM_NOME, meuFontGreen));
                 cell.Border = 0;
                 cell.Colspan = 4;
                 cell.VerticalAlignment = Element.ALIGN_MIDDLE;
                 cell.HorizontalAlignment = Element.ALIGN_LEFT;
                 table.AddCell(cell);
 
-                if (cliente.CLIE_NM_ENDERECO != null)
+                if (bene.BENE_NM_ENDERECO != null)
                 {
-                    cell = new PdfPCell(new Paragraph("Endereço: " + cliente.CLIE_NM_ENDERECO + " " + cliente.CLIE_NR_NUMERO + " " + cliente.CLIE_NM_COMPLEMENTO, meuFont));
+                    cell = new PdfPCell(new Paragraph("Endereço: " + bene.BENE_NM_ENDERECO , meuFont));
                     cell.Border = 0;
                     cell.Colspan = 4;
                     cell.VerticalAlignment = Element.ALIGN_MIDDLE;
                     cell.HorizontalAlignment = Element.ALIGN_LEFT;
                     table.AddCell(cell);
 
-                    if (cliente.UF != null)
+                    if (bene.UF != null)
                     {
-                        cell = new PdfPCell(new Paragraph("                " + cliente.CLIE_NM_BAIRRO + " - " + cliente.CLIE_NM_CIDADE + " - " + cliente.UF.UF_SG_SIGLA + " - " + cliente.CLIE_NR_CEP, meuFont));
+                        cell = new PdfPCell(new Paragraph("                " + bene.BENE_NM_BAIRRO + " - " + bene.BENE_NM_CIDADE + " - " + bene.UF.UF_SG_SIGLA + " - " + bene.BENE_NR_CEP, meuFont));
                         cell.Border = 0;
                         cell.Colspan = 4;
                         cell.VerticalAlignment = Element.ALIGN_MIDDLE;
@@ -7808,7 +7100,7 @@ namespace ERP_Condominios_Solution.Controllers
                     }
                     else
                     {
-                        cell = new PdfPCell(new Paragraph("                " + cliente.CLIE_NM_BAIRRO + " - " + cliente.CLIE_NM_CIDADE + " - " + cliente.CLIE_NR_CEP, meuFont));
+                        cell = new PdfPCell(new Paragraph("                " + bene.BENE_NM_BAIRRO + " - " + bene.BENE_NM_CIDADE + " - " + bene.BENE_NR_CEP, meuFont));
                         cell.Border = 0;
                         cell.Colspan = 4;
                         cell.VerticalAlignment = Element.ALIGN_MIDDLE;
@@ -7826,19 +7118,19 @@ namespace ERP_Condominios_Solution.Controllers
                     table.AddCell(cell);
                 }
 
-                cell = new PdfPCell(new Paragraph("Telefone: " + cliente.CLIE_NR_TELEFONE, meuFont));
+                cell = new PdfPCell(new Paragraph("Telefone: " + bene.BENE_NR_TELEFONE, meuFont));
                 cell.Border = 0;
                 cell.Colspan = 4;
                 cell.VerticalAlignment = Element.ALIGN_MIDDLE;
                 cell.HorizontalAlignment = Element.ALIGN_LEFT;
                 table.AddCell(cell);
-                cell = new PdfPCell(new Paragraph("Celular: " + cliente.CLIE_NR_CELULAR, meuFont));
+                cell = new PdfPCell(new Paragraph("Celular: " + bene.BENE_NR_CELULAR, meuFont));
                 cell.Border = 0;
                 cell.Colspan = 4;
                 cell.VerticalAlignment = Element.ALIGN_MIDDLE;
                 cell.HorizontalAlignment = Element.ALIGN_LEFT;
                 table.AddCell(cell);
-                cell = new PdfPCell(new Paragraph("E-Mail: " + cliente.CLIE_NM_EMAIL, meuFont));
+                cell = new PdfPCell(new Paragraph("E-Mail: " + bene.BENE_EM_EMAIL, meuFont));
                 cell.Border = 0;
                 cell.Colspan = 4;
                 cell.VerticalAlignment = Element.ALIGN_MIDDLE;
@@ -7955,12 +7247,6 @@ namespace ERP_Condominios_Solution.Controllers
                 cell.VerticalAlignment = Element.ALIGN_MIDDLE;
                 cell.HorizontalAlignment = Element.ALIGN_LEFT;
                 table.AddCell(cell);
-                cell = new PdfPCell(new Paragraph("Frete (R$): " + CrossCutting.Formatters.DecimalFormatter(aten.CRPV_VL_FRETE.Value), meuFontBold));
-                cell.Border = 0;
-                cell.Colspan = 4;
-                cell.VerticalAlignment = Element.ALIGN_MIDDLE;
-                cell.HorizontalAlignment = Element.ALIGN_LEFT;
-                table.AddCell(cell);
                 cell = new PdfPCell(new Paragraph("Taxas (R$): " + CrossCutting.Formatters.DecimalFormatter(aten.CRPV_VL_ICMS.Value), meuFontBold));
                 cell.Border = 0;
                 cell.Colspan = 4;
@@ -7984,19 +7270,6 @@ namespace ERP_Condominios_Solution.Controllers
                 Response.Cache.SetCacheability(HttpCacheability.NoCache);
                 Response.Write(pdfDoc);
                 Response.End();
-
-                // Monta Log
-                LOG log = new LOG
-                {
-                    LOG_DT_DATA = DateTime.Now,
-                    ASSI_CD_ID = usuario.ASSI_CD_ID,
-                    USUA_CD_ID = usuario.USUA_CD_ID,
-                    LOG_NM_OPERACAO = "relCRPV",
-                    LOG_IN_ATIVO = 1,
-                    LOG_TX_REGISTRO = null,
-                    LOG_IN_SISTEMA = 1
-                };
-                Int32 volta2 = logApp.ValidateCreate(log);
 
                 return RedirectToAction("VoltarAcompanhamentoCRMBase");
             }
@@ -8258,26 +7531,12 @@ namespace ERP_Condominios_Solution.Controllers
                     usuario = (USUARIO)Session["UserCredentials"];
 
                     // Verfifica permissão
-                    if (usuario.PERFIL.PERF_IN_MENSAGEM_CLIENTE == 0)
-                    {
-                        Session["MensPermissao"] = 2;
-                        Session["ModuloPermissao"] = "CRM";
-                        return RedirectToAction("VoltarAnexoAcompanhamento", "CRM");
-                    }
                 }
                 else
                 {
                     return RedirectToAction("Logout", "ControleAcesso");
                 }
                 Int32 idAss = (Int32)Session["IdAssinante"];
-
-                // Verifica possibilidade
-                Int32 num = CarregaMensagemEnviada().Where(p => p.MEEN_DT_DATA_ENVIO.Value.Month == DateTime.Today.Date.Month & p.MEEN_DT_DATA_ENVIO.Value.Year == DateTime.Today.Date.Year & p.MEEN_IN_TIPO == 1).ToList().Count;
-                if ((Int32)Session["NumEMail"] <= num)
-                {
-                    Session["MensCRM"] = 200;
-                    return RedirectToAction("VoltarAcompanhamentoCRM");
-                }
 
                 if (Session["MensMensagem"] != null)
                 {
@@ -8289,12 +7548,12 @@ namespace ERP_Condominios_Solution.Controllers
 
                 // recupera cliente e assinante
                 Session["PontoProposta"] = 85;
-                CLIENTE cli = cliApp.GetItemById(id);
+                BENEFICIARIO cli = benApp.GetItemById(id);
                 ASSINANTE assi = (ASSINANTE)Session["Assinante"];
                 Session["Cliente"] = cli;
 
                 // Prepara mensagem
-                String header = "Prezado <b>" + cli.CLIE_NM_NOME + "</b>";
+                String header = "Prezado <b>" + cli.BENE_NM_NOME + "</b>";
                 String body = String.Empty;
                 String footer = "<b>" + assi.ASSI_NM_NOME + "</b>";
 
@@ -8303,14 +7562,14 @@ namespace ERP_Condominios_Solution.Controllers
                 vm.ASSI_CD_ID = idAss;
                 vm.MENS_DT_CRIACAO = DateTime.Now;
                 vm.MENS_IN_ATIVO = 1;
-                vm.NOME = cli.CLIE_NM_NOME;
+                vm.NOME = cli.BENE_NM_NOME;
                 vm.ID = id;
-                vm.MODELO = cli.CLIE_NM_EMAIL;
+                vm.MODELO = cli.BENE_EM_EMAIL;
                 vm.USUA_CD_ID = usuario.USUA_CD_ID;
                 vm.MENS_NM_CABECALHO = header;
                 vm.MENS_NM_RODAPE = footer;
                 vm.MENS_IN_TIPO = 1;
-                vm.ID = cli.CLIE_CD_ID;
+                vm.ID = cli.BENE_CD_ID;
                 return View(vm);
             }
             catch (Exception ex)
@@ -8366,19 +7625,6 @@ namespace ERP_Condominios_Solution.Controllers
                     String guid = new Guid().ToString();
                     Int32 volta1 = envio.GravarMensagemEnviada(vm, usuarioLogado, vm.MENS_TX_TEXTO, "Success", guid, null, "Mensagem de E-Mail para Cliente");
 
-                    // Monta Log                    
-                    LOG log = new LOG
-                    {
-                        LOG_DT_DATA = DateTime.Now,
-                        ASSI_CD_ID = usuarioLogado.ASSI_CD_ID,
-                        USUA_CD_ID = usuarioLogado.USUA_CD_ID,
-                        LOG_NM_OPERACAO = "emaCLIE",
-                        LOG_IN_ATIVO = 1,
-                        LOG_TX_REGISTRO = cont.CLIE_NM_NOME + " - E-Mail: " + cont.CLIE_NM_EMAIL,
-                        LOG_IN_SISTEMA = 1
-                    };
-                    Int32 volta2 = logApp.ValidateCreate(log);
-
                     // Sucesso
                     Session["VoltaTela"] = 0;
                     return RedirectToAction("AcompanhamentoProcessoCRM", new { id = idNot });
@@ -8417,12 +7663,6 @@ namespace ERP_Condominios_Solution.Controllers
                     usuario = (USUARIO)Session["UserCredentials"];
 
                     // Verfifica permissão
-                    if (usuario.PERFIL.PERF_IN_ACESSO_CRM == 0)
-                    {
-                        Session["MensPermissao"] = 2;
-                        Session["ModuloPermissao"] = "CRM";
-                        return RedirectToAction("CarregarBase", "BaseAdmin");
-                    }
                 }
                 else
                 {
@@ -8449,7 +7689,7 @@ namespace ERP_Condominios_Solution.Controllers
                 List<CRM_FOLLOW> follows_Lembra = follows.Where(p => p.TIFL_CD_ID == 3 & p.CRFL_DT_PREVISTA.Value.Date >= DateTime.Today.Date).ToList();
                 List<CRM_FOLLOW> follows_Alerta = follows.Where(p => p.TIFL_CD_ID == 2 & p.CRFL_DT_PREVISTA.Value.Date >= DateTime.Today.Date).ToList();
 
-                List<CLIENTE> cli = CarregaCliente();
+                List<PRECATORIO> cli = CarregaPrecatorio();
                 List<CRM_PEDIDO_VENDA> peds = CarregaPedidoVenda().Where(p => p.CRM.CRM1_IN_ATIVO != 2).ToList();
                 List<CRM_PEDIDO_VENDA> lmp1 = peds.Where(p => p.CRPV_DT_PEDIDO.Month == DateTime.Today.Date.Month & p.CRPV_DT_PEDIDO.Year == DateTime.Today.Date.Year).ToList();
 
@@ -8896,133 +8136,6 @@ namespace ERP_Condominios_Solution.Controllers
             }
         }
 
-        [HttpGet]
-        public ActionResult MontarTelaDashboardVendas()
-        {
-            // Verifica se tem usuario logado
-            USUARIO usuario = new USUARIO();
-            if ((String)Session["Ativa"] == null)
-            {
-                return RedirectToAction("Logout", "ControleAcesso");
-            }
-            if ((USUARIO)Session["UserCredentials"] != null)
-            {
-                usuario = (USUARIO)Session["UserCredentials"];
-
-                // Verfifica permissão
-                if (usuario.PERFIL.PERF_SG_SIGLA == "VIS")
-                {
-                    Session["MensCRM"] = 2;
-                    return RedirectToAction("MontarTelaCRM", "CRM");
-                }
-                if ((Int32)Session["PermCRM"] == 0)
-                {
-                    Session["MensPermissao"] = 2;
-                    return RedirectToAction("CarregarBase", "BaseAdmin");
-                }
-            }
-            else
-            {
-                return RedirectToAction("Logout", "ControleAcesso");
-            }
-            Int32 idAss = (Int32)Session["IdAssinante"];
-            UsuarioViewModel vm = Mapper.Map<USUARIO, UsuarioViewModel>(usuario);
-
-            // Recupera listas
-            List<CRM_PEDIDO_VENDA> peds = baseApp.GetAllPedidosVenda(idAss);
-            List<CRM_PEDIDO_VENDA> lmp1 = peds.Where(p => p.CRPV_DT_PEDIDO.Month == DateTime.Today.Date.Month & p.CRPV_DT_PEDIDO.Year == DateTime.Today.Date.Year).ToList();
-
-            List<CRM_PEDIDO_VENDA> pedsPes = peds.Where(p => p.USUA_CD_ID == usuario.USUA_CD_ID).ToList();
-            List<CRM_PEDIDO_VENDA> lmp1Pes = pedsPes.Where(p => p.CRPV_DT_PEDIDO.Month == DateTime.Today.Date.Month & p.CRPV_DT_PEDIDO.Year == DateTime.Today.Date.Year).ToList();
-
-            // Estatisticas 
-            Session["ListaPedidosMes"] = lmp1;
-            Session["PedElaboracao"] = peds.Where(p => p.CRPV_IN_STATUS == 1).ToList().Count;
-            Session["PedCancelada"] = peds.Where(p => p.CRPV_IN_STATUS == 3).ToList().Count;
-            Session["PedFatura"] = peds.Where(p => p.CRPV_IN_STATUS == 6).ToList().Count;
-            Session["PedExpedicao"] = peds.Where(p => p.CRPV_IN_STATUS == 7).ToList().Count;
-            Session["PedEntregue"] = peds.Where(p => p.CRPV_IN_STATUS == 8).ToList().Count;
-
-            Session["ListaPedidosMesPes"] = lmp1Pes;
-            Session["PedElaboracaoPes"] = pedsPes.Where(p => p.CRPV_IN_STATUS == 1).ToList().Count;
-            Session["PedCanceladaPes"] = pedsPes.Where(p => p.CRPV_IN_STATUS == 3).ToList().Count;
-            Session["PedFaturaPes"] = pedsPes.Where(p => p.CRPV_IN_STATUS == 6).ToList().Count;
-            Session["PedExpedicaoPes"] = pedsPes.Where(p => p.CRPV_IN_STATUS == 7).ToList().Count;
-            Session["PedEntreguePes"] = pedsPes.Where(p => p.CRPV_IN_STATUS == 8).ToList().Count;
-
-            ViewBag.Elaboracao = (Int32)Session["PedElaboracao"];
-            ViewBag.Cancelado = (Int32)Session["PedCancelada"];
-            ViewBag.Fatura = (Int32)Session["PedFatura"];
-            ViewBag.Expedicao = (Int32)Session["PedExpedicao"];
-            ViewBag.Entregue = (Int32)Session["PedEntregue"];
-
-            ViewBag.ElaboracaoPes = (Int32)Session["PedElaboracaoPes"];
-            ViewBag.CanceladoPes = (Int32)Session["PedCanceladaPes"];
-            ViewBag.FaturaPes = (Int32)Session["PedFaturaPes"];
-            ViewBag.ExpedicaoPes = (Int32)Session["PedExpedicaoPes"];
-            ViewBag.EntreguePes = (Int32)Session["PedEntreguePes"];
-
-            // Resumo Mes Pedidos
-            List<DateTime> datasPed = lmp1.Select(p => p.CRPV_DT_PEDIDO.Date).Distinct().ToList();
-            List<ModeloViewModel> listaPed = new List<ModeloViewModel>();
-            foreach (DateTime item in datasPed)
-            {
-                Int32 conta = lmp1.Where(p => p.CRPV_DT_PEDIDO.Date == item).Count();
-                ModeloViewModel mod = new ModeloViewModel();
-                mod.DataEmissao = item;
-                mod.Valor = conta;
-                listaPed.Add(mod);
-            }
-            ViewBag.ListaPedidosMes = listaPed;
-            ViewBag.ContaPedidosMes = lmp1.Count;
-            Session["ListaDatasPed"] = datasPed;
-            Session["ListaPedidosMesResumo"] = listaPed;
-
-            // Resumo Mes Pedidos Pessoal
-            List<DateTime> datasPedPes = lmp1Pes.Select(p => p.CRPV_DT_PEDIDO.Date).Distinct().ToList();
-            List<ModeloViewModel> listaPedPes = new List<ModeloViewModel>();
-            foreach (DateTime item in datasPedPes)
-            {
-                Int32 conta = lmp1Pes.Where(p => p.CRPV_DT_PEDIDO.Date == item).Count();
-                ModeloViewModel mod = new ModeloViewModel();
-                mod.DataEmissao = item;
-                mod.Valor = conta;
-                listaPedPes.Add(mod);
-            }
-            ViewBag.ListaPedidosMesPes = listaPedPes;
-            ViewBag.ContaPedidosMesPes = lmp1Pes.Count;
-            Session["ListaDatasPedPes"] = datasPedPes;
-            Session["ListaPedidosMesResumoPes"] = listaPedPes;
-
-            // Resumo Pedidos
-            List<ModeloViewModel> lista5 = new List<ModeloViewModel>();
-            for (int i = 1; i < 6; i++)
-            {
-                Int32 conta = peds.Where(p => p.CRPV_IN_STATUS == i).Count();
-                ModeloViewModel mod = new ModeloViewModel();
-                mod.Data = i == 1 ? "Em Elaboração" : (i == 2 ? "Enviado" : (i == 3 ? "Cancelado" : (i == 4 ? "Reprovado" : (i == 5 ? "Aprovado" : (i == 6 ? "Faturamento" : (i == 7 ? "Expedição" : "Entregue" ))))));
-                mod.Valor = conta;
-                lista5.Add(mod);
-            }
-            ViewBag.ListaCRMPed = lista5;
-            Session["ListaCRMPed"] = lista5;
-
-            // Resumo PedidosPessoal
-            List<ModeloViewModel> lista5Pes = new List<ModeloViewModel>();
-            for (int i = 1; i < 6; i++)
-            {
-                Int32 conta = pedsPes.Where(p => p.CRPV_IN_STATUS == i).Count();
-                ModeloViewModel mod = new ModeloViewModel();
-                mod.Data = i == 1 ? "Em Elaboração" : (i == 2 ? "Enviado" : (i == 3 ? "Cancelado" : (i == 4 ? "Reprovado" : (i == 5 ? "Aprovado" : (i == 6 ? "Faturamento" : (i == 7 ? "Expedição" : "Entregue"))))));
-                mod.Valor = conta;
-                lista5Pes.Add(mod);
-            }
-            ViewBag.ListaCRMPedPes = lista5Pes;
-            Session["ListaCRMPedPes"] = lista5Pes;
-            Session["VoltaProdutoDash"] = 1;
-            return View(vm);
-        }
-
         public JsonResult GetDadosGraficoCRMSituacao()
         {
             List<String> desc = new List<String>();
@@ -9440,7 +8553,7 @@ namespace ERP_Condominios_Solution.Controllers
             Session["VoltaMsg"] = 40;
             Session["VoltaTela"] = 0;
             ViewBag.Incluir = (Int32)Session["VoltaTela"];
-            return RedirectToAction("MontarTelaCliente", "Cliente");
+            return RedirectToAction("MontarTelaPrecatorio", "Precatorio");
         }
 
         public ActionResult MontarTelaCRMKanbaChama()
@@ -9471,58 +8584,7 @@ namespace ERP_Condominios_Solution.Controllers
         {
             // Prepara grid
             Session["VoltaMensagem"] = 50;
-            return RedirectToAction("MontarTelaCliente", "Cliente");
-        }
-
-        public ActionResult MostrarTransportadoras()
-        {
-            // Prepara grid
-            Session["VoltaTransportadora"] = 40;
-            return RedirectToAction("MontarTelaTransportadora", "Transportadora");
-        }
-
-        public ActionResult MostrarTransportadorasVenda()
-        {
-            // Prepara grid
-            Session["VoltaTransportadora"] = 50;
-            return RedirectToAction("MontarTelaTransportadora", "Transportadora");
-        }
-
-        public ActionResult MostrarServicos()
-        {
-            // Prepara grid
-            Session["VoltaServico"] = 40;
-            return RedirectToAction("MontarTelaServico", "Servico");
-        }
-
-        public ActionResult MostrarServicosVenda()
-        {
-            // Prepara grid
-            Session["VoltaServico"] = 50;
-            return RedirectToAction("MontarTelaServico", "Servico");
-        }
-
-        public ActionResult MostrarProdutos()
-        {
-            // Prepara grid
-            Session["VoltaProduto"] = 40;
-            return RedirectToAction("MontarTelaProduto", "Produto");
-        }
-
-        public ActionResult MostrarProdutosVenda()
-        {
-            // Prepara grid
-            Session["VoltaProduto"] = 50;
-            return RedirectToAction("MontarTelaProduto", "Produto");
-        }
-
-        public ActionResult IncluirClienteRapido()
-        {
-            // Prepara grid
-            Session["VoltaMensagem"] = 40;
-            Session["VoltaTela"] = 0;
-            ViewBag.Incluir = (Int32)Session["VoltaTela"];
-            return RedirectToAction("IncluirClienteRapido", "Cliente");
+            return RedirectToAction("MontarTelaPrecatorio", "Precatorio");
         }
 
         public ActionResult VerPedidosUsuarioCRM()
@@ -9540,12 +8602,6 @@ namespace ERP_Condominios_Solution.Controllers
                     usuario = (USUARIO)Session["UserCredentials"];
 
                     // Verfifica permissão
-                    if (usuario.PERFIL.PERF_IN_ACESSO_PROPOSTA == 0)
-                    {
-                        Session["MensPermissao"] = 2;
-                        Session["ModuloPermissao"] = "CRM";
-                        return RedirectToAction("MontarTelaCRM", "CRM");
-                    }
                 }
                 else
                 {
@@ -9674,7 +8730,7 @@ namespace ERP_Condominios_Solution.Controllers
                 CLIENTE cliente = null;
                 String erro = null;
                 Int32 volta = 0;
-                CRMSysDBEntities Db = new CRMSysDBEntities();
+                RidolfiDB_WebEntities Db = new RidolfiDB_WebEntities();
                 String status = "Succeeded";
                 String iD = "xyz";
 
@@ -9822,7 +8878,6 @@ namespace ERP_Condominios_Solution.Controllers
                 info = info + "<b>Dados Financeiros</b> <br />";
                 info = info + "<b>Valor (R$):</b> " + CrossCutting.Formatters.DecimalFormatter(prop.CRPV_VL_VALOR.Value) + "<br />";
                 info = info + "<b>Desconto (R$):</b> " + CrossCutting.Formatters.DecimalFormatter(prop.CRPV_VL_DESCONTO.Value) + "<br />";
-                info = info + "<b>Frete (R$):</b> " + CrossCutting.Formatters.DecimalFormatter(prop.CRPV_VL_FRETE.Value) + "<br />";
                 info = info + "<b>Taxas (R$):</b> " + CrossCutting.Formatters.DecimalFormatter(prop.CRPV_VL_ICMS.Value) + "<br />";
                 info = info + "<b>Total (R$):</b> " + CrossCutting.Formatters.DecimalFormatter(prop.CRPV_TOTAL_PEDIDO.Value) + "<br /><br />";
 
@@ -9902,7 +8957,7 @@ namespace ERP_Condominios_Solution.Controllers
                 env.MEEN_IN_TIPO = 1;
                 env.MEEN_DT_DATA_ENVIO = DateTime.Now;
                 env.MEEN_EM_EMAIL_DESTINO = cliente.CLIE_NM_EMAIL;
-                env.MEEN_NM_ORIGEM = "Mensagem para Cliente - Envio de Proposta";
+                env.MEEN_NM_ORIGEM = "Mensagem para Beneficiário - Envio de Proposta";
                 env.MEEN_TX_CORPO = emailBody;
                 env.MEEN_IN_ANEXOS = 0;
                 env.MEEN_IN_ATIVO = 1;
@@ -9994,19 +9049,6 @@ namespace ERP_Condominios_Solution.Controllers
                     not.CRM_PEDIDO_VENDA_ACOMPANHAMENTO.Add(item);
                     Int32 volta = baseApp.ValidateEditPedido(not);
 
-                    // Monta Log                    
-                    LOG log = new LOG
-                    {
-                        LOG_DT_DATA = DateTime.Now,
-                        ASSI_CD_ID = usuarioLogado.ASSI_CD_ID,
-                        USUA_CD_ID = usuarioLogado.USUA_CD_ID,
-                        LOG_NM_OPERACAO = "icoCRPV",
-                        LOG_IN_ATIVO = 1,
-                        LOG_TX_REGISTRO = "Inclusão de Acompanhamento - Proposta: " + not.CRPV_NM_NOME,
-                        LOG_IN_SISTEMA = 1
-                    };
-                    Int32 volta2 = logApp.ValidateCreate(log);
-
                     // Sucesso
                     Session["VoltaTela"] = 6;
                     return RedirectToAction("VoltarEditarPedidoCRM");
@@ -10045,26 +9087,12 @@ namespace ERP_Condominios_Solution.Controllers
                     usuario = (USUARIO)Session["UserCredentials"];
 
                     // Verfifica permissão
-                    if (usuario.PERFIL.PERF_IN_INCLUSAO_PROPOSTA == 0)
-                    {
-                        Session["MensPermissao"] = 2;
-                        Session["ModuloPermissao"] = "CRM";
-                        return RedirectToAction("VoltarAnexoAcompanhamento", "CRM");
-                    }
                 }
                 else
                 {
                     return RedirectToAction("Logout", "ControleAcesso");
                 }
                 Int32 idAss = (Int32)Session["IdAssinante"];
-
-                // Verifica se pode incluir pedido
-                List<CRM_PEDIDO_VENDA> peds = CarregaPedidoVenda().Where(p => p.CRM1_CD_ID == (Int32)Session["IdCRM"]).ToList();
-                if (peds.Where(p => p.CRPV_IN_STATUS == 1 || p.CRPV_IN_STATUS == 2).ToList().Count > 0)
-                {
-                    Session["MensCRM"] = 82;
-                    return RedirectToAction("VoltarAcompanhamentoCRM");
-                }
 
                 // Prepara listas
                 CONFIGURACAO conf = confApp.GetItemById(usuario.ASSI_CD_ID);
@@ -10112,9 +9140,9 @@ namespace ERP_Condominios_Solution.Controllers
                 vm.CRPV_IN_GERAR_CR = 0;
                 vm.CRPV_DT_VALIDADE = DateTime.Now.AddDays(Convert.ToDouble(conf.CONF_NR_DIAS_PROPOSTA));
                 vm.CRPV_IN_NUMERO_GERADO = num;
-                vm.CLIE_CD_ID = crm.CLIE_CD_ID;
+                vm.PREC_CD_ID = crm.PREC_CD_ID;
                 vm.FILI_CD_ID = 1;
-                vm.CLIENTE_NOME = (CLIENTE)Session["ClienteCRM"];
+                vm.CLIENTE_NOME = (PRECATORIO)Session["ClienteCRM"];
                 vm.EMPR_CD_ID = usuario.EMPR_CD_ID.Value;
                 return View(vm);
             }
@@ -10144,7 +9172,7 @@ namespace ERP_Condominios_Solution.Controllers
             ViewBag.Templates = new SelectList(listaTotal.Where(p => p.TEPR_IN_TIPO != 2).OrderByDescending(p => p.TEPR_IN_FIXO), "TEPR_CD_ID", "TEPR_NM_NOME");
             List<USUARIO> listaTotal1 = CarregaUsuario();
             ViewBag.Usuarios = new SelectList(listaTotal1.OrderBy(p => p.USUA_NM_NOME), "USUA_CD_ID", "USUA_NM_NOME");
-            vm.CLIENTE_NOME = (CLIENTE)Session["ClienteCRM"];
+            vm.CLIENTE_NOME = (PRECATORIO)Session["ClienteCRM"];
             if (ModelState.IsValid)
             {
                 try
@@ -10165,7 +9193,7 @@ namespace ERP_Condominios_Solution.Controllers
                     // Criticas 
                     if (vm.CRPV_NM_NOME == null)
                     {
-                        vm.CRPV_NM_NOME = "Proposta - " + vm.CLIENTE_NOME.CLIE_NM_NOME;
+                        vm.CRPV_NM_NOME = "Proposta - " + vm.CRPV_NM_NOME;
                     }
 
                     // Executa a operação
@@ -10194,7 +9222,7 @@ namespace ERP_Condominios_Solution.Controllers
 
                     // Gera diario
                     CRM not = baseApp.GetItemById(item.CRM1_CD_ID.Value);
-                    CLIENTE cli = cliApp.GetItemById(not.CLIE_CD_ID);
+                    PRECATORIO cli = preApp.GetItemById(not.PREC_CD_ID.Value);
                     DIARIO_PROCESSO dia = new DIARIO_PROCESSO();
                     dia.ASSI_CD_ID = usuarioLogado.ASSI_CD_ID;
                     dia.USUA_CD_ID = usuarioLogado.USUA_CD_ID;
@@ -10203,21 +9231,8 @@ namespace ERP_Condominios_Solution.Controllers
                     dia.CRPV_CD_ID = item.CRPV_CD_ID;
                     dia.EMPR_CD_ID = usuarioLogado.EMPR_CD_ID.Value;
                     dia.DIPR_NM_OPERACAO = "Criação de Proposta";
-                    dia.DIPR_DS_DESCRICAO = "Criação de Proposta " + item.CRPV_NM_NOME + ". Processo: " + not.CRM1_NM_NOME + ". Cliente: " + cli.CLIE_NM_NOME;
+                    dia.DIPR_DS_DESCRICAO = "Criação de Proposta " + item.CRPV_NM_NOME + ". Processo: " + not.CRM1_NM_NOME + ". Precatório: " + cli.PREC_NM_PRECATORIO;
                     Int32 volta3 = diaApp.ValidateCreate(dia);
-
-                    // Monta Log                    
-                    LOG log = new LOG
-                    {
-                        LOG_DT_DATA = DateTime.Now,
-                        ASSI_CD_ID = usuarioLogado.ASSI_CD_ID,
-                        USUA_CD_ID = usuarioLogado.USUA_CD_ID,
-                        LOG_NM_OPERACAO = "addCRPV",
-                        LOG_IN_ATIVO = 1,
-                        LOG_TX_REGISTRO = Serialization.SerializeJSON<CRM_PEDIDO_VENDA>(item),
-                        LOG_IN_SISTEMA = 1
-                    };
-                    Int32 volta2 = logApp.ValidateCreate(log);
 
                     // Verifica retorno
                     Session["SegueInclusao"] = 1;
@@ -10262,12 +9277,6 @@ namespace ERP_Condominios_Solution.Controllers
                     usuario = (USUARIO)Session["UserCredentials"];
 
                     // Verfifica permissão
-                    if (usuario.PERFIL.PERF_IN_CANCELAR_PROPOSTA == 0)
-                    {
-                        Session["MensPermissao"] = 2;
-                        Session["ModuloPermissao"] = "CRM";
-                        return RedirectToAction("VoltarAnexoAcompanhamento", "CRM");
-                    }
                 }
                 else
                 {
@@ -10404,7 +9413,7 @@ namespace ERP_Condominios_Solution.Controllers
 
                     // Gera diario
                     CRM not = baseApp.GetItemById(item.CRM1_CD_ID.Value);
-                    CLIENTE cli = cliApp.GetItemById(not.CLIE_CD_ID);
+                    PRECATORIO cli = preApp.GetItemById(not.PREC_CD_ID.Value);
                     DIARIO_PROCESSO dia = new DIARIO_PROCESSO();
                     dia.ASSI_CD_ID = usuario.ASSI_CD_ID;
                     dia.USUA_CD_ID = usuario.USUA_CD_ID;
@@ -10413,7 +9422,7 @@ namespace ERP_Condominios_Solution.Controllers
                     dia.CRPV_CD_ID = item.CRPV_CD_ID;
                     dia.DIPR_NM_OPERACAO = "Cancelamento de Proposta";
                     dia.EMPR_CD_ID = usuario.EMPR_CD_ID.Value;
-                    dia.DIPR_DS_DESCRICAO = "Cancelamento de Proposta " + item.CRPV_NM_NOME + ". Processo: " + not.CRM1_NM_NOME + ". Cliente: " + cli.CLIE_NM_NOME;
+                    dia.DIPR_DS_DESCRICAO = "Cancelamento de Proposta " + item.CRPV_NM_NOME + ". Processo: " + not.CRM1_NM_NOME + ". Precatório: " + cli.PREC_NM_PRECATORIO;
                     Int32 volta3 = diaApp.ValidateCreate(dia);
 
                     // Monta Texto
@@ -10431,7 +9440,7 @@ namespace ERP_Condominios_Solution.Controllers
 
                     info = info + "<br />Informações do Processo:<br />";
                     info = info + "Processo: <b style='color: darkblue'>" + not.CRM1_NM_NOME + "</b><br />";
-                    info = info + "Cliente: <b style='color: grenn'>" + not.CLIENTE.CLIE_NM_NOME + "</b><br />";
+                    info = info + "Precatório: <b style='color: grenn'>" + not.PRECATORIO.PREC_NM_PRECATORIO + "</b><br />";
                     info = info + "Data de Início: <b>" + not.CRM1_DT_CRIACAO.Value.ToShortDateString() + "</b><br />";
                     info = info + "Identificador: <b>" + not.CRM1_GU_GUID + "</b><br />";
 
@@ -10450,19 +9459,6 @@ namespace ERP_Condominios_Solution.Controllers
 
                     EnvioEMailGeralBase envio = new EnvioEMailGeralBase(usuApp, confApp, meApp);
                     await envio.ProcessaEnvioEMailGeral(mens, usuario);
-
-                    // Monta Log                    
-                    LOG log = new LOG
-                    {
-                        LOG_DT_DATA = DateTime.Now,
-                        ASSI_CD_ID = usuario.ASSI_CD_ID,
-                        USUA_CD_ID = usuario.USUA_CD_ID,
-                        LOG_NM_OPERACAO = "canCRPV",
-                        LOG_IN_ATIVO = 1,
-                        LOG_TX_REGISTRO = "Caancelamento de Proposta - Proposta: " + item.CRPV_NM_NOME,
-                        LOG_IN_SISTEMA = 1
-                    };
-                    Int32 volta2 = logApp.ValidateCreate(log);
 
                     // Listas
                     Session["VoltaTela"] = 6;
@@ -10505,12 +9501,6 @@ namespace ERP_Condominios_Solution.Controllers
                     usuario = (USUARIO)Session["UserCredentials"];
 
                     // Verfifica permissão
-                    if (usuario.PERFIL.PERF_IN_APROVAR_PROPOSTA == 0)
-                    {
-                        Session["MensPermissao"] = 2;
-                        Session["ModuloPermissao"] = "CRM";
-                        return RedirectToAction("VoltarAnexoAcompanhamento", "CRM");
-                    }
                 }
                 else
                 {
@@ -10625,7 +9615,7 @@ namespace ERP_Condominios_Solution.Controllers
 
                     // Gera diario
                     CRM not = baseApp.GetItemById(item.CRM1_CD_ID.Value);
-                    CLIENTE cli = cliApp.GetItemById(not.CLIE_CD_ID);
+                    PRECATORIO cli = preApp.GetItemById(not.PREC_CD_ID.Value);
                     DIARIO_PROCESSO dia = new DIARIO_PROCESSO();
                     dia.ASSI_CD_ID = usuario.ASSI_CD_ID;
                     dia.USUA_CD_ID = usuario.USUA_CD_ID;
@@ -10634,7 +9624,7 @@ namespace ERP_Condominios_Solution.Controllers
                     dia.CRPV_CD_ID = item.CRPV_CD_ID;
                     dia.EMPR_CD_ID = usuario.EMPR_CD_ID.Value;
                     dia.DIPR_NM_OPERACAO = "Reprovação de Proposta";
-                    dia.DIPR_DS_DESCRICAO = "Reprovação de Proposta " + item.CRPV_NM_NOME + ". Processo: " + not.CRM1_NM_NOME + ". Cliente: " + cli.CLIE_NM_NOME;
+                    dia.DIPR_DS_DESCRICAO = "Reprovação de Proposta " + item.CRPV_NM_NOME + ". Processo: " + not.CRM1_NM_NOME + ". Precatório: " + cli.PREC_NM_PRECATORIO;
                     Int32 volta3 = diaApp.ValidateCreate(dia);
 
                     // Monta Texto
@@ -10650,7 +9640,7 @@ namespace ERP_Condominios_Solution.Controllers
 
                     info = info + "<br />Informações do Processo:<br />";
                     info = info + "Processo: <b style='color: darkblue'>" + not.CRM1_NM_NOME + "</b><br />";
-                    info = info + "Cliente: <b style='color: grenn'>" + not.CLIENTE.CLIE_NM_NOME + "</b><br />";
+                    info = info + "Precatório: <b style='color: grenn'>" + not.PRECATORIO.PREC_NM_PRECATORIO + "</b><br />";
                     info = info + "Data de Início: <b>" + not.CRM1_DT_CRIACAO.Value.ToShortDateString() + "</b><br />";
                     info = info + "Identificador: <b>" + not.CRM1_GU_GUID + "</b><br />";
 
@@ -10669,19 +9659,6 @@ namespace ERP_Condominios_Solution.Controllers
 
                     EnvioEMailGeralBase envio = new EnvioEMailGeralBase(usuApp, confApp, meApp);
                     await envio.ProcessaEnvioEMailGeral(mens, usuario);
-
-                    // Monta Log                    
-                    LOG log = new LOG
-                    {
-                        LOG_DT_DATA = DateTime.Now,
-                        ASSI_CD_ID = usuario.ASSI_CD_ID,
-                        USUA_CD_ID = usuario.USUA_CD_ID,
-                        LOG_NM_OPERACAO = "repCRPV",
-                        LOG_IN_ATIVO = 1,
-                        LOG_TX_REGISTRO = "Reprovação de Proposta - Proposta: " + item.CRPV_NM_NOME,
-                        LOG_IN_SISTEMA = 1
-                    };
-                    Int32 volta2 = logApp.ValidateCreate(log);
 
                     // Listas
                     Session["FlagCRMPedido"] = 1;
@@ -10724,12 +9701,6 @@ namespace ERP_Condominios_Solution.Controllers
                     usuario = (USUARIO)Session["UserCredentials"];
 
                     // Verfifica permissão
-                    if (usuario.PERFIL.PERF_IN_APROVAR_PROPOSTA == 0)
-                    {
-                        Session["MensPermissao"] = 2;
-                        Session["ModuloPermissao"] = "CRM";
-                        return RedirectToAction("VoltarAnexoAcompanhamento", "CRM");
-                    }
                 }
                 else
                 {
@@ -10843,7 +9814,7 @@ namespace ERP_Condominios_Solution.Controllers
 
                     // Gera diario
                     CRM not = baseApp.GetItemById(item.CRM1_CD_ID.Value);
-                    CLIENTE cli = cliApp.GetItemById(not.CLIE_CD_ID);
+                    PRECATORIO cli = preApp.GetItemById(not.PREC_CD_ID.Value);
                     DIARIO_PROCESSO dia = new DIARIO_PROCESSO();
                     dia.ASSI_CD_ID = usuario.ASSI_CD_ID;
                     dia.USUA_CD_ID = usuario.USUA_CD_ID;
@@ -10852,7 +9823,7 @@ namespace ERP_Condominios_Solution.Controllers
                     dia.CRPV_CD_ID = item.CRPV_CD_ID;
                     dia.EMPR_CD_ID = usuario.EMPR_CD_ID.Value;
                     dia.DIPR_NM_OPERACAO = "Aprovação de Proposta";
-                    dia.DIPR_DS_DESCRICAO = "Aprovação de Proposta " + item.CRPV_NM_NOME + ". Processo: " + not.CRM1_NM_NOME + ". Cliente: " + cli.CLIE_NM_NOME;
+                    dia.DIPR_DS_DESCRICAO = "Aprovação de Proposta " + item.CRPV_NM_NOME + ". Processo: " + not.CRM1_NM_NOME + ". Precatório: " + cli.PREC_NM_PRECATORIO;
                     Int32 volta3 = diaApp.ValidateCreate(dia);
 
                     // Monta Texto
@@ -10868,7 +9839,7 @@ namespace ERP_Condominios_Solution.Controllers
 
                     info = info + "<br />Informações do Processo:<br />";
                     info = info + "Processo: <b style='color: darkblue'>" + not.CRM1_NM_NOME + "</b><br />";
-                    info = info + "Cliente: <b style='color: grenn'>" + not.CLIENTE.CLIE_NM_NOME + "</b><br />";
+                    info = info + "Precatório: <b style='color: grenn'>" + not.PRECATORIO.PREC_NM_PRECATORIO + "</b><br />";
                     info = info + "Data de Início: <b>" + not.CRM1_DT_CRIACAO.Value.ToShortDateString() + "</b><br />";
                     info = info + "Identificador: <b>" + not.CRM1_GU_GUID + "</b><br />";
 
@@ -10890,32 +9861,6 @@ namespace ERP_Condominios_Solution.Controllers
 
                     // Recupera configuracao
                     CONFIGURACAO conf = CarregaConfiguracaoGeral();
-
-                    // Calcula proximo numero
-                    Int32 num = 0;
-                    List<PEDIDO_VENDA> ped1 = CarregaVenda();
-                    if (ped1.Count == 0)
-                    {
-                        num = conf.CONF_IN_NUMERO_INICIAL_PEDIDO.Value;
-                    }
-                    else
-                    {
-                        num = ped1.OrderByDescending(p => p.PEVE_NR_NUMERO_GERADO).ToList().First().PEVE_NR_NUMERO_GERADO.Value;
-                        num++;
-                    }
-
-                    // Monta Log                    
-                    LOG log = new LOG
-                    {
-                        LOG_DT_DATA = DateTime.Now,
-                        ASSI_CD_ID = usuario.ASSI_CD_ID,
-                        USUA_CD_ID = usuario.USUA_CD_ID,
-                        LOG_NM_OPERACAO = "aprCRPV",
-                        LOG_IN_ATIVO = 1,
-                        LOG_TX_REGISTRO = "Aprovação de Proposta - Proposta: " + item.CRPV_NM_NOME,
-                        LOG_IN_SISTEMA = 1
-                    };
-                    Int32 volta2 = logApp.ValidateCreate(log);
 
                     // Retorno
                     Session["PedidoVendaAlterada"] = 1;
@@ -10958,12 +9903,6 @@ namespace ERP_Condominios_Solution.Controllers
                     usuario = (USUARIO)Session["UserCredentials"];
 
                     // Verfifica permissão
-                    if (usuario.PERFIL.PERF_IN_ENVIO_PROPOSTA == 0)
-                    {
-                        Session["MensPermissao"] = 2;
-                        Session["ModuloPermissao"] = "CRM";
-                        return RedirectToAction("VoltarAnexoAcompanhamento", "CRM");
-                    }
                 }
                 else
                 {
@@ -10983,7 +9922,6 @@ namespace ERP_Condominios_Solution.Controllers
 
                 // Checa propostas
                 Session["TemPed"] = 0;
-                //ViewBag.Templates = new SelectList(teApp.GetAllItens(idAss).OrderByDescending(p => p.TEEM_NM_NOME), "TEEM_CD_ID", "TEEM_NM_NOME");
 
                 // Mensagens
                 Session["VoltaComentPedido"] = 5;
@@ -11047,7 +9985,6 @@ namespace ERP_Condominios_Solution.Controllers
                 return RedirectToAction("Logout", "ControleAcesso");
             }
             Int32 idAss = (Int32)Session["IdAssinante"];
-            //ViewBag.Templates = new SelectList(teApp.GetAllItens(idAss).OrderByDescending(p => p.TEEM_NM_NOME), "TEEM_CD_ID", "TEEM_NM_NOME");
 
             if (ModelState.IsValid)
             {
@@ -11097,7 +10034,8 @@ namespace ERP_Condominios_Solution.Controllers
 
                     // Gera diario
                     CRM not = baseApp.GetItemById(item.CRM1_CD_ID.Value);
-                    CLIENTE cli = cliApp.GetItemById(not.CLIE_CD_ID);
+                    PRECATORIO cli = preApp.GetItemById(not.PREC_CD_ID.Value);
+                    BENEFICIARIO bene = benApp.GetItemById(cli.BENE_CD_ID.Value);
                     DIARIO_PROCESSO dia = new DIARIO_PROCESSO();
                     dia.ASSI_CD_ID = usuario.ASSI_CD_ID;
                     dia.USUA_CD_ID = usuario.USUA_CD_ID;
@@ -11106,7 +10044,7 @@ namespace ERP_Condominios_Solution.Controllers
                     dia.CRPV_CD_ID = item.CRPV_CD_ID;
                     dia.EMPR_CD_ID = usuario.EMPR_CD_ID.Value;
                     dia.DIPR_NM_OPERACAO = "Envio de Proposta";
-                    dia.DIPR_DS_DESCRICAO = "Envio de Proposta " + item.CRPV_NM_NOME + ". Processo: " + not.CRM1_NM_NOME + ". Cliente: " + cli.CLIE_NM_NOME;
+                    dia.DIPR_DS_DESCRICAO = "Envio de Proposta " + item.CRPV_NM_NOME + ". Processo: " + not.CRM1_NM_NOME + ". Precatório: " + cli.PREC_NM_PRECATORIO;
                     Int32 volta3 = diaApp.ValidateCreate(dia);
 
                     // Monta Texto responsavel
@@ -11121,7 +10059,7 @@ namespace ERP_Condominios_Solution.Controllers
 
                     info = info + "<br />Informações do Processo:<br />";
                     info = info + "Processo: <b style='color: darkblue'>" + not.CRM1_NM_NOME + "</b><br />";
-                    info = info + "Cliente: <b style='color: grenn'>" + not.CLIENTE.CLIE_NM_NOME + "</b><br />";
+                    info = info + "Precatório: <b style='color: grenn'>" + not.PRECATORIO.PREC_NM_PRECATORIO + "</b><br />";
                     info = info + "Data de Início: <b>" + not.CRM1_DT_CRIACAO.Value.ToShortDateString() + "</b><br />";
                     info = info + "Identificador: <b>" + not.CRM1_GU_GUID + "</b>";
 
@@ -11169,7 +10107,6 @@ namespace ERP_Condominios_Solution.Controllers
 
                     info = info + "Valor (R$): <b>" + CrossCutting.Formatters.DecimalFormatter(item.CRPV_VL_VALOR.Value) + "</b><br />";
                     info = info + "Desconto (R$): <b>" + CrossCutting.Formatters.DecimalFormatter(item.CRPV_VL_DESCONTO.Value) + "</b><br />";
-                    info = info + "Frete (R$): <b>" + CrossCutting.Formatters.DecimalFormatter(item.CRPV_VL_FRETE.Value) + "</b><br />";
                     info = info + "Taxas (R$): <b>" + CrossCutting.Formatters.DecimalFormatter(item.CRPV_VL_ICMS.Value) + "</b><br />";
                     info = info + "Total (R$): <b style: color: green;>" + CrossCutting.Formatters.DecimalFormatter(item.CRPV_TOTAL_PEDIDO.Value) + "</b><br /><br />";
 
@@ -11185,14 +10122,14 @@ namespace ERP_Condominios_Solution.Controllers
                     mens1.MENS_DT_CRIACAO = DateTime.Now;
                     mens1.MENS_IN_ATIVO = 1;
                     mens1.MENS_IN_TIPO = 1;
-                    mens1.ID = cli.CLIE_CD_ID;
+                    mens1.ID = cli.PREC_CD_ID;
                     mens1.TEPR_CD_ID = item.CRPC_IN_EMAIL;
                     mens1.MENS_NM_LINK = item.CRPV_LK_LINK;
-                    mens1.NOME = cli.CLIE_NM_NOME;
-                    mens1.ID = cli.CLIE_CD_ID;
+                    mens1.NOME = cli.PREC_NM_NOME;
+                    mens1.ID = bene.BENE_CD_ID;
                     mens1.TEPR_CD_ID = item.CRPC_IN_EMAIL;
                     mens1.MENS_NM_LINK = item.CRPV_LK_LINK;
-                    mens1.MODELO = cli.CLIE_NM_EMAIL;
+                    mens1.MODELO = bene.BENE_EM_EMAIL;
                     mens1.ASSI_CD_ID = idAss;
                     mens1.MENS_DT_CRIACAO = DateTime.Now;
                     mens1.MENS_IN_ATIVO = 1;
@@ -11200,25 +10137,12 @@ namespace ERP_Condominios_Solution.Controllers
                     mens1.MENS_TX_TEXTO = info;
                     mens1.MENS_NM_LINK = null;
                     mens1.MENS_NM_NOME = "Envio de Proposta";
-                    mens1.MENS_NM_CAMPANHA = cli.CLIE_NM_EMAIL;
+                    mens1.MENS_NM_CAMPANHA = bene.BENE_EM_EMAIL;
                     mens1.CLIE_CD_ID = not.CLIE_CD_ID;
                     mens1.MENS_NM_ASSINATURA = (String)Session["NomeEmpresaAssina"];
 
                     EnvioEMailGeralBase envioCliente = new EnvioEMailGeralBase(usuApp, confApp, meApp);
                     await envioCliente.ProcessaEnvioEMailGeral(mens1, usuario);
-
-                    // Monta Log                    
-                    LOG log = new LOG
-                    {
-                        LOG_DT_DATA = DateTime.Now,
-                        ASSI_CD_ID = usuario.ASSI_CD_ID,
-                        USUA_CD_ID = usuario.USUA_CD_ID,
-                        LOG_NM_OPERACAO = "envCRPV",
-                        LOG_IN_ATIVO = 1,
-                        LOG_TX_REGISTRO = "Envio de Proposta - Proposta: " + item.CRPV_NM_NOME,
-                        LOG_IN_SISTEMA = 1
-                    };
-                    Int32 volta2 = logApp.ValidateCreate(log);
 
                     // Retorno
                     Session["PedidoVendaAlterada"] = 1;
@@ -11259,12 +10183,6 @@ namespace ERP_Condominios_Solution.Controllers
                     usuario = (USUARIO)Session["UserCredentials"];
 
                     // Verfifica permissão
-                    if (usuario.PERFIL.PERF_IN_ALTERACAO_PROPOSTA == 0)
-                    {
-                        Session["MensPermissao"] = 2;
-                        Session["ModuloPermissao"] = "CRM";
-                        return RedirectToAction("VoltarAnexoAcompanhamento", "CRM");
-                    }
                 }
                 else
                 {
@@ -11301,7 +10219,7 @@ namespace ERP_Condominios_Solution.Controllers
                 objetoAntes = (CRM)Session["CRM"];
                 CRMPedidoViewModel vm = Mapper.Map<CRM_PEDIDO_VENDA, CRMPedidoViewModel>(item);
                 CRM proc = baseApp.GetItemById(item.CRM1_CD_ID.Value);
-                CLIENTE cli = cliApp.GetItemById(proc.CLIE_CD_ID);
+                PRECATORIO cli = preApp.GetItemById(proc.PREC_CD_ID.Value);
                 vm.CLIENTE_NOME = cli;
                 return View(vm);
             }
@@ -11367,7 +10285,7 @@ namespace ERP_Condominios_Solution.Controllers
 
                     // Gera diario
                     CRM not = baseApp.GetItemById(item.CRM1_CD_ID.Value);
-                    CLIENTE cli = cliApp.GetItemById(not.CLIE_CD_ID);
+                    PRECATORIO cli = preApp.GetItemById(not.PREC_CD_ID.Value);
                     DIARIO_PROCESSO dia = new DIARIO_PROCESSO();
                     dia.ASSI_CD_ID = usuarioLogado.ASSI_CD_ID;
                     dia.USUA_CD_ID = usuarioLogado.USUA_CD_ID;
@@ -11376,22 +10294,8 @@ namespace ERP_Condominios_Solution.Controllers
                     dia.CRPV_CD_ID = item.CRPV_CD_ID;
                     dia.EMPR_CD_ID = usuarioLogado.EMPR_CD_ID.Value;
                     dia.DIPR_NM_OPERACAO = "Alteração de Proposta";
-                    dia.DIPR_DS_DESCRICAO = "Alteração de Proposta " + item.CRPV_NM_NOME + ". Processo: " + not.CRM1_NM_NOME + ". Cliente: " + cli.CLIE_NM_NOME;
+                    dia.DIPR_DS_DESCRICAO = "Alteração de Proposta " + item.CRPV_NM_NOME + ". Processo: " + not.CRM1_NM_NOME + ". Precatório: " + cli.PREC_NM_PRECATORIO;
                     Int32 volta3 = diaApp.ValidateCreate(dia);
-
-                    // Monta Log                    
-                    LOG log = new LOG
-                    {
-                        LOG_DT_DATA = DateTime.Now,
-                        ASSI_CD_ID = usuarioLogado.ASSI_CD_ID,
-                        USUA_CD_ID = usuarioLogado.USUA_CD_ID,
-                        LOG_NM_OPERACAO = "edtCRPV",
-                        LOG_IN_ATIVO = 1,
-                        LOG_TX_REGISTRO = "Edição de Proposta - " + item.CRPV_NM_NOME,
-                        LOG_TX_REGISTRO_ANTES = null,
-                        LOG_IN_SISTEMA = 1
-                    };  
-                    Int32 volta2 = logApp.ValidateCreate(log);
 
                     // Verifica retorno
                     Session["PedidoVendaAlterada"] = 1;
@@ -11437,12 +10341,6 @@ namespace ERP_Condominios_Solution.Controllers
                     usuario = (USUARIO)Session["UserCredentials"];
 
                     // Verfifica permissão
-                    if (usuario.PERFIL.PERF_IN_EXCLUSAO_PROPOSTA == 0)
-                    {
-                        Session["MensPermissao"] = 2;
-                        Session["ModuloPermissao"] = "CRM";
-                        return RedirectToAction("VoltarAnexoAcompanhamento", "CRM");
-                    }
                 }
                 else
                 {
@@ -11458,7 +10356,7 @@ namespace ERP_Condominios_Solution.Controllers
 
                 // Gera diario
                 CRM not = baseApp.GetItemById(item.CRM1_CD_ID.Value);
-                CLIENTE cli = cliApp.GetItemById(not.CLIE_CD_ID);
+                PRECATORIO cli = preApp.GetItemById(not.PREC_CD_ID.Value);
                 DIARIO_PROCESSO dia = new DIARIO_PROCESSO();
                 dia.ASSI_CD_ID = usuario.ASSI_CD_ID;
                 dia.USUA_CD_ID = usuario.USUA_CD_ID;
@@ -11467,21 +10365,8 @@ namespace ERP_Condominios_Solution.Controllers
                 dia.CRPV_CD_ID = item.CRPV_CD_ID;
                 dia.EMPR_CD_ID = usuario.EMPR_CD_ID.Value;
                 dia.DIPR_NM_OPERACAO = "Exclusão de Proposta";
-                dia.DIPR_DS_DESCRICAO = "Exclusão de Proposta " + item.CRPV_NM_NOME + ". Processo: " + not.CRM1_NM_NOME + ". Cliente: " + cli.CLIE_NM_NOME;
+                dia.DIPR_DS_DESCRICAO = "Exclusão de Proposta " + item.CRPV_NM_NOME + ". Processo: " + not.CRM1_NM_NOME + ". Precatório: " + cli.PREC_NM_PRECATORIO;
                 Int32 volta3 = diaApp.ValidateCreate(dia);
-
-                // Monta Log                    
-                LOG log = new LOG
-                {
-                    LOG_DT_DATA = DateTime.Now,
-                    ASSI_CD_ID = usuario.ASSI_CD_ID,
-                    USUA_CD_ID = usuario.USUA_CD_ID,
-                    LOG_NM_OPERACAO = "delCRPV",
-                    LOG_IN_ATIVO = 1,
-                    LOG_TX_REGISTRO = "Exclusão de Proposta - Proposta: " + item.CRPV_NM_NOME,
-                    LOG_IN_SISTEMA = 1
-                };
-                Int32 volta2 = logApp.ValidateCreate(log);
 
                 // Verifica retorno
                 Session["PedidoVendaAlterada"] = 1;
@@ -11519,12 +10404,6 @@ namespace ERP_Condominios_Solution.Controllers
                     usuario = (USUARIO)Session["UserCredentials"];
 
                     // Verfifica permissão
-                    if (usuario.PERFIL.PERF_IN_EXCLUSAO_PROPOSTA == 0)
-                    {
-                        Session["MensPermissao"] = 2;
-                        Session["ModuloPermissao"] = "CRM";
-                        return RedirectToAction("VoltarAnexoAcompanhamento", "CRM");
-                    }
                 }
                 else
                 {
@@ -11540,7 +10419,7 @@ namespace ERP_Condominios_Solution.Controllers
 
                 // Gera diario
                 CRM not = baseApp.GetItemById(item.CRM1_CD_ID.Value);
-                CLIENTE cli = cliApp.GetItemById(not.CLIE_CD_ID);
+                PRECATORIO cli = preApp.GetItemById(not.PREC_CD_ID.Value);
                 DIARIO_PROCESSO dia = new DIARIO_PROCESSO();
                 dia.ASSI_CD_ID = usuario.ASSI_CD_ID;
                 dia.USUA_CD_ID = usuario.USUA_CD_ID;
@@ -11549,21 +10428,8 @@ namespace ERP_Condominios_Solution.Controllers
                 dia.CRPV_CD_ID = item.CRPV_CD_ID;
                 dia.EMPR_CD_ID = usuario.EMPR_CD_ID.Value;
                 dia.DIPR_NM_OPERACAO = "Reativação de Proposta";
-                dia.DIPR_DS_DESCRICAO = "Reativação de Proposta " + item.CRPV_NM_NOME + ". Processo: " + not.CRM1_NM_NOME + ". Cliente: " + cli.CLIE_NM_NOME;
+                dia.DIPR_DS_DESCRICAO = "Reativação de Proposta " + item.CRPV_NM_NOME + ". Processo: " + not.CRM1_NM_NOME + ". Precatório: " + cli.PREC_NM_PRECATORIO;
                 Int32 volta3 = diaApp.ValidateCreate(dia);
-
-                // Monta Log                    
-                LOG log = new LOG
-                {
-                    LOG_DT_DATA = DateTime.Now,
-                    ASSI_CD_ID = usuario.ASSI_CD_ID,
-                    USUA_CD_ID = usuario.USUA_CD_ID,
-                    LOG_NM_OPERACAO = "reaCRPV",
-                    LOG_IN_ATIVO = 1,
-                    LOG_TX_REGISTRO = "Reativação de Proposta - Proposta: " + item.CRPV_NM_NOME,
-                    LOG_IN_SISTEMA = 1
-                };
-                Int32 volta2 = logApp.ValidateCreate(log);
 
                 // Verifica retorno
                 Session["PedidoVendaAlterada"] = 1;
@@ -11600,12 +10466,6 @@ namespace ERP_Condominios_Solution.Controllers
                     usuario = (USUARIO)Session["UserCredentials"];
 
                     // Verfifica permissão
-                    if (usuario.PERFIL.PERF_IN_ALTERACAO_PROPOSTA == 0)
-                    {
-                        Session["MensPermissao"] = 2;
-                        Session["ModuloPermissao"] = "CRM";
-                        return RedirectToAction("VoltarAnexoAcompanhamento", "CRM");
-                    }
                 }
                 else
                 {
@@ -11635,7 +10495,7 @@ namespace ERP_Condominios_Solution.Controllers
 
                 // Gera diario
                 CRM not = baseApp.GetItemById(item.CRM1_CD_ID.Value);
-                CLIENTE cli = cliApp.GetItemById(not.CLIE_CD_ID);
+                PRECATORIO cli = preApp.GetItemById(not.PREC_CD_ID.Value);
                 DIARIO_PROCESSO dia = new DIARIO_PROCESSO();
                 dia.ASSI_CD_ID = usuario.ASSI_CD_ID;
                 dia.USUA_CD_ID = usuario.USUA_CD_ID;
@@ -11644,7 +10504,7 @@ namespace ERP_Condominios_Solution.Controllers
                 dia.CRPV_CD_ID = item.CRPV_CD_ID;
                 dia.EMPR_CD_ID = usuario.EMPR_CD_ID.Value;
                 dia.DIPR_NM_OPERACAO = "Alteração de Status de Proposta";
-                dia.DIPR_DS_DESCRICAO = "Alteração de Status de Proposta " + item.CRPV_NM_NOME + ". Processo: " + not.CRM1_NM_NOME + ". Cliente: " + cli.CLIE_NM_NOME;
+                dia.DIPR_DS_DESCRICAO = "Alteração de Status de Proposta " + item.CRPV_NM_NOME + ". Processo: " + not.CRM1_NM_NOME + ". Precatório: " + cli.PREC_NM_PRECATORIO;
                 Int32 volta3 = diaApp.ValidateCreate(dia);
 
                 // Monta Texto
@@ -11659,7 +10519,7 @@ namespace ERP_Condominios_Solution.Controllers
 
                 info = info + "<br />Informações do Processo:<br />";
                 info = info + "Processo: <b style='color: darkblue'>" + not.CRM1_NM_NOME + "</b><br />";
-                info = info + "Cliente: <b style='color: grenn'>" + not.CLIENTE.CLIE_NM_NOME + "</b><br />";
+                info = info + "Precatório: <b style='color: grenn'>" + not.PRECATORIO.PREC_NM_PRECATORIO + "</b><br />";
                 info = info + "Data de Início: <b>" + not.CRM1_DT_CRIACAO.Value.ToShortDateString() + "</b><br />";
                 info = info + "Identificador: <b>" + not.CRM1_GU_GUID + "</b><br />";
 
@@ -11723,7 +10583,7 @@ namespace ERP_Condominios_Solution.Controllers
                 CRMPedidoViewModel vm = Mapper.Map<CRM_PEDIDO_VENDA, CRMPedidoViewModel>(item);
                 CRM proc = baseApp.GetItemById(item.CRM1_CD_ID.Value);
                 ViewBag.Template = item.TEMPLATE_PROPOSTA.TEPR_SG_SIGLA;
-                CLIENTE cli = cliApp.GetItemById(proc.CLIE_CD_ID);
+                PRECATORIO cli = preApp.GetItemById(proc.PREC_CD_ID.Value);
                 vm.CLIENTE_NOME = cli;
                 return View(vm);
             }
@@ -11786,12 +10646,6 @@ namespace ERP_Condominios_Solution.Controllers
                     usuario = (USUARIO)Session["UserCredentials"];
 
                     // Verfifica permissão
-                    if (usuario.PERFIL.PERF_IN_ACOMPANHA_CRM == 0)
-                    {
-                        Session["MensPermissao"] = 2;
-                        Session["ModuloPermissao"] = "CRM";
-                        return RedirectToAction("VoltarAnexoAcompanhamento", "CRM");
-                    }
                 }
                 else
                 {
@@ -12169,6 +11023,44 @@ namespace ERP_Condominios_Solution.Controllers
             }
         }
 
+        public List<PRECATORIO> CarregaPrecatorio()
+        {
+            try
+            {
+                Int32 idAss = (Int32)Session["IdAssinante"];
+                List<PRECATORIO> conf = new List<PRECATORIO>();
+                if (Session["Precatorios"] == null)
+                {
+                    conf = preApp.GetAllItens();
+                }
+                else
+                {
+                    if ((Int32)Session["PrecatorioAlterada"] == 1)
+                    {
+                        conf = preApp.GetAllItens();
+                    }
+                    else
+                    {
+                        conf = (List<PRECATORIO>)Session["Precatorios"];
+                    }
+                }
+                Session["Precatorios"] = conf;
+                Session["PrecatorioAlterada"] = 0;
+                return conf;
+            }
+            catch (Exception ex)
+            {
+                ViewBag.Message = ex.Message;
+                Session["TipoVolta"] = 2;
+                Session["VoltaExcecao"] = "CRM";
+                Session["Excecao"] = ex;
+                Session["ExcecaoTipo"] = ex.GetType().ToString();
+                GravaLogExcecao grava = new GravaLogExcecao(usuApp);
+                Int32 voltaX = grava.GravarLogExcecao(ex, "CRM", "CRMSys", 1, (USUARIO)Session["UserCredentials"]);
+                return null;
+            }
+        }
+
         public List<CRM> CarregaCRMGeral()
         {
             try
@@ -12473,14 +11365,6 @@ namespace ERP_Condominios_Solution.Controllers
             }
         }
 
-        public List<PEDIDO_VENDA> CarregaVenda()
-        {
-            Int32 idAss = (Int32)Session["IdAssinante"];
-            List<PEDIDO_VENDA> conf = new List<PEDIDO_VENDA>();
-            conf = baseApp.GetAllVendas(idAss);
-            return conf;
-        }
-
         public List<TIPO_ACAO> CarregaTipoAcao()
         {
             try
@@ -12593,30 +11477,6 @@ namespace ERP_Condominios_Solution.Controllers
                 Int32 voltaX = grava.GravarLogExcecao(ex, "CRM", "CRMSys", 1, (USUARIO)Session["UserCredentials"]);
                 return null;
             }
-        }
-
-        public List<FILIAL> CarregaFilial()
-        {
-            Int32 idAss = (Int32)Session["IdAssinante"];
-            List<FILIAL> conf = new List<FILIAL>();
-            if (Session["Filiais"] == null)
-            {
-                conf = baseApp.GetAllFilial(idAss);
-            }
-            else
-            {
-                if ((Int32)Session["FilialAlterada"] == 1)
-                {
-                    conf = baseApp.GetAllFilial(idAss);
-                }
-                else
-                {
-                    conf = (List<FILIAL>)Session["Filiais"];
-                }
-            }
-            Session["Filiais"] = conf;
-            Session["FilialAlterada"] = 0;
-            return conf;
         }
 
         public List<TEMPLATE_PROPOSTA> CarregaTemplateProposta()
@@ -12797,7 +11657,7 @@ namespace ERP_Condominios_Solution.Controllers
                     Int32 volta = baseApp.ValidateEdit(not, objetoAntes);
 
                     // Gera diario
-                    CLIENTE cli = cliApp.GetItemById(not.CLIE_CD_ID);
+                    PRECATORIO cli = preApp.GetItemById(not.PREC_CD_ID.Value);
                     DIARIO_PROCESSO dia = new DIARIO_PROCESSO();
                     dia.ASSI_CD_ID = usuarioLogado.ASSI_CD_ID;
                     dia.USUA_CD_ID = usuarioLogado.USUA_CD_ID;
@@ -12806,21 +11666,8 @@ namespace ERP_Condominios_Solution.Controllers
                     dia.CRFL_CD_ID = item.CRFL_CD_ID;
                     dia.EMPR_CD_ID = usuarioLogado.EMPR_CD_ID.Value;
                     dia.DIPR_NM_OPERACAO = "Follow-Up de Processo";
-                    dia.DIPR_DS_DESCRICAO = "Follow-Up de Processo " + not.CRM1_NM_NOME + ". Cliente: " + cli.CLIE_NM_NOME;
+                    dia.DIPR_DS_DESCRICAO = "Follow-Up de Processo " + not.CRM1_NM_NOME + ". Precatório: " + cli.PREC_NM_PRECATORIO;
                     Int32 volta3 = diaApp.ValidateCreate(dia);
-
-                    // Monta Log                    
-                    LOG log = new LOG
-                    {
-                        LOG_DT_DATA = DateTime.Now,
-                        ASSI_CD_ID = usuarioLogado.ASSI_CD_ID,
-                        USUA_CD_ID = usuarioLogado.USUA_CD_ID,
-                        LOG_NM_OPERACAO = "ifoCRM1",
-                        LOG_IN_ATIVO = 1,
-                        LOG_TX_REGISTRO = "Processo: " + item.CRM.CRM1_NM_NOME + " - Acompanhamento: " + item.CRFL_DS_FOLLOW,
-                        LOG_IN_SISTEMA = 1
-                    };
-                    Int32 volta2 = logApp.ValidateCreate(log);
 
                     // Sucesso
                     Session["VoltaTela"] = 3;
@@ -12898,20 +11745,6 @@ namespace ERP_Condominios_Solution.Controllers
                     Int32 volta = baseApp.ValidateEditFollow(item);
                     CRM crm = (CRM)Session["CRM"];
 
-                    // Monta Log                    
-                    LOG log = new LOG
-                    {
-                        LOG_DT_DATA = DateTime.Now,
-                        ASSI_CD_ID = usuarioLogado.ASSI_CD_ID,
-                        USUA_CD_ID = usuarioLogado.USUA_CD_ID,
-                        LOG_NM_OPERACAO = "efoCRM1",
-                        LOG_IN_ATIVO = 1,
-                        LOG_TX_REGISTRO = "Processo: " + crm.CRM1_NM_NOME + " - Acompanhamento: " + item.CRFL_DS_FOLLOW,
-                        LOG_TX_REGISTRO_ANTES = null,
-                        LOG_IN_SISTEMA = 1
-                    };
-                    Int32 volta2 = logApp.ValidateCreate(log);
-
                     // Verifica retorno
                     Session["CRMAlterada"] = 1;
                     Session["VoltaTela"] = 3;
@@ -12954,18 +11787,6 @@ namespace ERP_Condominios_Solution.Controllers
                 Int32 volta = baseApp.ValidateEditFollow(item);
                 USUARIO usuarioLogado = (USUARIO)Session["UserCredentials"];
                 CRM crm = (CRM)Session["CRM"];
-
-                LOG log = new LOG
-                {
-                    LOG_DT_DATA = DateTime.Now,
-                    ASSI_CD_ID = usuarioLogado.ASSI_CD_ID,
-                    USUA_CD_ID = usuarioLogado.USUA_CD_ID,
-                    LOG_NM_OPERACAO = "xfoCRM1",
-                    LOG_IN_ATIVO = 1,
-                    LOG_TX_REGISTRO = "Processo: " + crm.CRM1_NM_NOME + " - Acompanhamento: " + item.CRFL_DS_FOLLOW,
-                    LOG_IN_SISTEMA = 1
-                };
-                Int32 volta2 = logApp.ValidateCreate(log);
 
                 Session["CRMAlterada"] = 1;
                 Session["FlagCRM"] = 1;
@@ -13310,9 +12131,6 @@ namespace ERP_Condominios_Solution.Controllers
                 item.CRAN_IN_ATIVO = 0;
                 Int32 volta = baseApp.ValidateEditAnexo(item);
                 Session["AgendaAlterada"] = 1;
-                MontarLogGeral log = new MontarLogGeral();
-                String mensagem = log.MontarLog(3, 3, 0, usu.USUA_NM_NOME);
-                Trace.WriteLine(mensagem);
 
                 return RedirectToAction("VoltarAcompanhamentoCRM");
             }

@@ -1,5 +1,5 @@
 ﻿@using Presentation.Extensions
-@model ERP_Condominios_Solution.ViewModels.CRMFollowViewModel
+@model ERP_Condominios_Solution.ViewModels.CRMComentarioViewModel
 @{
     Layout = "~/Views/Shared/_Layout_Admin.cshtml";
 }
@@ -21,7 +21,7 @@
                 <a href="@Url.Action("AcompanhamentoProcessoCRM", "CRM")">Processos - Acompanhamento</a>
             </li>
             <li class="active">
-                <strong>Processos - Acompanhamento</strong>
+                <strong>Processos - Anotações</strong>
             </li>
         </ol>
         <br />
@@ -30,47 +30,31 @@
         <div class="col-lg-12 col-md-12 col-xs-12">
             <div class="col-lg-12 col-md-12 col-xs-12 ibox float-e-margins">
                 <div class="ibox-title">
-                    <h5>Processo - Acompanhamento</h5>
+                    <h5>Processo - Anotação</h5>
                 </div>
-                @using (Html.BeginForm("VerFollow", "CRM", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", @id="pwd-container1" }))
+                @using (Html.BeginForm("VerAnotacao", "CRM", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", @id="pwd-container1" }))
                 {
                     <div class="ibox-content">
                         <div class="row">
                             <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">                
                                 <div class="col-lg-2 col-md-2 col-xs-12">
                                     @Html.HiddenFor(m => m.CRM1_CD_ID)
-                                    @Html.HiddenFor(m => m.CRFL_IN_ATIVO)
+                                    @Html.HiddenFor(m => m.CRCM_IN_ATIVO)
                                     @Html.HiddenFor(m => m.ASSI_CD_ID)
-                                    @Html.HiddenFor(m => m.CRFL_DT_FOLLOW)
-                                    @Html.HiddenFor(m => m.CRFL_DT_PREVISTA)
+                                    @Html.HiddenFor(m => m.CRCM_DT_COMENTARIO)
                                     @Html.HiddenFor(m => m.USUA_CD_ID)
-                                    @Html.HiddenFor(m => m.EMPR_CD_ID)
                                     Data de Criação
-                                    @Html.TextBoxFor(m => m.CRFL_DT_FOLLOW, "{0:dd/MM/yyyy}", new { @class = "form-control", autofocus = true, @readonly="readonly" })
-                                </div>
-                                <div class="col-lg-3 col-md-3 col-xs-12">
-                                    Tipo
-                                    @Html.TextBoxFor(m => m.TIPO_FOLLOW.TIFL_NM_NOME, new { @class = "form-control", autofocus = true, @readonly="readonly" })
+                                    @Html.TextBoxFor(m => m.CRCM_DT_COMENTARIO, "{0:dd/MM/yyyy}", new { @class = "form-control", autofocus = true, @readonly="readonly" })
                                 </div>
                                 <div class="col-lg-3 col-md-3 col-xs-12">
                                     Atribuída a
                                     @Html.TextBoxFor(m => m.USUARIO.USUA_NM_NOME, new { @class = "form-control", autofocus = true, @readonly="readonly" })
                                 </div>
-                                <div class="col-lg-2 col-md-2 col-xs-12">
-                                    Data Prevista
-                                    @Html.TextBoxFor(m => m.CRFL_DT_PREVISTA, "{0:dd/MM/yyyy}", new { @class = "form-control", autofocus = true, @readonly="readonly" })
-                                </div>
-                            </div>
-                            <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">                
-                                <div class="col-lg-12 col-md-12 col-xs-12">
-                                    Título
-                                    @Html.TextBoxFor(m => m.CRFL_NM_TITULO, new { @class = "form-control", autofocus = true, @readonly="readonly" })
-                                </div>
                             </div>
                             <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
                                 <div class="col-lg-12 col-md-12 col-xs-12">
                                     Descrição
-                                    @Html.TextAreaFor(m => m.CRFL_DS_FOLLOW, new { @class = "form-control", style = "width: 100%; height: 200px;", autofocus = true, @readonly="readonly" })
+                                    @Html.TextAreaFor(m => m.CRCM_DS_COMENTARIO, new { @class = "form-control", style = "width: 100%; height: 200px;", autofocus = true, @readonly="readonly" })
                                 </div>
                             </div>
                         </div>
@@ -108,4 +92,5 @@
         </script>
     }
 }
+
 

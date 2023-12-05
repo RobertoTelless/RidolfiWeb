@@ -3,6 +3,7 @@
 @{
     Layout = "~/Views/Shared/_Layout_Admin.cshtml";
 }
+
 <div class="wrapper wrapper-content animated fadeInRight">
     <div class="page-title">
         <h3 class="title">Processos</h3>
@@ -26,7 +27,6 @@
         </ol>
         <br />
     </div>
-
     <div class="row">
         <div class="col-lg-12 col-md-12 col-xs-12">
             <div class="col-lg-12 col-md-12 col-xs-12 ibox float-e-margins">
@@ -36,6 +36,9 @@
                 @using (Html.BeginForm("IncluirComentarioCRM", "CRM", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", @id="pwd-container1" }))
                 {
                     <div class="ibox-content">
+                        @*<div class="form-group">
+                            @Html.ButtonLinkIndex(text: "Voltar", action: "VoltarAcompanhamentoCRM", controller: "CRM")
+                        </div>*@
                         @if (!ViewData.ModelState.IsValid)
                         {
                             <div class="alert alert-danger">
@@ -64,6 +67,7 @@
                                         @Html.HiddenFor(m => m.CRM1_CD_ID)
                                         @Html.HiddenFor(m => m.USUA_CD_ID)
                                         @Html.HiddenFor(m => m.CRCM_DT_COMENTARIO)
+                                        @Html.HiddenFor(m => m.ASSI_CD_ID)
                                         Data
                                         @Html.TextBoxFor(m => m.CRCM_DT_COMENTARIO, "{0:dd/MM/yyyy HH:mm}", new { @class = "form-control", @readonly="readonly"})
                                     </div>

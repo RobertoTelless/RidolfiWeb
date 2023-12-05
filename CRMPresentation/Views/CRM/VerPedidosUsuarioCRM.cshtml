@@ -5,7 +5,6 @@
 @{
     Layout = "~/Views/Shared/_Layout_Admin.cshtml";
 }
-
 <div class="wrapper wrapper-content animated fadeInRight">
     <div class="page-title">
         <h3 class="title">Processos</h3>
@@ -23,7 +22,6 @@
         </ol>
         <br />
     </div>
-
     <div class="row">
         <div class="col-lg-2 col-md-2 col-sm-12">
             <div class="ibox-content text-center">
@@ -45,8 +43,8 @@
                     <small>Propostas Cadastradas</small>
                     <br />
                     <br />
-                    <br />
-                    <br />
+                    @*<br />
+                    <br />*@
                 </div>
             </div>
         </div>
@@ -63,7 +61,7 @@
                         <small>Em Elaboração</small>
                         <br />
                         <br />
-                        @Html.ButtonLinkIndex(text: "Ver", controller: "CRM", action: "VerPedidosUsuarioCRMElaboracaoPrevia", buttonClass: "white")
+                        @*@Html.ButtonLinkIndex(text: "Ver", controller: "CRM", action: "VerPedidosUsuarioCRMElaboracaoPrevia", buttonClass: "white")*@
                     </div>
                 </div>
             </div>
@@ -78,7 +76,7 @@
                         <small>Enviadas ao Cliente</small>
                         <br />
                         <br />
-                        @Html.ButtonLinkIndex(text: "Ver", controller: "CRM", action: "VerPedidosUsuarioCRMEnviadaPrevia", buttonClass: "white")
+                        @*@Html.ButtonLinkIndex(text: "Ver", controller: "CRM", action: "VerPedidosUsuarioCRMEnviadaPrevia", buttonClass: "white")*@
                     </div>
                 </div>
             </div>
@@ -93,7 +91,7 @@
                         <small>Aprovadas pelo Cliente</small>
                         <br />
                         <br />
-                        @Html.ButtonLinkIndex(text: "Ver", controller: "CRM", action: "VerPedidosUsuarioCRMAprovadaPrevia", buttonClass: "white")
+                        @*@Html.ButtonLinkIndex(text: "Ver", controller: "CRM", action: "VerPedidosUsuarioCRMAprovadaPrevia", buttonClass: "white")*@
                     </div>
                 </div>
             </div>
@@ -111,7 +109,7 @@
                         <small>Em Elaboração</small>
                         <br />
                         <br />
-                        @Html.ButtonLinkIndex(text: "Ver", controller: "CRM", action: "VerPedidosUsuarioCRMElaboracaoPrevia", buttonClass: "white")
+                        @*@Html.ButtonLinkIndex(text: "Ver", controller: "CRM", action: "VerPedidosUsuarioCRMElaboracaoPrevia", buttonClass: "white")*@
                     </div>
                 </div>
             </div>
@@ -129,7 +127,7 @@
                         <small>Enviadas ao Cliente</small>
                         <br />
                         <br />
-                        @Html.ButtonLinkIndex(text: "Ver", controller: "CRM", action: "VerPedidosUsuarioCRMEnviadaPrevia", buttonClass: "white")
+                        @*@Html.ButtonLinkIndex(text: "Ver", controller: "CRM", action: "VerPedidosUsuarioCRMEnviadaPrevia", buttonClass: "white")*@
                     </div>
                 </div>
             </div>
@@ -147,7 +145,7 @@
                         <small>Aprovadas pelo Cliente</small>
                         <br />
                         <br />
-                        @Html.ButtonLinkIndex(text: "Ver", controller: "CRM", action: "VerPedidosUsuarioCRMAprovadaPrevia", buttonClass: "white")
+                        @*@Html.ButtonLinkIndex(text: "Ver", controller: "CRM", action: "VerPedidosUsuarioCRMAprovadaPrevia", buttonClass: "white")*@
                     </div>
                 </div>
             </div>
@@ -161,7 +159,7 @@
                 </div>
                 <div class="ibox-content">
                     <div class="form-group">
-                        @Html.ButtonLinkIndex(text: "Voltar", action: "MontarTelaCRM", controller: "CRM")
+                        @Html.ButtonLinkIndex(text: "Voltar", action: "VoltarPedidoCRM", controller: "CRM")
                     </div>
                     <div class="row">
                         @if ((ViewBag.Lista as List<EntitiesServices.Model.CRM_PEDIDO_VENDA>).Count > 0)
@@ -169,7 +167,6 @@
                             <table class="table table-striped table-bordered table-hover dataTables-example1">
                                 <thead style="background-color:lightsteelblue">
                                     <tr>
-                                        <th>Beneficiário</th>
                                         <th>Precatório</th>
                                         <th>Nome da Proposta</th>
                                         <th>Criação</th>
@@ -188,7 +185,6 @@
                                         if (cond.CRPV_IN_STATUS == 2 || cond.CRPV_IN_STATUS == 1)
                                         {
                                             <tr style="background-color:lightyellow; color: green">
-                                                <td>@cond.CRM.PRECATORIO.PREC_NM_NOME</td>
                                                 <td>@cond.CRM.PRECATORIO.PREC_NM_PRECATORIO</td>
                                                 @if (cond.CRPV_IN_STATUS == 1)
                                                 {
@@ -287,7 +283,7 @@
                                         else
                                         {
                                             <tr>
-                                                <td>@cond.CRM.CLIENTE.CLIE_NM_NOME</td>                                                
+                                                <td>@cond.CRM.PRECATORIO.PREC_NM_PRECATORIO</td>                                                
                                                 <td>@cond.CRPV_NR_NUMERO</td>
                                                 <td>@cond.CRPV_DT_PEDIDO.ToShortDateString()</td>
                                                 <td>@cond.CRPV_DT_VALIDADE.ToShortDateString()</td>

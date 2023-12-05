@@ -3,6 +3,7 @@
 @{
     Layout = "~/Views/Shared/_Layout_Admin.cshtml";
 }
+
 <div class="wrapper wrapper-content animated fadeInRight">
     <div class="page-title">
         <h3 class="title">Processos</h3>
@@ -89,7 +90,7 @@
                                                     @Html.HiddenFor(m => m.CRM1_NR_TEMPERATURA)
                                                     @Html.HiddenFor(m => m.FUNI_CD_ID)
                                                     @Html.HiddenFor(m => m.EMPR_CD_ID)
-                                                    @Html.HiddenFor(m => m.PREC_CD_ID)
+                                                    @Html.HiddenFor(m => m.CRM1_IN_ENCERRADO)
                                                     Título do Processo
                                                     @Html.TextBoxFor(m => m.CRM1_NM_NOME, new { @class = "form-control", autofocus = true, @readonly="readonly" })
                                                 </div>
@@ -98,13 +99,17 @@
                                                     @Html.TextBoxFor(m => m.PRECATORIO.PREC_NM_PRECATORIO, new { @class = "form-control", autofocus = true, @readonly="readonly" })
                                                 </div>
                                                 <div class="col-lg-3 col-md-3 col-xs-12">
-                                                    Origem
-                                                    @Html.TextBoxFor(m => m.CRM_ORIGEM.CROR_NM_NOME, new { @class = "form-control", autofocus = true, @readonly="readonly" })
+                                                    Identificador do Processo
+                                                    @Html.TextBoxFor(m => m.CRM1_GU_GUID, new { @class = "form-control", autofocus = true, @readonly="readonly" })
                                                 </div>
                                             </div>
                                             <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
+                                                <div class="col-lg-3 col-md-3 col-xs-12">
+                                                    Origem
+                                                    @Html.TextBoxFor(m => m.CRM_ORIGEM.CROR_NM_NOME, new { @class = "form-control", autofocus = true, @readonly="readonly" })
+                                                </div>
                                                 <div class="col-lg-2 col-md-2 col-xs-12">
-                                                    Data Canc.*
+                                                    Data do     Cancelamento*
                                                     @Html.TextBoxFor(m => m.CRM1_DT_CANCELAMENTO, "{0:dd/MM/yyyy}", new { @class = "form-control date-picker", autofocus = true, @id="data1" })
                                                     @Html.ValidationMessageFor(m => m.CRM1_DT_CANCELAMENTO, "", new { @style = "color:red" })
                                                 </div>

@@ -83,6 +83,7 @@ namespace EntitiesServices.Model
         public string CRPV_TX_INTRODUCAO_1 { get; set; }
         public string CRPV_TX_INFORMACOES_GERAIS_1 { get; set; }
         public string CRPV_TX_OUTROS_ITENS_1 { get; set; }
+        public string CRPV_GU_GUID { get; set; }
     
         public virtual CLIENTE CLIENTE { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

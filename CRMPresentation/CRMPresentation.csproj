@@ -13221,7 +13221,6 @@
     <Content Include="Views\CRM\VerAnexoCRMPedido.cshtml" />
     <Content Include="Views\CRM\CancelarProcessoCRM.cshtml" />
     <Content Include="Views\CRM\EncerrarProcessoCRM.cshtml" />
-    <Content Include="Views\CRM\EditarProcessoCRM.cshtml" />
     <Content Include="Views\CRM\VisualizarProcessoCRM.cshtml" />
     <Content Include="Views\CRM\EditarContato.cshtml" />
     <Content Include="Views\CRM\IncluirContato.cshtml" />
@@ -13233,8 +13232,6 @@
     <Content Include="Views\CRM\VerAcao.cshtml" />
     <Content Include="Views\CRM\VerAcoesUsuarioCRM.cshtml" />
     <Content Include="Views\CRM\IncluirAcao.cshtml" />
-    <Content Include="Views\CRM\VerCRMExpansao.cshtml" />
-    <Content Include="Views\CRM\VerProcessosStatusExpansao.cshtml" />
     <Content Include="Views\CRM\EnviarEMailCliente.cshtml" />
     <Content Include="Views\CRM\MontarTelaDashboardCRMNovo.cshtml" />
     <Content Include="Views\CRM\VerPedidosUsuarioCRM.cshtml" />
@@ -13379,6 +13376,10 @@
     <Content Include="Views\Usuario\MontarTelaLogExcecao.cshtml" />
     <Content Include="Views\Usuario\VerLogExcecao.cshtml" />
     <Content Include="Views\Beneficiario\IncluirContato.cshtml" />
+    <Content Include="Views\CRM\VerAnotacao.cshtml" />
+    <Content Include="Views\CRM\VerAnotacaoAcompanhamento.cshtml" />
+    <Content Include="Views\CRM\VerFollow.cshtml" />
+    <Content Include="Views\CRM\VerAlerta.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

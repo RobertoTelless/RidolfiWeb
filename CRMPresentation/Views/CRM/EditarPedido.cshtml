@@ -4,6 +4,7 @@
 @{
     Layout = "~/Views/Shared/_Layout_Admin.cshtml";
 }
+
 <div class="wrapper wrapper-content animated fadeInRight">
     <div class="modalContainer">
         <div id="modal" class="modal" tabindex="-1" role="dialog">
@@ -144,7 +145,7 @@
                                             @Html.HiddenFor(m => m.TEPR_CD_ID)
                                             @Html.HiddenFor(m => m.EMPR_CD_ID)
                                             @Html.HiddenFor(m => m.FILI_CD_ID)
-                                            @Html.HiddenFor(m => m.PREC_CD_ID)
+                                            @Html.HiddenFor(m => m.CRPV_GU_GUID)
                                             @Html.ButtonActionSubmit(text: "Confirma Edição da Proposta", htmlAttributes: new { id = "basictoast" })
                                         </div>
                                         <div class="row">
@@ -154,7 +155,7 @@
                                                         <h5>Dados do Precatório</h5>
                                                         @if (Model.PRECATORIO.BENEFICIARIO != null)
                                                         {
-                                                            <span style="float: right"><a href="@Url.Action("EnviarEMailBeneficiario", "CRM", new { id = Model.PRECATORIO.BENEFICIARIO.BENE_CD_ID})" />Enviar E-Mail</span>
+                                                            <span style="float: right"><a href="@Url.Action("EnviarEMailCliente", "CRM", new { id = Model.PRECATORIO.BENEFICIARIO.BENE_CD_ID})" />Enviar E-Mail</span>
                                                         }
                                                         else
                                                         {
@@ -163,7 +164,7 @@
                                                     </div>
                                                     <div class="ibox-content" style="color: black">
                                                         <h3 style="color: green"><strong><a href="@Url.Action("EditarPrecatorio", "Precatorio", new { id = Model.PREC_CD_ID })">@Model.PRECATORIO.PREC_NM_PRECATORIO</a></strong></h3>
-                                                        <h4 style="color: darkblue"><strong>@Model.PRECATORIO.PREC_NM_NOME</strong></h4>
+                                                        <h4 style="color: darkblue"><strong>@Model.PRECATORIO.PREC_NM_REQUERENTE</strong></h4>
                                                         @if (Model.PRECATORIO.BENEFICIARIO != null)
                                                         {
                                                             <address>
@@ -174,7 +175,7 @@
 	                                                            }
                                                                 @if (Model.PRECATORIO.BENEFICIARIO.BENE_NR_CELULAR != null)
                                                                 {
-                                                                    <abbr title="Cel">C:</abbr> <a href="@Url.Action("EnviarSMSBeneficiario", "CRM", new { id = Model.PRECATORIO.BENEFICIARIO.BENE_CD_ID })">@Model.PRECATORIO.BENEFICIARIO.BENE_NR_CELULAR</a>
+                                                                    <abbr title="Cel">C:</abbr> <a href="@Url.Action("EnviarSMSCliente", "CRM", new { id = Model.PRECATORIO.BENEFICIARIO.BENE_CD_ID })">@Model.PRECATORIO.BENEFICIARIO.BENE_NR_CELULAR</a>
                                                                 }
                                                             </address>
                                                         }
@@ -184,7 +185,7 @@
                                                         }
                                                         @if (Model.PRECATORIO.BENEFICIARIO != null)
                                                         {
-                                                            <p><i class="fa fa-envelope"></i><a href="@Url.Action("EnviarEMailBeneficiario", "CRM", new { id = Model.PRECATORIO.BENEFICIARIO.BENE_CD_ID})"> @Model.PRECATORIO.BENEFICIARIO.BENE_EM_EMAIL</a></p>
+                                                            <p><i class="fa fa-envelope"></i><a href="@Url.Action("EnviarEMailCliente", "CRM", new { id = Model.PRECATORIO.BENEFICIARIO.BENE_CD_ID})"> @Model.PRECATORIO.BENEFICIARIO.BENE_EM_EMAIL</a></p>
                                                         }
                                                         else
                                                         {
@@ -200,13 +201,17 @@
                                                     </div>
                                                     <div class="ibox-content"  style="color: black">
                                                         <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
-                                                            <div class="col-lg-4 col-md-4 col-xs-12">
+                                                            <div class="col-lg-3 col-md-3 col-xs-12">
                                                                 Responsável
                                                                 @Html.TextBoxFor(m => m.USUARIO.USUA_NM_NOME, new { @class = "form-control", @readonly="readonly" })
                                                             </div>
-                                                            <div class="col-lg-8 col-md-8 col-xs-12">
+                                                            <div class="col-lg-6 col-md-6 col-xs-12">
                                                                 Nome da Proposta
                                                                 @Html.TextBoxFor(m => m.CRPV_NM_NOME, new { @class = "form-control", @readonly="readonly" })
+                                                            </div>
+                                                            <div class="col-lg-3 col-md-3 col-xs-12">
+                                                                Identificador da Proposta
+                                                                @Html.TextBoxFor(m => m.CRPV_GU_GUID, new { @class = "form-control", @readonly="readonly" })
                                                             </div>
                                                         </div>
                                                         <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
@@ -242,9 +247,19 @@
                                                     <div class="ibox-content"  style="color: black">
                                                         <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
                                                             <div class="col-lg-2 col-md-2 col-xs-12" style="color:green; font-weight:bold">
-                                                                Valor Proposta (R$)
+                                                                Valor Proposta (R$)*
                                                                 @Html.TextBoxFor(m => m.CRPV_VL_VALOR, new { @class = "form-control", autofocus = true, @id = "prods", onfocusout = "CalculaTotal()" })
                                                                 @Html.ValidationMessageFor(m => m.CRPV_VL_VALOR, "", new { @style = "color:red" })
+                                                            </div>
+                                                            <div class="col-lg-2 col-md-2 col-xs-12">
+                                                                Desconto(-) (R$)
+                                                                @Html.TextBoxFor(m => m.CRPV_VL_DESCONTO, new { @class = "form-control", autofocus = true, @id = "desc", onfocusout = "CalculaTotal()" })
+                                                                @Html.ValidationMessageFor(m => m.CRPV_VL_DESCONTO, "", new { @style = "color:red" })
+                                                            </div>
+                                                            <div class="col-lg-2 col-md-2  col-xs-12">
+                                                                Frete(+) (R$)
+                                                                @Html.TextBoxFor(m => m.CRPV_VL_FRETE, new { @class = "form-control", autofocus = true, @id = "frete", onfocusout = "CalculaTotal()" })
+                                                                @Html.ValidationMessageFor(m => m.CRPV_VL_FRETE, "", new { @style = "color:red" })
                                                             </div>
                                                             <div class="col-lg-2 col-md-2  col-xs-12">
                                                                 Taxas (R$)
@@ -262,30 +277,30 @@
                                         </div>
 
                                         <div class="row">
-                                            <div class="col-lg-6">
-                                                <div class="ibox float-e-margins" style="border-bottom: solid; border-bottom-color: darkblue; border-bottom-width: 1px; border-left: solid; border-left-color: darkblue; border-left-width: 1px; border-right: solid; border-right-color: darkblue; border-right-width: 1px; border-top: solid; border-top-color: darkblue; border-top-width: 1px; height: 900px" >
+                                            <div class="col-lg-6" id="conteudo1">
+                                                <div class="ibox float-e-margins" style="border-bottom: solid; border-bottom-color: darkblue; border-bottom-width: 1px; border-left: solid; border-left-color: darkblue; border-left-width: 1px; border-right: solid; border-right-color: darkblue; border-right-width: 1px; border-top: solid; border-top-color: darkblue; border-top-width: 1px; height: 1200px" >
                                                     <div class="ibox-title">
-                                                        <h5 style="color: black">Conteúdo da Proposta</h5>
+                                                        <h5  style="color: black">Conteúdo da Proposta</h5>
                                                     </div>
                                                     <div class="ibox-content"  style="color: black">
-                                                        <div class="form-group" style=" margin-left: -15px; margin-right: -15px;" id="intro">
+                                                        <div class="form-group" style=" margin-left: -15px; margin-right: -15px;" id="intro21">
                                                             Introdução
-                                                            <div class="col-lg-12 col-md-12 col-xs-12">
-                                                                @Html.TextAreaFor(m => m.CRPV_TX_INTRODUCAO, new { @class = "form-control", style = "width: 100%; height: 100px;", autofocus = true, @id="intro"  })
+                                                            <div class="col-lg-12 col-md-12 col-xs-12" style=" margin-left: -15px; margin-right: -15px;">
+                                                                @Html.TextAreaFor(m => m.CRPV_TX_INTRODUCAO, new { @class = "form-control", style = "width: 100%; height: 150px;", autofocus = true, @id="intro1"  })
                                                                 @Html.ValidationMessageFor(m => m.CRPV_TX_INTRODUCAO, "", new { @style = "color:red" })
                                                             </div>
                                                         </div>
-                                                        <div class="form-group" style=" margin-left: -15px; margin-right: -15px;" id="corpo">
+                                                        <div class="form-group" style=" margin-left: -15px; margin-right: -15px;" id="corpo22">
                                                             Corpo da Proposta
-                                                            <div class="col-lg-12 col-md-12 col-xs-12">
-                                                                @Html.TextAreaFor(m => m.CRPV_TX_INFORMACOES_GERAIS, new { @class = "form-control", style = "width: 100%; height: 400px;", autofocus = true, @id="corpo" })
+                                                            <div class="col-lg-12 col-md-12 col-xs-12" style=" margin-left: -15px; margin-right: -15px;">
+                                                                @Html.TextAreaFor(m => m.CRPV_TX_INFORMACOES_GERAIS, new { @class = "form-control", style = "width: 100%; height: 550px;", autofocus = true, @id="corpo1" })
                                                                 @Html.ValidationMessageFor(m => m.CRPV_TX_INFORMACOES_GERAIS, "", new { @style = "color:red" })
                                                             </div>
                                                         </div>
-                                                        <div class="form-group" style=" margin-left: -15px; margin-right: -15px;" id="rodape">
+                                                        <div class="form-group" style=" margin-left: -15px; margin-right: -15px;" id="corpo22">
                                                             Rodapé da Proposta
-                                                            <div class="col-lg-12 col-md-12 col-xs-12">
-                                                                @Html.TextAreaFor(m => m.CRPV_TX_OUTROS_ITENS, new { @class = "form-control", style = "width: 100%; height: 200px;", autofocus = true, @id="rodape" })
+                                                            <div class="col-lg-12 col-md-12 col-xs-12" style=" margin-left: -15px; margin-right: -15px;">
+                                                                @Html.TextAreaFor(m => m.CRPV_TX_OUTROS_ITENS, new { @class = "form-control", style = "width: 100%; height: 200px;", autofocus = true, @id="rodape1"})
                                                                 @Html.ValidationMessageFor(m => m.CRPV_TX_OUTROS_ITENS, "", new { @style = "color:red" })
                                                             </div>
                                                         </div>
@@ -293,15 +308,15 @@
                                                 </div>
                                             </div>
                                             <div class="col-lg-6">
-                                                <div class="ibox float-e-margins" style="border-bottom: solid; border-bottom-color: darkblue; border-bottom-width: 1px; border-left: solid; border-left-color: darkblue; border-left-width: 1px; border-right: solid; border-right-color: darkblue; border-right-width: 1px; border-top: solid; border-top-color: darkblue; border-top-width: 1px; height: 900px" >
+                                                <div class="ibox float-e-margins" style="border-bottom: solid; border-bottom-color: darkblue; border-bottom-width: 1px; border-left: solid; border-left-color: darkblue; border-left-width: 1px; border-right: solid; border-right-color: darkblue; border-right-width: 1px; border-top: solid; border-top-color: darkblue; border-top-width: 1px; height: 1200px" >
                                                     <div class="ibox-title">
-                                                        <h5 style="color: black">Informações Comerciais</h5>
+                                                        <h5>Informações Comerciais</h5>
                                                     </div>
                                                     <div class="ibox-content"  style="color: black">
                                                         <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
-                                                            Condições Comerciais
-                                                            <div class="col-lg-12 col-md-12 col-xs-12">
-                                                                @Html.TextAreaFor(m => m.CRPV_TX_CONDICOES_COMERCIAIS, new { @class = "form-control", style = "width: 100%; height: 600px;", autofocus = true })
+                                                            @*Condições Comerciais*@
+                                                            <div class="col-lg-12 col-md-12 col-xs-12" style=" margin-left: -15px; margin-right: -15px;">
+                                                                @Html.TextAreaFor(m => m.CRPV_TX_CONDICOES_COMERCIAIS, new { @class = "form-control", style = "width: 100%; height: 600px;", autofocus = true, @id="comercial" })
                                                                 @Html.ValidationMessageFor(m => m.CRPV_TX_CONDICOES_COMERCIAIS, "", new { @style = "color:red" })
                                                             </div>
                                                         </div>
@@ -504,21 +519,24 @@
                                                         @Html.TextAreaFor(m => m.CRPV_DS_REPROVACAO, new { @class = "form-control", style = "width: 100%; height: 100px;", autofocus = true, @readonly="readonly" })
                                                     </div>
                                                 </div>
-                                                <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
-                                                    <h5 style="font-weight: bold; color: green; margin-left: 15px">Cancelamento</h5>
-                                                    <div class="col-lg-2 col-md-2 col-xs-12">
-                                                        Data de Cancelamento
-                                                        @Html.TextBoxFor(m => m.CRPV_DT_CANCELAMENTO, "{0:dd/MM/yyyy}", new { @class = "form-control", autofocus = true, @readonly="readonly" })
+                                                @if (Model.MOCA_CD_ID != null)
+                                                {
+                                                    <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
+                                                        <h5 style="font-weight: bold; color: green; margin-left: 15px">Cancelamento</h5>
+                                                        <div class="col-lg-2 col-md-2 col-xs-12">
+                                                            Data de Cancelamento
+                                                            @Html.TextBoxFor(m => m.CRPV_DT_CANCELAMENTO, "{0:dd/MM/yyyy}", new { @class = "form-control", autofocus = true, @readonly="readonly" })
+                                                        </div>
+                                                        <div class="col-lg-3 col-md-3 col-xs-12">
+                                                            Motivo do Cancelamento
+                                                            @Html.TextBoxFor(m => m.MOTIVO_CANCELAMENTO.MOCA_NM_NOME, "{0:dd/MM/yyyy}", new { @class = "form-control", autofocus = true, @readonly="readonly" })
+                                                        </div>
+                                                        <div class="col-lg-7 col-md-7 col-xs-12">
+                                                            Informações do Cancelamento
+                                                            @Html.TextAreaFor(m => m.CRPV_DS_CANCELAMENTO, new { @class = "form-control", style = "width: 100%; height: 200px;", autofocus = true, @readonly="readonly" })
+                                                        </div>
                                                     </div>
-                                                    <div class="col-lg-3 col-md-3 col-xs-12">
-                                                        Motivo do Cancelamento
-                                                        @Html.TextBoxFor(m => m.MOTIVO_CANCELAMENTO.MOCA_NM_NOME, "{0:dd/MM/yyyy}", new { @class = "form-control", autofocus = true, @readonly="readonly" })
-                                                    </div>
-                                                    <div class="col-lg-7 col-md-7 col-xs-12">
-                                                        Informações do Cancelamento
-                                                        @Html.TextAreaFor(m => m.CRPV_DS_CANCELAMENTO, new { @class = "form-control", style = "width: 100%; height: 200px;", autofocus = true, @readonly="readonly" })
-                                                    </div>
-                                                </div>
+                                                }
                                             </div>
                                         </div>
                                     </div>
@@ -565,22 +583,76 @@
     @Scripts.Render("~/plugins/summernote")
     @Scripts.Render("~/Scripts/plugins/summernote/summernote.min.js")
 
-    <script type="text/javascript">
-        $(document).ready(function () {
+    <script type="text/javascript">  
+        //// Initialize your tinyMCE Editor with your preferred options
+        //iniciaTinymce('corpo1');
 
-            $('.summernote').summernote();
+        //function iniciaTinymce(textArea) {
+        //    tinymce.init({
+        //        selector: 'textarea#' + textArea,
+        //        language: 'pt_BR',
+        //        forced_root_block: false,
+        //        height: 550,
+        //        plugins: [
+        //            'advlist', 'autolink', 'advtable', 'lists', 'link', 'autocorrect', 'image', 'charmap', 'preview',
+        //            'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
+        //            'insertdatetime', 'media', 'table', 'help', 'wordcount', 'emoticons', 'export'
+        //        ],
+        //        toolbar: 'undo redo | fontfamily fontsize | ' +
+        //            'bold italic underline backcolor forecolor | alignleft aligncenter ' +
+        //            'alignright alignjustify | bullist numlist outdent indent | ' +
+        //            'removeformat | help',
+        //        content_style: 'body { font-family:Tahoma,Arial,sans-serif; font-size:16px }'
+        //    });    
+        //}
+    </script> 
+    <script type="text/javascript">  
+        //// Initialize your tinyMCE Editor with your preferred options
+        //iniciaTinymce('comercial');
 
-        });
+        //function iniciaTinymce(textArea) {
+        //    tinymce.init({
+        //        selector: 'textarea#' + textArea,
+        //        language: 'pt_BR',
+        //        forced_root_block: false,
+        //        height: 1090,
+        //        plugins: [
+        //            'advlist', 'autolink', 'advtable', 'lists', 'link', 'autocorrect', 'image', 'charmap', 'preview',
+        //            'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
+        //            'insertdatetime', 'media', 'table', 'help', 'wordcount', 'emoticons', 'export'
+        //        ],
+        //        toolbar: 'undo redo | fontfamily fontsize | ' +
+        //            'bold italic underline backcolor forecolor | alignleft aligncenter ' +
+        //            'alignright alignjustify | bullist numlist outdent indent | ' +
+        //            'removeformat | help',
+        //        content_style: 'body { font-family:Tahoma,Arial,sans-serif; font-size:16px }'
+        //    });    
+        //}
+    </script> 
+        <script type="text/javascript">  
+        //// Initialize your tinyMCE Editor with your preferred options
+        //iniciaTinymce('intro1');
+        //iniciaTinymce('rodape1');
 
-        var edit = function () {
-            $('.click2edit').summernote({ focus: true });
-        };
-
-        var save = function () {
-            var aHTML = $('.click2edit').code(); //save HTML If you need(aHTML: array).
-            $('.click2edit').destroy();
-        };
-    </script>
+        //function iniciaTinymce(textArea) {
+        //    tinymce.init({
+        //        selector: 'textarea#' + textArea,
+        //        language: 'pt_BR',
+        //        forced_root_block: false,
+        //        height: 230,
+        //        plugins: [
+        //            'advlist', 'autolink', 'advtable', 'lists', 'link', 'autocorrect', 'image', 'charmap', 'preview',
+        //            'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
+        //            'insertdatetime', 'media', 'table', 'help', 'wordcount', 'emoticons', 'export'
+        //        ],
+        //        toolbar: 'undo redo | fontfamily fontsize | ' +
+        //            'bold italic underline backcolor forecolor | alignleft aligncenter ' +
+        //            'alignright alignjustify | bullist numlist outdent indent | ' +
+        //            'removeformat | help',
+        //        content_style: 'body { font-family:Tahoma,Arial,sans-serif; font-size:16px }'
+        //    });    
+        //}
+    </script> 
     <script type="text/javascript" language="javascript">
         $(function () {
             $('.date-picker').datepicker(
@@ -617,26 +689,26 @@
     <script>
         function CalculaTotal() {
             var prod = $('#prods').val() == "" ? 0 : $('#prods').val();
-            //var desc = $('#desc').val() == "" ? 0 : $('#desc').val();
-            //var frete = $('#frete').val() == "" ? 0 : $('#frete').val();
+            var desc = $('#desc').val() == "" ? 0 : $('#desc').val();
+            var frete = $('#frete').val() == "" ? 0 : $('#frete').val();
 
             prod = (parseFloat(prod.replace(',', '.')));
-            //desc = (parseFloat(desc.replace(',', '.')));
-            //frete = (parseFloat(frete.replace(',', '.')));
+            desc = (parseFloat(desc.replace(',', '.')));
+            frete = (parseFloat(frete.replace(',', '.')));
 
             var tot = 0;
             if (prod != "")
             {
                 tot = tot + prod;
             }
-            //if (desc != "")
-            //{
-            //    tot = tot - desc;
-            //}
-            //if (frete != "")
-            //{
-            //    tot = tot + frete;
-            //}
+            if (desc != "")
+            {
+                tot = tot - desc;
+            }
+            if (frete != "")
+            {
+                tot = tot + frete;
+            }
             $('#total').val(parseFloat(tot).toFixed(2).replace('.', ','));
         }
     </script>

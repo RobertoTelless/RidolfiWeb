@@ -4,6 +4,7 @@
 @{
     Layout = "~/Views/Shared/_Layout_Admin.cshtml";
 }
+
 <div class="wrapper wrapper-content animated fadeInRight">
     <div class="page-title">
         <h3 class="title">Processos - CRM</h3>
@@ -100,7 +101,7 @@
                                             @Html.HiddenFor(m => m.CRPV_CD_ID)
                                             @Html.HiddenFor(m => m.TEPR_CD_ID)
                                             @Html.HiddenFor(m => m.EMPR_CD_ID)
-                                            @Html.HiddenFor(m => m.PREC_CD_ID)
+                                            @Html.HiddenFor(m => m.CRPV_GU_GUID)
                                             @Html.ButtonActionSubmit(text: "Confirma Envio para Aprovação", htmlAttributes: new { id = "basictoast" })
                                         </div>
 
@@ -111,7 +112,7 @@
                                                         <h5>Dados do Precatório</h5>
                                                         @if (Model.PRECATORIO.BENEFICIARIO != null)
                                                         {
-                                                            <span style="float: right"><a href="@Url.Action("EnviarEMailBeneficiario", "CRM", new { id = Model.PRECATORIO.BENEFICIARIO.BENE_CD_ID})" />Enviar E-Mail</span>
+                                                            <span style="float: right"><a href="@Url.Action("EnviarEMailCliente", "CRM", new { id = Model.PRECATORIO.BENEFICIARIO.BENE_CD_ID})" />Enviar E-Mail</span>
                                                         }
                                                         else
                                                         {
@@ -120,7 +121,7 @@
                                                     </div>
                                                     <div class="ibox-content" style="color: black">
                                                         <h3 style="color: green"><strong><a href="@Url.Action("EditarPrecatorio", "Precatorio", new { id = Model.PREC_CD_ID })">@Model.PRECATORIO.PREC_NM_PRECATORIO</a></strong></h3>
-                                                        <h4 style="color: darkblue"><strong>@Model.PRECATORIO.PREC_NM_NOME</strong></h4>
+                                                        <h4 style="color: darkblue"><strong>@Model.PRECATORIO.PREC_NM_REQUERENTE</strong></h4>
                                                         @if (Model.PRECATORIO.BENEFICIARIO != null)
                                                         {
                                                             <address>
@@ -131,7 +132,7 @@
 	                                                            }
                                                                 @if (Model.PRECATORIO.BENEFICIARIO.BENE_NR_CELULAR != null)
                                                                 {
-                                                                    <abbr title="Cel">C:</abbr> <a href="@Url.Action("EnviarSMSBeneficiario", "CRM", new { id = Model.PRECATORIO.BENEFICIARIO.BENE_CD_ID })">@Model.PRECATORIO.BENEFICIARIO.BENE_NR_CELULAR</a>
+                                                                    <abbr title="Cel">C:</abbr> <a href="@Url.Action("EnviarSMSCliente", "CRM", new { id = Model.PRECATORIO.BENEFICIARIO.BENE_CD_ID })">@Model.PRECATORIO.BENEFICIARIO.BENE_NR_CELULAR</a>
                                                                 }
                                                             </address>
                                                         }
@@ -141,7 +142,7 @@
                                                         }
                                                         @if (Model.PRECATORIO.BENEFICIARIO != null)
                                                         {
-                                                            <p><i class="fa fa-envelope"></i><a href="@Url.Action("EnviarEMailBeneficiario", "CRM", new { id = Model.PRECATORIO.BENEFICIARIO.BENE_CD_ID})"> @Model.PRECATORIO.BENEFICIARIO.BENE_EM_EMAIL</a></p>
+                                                            <p><i class="fa fa-envelope"></i><a href="@Url.Action("EnviarEMailCliente", "CRM", new { id = Model.PRECATORIO.BENEFICIARIO.BENE_CD_ID})"> @Model.PRECATORIO.BENEFICIARIO.BENE_EM_EMAIL</a></p>
                                                         }
                                                         else
                                                         {
@@ -157,9 +158,13 @@
                                                     </div>
                                                     <div class="ibox-content"  style="color: black">
                                                         <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
-                                                            <div class="col-lg-12 col-md-12 col-xs-12">
+                                                            <div class="col-lg-8 col-md-8 col-xs-12">
                                                                 Nome
                                                                 @Html.TextBoxFor(m => m.CRPV_NM_NOME, new { @class = "form-control", autofocus = true, @readonly="readonly" })
+                                                            </div>
+                                                            <div class="col-lg-4 col-md-4 col-xs-12">
+                                                                Identificador da Proposta
+                                                                @Html.TextBoxFor(m => m.CRPV_GU_GUID, new { @class = "form-control", autofocus = true, @readonly="readonly" })
                                                             </div>
                                                         </div>
                                                         <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
@@ -175,11 +180,6 @@
                                                                 Data Envio
                                                                 @Html.TextBoxFor(m => m.CRPV_DT_ENVIO, "{0:dd/MM/yyyy}", new { @class = "form-control", autofocus = true, @id="data1", @readonly="readonly" })
                                                             </div>
-                                                            <div class="col-lg-3 col-md-3 col-xs-12">
-                                                                Template do E-Mail
-                                                                @Html.DropDownListFor(m => m.CRPC_IN_EMAIL, (SelectList)ViewBag.Templates, "Selecionar", new { @class = "form-control", autofocus = true, @id="modelo", onchange = "RecuperaModelo($(this).val())" })
-                                                                @Html.ValidationMessageFor(m => m.CRPC_IN_EMAIL, "", new { @style = "color:red" })
-                                                            </div>
                                                             <div class="col-lg-4 col-md-4 col-xs-12">
                                                                 Link a ser enviado
                                                                 @Html.TextBoxFor(m => m.CRPV_LK_LINK, new { @class = "form-control", autofocus = true })
@@ -193,14 +193,14 @@
 
                                         <div class="row">
                                             <div class="col-lg-12" id="conteudo">
-                                                <div class="ibox float-e-margins" style="border-bottom: solid; border-bottom-color: darkblue; border-bottom-width: 1px; border-left: solid; border-left-color: darkblue; border-left-width: 1px; border-right: solid; border-right-color: darkblue; border-right-width: 1px; border-top: solid; border-top-color: darkblue; border-top-width: 1px; height: 490px" >
+                                                <div class="ibox float-e-margins" style="border-bottom: solid; border-bottom-color: darkblue; border-bottom-width: 1px; border-left: solid; border-left-color: darkblue; border-left-width: 1px; border-right: solid; border-right-color: darkblue; border-right-width: 1px; border-top: solid; border-top-color: darkblue; border-top-width: 1px; height: 700px" >
                                                     <div class="ibox-title">
-                                                        <h5 style="color: black">Conteúdo da Mensagem (E-Mail)</h5>
+                                                        <h5 style="color: black">Texto a ser incluído acima da introdução da proposta</h5>
                                                     </div>
                                                     <div class="ibox-content"  style="color: black">
                                                             <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
                                                             <div class="col-lg-12 col-md-12 col-xs-12">
-                                                                @Html.TextAreaFor(m => m.CRPV_DS_ENVIO, new { @class = "form-control", style = "width: 100%; height: 350px;", autofocus = true })
+                                                                @Html.TextAreaFor(m => m.CRPV_DS_ENVIO, new { @class = "form-control", style = "width: 100%; height: 350px;", autofocus = true, @id="mail1" })
                                                                 @Html.ValidationMessageFor(m => m.CRPV_DS_ENVIO, "", new { @style = "color:red" })
                                                             </div>
                                                         </div>
@@ -378,18 +378,30 @@
         }
     </script>
     <script type="text/javascript">
-        function RecuperaModelo(valModelo) {
-            if (valModelo == '4') {
-                $("#conteudo").show();
-            } else if (valModelo != '4' ) {
 
-                $("#conteudo").hide();
+        function RecuperaModelo(id)
+        {
+            var data = {
+                id: id
             }
+
+            $.ajax({
+                url: '../CRM/GetModeloEMail'
+                , type: 'POST'
+                , data: data
+                , success: function (r) {
+                    $("#mail1").val(r.mail);
+                    $("#conteudo").show();
+                }
+            });
         }
-        $(document).ready(function () {
+
+        $(document).ready(function ()
+        {
             RecuperaModelo($('#modelo').val());
         });
     </script>
+
     <script type="text/javascript" language="javascript">
         $(function () {
             $('.date-picker').datepicker(

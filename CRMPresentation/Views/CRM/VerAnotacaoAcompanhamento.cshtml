@@ -1,0 +1,226 @@
+﻿@using Presentation.Extensions
+@using CrossCutting;
+@using EntitiesServices.Work_Classes;
+@{
+    Layout = "~/Views/Shared/_Layout_Admin.cshtml";
+}
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="page-title">
+        <h3 class="title">Processos</h3>
+        <br />
+        <ol class="breadcrumb">
+            <li>
+                <a href="@Url.Action("CarregarBase", "BaseAdmin")">Dashboard</a>
+            </li>
+            <li>
+                <a href="@Url.Action("MontarTelaCRM", "CRM")">Processos</a>
+            </li>
+            <li class="active">
+                <strong>Processos - Anotações & Acompanhamentos</strong>
+            </li>
+        </ol>
+        <br />
+    </div>
+
+    <div class="row">
+        <div class="col-lg-12 col-md-12 col-xs-12"  id="Lista">
+            <div class="col-lg-12 col-md-12 col-xs-12 ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>Processos - Anotações</h5>
+                </div>
+                <div class="ibox-content">
+                    <div class="form-group">
+                        @Html.ButtonLinkIndex(text: "Voltar", controller: "CRM", action: "VoltarAnexoCRM")
+                    </div>
+                    <div class="row">
+                        @if ((ViewBag.ListaAnot as List<EntitiesServices.Model.CRM_COMENTARIO>).Count > 0)
+                        {
+                            <table class="table table-striped table-bordered table-hover dataTables-example1">
+                                <thead style="background-color:lightsteelblue">
+                                    <tr>
+                                        <th>Processo</th>
+                                        <th>Precatório</th>
+                                        <th>Data Criação</th>
+                                        <th>Autor</th>
+                                        <th class="td-one-action">Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var cond in (ViewBag.ListaAnot as List<EntitiesServices.Model.CRM_COMENTARIO>))
+                                    {
+                                        <tr>
+                                            <td>@cond.CRM.CRM1_NM_NOME</td>
+                                            <td>@cond.CRM.PRECATORIO.PREC_NM_PRECATORIO</td>
+                                            <td>@cond.CRCM_DT_COMENTARIO.Value.ToShortDateString()</td>
+                                            <td>@cond.USUARIO.USUA_NM_NOME</td>
+                                            <td class="td-one-action">
+                                                @Html.TableLinkDetails(cond.CRCM_CD_ID, "VerAnotacao", "fa-search", "Consultar")
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        }
+                        else
+                        {
+                            <div class="row">
+                                <div class="col-lg-4 col-md-4 col-xs-2">
+
+                                </div>
+                                <div style="border: 5px solid #F6A54A; padding: 10px; border-radius: 8px 8px; " class="col-lg-4 col-md-4 col-xs-8">
+                                    <h2 style="font-weight: bold">Nenhuma anotação registrada para esse processo</h2>
+                                    @Html.ButtonLinkIndex(text: "Voltar", controller: "CRM", action: "VoltarAnexoCRM")
+                                </div>
+                                <div class="col-lg-4 col-md-4 col-xs-2">
+
+                                </div>
+                            </div>
+                        }
+                </div>
+                </div>
+            </div>
+        </div>
+    
+        <div class="col-lg-12 col-md-12 col-xs-12"  id="Lista">
+            <div class="col-lg-12 col-md-12 col-xs-12 ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>Processos - Acompanhamentos</h5>
+                </div>
+                <div class="ibox-content">
+                    <div class="row">
+                        @if ((ViewBag.ListaFollow as List<EntitiesServices.Model.CRM_FOLLOW>).Count > 0)
+                        {
+                            <table class="table table-striped table-bordered table-hover dataTables-example1">
+                                <thead style="background-color:lightsteelblue">
+                                    <tr>
+                                        <th>Processo</th>
+                                        <th>Precatório</th>
+                                        <th>Tipo</th>
+                                        <th>Data Criação</th>
+                                        <th>Data Prevista</th>
+                                        <th>Título</th>
+                                        <th>Autor</th>
+                                        <th class="td-one-action">Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var cond in (ViewBag.ListaFollow as List<EntitiesServices.Model.CRM_FOLLOW>))
+                                    {
+                                        <tr>
+                                            <td>@cond.CRM.CRM1_NM_NOME</td>
+                                            <td>@cond.CRM.PRECATORIO.PREC_NM_PRECATORIO</td>
+                                            <td>@cond.TIPO_FOLLOW.TIFL_NM_NOME</td>
+                                            <td>@cond.CRFL_DT_FOLLOW.ToShortDateString()</td>
+                                            @if (cond.CRFL_DT_PREVISTA != null)
+                                            {
+                                                <td>@cond.CRFL_DT_PREVISTA.Value.ToShortDateString()</td>
+                                            }
+                                            else
+                                            {
+                                                <td>-</td>
+                                            }
+                                            <td>@cond.CRFL_NM_TITULO</td>
+                                            <td>@cond.USUARIO.USUA_NM_NOME</td>
+                                            <td class="td-one-action">
+                                                @Html.TableLinkDetails(cond.CRFL_CD_ID, "VerFollow", "fa-search", "Consultar")
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        }
+                        else
+                        {
+                            <div class="row">
+                                <div class="col-lg-4 col-md-4 col-xs-2">
+
+                                </div>
+                                <div style="border: 5px solid #F6A54A; padding: 10px; border-radius: 8px 8px; " class="col-lg-4 col-md-4 col-xs-8">
+                                    <h2 style="font-weight: bold">Nenhum acompanhamento registrado para esse processo</h2>
+                                    @Html.ButtonLinkIndex(text: "Voltar", controller: "CRM", action: "VoltarAnexoCRM")
+                                </div>
+                                <div class="col-lg-4 col-md-4 col-xs-2">
+
+                                </div>
+                            </div>
+                        }
+                </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <link href="~/Content/themes/base/jquery-ui.min.css" rel="stylesheet" />
+    <link href="~/Content/themes/base/all.css" rel="stylesheet" />
+    <link href="~/Content/jquery.datetimepicker.css" rel="stylesheet" />
+    @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
+    @Styles.Render("~/plugins/jasnyBootstrapStyles")
+    @Styles.Render("~/plugins/toastrStyles")
+    <link href="~/Content/jquery-ui-timepicker-addon.min.css" rel="stylesheet" />
+    <link href="~/Content/plugins/select2/select2.min.css" rel="stylesheet" />
+    @Styles.Render("~/plugins/summernoteStyles")
+}
+@section Scripts {
+    <script src="~/Scripts/jquery.datetimepicker.full.min.js"></script>
+    <script type="text/javascript" src="~/Scripts/moment.min.js"></script>
+    <script type="text/javascript" src="~/Scripts/bootstrap.min.js"></script>
+    <script type="text/javascript" src="~/Scripts/jquery.datetimepicker"></script>
+    <script src="~/Scripts/jquery-ui-timepicker-addon.min.js"></script>
+    <script src="~/Scripts/jquery-3.1.1.min.js"></script>
+    <script src="~/Scripts/jquery-ui-1.12.1.min.js"></script>
+    @Scripts.Render("~/plugins/toastr")
+    @Scripts.Render("~/plugins/dataTables")
+    @Scripts.Render("~/bundles/inputmask")
+    @Scripts.Render("~/plugins/jasnyBootstrap")
+    @Scripts.Render("~/plugins/sparkline")
+    <script src="~/Scripts/plugins/select2/select2.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.maskedinput/1.4.1/jquery.maskedinput.js"></script>    
+    <script src="~/Scripts/uploadAnexo.js"></script>
+    @Scripts.Render("~/plugins/summernote")
+    
+    <script>
+        function mostrarDesc(desc) {
+            $('#modalDescBody').html(desc);
+            $('#modalDesc').modal('show');
+        }
+    </script>
+    
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            $('.dataTables-example').DataTable({
+                pageLength: 25,
+                dom: '<"html5buttons"B>lTfgitp',
+                buttons: [
+                    { extend: 'excel', title: 'Anotacoes_Acompanhamentos_Planilha' },
+                    { extend: 'pdf', title: 'Anotacoes_Acompanhamentos_PDF' },
+
+                    {
+                        extend: 'print',
+                        customize: function (win) {
+                            $(win.document.body).addClass('white-bg');
+                            $(win.document.body).css('font-size', '10px');
+
+                            $(win.document.body).find('table')
+                                    .addClass('compact')
+                                    .css('font-size', 'inherit');
+                        }
+                    }
+                ]
+
+            });      
+        });
+    </script>
+}
+
+@if (ViewBag.Message != null)
+{
+    <script type="text/javascript">
+            window.onload = function () {
+                alert("@ViewBag.Message");
+            };
+    </script>
+}
+

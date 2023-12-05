@@ -5,7 +5,6 @@
 @{
     Layout = "~/Views/Shared/_Layout_Admin.cshtml";
 }
-
 <div class="wrapper wrapper-content animated fadeInRight">
     <div class="page-title">
         <h3 class="title">Processos</h3>
@@ -23,7 +22,6 @@
         </ol>
         <br />
     </div>
-
     <div class="row">
         <div class="col-lg-2 col-md-2 col-sm-12">
             <div class="ibox-content text-center">
@@ -45,8 +43,8 @@
                     <small>Ações Cadastradas</small>
                     <br />
                     <br />
-                    <br />
-                    <br />
+                    @*<br />
+                    <br />*@
                 </div>
             </div>
         </div>
@@ -63,7 +61,7 @@
                         <small>Ações Pendentes</small>
                         <br />
                         <br />
-                        @Html.ButtonLinkIndex(text: "Ver", controller: "CRM", action: "VerAcoesUsuarioCRMPendentePrevia", buttonClass: "white")
+                        @*@Html.ButtonLinkIndex(text: "Ver", controller: "CRM", action: "VerAcoesUsuarioCRMPendentePrevia", buttonClass: "white")*@
                     </div>
                 </div>
             </div>
@@ -78,7 +76,7 @@
                         <small>Ações Encerradas</small>
                         <br />
                         <br />
-                        @Html.ButtonLinkIndex(text: "Ver", controller: "CRM", action: "VerAcoesUsuarioCRMEncerradaPrevia", buttonClass: "white")
+                        @*@Html.ButtonLinkIndex(text: "Ver", controller: "CRM", action: "VerAcoesUsuarioCRMEncerradaPrevia", buttonClass: "white")*@
                     </div>
                 </div>
             </div>
@@ -93,7 +91,7 @@
                         <small>Ações Atrasadas</small>
                         <br />
                         <br />
-                        @Html.ButtonLinkIndex(text: "Ver", controller: "CRM", action: "VerAcoesUsuarioCRMAtrasadaPrevia", buttonClass: "white")
+                        @*@Html.ButtonLinkIndex(text: "Ver", controller: "CRM", action: "VerAcoesUsuarioCRMAtrasadaPrevia", buttonClass: "white")*@
                     </div>
                 </div>
             </div>
@@ -111,7 +109,7 @@
                         <small>Ações Pendentes</small>
                         <br />
                         <br />
-                        @Html.ButtonLinkIndex(text: "Ver", controller: "CRM", action: "VerAcoesUsuarioCRMPendentePrevia", buttonClass: "white")
+                        @*@Html.ButtonLinkIndex(text: "Ver", controller: "CRM", action: "VerAcoesUsuarioCRMPendentePrevia", buttonClass: "white")*@
                     </div>
                 </div>
             </div>
@@ -129,7 +127,7 @@
                         <small>Ações Encerradas</small>
                         <br />
                         <br />
-                        @Html.ButtonLinkIndex(text: "Ver", controller: "CRM", action: "VerAcoesUsuarioCRMEncerradaPrevia", buttonClass: "white")
+                        @*@Html.ButtonLinkIndex(text: "Ver", controller: "CRM", action: "VerAcoesUsuarioCRMEncerradaPrevia", buttonClass: "white")*@
                     </div>
                 </div>
             </div>
@@ -147,7 +145,7 @@
                         <small>Ações Atrasadas</small>
                         <br />
                         <br />
-                        @Html.ButtonLinkIndex(text: "Ver", controller: "CRM", action: "VerAcoesUsuarioCRMAtrasadaPrevia", buttonClass: "white")
+                        @*@Html.ButtonLinkIndex(text: "Ver", controller: "CRM", action: "VerAcoesUsuarioCRMAtrasadaPrevia", buttonClass: "white")*@
                     </div>
                 </div>
             </div>
@@ -270,7 +268,7 @@
                                         {
                                             <tr>
                                                 <td>@cond.CRM.CRM1_NM_NOME</td>
-                                                <td>@cond.CRM.CLIENTE.CLIE_NM_NOME</td>
+                                                <td>@cond.CRM.PRECATORIO.PREC_NM_PRECATORIO</td>
                                                 <td>@cond.CRAC_DT_CRIACAO.Value.ToShortDateString()</td>
                                                 <td>@cond.TIPO_ACAO.TIAC_NM_NOME</td>
                                                 <td>@cond.CRAC_NM_TITULO</td>

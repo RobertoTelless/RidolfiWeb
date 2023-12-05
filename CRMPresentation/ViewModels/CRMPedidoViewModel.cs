@@ -16,6 +16,7 @@ namespace ERP_Condominios_Solution.ViewModels
         public int FILI_CD_ID { get; set; }
         public Nullable<int> CLIE_CD_ID { get; set; }
         public Nullable<int> FOEN_CD_ID { get; set; }
+        public Nullable<int> PREC_CD_ID { get; set; }
         public Nullable<int> FOFR_CD_ID { get; set; }
         public Nullable<int> USUA_CD_ID { get; set; }
         [Required(ErrorMessage = "Campo DATA DE VALIDADE obrigatorio")]
@@ -73,7 +74,7 @@ namespace ERP_Condominios_Solution.ViewModels
         public Nullable<System.DateTime> CRPV_DT_APROVACAO { get; set; }
         [StringLength(1000, ErrorMessage = "AS INFORMAÇÕES DE APROVAÇÃO deve conter no máximo 1000 caracteres.")]
         public string CRPV_DS_APROVACAO { get; set; }
-        public CLIENTE CLIENTE_NOME { get; set; }
+        public PRECATORIO CLIENTE_NOME { get; set; }
         public string CRPV_NM_NOME { get; set; }
         public Nullable<int> TRAN_CD_ID { get; set; }
         [Required(ErrorMessage = "Campo MODELO DE PROPOSTA obrigatorio")]
@@ -197,12 +198,12 @@ namespace ERP_Condominios_Solution.ViewModels
         public virtual EMPRESA EMPRESA { get; set; }
         public virtual FILIAL FILIAL { get; set; }
         public virtual MOTIVO_CANCELAMENTO MOTIVO_CANCELAMENTO { get; set; }
+        public virtual PRECATORIO PRECATORIO { get; set; }
         public virtual TEMPLATE_PROPOSTA TEMPLATE_PROPOSTA { get; set; }
         public virtual TEMPLATE_PROPOSTA TEMPLATE_PROPOSTA1 { get; set; }
         public virtual USUARIO USUARIO { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<DIARIO_PROCESSO> DIARIO_PROCESSO { get; set; }
-        public virtual TEMPLATE_EMAIL TEMPLATE_EMAIL { get; set; }
 
 
     }

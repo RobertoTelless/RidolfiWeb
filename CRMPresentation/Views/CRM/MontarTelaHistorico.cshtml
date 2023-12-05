@@ -5,7 +5,6 @@
 @{
     Layout = "~/Views/Shared/_Layout_Admin.cshtml";
 }
-
 <div class="wrapper wrapper-content animated fadeInRight">
     <div class="page-title">
         <h3 class="title">Processos - CRM</h3>
@@ -56,7 +55,7 @@
                             </div>
                             <div class="col-lg-2 col-md-2 col-xs-12">
                                 Data Início
-                                @Html.TextBoxFor(m => m.DIPR_DT_DATA, "{0:dd/MM/yyyy}", new { @class = "form-control date-picker", autofocus = true, @id="data1" })
+                                @Html.TextBoxFor(m => m.DIPR_DT_DUMMY_1, "{0:dd/MM/yyyy}", new { @class = "form-control date-picker", autofocus = true, @id="data1" })
                             </div>
                             <div class="col-lg-2 col-md-2 col-xs-12">
                                 Data Final
@@ -111,7 +110,6 @@
                                         <th style="width: auto">Responsável</th>
                                         <th style="width: auto">Processo</th>
                                         <th style="width: auto">Precatório</th>
-                                        <th style="width: auto">Beneficiário</th>
                                         <th style="width: auto">Descrição</th>
                                         <th class="td-one-action">Ações</th>
                                     </tr>
@@ -123,9 +121,7 @@
                                             <td style="width: auto">@cond.DIPR_DT_DATA.ToShortDateString()</td>
                                             <td style="width: auto">@cond.USUARIO.USUA_NM_NOME</td>
                                             <td style="width: auto"><a href="@Url.Action("VisualizarProcessoCRM", "CRM", new { id = cond.CRM1_CD_ID })" />@cond.CRM.CRM1_NM_NOME</td>
-                                            <td style="width: auto">@cond.CRM.CLIENTE.CLIE_NM_NOME</td>  
-                                            <td style="width: auto">@cond.CRM.PRECATORIO.PREC_NM_PRECATORIO</td> 
-                                            <td style="width: auto">@cond.CRM.PRECATORIO.PREC_NM_NOME</td> 
+                                            <td style="width: auto">@cond.CRM.PRECATORIO.PREC_NM_PRECATORIO</td>                                            
                                             <td style="width: auto">@cond.DIPR_DS_DESCRICAO</td>
                                             
                                             <td class="td-one-action">
@@ -151,16 +147,16 @@
                         else
                         {
                             <div class="row">
-                                <div class="col-lg-4 col-md-4 col-xs-2">
+                                <div class="col-lg-3 col-md-3 col-xs-2">
 
                                 </div>
-                                <div style="border: 5px solid #F6A54A; padding: 10px; border-radius: 8px 8px; " class="col-lg-4 col-md-4 col-xs-8">
-                                    <h2 style="font-weight: bold">Sua pesquisa não retornou nenhum resultado</h2>
+                                <div style="border: 5px solid #F6A54A; padding: 10px; border-radius: 8px 8px; " class="col-lg-6 col-md-6 col-xs-8">
+                                    <h2 style="font-weight: bold">Sua pesquisa não retornou nenhum resultado ou nenhum histórico cadastrado</h2>
                                     <p>Tente outras opções de pesquisa</p>
 
                                     @Html.ButtonLinkIndex(text: "Retirar Filtro", controller: "CRM", action: "RetirarFiltroDiario")
                                 </div>
-                                <div class="col-lg-4 col-md-4 col-xs-2">
+                                <div class="col-lg-3 col-md-3 col-xs-2">
 
                                 </div>
                             </div>

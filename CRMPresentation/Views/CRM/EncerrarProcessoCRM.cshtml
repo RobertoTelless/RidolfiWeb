@@ -3,6 +3,7 @@
 @{
     Layout = "~/Views/Shared/_Layout_Admin.cshtml";
 }
+
 <div class="wrapper wrapper-content animated fadeInRight">
     <div class="page-title">
         <h3 class="title">Processos</h3>
@@ -93,14 +94,14 @@
                                                     @Html.HiddenFor(m => m.USUA_CD_ID)
                                                     @Html.HiddenFor(m => m.CLIE_CD_ID)
                                                     @Html.HiddenFor(m => m.FUNI_CD_ID)
+                                                    @Html.HiddenFor(m => m.CRM1_IN_ENCERRADO)
                                                     @Html.HiddenFor(m => m.EMPR_CD_ID)
-                                                    @Html.HiddenFor(m => m.PREC_CD_ID)
                                                     Título do Processo
                                                     @Html.TextBoxFor(m => m.CRM1_NM_NOME, new { @class = "form-control", autofocus = true, @readonly="readonly" })
                                                 </div>
                                                 <div class="col-lg-4 col-md-4 col-xs-12">
-                                                    Cliente
-                                                    @Html.TextBoxFor(m => m.CLIENTE.CLIE_NM_NOME, new { @class = "form-control", autofocus = true, @readonly="readonly" })
+                                                    Precatório
+                                                    @Html.TextBoxFor(m => m.PRECATORIO.PREC_NM_PRECATORIO, new { @class = "form-control", autofocus = true, @readonly="readonly" })
                                                 </div>
                                                 <div class="col-lg-3 col-md-3 col-xs-12">
                                                     Origem
@@ -113,7 +114,7 @@
                                                     @Html.TextBoxFor(m => m.CRM1_DT_ENCERRAMENTO, "{0:dd/MM/yyyy}", new { @class = "form-control date-picker", autofocus = true, @id="data1" })
                                                     @Html.ValidationMessageFor(m => m.CRM1_DT_ENCERRAMENTO, "", new { @style = "color:red" })
                                                 </div>
-                                                <div class="col-lg-6 col-md-6 col-xs-12">
+                                                <div class="col-lg-5 col-md-5 col-xs-12">
                                                     Motivo do Encerramento*
                                                     <div class="input-group">
                                                         @Html.DropDownListFor(m => m.MOEN_CD_ID, (SelectList)ViewBag.Motivos, "Selecionar", new { @class = "form-control", autofocus = true })
@@ -123,10 +124,14 @@
                                                         </span>
                                                     </div>
                                                 </div>
-                                                <div class="col-lg-3 col-md-3 col-xs-12">
+                                                <div class="col-lg-2 col-md-2 col-xs-12">
                                                     Situação*
                                                     @Html.DropDownListFor(m => m.CRM1_IN_ATIVO, (SelectList)ViewBag.Adic, "Selecionar", new { @class = "form-control", autofocus = true })
                                                     @Html.ValidationMessageFor(m => m.CRM1_IN_ATIVO, "", new { @style = "color:red" })
+                                                </div>
+                                                <div class="col-lg-3 col-md-3 col-xs-12">
+                                                    Identificador do Processo
+                                                    @Html.TextBoxFor(m => m.CRM1_GU_GUID, new { @class = "form-control", autofocus = true, @readonly="readonly" })
                                                 </div>
                                             </div>
                                             <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">

@@ -134,15 +134,14 @@ namespace DataServices.Repositories
             {
                 query = query.Where(p => p.CRM1_NM_NOME.Contains(nome) || p.CRM1_DS_DESCRICAO.Contains(nome));        
             }
+            if (!String.IsNullOrEmpty(busca))
+            {
+                query = query.Where(p => p.CRM1_NM_NOME.Contains(busca) || p.CRM1_DS_DESCRICAO.Contains(busca) || p.PRECATORIO.PREC_NM_PRECATORIO.Contains(busca));
+            }
             if (!String.IsNullOrEmpty(campanha))
             {
                 query = query.Where(p => p.CRM1_NM_CAMPANHA.Contains(campanha));
             }
-            //if (!String.IsNullOrEmpty(busca))
-            //{
-            //    query = query.Where(p => p.CLIENTE.CLIE_NM_NOME.Contains(busca) || p.CLIENTE.CLIE_NM_RAZAO.Contains(busca) || p.CLIENTE.CLIE_NR_CPF.Contains(busca));
-            //}
-
             if (inicio != null)
             {
                 query = query.Where(p => DbFunctions.TruncateTime(p.CRM_ACAO.Where(m => m.CRAC_IN_ATIVO == 1).OrderByDescending(m => m.CRAC_DT_PREVISTA).FirstOrDefault().CRAC_DT_PREVISTA) >= DbFunctions.TruncateTime(inicio));

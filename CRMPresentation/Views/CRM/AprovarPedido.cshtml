@@ -4,6 +4,7 @@
 @{
     Layout = "~/Views/Shared/_Layout_Admin.cshtml";
 }
+
 <div class="wrapper wrapper-content animated fadeInRight">
     <div class="page-title">
         <h3 class="title">Processos</h3>
@@ -62,9 +63,10 @@
                                             @Html.HiddenFor(m => m.CRM1_CD_ID)
                                             @Html.HiddenFor(m => m.CRPV_IN_NUMERO_GERADO)
                                             @Html.HiddenFor(m => m.CLIE_CD_ID)
+                                            @Html.HiddenFor(m => m.CRPV_DS_ENVIO)
                                             @Html.HiddenFor(m => m.CRPV_DS_CANCELAMENTO)
-                                            @Html.HiddenFor(m => m.CRPV_DT_CANCELAMENTO)
                                             @Html.HiddenFor(m => m.CRPV_DT_ENVIO)
+                                            @Html.HiddenFor(m => m.CRPV_DT_CANCELAMENTO)
                                             @Html.HiddenFor(m => m.CRPV_DT_PEDIDO)
                                             @Html.HiddenFor(m => m.CRPV_DT_REPROVACAO)
                                             @Html.HiddenFor(m => m.CRPV_DT_VALIDADE)
@@ -73,7 +75,6 @@
                                             @Html.HiddenFor(m => m.CRPV_IN_GEROU_NF)
                                             @Html.HiddenFor(m => m.CRPV_IN_PRAZO_ENTREGA)
                                             @Html.HiddenFor(m => m.CRPV_IN_STATUS)
-                                            @Html.HiddenFor(m => m.CRPV_LK_LINK)
                                             @Html.HiddenFor(m => m.CRPV_NM_NOME)
                                             @Html.HiddenFor(m => m.CRPV_NR_NOTA_FISCAL)
                                             @Html.HiddenFor(m => m.CRPV_NR_NUMERO)
@@ -97,10 +98,12 @@
                                             @Html.HiddenFor(m => m.FOFR_CD_ID)
                                             @Html.HiddenFor(m => m.USUA_CD_ID)
                                             @Html.HiddenFor(m => m.MOCA_CD_ID)
-                                            @Html.HiddenFor(m => m.TEPR_CD_ID)
                                             @Html.HiddenFor(m => m.CRPV_CD_ID)
+                                            @Html.HiddenFor(m => m.TEPR_CD_ID)
                                             @Html.HiddenFor(m => m.EMPR_CD_ID)
-                                            @Html.HiddenFor(m => m.PREC_CD_ID)
+                                            @Html.HiddenFor(m => m.CRPC_IN_EMAIL)
+                                            @Html.HiddenFor(m => m.CRPV_LK_LINK)
+                                            @Html.HiddenFor(m => m.CRPV_GU_GUID)
                                             @Html.ButtonActionSubmit(text: "Confirma Aprovação da Proposta", htmlAttributes: new { id = "basictoast" })
                                         </div>
 
@@ -111,7 +114,7 @@
                                                         <h5>Dados do Precatório</h5>
                                                         @if (Model.PRECATORIO.BENEFICIARIO != null)
                                                         {
-                                                            <span style="float: right"><a href="@Url.Action("EnviarEMailBeneficiario", "CRM", new { id = Model.PRECATORIO.BENEFICIARIO.BENE_CD_ID})" />Enviar E-Mail</span>
+                                                            <span style="float: right"><a href="@Url.Action("EnviarEMailCliente", "CRM", new { id = Model.PRECATORIO.BENEFICIARIO.BENE_CD_ID})" />Enviar E-Mail</span>
                                                         }
                                                         else
                                                         {
@@ -120,7 +123,7 @@
                                                     </div>
                                                     <div class="ibox-content" style="color: black">
                                                         <h3 style="color: green"><strong><a href="@Url.Action("EditarPrecatorio", "Precatorio", new { id = Model.PREC_CD_ID })">@Model.PRECATORIO.PREC_NM_PRECATORIO</a></strong></h3>
-                                                        <h4 style="color: darkblue"><strong>@Model.PRECATORIO.PREC_NM_NOME</strong></h4>
+                                                        <h4 style="color: darkblue"><strong>@Model.PRECATORIO.PREC_NM_REQUERENTE</strong></h4>
                                                         @if (Model.PRECATORIO.BENEFICIARIO != null)
                                                         {
                                                             <address>
@@ -131,7 +134,7 @@
 	                                                            }
                                                                 @if (Model.PRECATORIO.BENEFICIARIO.BENE_NR_CELULAR != null)
                                                                 {
-                                                                    <abbr title="Cel">C:</abbr> <a href="@Url.Action("EnviarSMSBeneficiario", "CRM", new { id = Model.PRECATORIO.BENEFICIARIO.BENE_CD_ID })">@Model.PRECATORIO.BENEFICIARIO.BENE_NR_CELULAR</a>
+                                                                    <abbr title="Cel">C:</abbr> <a href="@Url.Action("EnviarSMSCliente", "CRM", new { id = Model.PRECATORIO.BENEFICIARIO.BENE_CD_ID })">@Model.PRECATORIO.BENEFICIARIO.BENE_NR_CELULAR</a>
                                                                 }
                                                             </address>
                                                         }
@@ -141,7 +144,7 @@
                                                         }
                                                         @if (Model.PRECATORIO.BENEFICIARIO != null)
                                                         {
-                                                            <p><i class="fa fa-envelope"></i><a href="@Url.Action("EnviarEMailBeneficiario", "CRM", new { id = Model.PRECATORIO.BENEFICIARIO.BENE_CD_ID})"> @Model.PRECATORIO.BENEFICIARIO.BENE_EM_EMAIL</a></p>
+                                                            <p><i class="fa fa-envelope"></i><a href="@Url.Action("EnviarEMailCliente", "CRM", new { id = Model.PRECATORIO.BENEFICIARIO.BENE_CD_ID})"> @Model.PRECATORIO.BENEFICIARIO.BENE_EM_EMAIL</a></p>
                                                         }
                                                         else
                                                         {
@@ -157,9 +160,13 @@
                                                     </div>
                                                     <div class="ibox-content"  style="color: black">
                                                         <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
-                                                            <div class="col-lg-12 col-md-12 col-xs-12">
+                                                            <div class="col-lg-8 col-md-8 col-xs-12">
                                                                 Nome
                                                                 @Html.TextBoxFor(m => m.CRPV_NM_NOME, new { @class = "form-control", autofocus = true, @readonly="readonly" })
+                                                            </div>
+                                                            <div class="col-lg-4 col-md-4 col-xs-12">
+                                                                Identificador da Proposta
+                                                                @Html.TextBoxFor(m => m.CRPV_GU_GUID, new { @class = "form-control", autofocus = true, @readonly="readonly" })
                                                             </div>
                                                         </div>
                                                         <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
@@ -176,7 +183,7 @@
                                                                 @Html.TextBoxFor(m => m.CRPV_DT_APROVACAO, "{0:dd/MM/yyyy}", new { @class = "form-control date-picker", autofocus = true, @id="data2" })
                                                                 @Html.ValidationMessageFor(m => m.CRPV_DT_APROVACAO, "", new { @style = "color:red" })
                                                             </div>
-                                                            @if ((Int32)Session["PermComercial"] == 1)
+                                                            @*@if ((Int32)Session["PermComercial"] == 1)
                                                             {
                                                                 <div class="col-lg-3 col-md-3 col-xs-12" id="rec">
                                                                     Gera Pedido de Venda?
@@ -184,7 +191,7 @@
                                                                     @Html.CheckBoxFor(m => m.GeraVenda, new { @class = "checkbox i-checks", autofocus = true })
                                                                     @Html.ValidationMessageFor(m => m.GeraVenda, "", new { @style = "color:red" })
                                                                 </div>
-                                                            }
+                                                            }*@
                                                         </div>
                                                     </div>
                                                 </div>
