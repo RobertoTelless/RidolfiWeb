@@ -888,4 +888,271 @@
   <data name="M0279" xml:space="preserve">
     <value>Nenhuma linha informada na planilha</value>
   </data>
+  <data name="M0280" xml:space="preserve">
+    <value>Desconto não especificado</value>
+  </data>
+  <data name="M0281" xml:space="preserve">
+    <value>Dia de entrada deve ser um dia válido</value>
+  </data>
+  <data name="M0282" xml:space="preserve">
+    <value>Existe algum produto composto no escopo desta precificação que não tem valor de CMV calculado</value>
+  </data>
+  <data name="M0283" xml:space="preserve">
+    <value>Existe algum produto não composto no escopo desta precificação que não tem preço de custo informado</value>
+  </data>
+  <data name="M0284" xml:space="preserve">
+    <value>Venda Mensal já cadastrada para essa data de referência e tipo de venda</value>
+  </data>
+  <data name="M0285" xml:space="preserve">
+    <value>Valor total das vendas não pode ser zero para data de referencia e para o tipo de venda selecionado</value>
+  </data>
+  <data name="M0286" xml:space="preserve">
+    <value>Soma das parcelas de comissão diferentes do valor total</value>
+  </data>
+  <data name="M0287" xml:space="preserve">
+    <value>Custo de produto já inserido para esta data</value>
+  </data>
+  <data name="M0288" xml:space="preserve">
+    <value>Impossível excluir este custo. O histórico de custos não pode ficar vazio</value>
+  </data>
+  <data name="M0289" xml:space="preserve">
+    <value>Impossível reativar. Custo de produto já inserido para esta data</value>
+  </data>
+  <data name="M0290" xml:space="preserve">
+    <value>Impossível excluir este preço de venda. O histórico de preços não pode ficar vazio</value>
+  </data>
+  <data name="M0291" xml:space="preserve">
+    <value>Impossível reativar. Preço de venda de produto já inserido para esta data</value>
+  </data>
+  <data name="M0292" xml:space="preserve">
+    <value>Preço de venda de produto já inserido para esta data</value>
+  </data>
+  <data name="M0293" xml:space="preserve">
+    <value>Cálculo de Custos Variáveis desatualizado. Execute o cálculo e retorne a essa tela</value>
+  </data>
+  <data name="M0294" xml:space="preserve">
+    <value>Nenhuma venda cadastrada para o mês corrente. Impossivel calcular os percentuais de custis variáveis para vendas</value>
+  </data>
+  <data name="M0295" xml:space="preserve">
+    <value>Categoria de custo já cadastrada</value>
+  </data>
+  <data name="M0296" xml:space="preserve">
+    <value>Impossível excluir esta categoria de custo. Ela está vinculada a outros registros</value>
+  </data>
+  <data name="M0297" xml:space="preserve">
+    <value>A data de início não pode ser inferior a data de término</value>
+  </data>
+  <data name="M0298" xml:space="preserve">
+    <value>Máquina de cartão incluída com sucesso</value>
+  </data>
+  <data name="M0299" xml:space="preserve">
+    <value>Meta já definida para esta data de referencia.</value>
+  </data>
+  <data name="M0300" xml:space="preserve">
+    <value>A soma das metas de comissões não pode ser maior que a soma das metas de vendas</value>
+  </data>
+  <data name="M0301" xml:space="preserve">
+    <value>Para periodicidade semanal, o dia da semana deverá ser informado</value>
+  </data>
+  <data name="M0302" xml:space="preserve">
+    <value>Dia do vencimento não informado</value>
+  </data>
+  <data name="M0303" xml:space="preserve">
+    <value>Ficha técnica já cadastrada para esse produto</value>
+  </data>
+  <data name="M0304" xml:space="preserve">
+    <value>Nenhum insumo definido nesta ficha técnica</value>
+  </data>
+  <data name="M0305" xml:space="preserve">
+    <value>Mensagem de E-Mail enviada com sucesso.</value>
+  </data>
+  <data name="M0306" xml:space="preserve">
+    <value>Falha no envio de E-Mail.</value>
+  </data>
+  <data name="M0307" xml:space="preserve">
+    <value>Validade do código de validação de alteração de senha expirado. Solicite uma senha provisória para entrar no CRMSys.</value>
+  </data>
+  <data name="M0308" xml:space="preserve">
+    <value>Usuário com senha pendente de validação.</value>
+  </data>
+  <data name="M0309" xml:space="preserve">
+    <value>Código de validação errado.</value>
+  </data>
+  <data name="M0310" xml:space="preserve">
+    <value>Sua senha precisa ser redefinida. Já ultrapassou a validade definida nas configurações do sistema</value>
+  </data>
+  <data name="M0311" xml:space="preserve">
+    <value>Data final da faixa de datas não pode ser inferior a data corrente</value>
+  </data>
+  <data name="M0312" xml:space="preserve">
+    <value>Número de linhas da planilha maior do que o máximo. Limite a 500 produtos por importação</value>
+  </data>
+  <data name="M0313" xml:space="preserve">
+    <value>Fornecedor já cadastrado</value>
+  </data>
+  <data name="M0314" xml:space="preserve">
+    <value>Impossível excluir Fornecedor. Existem registros vinculados a ele.</value>
+  </data>
+  <data name="M0315" xml:space="preserve">
+    <value>Percentual do estoque máximo não informado</value>
+  </data>
+  <data name="M0316" xml:space="preserve">
+    <value>Número de linhas da planilha maior do que o máximo. Limite a 5000 produtos por atualização de estoque</value>
+  </data>
+  <data name="M0317" xml:space="preserve">
+    <value>Foram enviadas mensagens de confirmação de reunião aos contatos do evento. Total:</value>
+  </data>
+  <data name="M0318" xml:space="preserve">
+    <value>Número de dias para início da exclusão deve ser maior que o número de dias para o final da exclusão</value>
+  </data>
+  <data name="M0319" xml:space="preserve">
+    <value>Data de início da faixa maior que a data final</value>
+  </data>
+  <data name="M0320" xml:space="preserve">
+    <value>registros de log foram movidos para o backup e removidos da base principal</value>
+  </data>
+  <data name="M0321" xml:space="preserve">
+    <value>Impossível agendar esse evento. Ele se sobrepõe a um ou mais eventos ja agendados para essa data</value>
+  </data>
+  <data name="M0322" xml:space="preserve">
+    <value>Todas as informações de login dvem ser preenchidas</value>
+  </data>
+  <data name="M0323" xml:space="preserve">
+    <value>Nenhuma venda cadastrada</value>
+  </data>
+  <data name="M0324" xml:space="preserve">
+    <value>Código SKU obrigatório para este tipo de produto</value>
+  </data>
+  <data name="M0325" xml:space="preserve">
+    <value>Quantidade do estoque não informada</value>
+  </data>
+  <data name="M0326" xml:space="preserve">
+    <value>Justificativa do movimento não informada</value>
+  </data>
+  <data name="M0327" xml:space="preserve">
+    <value>Estoque especificado igual ao anterior</value>
+  </data>
+  <data name="M0328" xml:space="preserve">
+    <value>Nenhum parâmetro de seleção especificado</value>
+  </data>
+  <data name="M0329" xml:space="preserve">
+    <value>Custos variáveis recalculados com sucesso</value>
+  </data>
+  <data name="M0330" xml:space="preserve">
+    <value>A sua senha provisória foi enviada para seu e-mail cadastrado.</value>
+  </data>
+  <data name="M0331" xml:space="preserve">
+    <value>Valor total das vendas diferente da soma das vendas por categoria</value>
+  </data>
+  <data name="M0332" xml:space="preserve">
+    <value>Você foi redirecionado para a página de entrada do SysPrec</value>
+  </data>
+  <data name="M0333" xml:space="preserve">
+    <value>Impossível editar um evento com data/hora inferior a data/hora corrente</value>
+  </data>
+  <data name="M0334" xml:space="preserve">
+    <value>Já existe agendamento nesta data que sobrepõe esse horário</value>
+  </data>
+  <data name="M0335" xml:space="preserve">
+    <value>Início do evento anterior ao final</value>
+  </data>
+  <data name="M0336" xml:space="preserve">
+    <value>Esse evento deve ter um contato especificado</value>
+  </data>
+  <data name="M0337" xml:space="preserve">
+    <value>Impossível desvincular essa máquina. Ela já está associada à vendas mensais</value>
+  </data>
+  <data name="M0338" xml:space="preserve">
+    <value>Impossível desvincular essa plataforma. Ela já está associada à vendas mensais</value>
+  </data>
+  <data name="M0339" xml:space="preserve">
+    <value>Impossível desvincular esse ticket. Ele já está associado à vendas mensais</value>
+  </data>
+  <data name="M0340" xml:space="preserve">
+    <value>suporte Rti pelos canais de comunicação</value>
+  </data>
+  <data name="M0341" xml:space="preserve">
+    <value>Nenhum assinante encontrado para esse usuário. Entre em contato com o suporte Rti pelos canais de comunicação</value>
+  </data>
+  <data name="M0342" xml:space="preserve">
+    <value>Assinante bloqueado. Entre em contato com o suporte Rti pelos canais de comunicação</value>
+  </data>
+  <data name="M0343" xml:space="preserve">
+    <value>Assinante com plano vencido e será bloqueado. Entre em contato com o suporte Rti pelos canais de comunicação</value>
+  </data>
+  <data name="M0344" xml:space="preserve">
+    <value>Assinante inativo. Entre em contato com o suporte Rti pelos canais de comunicação</value>
+  </data>
+  <data name="M0345" xml:space="preserve">
+    <value>Assinante com parcelas em aberto. Entre em contato com o suporte Rti pelos canais de comunicação</value>
+  </data>
+  <data name="M0346" xml:space="preserve">
+    <value>Faltam algumas tags obrigatórias no modelo de mensagem. Verifique se conteúdo</value>
+  </data>
+  <data name="M0347" xml:space="preserve">
+    <value>Texto da mensagem não especificado</value>
+  </data>
+  <data name="M0348" xml:space="preserve">
+    <value>Impossível incluir/reativar fornecedores. Número de fornecedores ativos excede o contratado no Plano de Assinatura</value>
+  </data>
+  <data name="M0349" xml:space="preserve">
+    <value>Impossível incluir/reativar produtos. Número de produtos ativos excede o contratado no Plano de Assinatura</value>
+  </data>
+  <data name="M0350" xml:space="preserve">
+    <value>Impossível executar uma nova precificação. Número de precificações executadas no mês corrente excede o contratado no Plano de Assinatura</value>
+  </data>
+  <data name="M0351" xml:space="preserve">
+    <value>Impossível enviar mensagem de e-mail. Número de envios  no mês corrente excede o contratado no Plano de Assinatura</value>
+  </data>
+  <data name="M0352" xml:space="preserve">
+    <value>Impossível enviar mensagem de SMS. Número de envios  no mês corrente excede o contratado no Plano de Assinatura</value>
+  </data>
+  <data name="M0353" xml:space="preserve">
+    <value>Texto da mensagem não informado</value>
+  </data>
+  <data name="M0354" xml:space="preserve">
+    <value>Data de pagamento não informada</value>
+  </data>
+  <data name="M0355" xml:space="preserve">
+    <value>Valor pago não informado</value>
+  </data>
+  <data name="M0356" xml:space="preserve">
+    <value>Arquivo anexo não encontrado</value>
+  </data>
+  <data name="M0357" xml:space="preserve">
+    <value>Arquivo anexo com nome maior que 150 caracteres</value>
+  </data>
+  <data name="M0358" xml:space="preserve">
+    <value>Formato de anexo inválido. Formatos permitidos: JPG e PNG</value>
+  </data>
+  <data name="M0359" xml:space="preserve">
+    <value>Telefone não informado</value>
+  </data>
+  <data name="M0360" xml:space="preserve">
+    <value>Celular não informado</value>
+  </data>
+  <data name="M0361" xml:space="preserve">
+    <value>E-Mail não informado</value>
+  </data>
+  <data name="M0362" xml:space="preserve">
+    <value>Nenhuma forma de resposta selecionada</value>
+  </data>
+  <data name="M0363" xml:space="preserve">
+    <value>Nenhum plano selecionado</value>
+  </data>
+  <data name="M0364" xml:space="preserve">
+    <value>Plano selecionado igual ao plano atual</value>
+  </data>
+  <data name="M0365" xml:space="preserve">
+    <value>E-Mail enviado ao usuário selecionado</value>
+  </data>
+  <data name="M0366" xml:space="preserve">
+    <value>Motivo de cancelamento não informado</value>
+  </data>
+  <data name="M0367" xml:space="preserve">
+    <value>E-Mail enviado para o suporte da Rti com sua solicitação de alteração do plano de assinatura</value>
+  </data>
+  <data name="M0368" xml:space="preserve">
+    <value>E-Mail enviado para o suporte da Rti com sua solicitação</value>
+  </data>
 </root>

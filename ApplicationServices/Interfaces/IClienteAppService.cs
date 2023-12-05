@@ -37,7 +37,7 @@ namespace ApplicationServices.Interfaces
         GRUPO_CLIENTE GetGrupoById(Int32 id);
 
         //Int32 ExecuteFilter(Int32? id,  Int32? catId, String razao, String nome, String cpf, String cnpj, String email, String cidade, Int32? uf, Int32? ativo, Int32 idAss, out List<CLIENTE> objeto);
-        Tuple < Int32, List<CLIENTE>, Boolean > ExecuteFilterTuple(Int32? id, Int32? catId, String razao, String nome, String cpf, String cnpj, String email, String cidade, Int32? uf, Int32? ativo, Int32? filial, Int32 idAss);
+        Tuple < Int32, List<CLIENTE>, Boolean > ExecuteFilterTuple(Int32? id, Int32? catId, String razao, String nome, String cpf, String cnpj, String email, String cidade, Int32? uf, Int32? ativo, Int32? filial, Int32? usu, Int32 idAss);
 
         Int32 ValidateEditAnotacao(CLIENTE_ANOTACAO item);
         Int32 ValidateEditContato(CLIENTE_CONTATO item);
@@ -50,7 +50,6 @@ namespace ApplicationServices.Interfaces
         Int32 ValidateEditGrupo(GRUPO_CLIENTE item);
 
         List<VOLTA_PESQUISA> PesquisarTudo(String parm, Int32[] permissoes, String perfil, Int32? empresa, Int32 idAss);
-        Int32 AtualizarCategoriaClienteCalculo(Int32 idAss, CLIENTE cli);
 
         List<UF> GetAllUF();
         UF GetUFbySigla(String sigla);

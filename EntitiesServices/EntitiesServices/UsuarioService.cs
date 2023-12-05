@@ -61,11 +61,19 @@ namespace ModelServices.EntitiesServices
         public Boolean VerificarCredenciais (String senha, USUARIO usuario)
         {
             // Criptografa senha informada
-            String senhaCrip = Cryptography.Encrypt(senha);
-            //string senhaCrip = senha;
+            //String senhaCrip = Cryptography.Encrypt(senha);
+            ////string senhaCrip = senha;
 
-            // verifica senha
-            if (usuario.USUA_NM_SENHA.Trim() != senhaCrip.Trim())
+            //// verifica senha
+            //if (usuario.USUA_NM_SENHA.Trim() != senhaCrip.Trim())
+            //{
+            //    return false;
+            //}
+            //return true;
+
+            Byte[] salt = usuario.USUA_NM_SALT;
+            String hashedPassword = CrossCutting.Cryptography.HashPassword(senha, salt);
+            if (hashedPassword != usuario.USUA_NM_SENHA)
             {
                 return false;
             }
@@ -185,6 +193,7 @@ namespace ModelServices.EntitiesServices
             {
                 try
                 {
+                    usuario.EMPRESA = null;
                     USUARIO obj = _usuarioRepository.GetById(usuario.USUA_CD_ID);
                     _usuarioRepository.Detach(obj);
                     _logRepository.Add(log);
@@ -238,6 +247,12 @@ namespace ModelServices.EntitiesServices
             return lista;
         }
 
+        public List<LOG_EXCECAO_NOVO> ExecuteFilterExcecao(Int32? usuaId, DateTime? data, String gerador, Int32 idAss)
+        {
+            List<LOG_EXCECAO_NOVO> lista = _excRepository.ExecuteFilter(usuaId, data, gerador, idAss);
+            return lista;
+        }
+
         public List<PERFIL> GetAllPerfis()
         {
             List<PERFIL> lista = _perfRepository.GetAll().ToList();
@@ -276,6 +291,26 @@ namespace ModelServices.EntitiesServices
                 try
                 {
                     _excRepository.Add(log);
+                    transaction.Commit();
+                    return 0;
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                    throw ex;
+                }
+            }
+        }
+
+        public Int32 EditAnexo(USUARIO_ANEXO item)
+        {
+            using (DbContextTransaction transaction = Db.Database.BeginTransaction(IsolationLevel.ReadCommitted))
+            {
+                try
+                {
+                    USUARIO_ANEXO obj = _anexoRepository.GetById(item.USAN_CD_ID);
+                    _anexoRepository.Detach(obj);
+                    _anexoRepository.Update(item);
                     transaction.Commit();
                     return 0;
                 }

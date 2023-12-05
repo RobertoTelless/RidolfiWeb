@@ -16,5 +16,6 @@ namespace ModelServices.Interfaces.Repositories
         List<LOG> GetAllItensMesCorrente(Int32 idAss);
         List<LOG> GetAllItensMesAnterior(Int32 idAss);
         List<LOG> GetAllItensUsuario(Int32 id, Int32 idAss);
+        List<LOG> GetLogByFaixa(DateTime inicio, DateTime final, Int32 idAss);
     }
 }

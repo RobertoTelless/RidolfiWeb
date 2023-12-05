@@ -254,8 +254,8 @@
     <Compile Include="EntitiesServices\TRFService.cs" />
     <Compile Include="EntitiesServices\UsuarioService.cs" />
     <Compile Include="EntitiesServices\VaraService.cs" />
-    <Compile Include="EntitiesServices\VideoService.cs" />
     <Compile Include="Interfaces\Repositories\IAgendaAnexoRepository.cs" />
+    <Compile Include="Interfaces\Repositories\IAgendaContatoRepository.cs" />
     <Compile Include="Interfaces\Repositories\IAgendaRepository.cs" />
     <Compile Include="Interfaces\Repositories\IAssinanteAnexoRepository.cs" />
     <Compile Include="Interfaces\Repositories\IAssinanteAnotacaoRepository.cs" />
@@ -276,6 +276,12 @@
     <Compile Include="Interfaces\Repositories\IContatoFalhaRepository.cs" />
     <Compile Include="Interfaces\Repositories\IContatoRepository.cs" />
     <Compile Include="Interfaces\Repositories\ICRMFollowRepository.cs" />
+    <Compile Include="Interfaces\Repositories\IEmpresaAnexoRepository.cs" />
+    <Compile Include="Interfaces\Repositories\IEmpresaCustoVariavelRepository.cs" />
+    <Compile Include="Interfaces\Repositories\IEmpresaMaquinaRepository.cs" />
+    <Compile Include="Interfaces\Repositories\IEmpresaPlataformaRepository.cs" />
+    <Compile Include="Interfaces\Repositories\IEmpresaRepository.cs" />
+    <Compile Include="Interfaces\Repositories\IEmpresaTicketRepository.cs" />
     <Compile Include="Interfaces\Repositories\IEnderecoRepository.cs" />
     <Compile Include="Interfaces\Repositories\IEscolaridadeRepository.cs" />
     <Compile Include="Interfaces\Repositories\IEstadoCivilRepository.cs" />
@@ -383,6 +389,7 @@
     <Compile Include="Interfaces\Services\ICategoriaUsuarioService.cs" />
     <Compile Include="Interfaces\Services\IClienteCnpjService.cs" />
     <Compile Include="Interfaces\Services\IContatoService.cs" />
+    <Compile Include="Interfaces\Services\IEmpresaService.cs" />
     <Compile Include="Interfaces\Services\IEscolaridadeService.cs" />
     <Compile Include="Interfaces\Services\IHonorarioService.cs" />
     <Compile Include="Interfaces\Services\INaturezaService.cs" />
@@ -429,6 +436,9 @@
       <DependentUpon>Ridolfi_Model.tt</DependentUpon>
     </Compile>
     <Compile Include="Model\AGENDA_ANEXO.cs">
+      <DependentUpon>Ridolfi_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\AGENDA_CONTATO.cs">
       <DependentUpon>Ridolfi_Model.tt</DependentUpon>
     </Compile>
     <Compile Include="Model\AGENDA_VINCULO.cs">

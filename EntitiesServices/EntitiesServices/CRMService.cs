@@ -101,6 +101,11 @@ namespace ModelServices.EntitiesServices
             return _folRepository.GetAllItens(idAss);
         }
 
+        public List<CRM_COMENTARIO> GetAllAnotacao(Int32 idAss)
+        {
+            return _comRepository.GetAllItens(idAss);
+        }
+
         public List<CRM_PEDIDO_VENDA> GetAllPedidos(Int32 idAss)
         {
             return _pedRepository.GetAllItens(idAss);
@@ -295,8 +300,6 @@ namespace ModelServices.EntitiesServices
             {
                 try
                 {
-                    item.USUARIO = null;
-                    item.FUNIL = null;
                     CRM obj = _baseRepository.GetById(item.CRM1_CD_ID);
                     _baseRepository.Detach(obj);
                     _logRepository.Add(log);
@@ -417,6 +420,7 @@ namespace ModelServices.EntitiesServices
                 try
                 {
                     item.USUARIO = null;
+                    item.TIPO_FOLLOW = null;
                     CRM_FOLLOW obj = _folRepository.GetById(item.CRFL_CD_ID);
                     _folRepository.Detach(obj);
                     _folRepository.Update(item);
@@ -475,6 +479,7 @@ namespace ModelServices.EntitiesServices
             {
                 try
                 {
+                    item.FILIAL = null;
                     item.USUARIO = null;
                     item.TEMPLATE_PROPOSTA = null;
                     CRM_PEDIDO_VENDA obj = _pedRepository.GetById(item.CRPV_CD_ID);
@@ -509,6 +514,72 @@ namespace ModelServices.EntitiesServices
             }
         }
 
+        public Int32 EditAnexo(CRM_ANEXO item)
+        {
+            using (DbContextTransaction transaction = Db.Database.BeginTransaction(IsolationLevel.ReadCommitted))
+            {
+                try
+                {
+                    CRM_ANEXO obj = _anexoRepository.GetById(item.CRAN_CD_ID);
+                    _anexoRepository.Detach(obj);
+                    _anexoRepository.Update(item);
+                    transaction.Commit();
+                    return 0;
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                    throw ex;
+                }
+            }
+        }
+
+        //public CRM_PEDIDO_VENDA_ITEM GetItemPedidoById(Int32 id)
+        //{
+        //    CRM_PEDIDO_VENDA_ITEM item = _itepeRepository.GetItemById(id);
+        //    return item;
+        //}
+
+        //public Int32 EditItemPedido(CRM_PEDIDO_VENDA_ITEM item)
+        //{
+        //    using (DbContextTransaction transaction = Db.Database.BeginTransaction(IsolationLevel.ReadCommitted))
+        //    {
+        //        try
+        //        {
+        //            item.PRODUTO = null;
+        //            item.UNIDADE = null;  
+        //            item.SERVICO = null;    
+        //            CRM_PEDIDO_VENDA_ITEM obj = _itepeRepository.GetItemById(item.CRPI_CD_ID);
+        //            _itepeRepository.Detach(obj);
+        //            _itepeRepository.Update(item);
+        //            transaction.Commit();
+        //            return 0;
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            transaction.Rollback();
+        //            throw ex;
+        //        }
+        //    }
+        //}
+
+        //public Int32 CreateItemPedido(CRM_PEDIDO_VENDA_ITEM item)
+        //{
+        //    using (DbContextTransaction transaction = Db.Database.BeginTransaction(IsolationLevel.ReadCommitted))
+        //    {
+        //        try
+        //        {
+        //            _itepeRepository.Add(item);
+        //            transaction.Commit();
+        //            return 0;
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            transaction.Rollback();
+        //            throw ex;
+        //        }
+        //    }
+        //}
 
 
 

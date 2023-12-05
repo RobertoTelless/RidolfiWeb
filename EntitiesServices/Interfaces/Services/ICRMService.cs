@@ -27,6 +27,7 @@ namespace ModelServices.Interfaces.EntitiesServices
         List<CRM> GetAllItensAdm(Int32 idAss);
         List<CRM> ExecuteFilter(Int32? status, DateTime? inicio, DateTime? final, Int32? origem, Int32? adic, String nome, String busca, Int32? estrela, Int32? temperatura, Int32? funil, String campanha, Int32 idAss);
         List<CRM_PEDIDO_VENDA> ExecuteFilterVenda(String busca, Int32? status, DateTime? inicio, DateTime? final, Int32? filial, Int32? usuario, Int32 idAss);
+        Int32 EditAnexo(CRM_ANEXO item);
 
         List<USUARIO> GetAllUsers(Int32 idAss);
         List<TIPO_CRM> GetAllTipos();
@@ -40,6 +41,7 @@ namespace ModelServices.Interfaces.EntitiesServices
         CRM_FOLLOW GetFollowById(Int32 id);
 
         List<CRM_FOLLOW> GetAllFollow(Int32 idAss);
+        List<CRM_COMENTARIO> GetAllAnotacao(Int32 idAss);
         List<CRM_ACAO> GetAllAcoes(Int32 idAss);
         CRM_CONTATO GetContatoById(Int32 id);
         CRM_ACAO GetAcaoById(Int32 id);

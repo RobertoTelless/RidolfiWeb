@@ -15,7 +15,7 @@ namespace DataServices.Repositories
     {
         public List<ASSINANTE_PAGAMENTO> GetAllItens()
         {
-            IQueryable<ASSINANTE_PAGAMENTO> query = Db.ASSINANTE_PAGAMENTO.Where(p => p.ASPA_IN_ATIVO == 1);
+            IQueryable<ASSINANTE_PAGAMENTO> query = Db.ASSINANTE_PAGAMENTO.Where(p => p.ASPA_IN_ATIVO == 1 & p.PLANO.PLAN_IN_SISTEMA == 1);
             return query.ToList();
         }
 

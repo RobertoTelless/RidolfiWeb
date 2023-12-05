@@ -52,6 +52,11 @@ namespace ModelServices.EntitiesServices
             return _logRepository.GetAllItensMesAnterior(idAss);
         }
 
+        public List<LOG> GetLogByFaixa(DateTime inicio, DateTime final, Int32 idAss)
+        {
+            return _logRepository.GetLogByFaixa(inicio, final, idAss);
+        }
+
         public List<LOG> GetAllItensUsuario(Int32 id, Int32 idAss)
         {
             return _logRepository.GetAllItensUsuario(id, idAss);
@@ -62,5 +67,42 @@ namespace ModelServices.EntitiesServices
             List<LOG> lista = _logRepository.ExecuteFilter(usuId, data, operacao, idAss);
             return lista;
         }
+
+        public Int32 Create(LOG log)
+        {
+            using (DbContextTransaction transaction = Db.Database.BeginTransaction(IsolationLevel.ReadCommitted))
+            {
+                try
+                {
+                    _logRepository.Add(log);
+                    transaction.Commit();
+                    return 0;
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                    throw ex;
+                }
+            }
+        }
+
+        public Int32 Delete(LOG item)
+        {
+            using (DbContextTransaction transaction = Db.Database.BeginTransaction(IsolationLevel.ReadCommitted))
+            {
+                try
+                {
+                    _logRepository.Remove(item);
+                    transaction.Commit();
+                    return 0;
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                    throw ex;
+                }
+            }
+        }
+
     }
 }

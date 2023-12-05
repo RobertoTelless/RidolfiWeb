@@ -40,23 +40,23 @@ namespace DataServices.Repositories
         {
             List<DIARIO_PROCESSO> lista = new List<DIARIO_PROCESSO>();
             IQueryable<DIARIO_PROCESSO> query = Db.DIARIO_PROCESSO;
-            if (dataInicio != DateTime.MinValue & dataFim == DateTime.MinValue)
+            if (dataInicio != null & dataFim == null)
             {
                 query = query.Where(p => DbFunctions.TruncateTime(p.DIPR_DT_DATA) >= DbFunctions.TruncateTime(dataInicio));
             }
-            if (dataInicio == DateTime.MinValue & dataFim != DateTime.MinValue)
+            if (dataInicio == null & dataFim != null)
             {
                 query = query.Where(p => DbFunctions.TruncateTime(p.DIPR_DT_DATA) <= DbFunctions.TruncateTime(dataFim));
             }
-            if (dataInicio != DateTime.MinValue & dataFim != DateTime.MinValue)
+            if (dataInicio != null & dataFim != null)
             {
                 query = query.Where(p => DbFunctions.TruncateTime(p.DIPR_DT_DATA) >= DbFunctions.TruncateTime(dataInicio) & DbFunctions.TruncateTime(p.DIPR_DT_DATA) <= DbFunctions.TruncateTime(dataFim));
             }
-            if (usuario > 0)
+            if (usuario != null & usuario > 0)
             {
                 query = query.Where(p => p.USUA_CD_ID == usuario);
             }
-            if (processo > 0)
+            if (processo != null)
             {
                 query = query.Where(p => p.CRM1_CD_ID == processo);
             }

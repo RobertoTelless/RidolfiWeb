@@ -195,6 +195,7 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\AgendaAnexoRepository.cs" />
+    <Compile Include="Repositories\AgendaContatoRepository.cs" />
     <Compile Include="Repositories\AgendaRepository.cs" />
     <Compile Include="Repositories\AssinanteAnexoRepository.cs" />
     <Compile Include="Repositories\AssinanteAnotacaoRepository.cs" />
@@ -215,6 +216,12 @@
     <Compile Include="Repositories\ContatoFalhaRepository.cs" />
     <Compile Include="Repositories\ContatoRepository.cs" />
     <Compile Include="Repositories\CRMFollowRepository.cs" />
+    <Compile Include="Repositories\EmpresaAnexoRepository.cs" />
+    <Compile Include="Repositories\EmpresaCustoVariavelRepository.cs" />
+    <Compile Include="Repositories\EmpresaMaquinaRepository.cs" />
+    <Compile Include="Repositories\EmpresaPlataformaRepository.cs" />
+    <Compile Include="Repositories\EmpresaRepository.cs" />
+    <Compile Include="Repositories\EmpresaTicketRepository.cs" />
     <Compile Include="Repositories\EnderecoRepository.cs" />
     <Compile Include="Repositories\EscolaridadeRepository.cs" />
     <Compile Include="Repositories\EstadoCivilRepository.cs" />
@@ -235,7 +242,6 @@
     <Compile Include="Repositories\PrecatorioRepository.cs" />
     <Compile Include="Repositories\QualificacaoRepository.cs" />
     <Compile Include="Repositories\QuemDesligouRepository.cs" />
-    <Compile Include="Repositories\ResultadoRobotRepository.cs" />
     <Compile Include="Repositories\RecursividadeDataRepository.cs" />
     <Compile Include="Repositories\RecursividadeDestinoRepository.cs" />
     <Compile Include="Repositories\RecursividadeRepository.cs" />

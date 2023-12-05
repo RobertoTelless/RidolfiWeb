@@ -12,6 +12,7 @@ using System.Text.RegularExpressions;
 
 namespace ApplicationServices.Services
 {
+
     public class AntecipacaoAppService : AppServiceBase<ANTECIPACAO>, IAntecipacaoAppService
     {
         private readonly IAntecipacaoService _baseService;

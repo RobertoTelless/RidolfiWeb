@@ -236,24 +236,32 @@ namespace ApplicationServices.Services
         {
             try
             {
-                // Serialização 
-                String texto = item.ASSI_NM_NOME + "|" + item.ASSI_NM_RAZAO_SOCIAL == null ? item.ASSI_NM_RAZAO_SOCIAL : " " + "|" + item.ASSI_NR_CPF == null ? item.ASSI_NR_CPF : " " + "|" + item.ASSI_NR_CNPJ == null ? item.ASSI_NR_CNPJ : " " + "|" + item.ASSI_NM_BAIRRO == null ? item.ASSI_NM_BAIRRO : " " + "|" + item.ASSI_NM_CIDADE == null ? item.ASSI_NM_CIDADE : " " + "|" + item.ASSI_NM_COMPLEMENTO == null ? item.ASSI_NM_COMPLEMENTO : " " + "|" + item.ASSI_NM_EMAIL + "|" + item.ASSI_NM_ENDERECO == null ? item.ASSI_NM_ENDERECO : " " + "|" + item.ASSI_NR_CEP == null ? item.ASSI_NR_CEP : " " + "|" + item.ASSI_NR_NUMERO == null ? item.ASSI_NR_NUMERO : " " + "|" + item.ASSI_NR_TELEFONE == null ? item.ASSI_NR_TELEFONE : " " + "|" + item.ASSI_NR_CELULAR == null ? item.ASSI_NR_CELULAR : " " + "|" + item.TIPE_CD_ID.ToString();
-                String textoAntes = itemAntes.ASSI_NM_NOME + "|" + itemAntes.ASSI_NM_RAZAO_SOCIAL == null ? itemAntes.ASSI_NM_RAZAO_SOCIAL : " " + "|" + itemAntes.ASSI_NR_CPF == null ? itemAntes.ASSI_NR_CPF : " " + "|" + itemAntes.ASSI_NR_CNPJ == null ? itemAntes.ASSI_NR_CNPJ : " " + "|" + itemAntes.ASSI_NM_BAIRRO == null ? itemAntes.ASSI_NM_BAIRRO : " " + "|" + itemAntes.ASSI_NM_CIDADE == null ? itemAntes.ASSI_NM_CIDADE : " " + "|" + itemAntes.ASSI_NM_COMPLEMENTO == null ? itemAntes.ASSI_NM_COMPLEMENTO : " " + "|" + itemAntes.ASSI_NM_EMAIL + "|" + itemAntes.ASSI_NM_ENDERECO == null ? itemAntes.ASSI_NM_ENDERECO : " " + "|" + itemAntes.ASSI_NR_CEP == null ? itemAntes.ASSI_NR_CEP : " " + "|" + itemAntes.ASSI_NR_NUMERO == null ? itemAntes.ASSI_NR_NUMERO : " " + "|" + itemAntes.ASSI_NR_TELEFONE == null ? itemAntes.ASSI_NR_TELEFONE : " " + "|" + itemAntes.ASSI_NR_CELULAR == null ? itemAntes.ASSI_NR_CELULAR : " " + "|" + itemAntes.TIPE_CD_ID.ToString();
-
                 // Monta Log
                 LOG log = new LOG()
                 {
                     LOG_DT_DATA = DateTime.Now,
                     ASSI_CD_ID = usuario.ASSI_CD_ID,
                     USUA_CD_ID = usuario.USUA_CD_ID,
-                    LOG_NM_OPERACAO = "EditASSI",
+                    LOG_NM_OPERACAO = "EdtASSI",
                     LOG_IN_ATIVO = 1,
-                    LOG_TX_REGISTRO = texto,
-                    LOG_TX_REGISTRO_ANTES = textoAntes
+                    LOG_TX_REGISTRO = "Assinante: " + item.ASSI_NM_NOME
                 };
 
                 // Persiste
                 return _baseService.Edit(item, log);
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
+        public Int32 ValidateEdit(ASSINANTE item)
+        {
+            try
+            {
+                // Persiste
+                return _baseService.Edit(item);
             }
             catch (Exception ex)
             {
@@ -435,5 +443,6 @@ namespace ApplicationServices.Services
         {
             return _baseService.GetByAssPlan(plan, assi);
         }
+
     }
 }

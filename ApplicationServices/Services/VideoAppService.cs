@@ -27,6 +27,7 @@ namespace ApplicationServices.Services
             return lista;
         }
 
+
         public List<VIDEO> GetAllItensAdm(Int32 idAss)
         {
             List<VIDEO> lista = _baseService.GetAllItensAdm(idAss);

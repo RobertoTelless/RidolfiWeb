@@ -14,28 +14,32 @@ namespace ERP_Condominios_Solution.ViewModels
         public int ASSI_CD_ID { get; set; }
         public Nullable<int> FUNI_CD_ID { get; set; }
         public int CLIE_CD_ID { get; set; }
-        public Nullable<int> PREC_CD_ID { get; set; }
         public Nullable<int> TICR_CD_ID { get; set; }
         [Required(ErrorMessage = "Campo DATA DE CRIAÇÃO obrigatorio")]
         [DataType(DataType.Date, ErrorMessage = "A DATA DE CRIAÇÃO deve ser uma data válida")]
         public Nullable<System.DateTime> CRM1_DT_CRIACAO { get; set; }
         [StringLength(500, ErrorMessage = "A DESCRIÇÃO deve conter no máximo 500 caracteres.")]
+        [RegularExpression(@"^([a-zA-Zà-úÀ-Ú0-9]|-|_|\s)+$$", ErrorMessage = "Descrição inválida")]
         public string CRM1_DS_DESCRICAO { get; set; }
         [StringLength(5000, ErrorMessage = "AS INFORMAÇÕES GERAIS devem conter no máximo 5000 caracteres.")]
+        [RegularExpression(@"^([a-zA-Zà-úÀ-Ú0-9]|-|_|\s)+$$", ErrorMessage = "Informação inválida")]
         public string CRM1_TX_INFORMACOES_GERAIS { get; set; }
         [Required(ErrorMessage = "Campo STATUS obrigatorio")]
         public int CRM1_IN_STATUS { get; set; }
         [DataType(DataType.Date, ErrorMessage = "A DATA DE CANCELAMENTO deve ser uma data válida")]
         public Nullable<System.DateTime> CRM1_DT_CANCELAMENTO { get; set; }
         [StringLength(500, ErrorMessage = "O MOTIVO DE CANCELAMENTO deve conter no máximo 500 caracteres.")]
+        [RegularExpression(@"^([a-zA-Zà-úÀ-Ú0-9]|-|_|\s)+$$", ErrorMessage = "Justificativa inválida")]
         public string CRM1_DS_MOTIVO_CANCELAMENTO { get; set; }
         [DataType(DataType.Date, ErrorMessage = "A DATA DE ENCERRAMENTO deve ser uma data válida")]
         public Nullable<System.DateTime> CRM1_DT_ENCERRAMENTO { get; set; }
         [StringLength(5000, ErrorMessage = "AS INFORMAÇÕES DE ENCERRAMENTO devem conter no máximo 5000 caracteres.")]
+        [RegularExpression(@"^([a-zA-Zà-úÀ-Ú0-9]|-|_|\s)+$$", ErrorMessage = "Justificativa inválida")]
         public string CRM1_DS_INFORMACOES_ENCERRAMENTO { get; set; }
         public Nullable<int> CRM1_IN_ATIVO { get; set; }
         [Required(ErrorMessage = "Campo NOME obrigatorio")]
         [StringLength(150, MinimumLength = 2, ErrorMessage = "O NOME deve conter no minimo 2 e no máximo 150 caracteres.")]
+        [RegularExpression(@"^([a-zA-Zà-úÀ-Ú0-9]|-|_|\s)+$$", ErrorMessage = "Nome inválido")]
         public string CRM1_NM_NOME { get; set; }
         public Nullable<int> USUA_CD_ID { get; set; }
         public Nullable<int> MENS_CD_ID { get; set; }
@@ -66,7 +70,11 @@ namespace ERP_Condominios_Solution.ViewModels
         public string CRM_DS_INFORMACOES_SAIDA { get; set; }
         public Nullable<int> EMPR_CD_ID { get; set; }
         [StringLength(500, ErrorMessage = "A CAMPANHA deve conter no máximo 50 caracteres.")]
+        [RegularExpression(@"^([a-zA-Zà-úÀ-Ú0-9]|-|_|\s)+$$", ErrorMessage = "Campanha inválida")]
         public string CRM1_NM_CAMPANHA { get; set; }
+        public string CRM1_GU_GUID { get; set; }
+        public Nullable<int> CRM1_IN_ENVIA_CLIENTE { get; set; }
+        public Nullable<int> CRM1_IN_ENCERRADO { get; set; }
 
         public string NumeroProposta { get; set; }
         public string NomeProposta { get; set; }
@@ -117,35 +125,48 @@ namespace ERP_Condominios_Solution.ViewModels
                 CRM1_VL_VALOR_FINAL = Convert.ToDecimal(CrossCutting.CommonHelpers.GetOnlyDigits(value, true));
             }
         }
-
-        //public virtual ASSINANTE ASSINANTE { get; set; }
-        //public virtual CLIENTE CLIENTE { get; set; }
-        //[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        //public virtual ICollection<CRM_ACAO> CRM_ACAO { get; set; }
-        //[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        //public virtual ICollection<CRM_ANEXO> CRM_ANEXO { get; set; }
-        //[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        //public virtual ICollection<CRM_COMENTARIO> CRM_COMENTARIO { get; set; }
-        //[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        //public virtual ICollection<CRM_CONTATO> CRM_CONTATO { get; set; }
-        //public virtual CRM_ORIGEM CRM_ORIGEM { get; set; }
-        //public virtual MENSAGENS MENSAGENS { get; set; }
-        //public virtual MOTIVO_CANCELAMENTO MOTIVO_CANCELAMENTO { get; set; }
-        //public virtual MOTIVO_ENCERRAMENTO MOTIVO_ENCERRAMENTO { get; set; }
-        //[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        //public virtual ICollection<CRM_PEDIDO_VENDA> CRM_PEDIDO_VENDA { get; set; }
-        //public virtual TIPO_CRM TIPO_CRM { get; set; }
-        //public virtual USUARIO USUARIO { get; set; }
-        //[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        //public virtual ICollection<AGENDA> AGENDA { get; set; }
-        //[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        //public virtual ICollection<DIARIO_PROCESSO> DIARIO_PROCESSO { get; set; }
-        //public virtual FUNIL FUNIL { get; set; }
-        //public virtual EMPRESA EMPRESA { get; set; }
+        public bool EnviaCliente
+        {
+            get
+            {
+                if (CRM1_IN_ENVIA_CLIENTE == 1)
+                {
+                    return true;
+                }
+                return false;
+            }
+            set
+            {
+                CRM1_IN_ENVIA_CLIENTE = (value == true) ? 1 : 0;
+            }
+        }
+        public String Temperatura
+        {
+            get
+            {
+                if (CRM1_NR_TEMPERATURA == 1)
+                {
+                    return "Fria";
+                }
+                if (CRM1_NR_TEMPERATURA == 2)
+                {
+                    return "Morna";
+                }
+                if (CRM1_NR_TEMPERATURA == 3)
+                {
+                    return "Quente";
+                }
+                return "Muito Quente";
+            }
+        }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<AGENDA> AGENDA { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<ATENDIMENTO_CRM> ATENDIMENTO_CRM { get; set; }
         public virtual CLIENTE CLIENTE { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<CONTA_RECEBER> CONTA_RECEBER { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<CRM_ACAO> CRM_ACAO { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
@@ -155,15 +176,16 @@ namespace ERP_Condominios_Solution.ViewModels
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<CRM_CONTATO> CRM_CONTATO { get; set; }
         public virtual CRM_ORIGEM CRM_ORIGEM { get; set; }
+        public virtual EMPRESA EMPRESA { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<CRM_FOLLOW> CRM_FOLLOW { get; set; }
         public virtual FUNIL FUNIL { get; set; }
         public virtual MENSAGENS MENSAGENS { get; set; }
         public virtual MOTIVO_CANCELAMENTO MOTIVO_CANCELAMENTO { get; set; }
         public virtual MOTIVO_ENCERRAMENTO MOTIVO_ENCERRAMENTO { get; set; }
+        public virtual PEDIDO_VENDA PEDIDO_VENDA { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<CRM_PEDIDO_VENDA> CRM_PEDIDO_VENDA { get; set; }
-        public virtual PRECATORIO PRECATORIO { get; set; }
         public virtual TIPO_CRM TIPO_CRM { get; set; }
         public virtual USUARIO USUARIO { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

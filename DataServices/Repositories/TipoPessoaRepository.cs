@@ -31,6 +31,7 @@ namespace DataServices.Repositories
             IQueryable<TIPO_PESSOA> query = Db.TIPO_PESSOA;
             return query.ToList();
         }
+
     }
 }
  

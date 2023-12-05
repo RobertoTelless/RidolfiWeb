@@ -11,5 +11,6 @@ namespace ModelServices.Interfaces.Repositories
     {
         List<LOG_EXCECAO_NOVO> GetAllItens(Int32 idAss);
         LOG_EXCECAO_NOVO GetItemById(Int32 id);
+        List<LOG_EXCECAO_NOVO> ExecuteFilter(Int32? usuaId, DateTime? data, String gerador, Int32 idAss);
     }
 }

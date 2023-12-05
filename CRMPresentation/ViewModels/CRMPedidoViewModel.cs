@@ -73,7 +73,7 @@ namespace ERP_Condominios_Solution.ViewModels
         public Nullable<System.DateTime> CRPV_DT_APROVACAO { get; set; }
         [StringLength(1000, ErrorMessage = "AS INFORMAÇÕES DE APROVAÇÃO deve conter no máximo 1000 caracteres.")]
         public string CRPV_DS_APROVACAO { get; set; }
-        public BENEFICIARIO CLIENTE_NOME { get; set; }
+        public CLIENTE CLIENTE_NOME { get; set; }
         public string CRPV_NM_NOME { get; set; }
         public Nullable<int> TRAN_CD_ID { get; set; }
         [Required(ErrorMessage = "Campo MODELO DE PROPOSTA obrigatorio")]
@@ -82,6 +82,8 @@ namespace ERP_Condominios_Solution.ViewModels
         public Nullable<int> CRPV_IN_GERAR_CR { get; set; }
         public Nullable<int> CRPV_IN_GEROU_NF { get; set; }
         public string CRPV_NR_NOTA_FISCAL { get; set; }
+        [Required(ErrorMessage = "Campo VALOR obrigatorio")]
+        [RegularExpression(@"^[0-9]+([,.][0-9]+)?$", ErrorMessage = "Deve ser um valor numérico positivo")]
         public Nullable<decimal> CRPV_VL_VALOR { get; set; }
         public Nullable<int> CRPV_IN_NUMERO_GERADO { get; set; }
         [DataType(DataType.Date, ErrorMessage = "A DATA DE VALIDADE deve ser uma data válida")]
@@ -101,7 +103,7 @@ namespace ERP_Condominios_Solution.ViewModels
         public string CRPV_TX_INFORMACOES_GERAIS_1 { get; set; }
         public string CRPV_TX_OUTROS_ITENS_1 { get; set; }
         public Nullable<int> EMPR_CD_ID { get; set; }
-        public Nullable<int> PREC_CD_ID { get; set; }
+        public string CRPV_GU_GUID { get; set; }
 
         public string NumeroProposta { get; set; }
         public string NomeProposta { get; set; }
@@ -185,18 +187,22 @@ namespace ERP_Condominios_Solution.ViewModels
         }
 
         public virtual CLIENTE CLIENTE { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<CONTA_RECEBER> CONTA_RECEBER { get; set; }
         public virtual CRM CRM { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<CRM_PEDIDO_VENDA_ACOMPANHAMENTO> CRM_PEDIDO_VENDA_ACOMPANHAMENTO { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<CRM_PEDIDO_VENDA_ANEXO> CRM_PEDIDO_VENDA_ANEXO { get; set; }
+        public virtual EMPRESA EMPRESA { get; set; }
+        public virtual FILIAL FILIAL { get; set; }
         public virtual MOTIVO_CANCELAMENTO MOTIVO_CANCELAMENTO { get; set; }
         public virtual TEMPLATE_PROPOSTA TEMPLATE_PROPOSTA { get; set; }
         public virtual TEMPLATE_PROPOSTA TEMPLATE_PROPOSTA1 { get; set; }
         public virtual USUARIO USUARIO { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<DIARIO_PROCESSO> DIARIO_PROCESSO { get; set; }
-        public virtual PRECATORIO PRECATORIO { get; set; }
+        public virtual TEMPLATE_EMAIL TEMPLATE_EMAIL { get; set; }
 
 
     }

@@ -62,6 +62,8 @@ namespace DataServices.Repositories
             query = query.Include(p => p.CLIENTE_ANOTACAO);
             query = query.Include(p => p.CLIENTE_REFERENCIA);
             query = query.Include(p => p.CRM_PEDIDO_VENDA);
+            query = query.Include(p => p.CLIENTE_QUADRO_SOCIETARIO);
+            query = query.Include(p => p.USUARIO);
             return query.FirstOrDefault();
         }
 
@@ -87,7 +89,7 @@ namespace DataServices.Repositories
             return query.ToList();
         }
 
-        public List<CLIENTE> ExecuteFilter(Int32? id, Int32? catId, String razao, String nome, String cpf, String cnpj, String email, String cidade, Int32? uf, Int32? ativo, Int32? filial, Int32 idAss)
+        public List<CLIENTE> ExecuteFilter(Int32? id, Int32? catId, String razao, String nome, String cpf, String cnpj, String email, String cidade, Int32? uf, Int32? ativo, Int32? filial, Int32? usu, Int32 idAss)
         {
             List<CLIENTE> lista = new List<CLIENTE>();
             IQueryable<CLIENTE> query = Db.CLIENTE;
@@ -102,6 +104,10 @@ namespace DataServices.Repositories
             if (filial != null & filial > 0)
             {
                 query = query.Where(p => p.EMPR_CD_ID == filial);
+            }
+            if (usu != null & usu > 0)
+            {
+                query = query.Where(p => p.USUA_CD_ID == filial);
             }
             if (!String.IsNullOrEmpty(razao))
             {

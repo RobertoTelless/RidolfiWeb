@@ -21,10 +21,12 @@ namespace ERP_Condominios_Solution.ViewModels
         public System.DateTime CRFL_DT_FOLLOW { get; set; }
         [Required(ErrorMessage = "Campo TEXTO obrigatorio")]
         [StringLength(5000, MinimumLength = 1, ErrorMessage = "O TEXTO deve conter no minimo 1 e no máximo 5000 caracteres.")]
+        [RegularExpression(@"^([a-zA-Zà-úÀ-Ú0-9]|-|_|\s)+$$", ErrorMessage = "Texto inválido")]
         public string CRFL_DS_FOLLOW { get; set; }
         public int CRFL_IN_ATIVO { get; set; }
         [Required(ErrorMessage = "Campo TÍTULO obrigatorio")]
         [StringLength(50, MinimumLength = 1, ErrorMessage = "O TÍTULO deve conter no minimo 1 e no máximo 50 caracteres.")]
+        [RegularExpression(@"^([a-zA-Zà-úÀ-Ú0-9]|-|_|\s)+$$", ErrorMessage = "Título inválido")]
         public string CRFL_NM_TITULO { get; set; }
         [Required(ErrorMessage = "Campo DATA PREVISTA obrigatorio")]
         [DataType(DataType.Date, ErrorMessage = "A DATA PREVISTA deve ser uma data válida")]
@@ -36,6 +38,7 @@ namespace ERP_Condominios_Solution.ViewModels
         public virtual USUARIO USUARIO { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<DIARIO_PROCESSO> DIARIO_PROCESSO { get; set; }
+        public virtual EMPRESA EMPRESA { get; set; }
 
     }
 }

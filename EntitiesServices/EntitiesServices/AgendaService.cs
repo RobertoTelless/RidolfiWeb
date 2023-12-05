@@ -22,16 +22,17 @@ namespace ModelServices.EntitiesServices
         private readonly ILogRepository _logRepository;
         private readonly ICategoriaAgendaRepository _tipoRepository;
         private readonly IAgendaAnexoRepository _anexoRepository;
+        private readonly IAgendaContatoRepository _contRepository;
 
         protected RidolfiDB_WebEntities Db = new RidolfiDB_WebEntities();
 
-        public AgendaService(IAgendaRepository baseRepository, ILogRepository logRepository, ICategoriaAgendaRepository tipoRepository, IAgendaAnexoRepository anexoRepository) : base(baseRepository)
+        public AgendaService(IAgendaRepository baseRepository, ILogRepository logRepository, ICategoriaAgendaRepository tipoRepository, IAgendaAnexoRepository anexoRepository, IAgendaContatoRepository contRepository) : base(baseRepository)
         {
             _baseRepository = baseRepository;
             _logRepository = logRepository;
             _tipoRepository = tipoRepository;
             _anexoRepository = anexoRepository;
-
+            _contRepository = contRepository;
         }
 
         public List<AGENDA> GetByDate(DateTime data, Int32 idAss)
@@ -127,9 +128,20 @@ namespace ModelServices.EntitiesServices
             {
                 try
                 {
-                    AGENDA obj = _baseRepository.GetById(item.AGEN_CD_ID);
+                    item.CATEGORIA_AGENDA = null;
+                    item.USUARIO = null;
+                    item.USUARIO1 = null;
+
+                    Int32? cat = item.CAAG_CD_ID;
+                    Int32? usu = item.USUA_CD_ID;
+                    Int32? usu1 = item.AGEN_CD_USUARIO;
+
+                    AGENDA obj = _baseRepository.GetItemById(item.AGEN_CD_ID);
                     _baseRepository.Detach(obj);
                     _logRepository.Add(log);
+                    item.CAAG_CD_ID = cat;
+                    item.USUA_CD_ID = usu1.Value;
+                    item.AGEN_CD_USUARIO = usu.Value;
                     _baseRepository.Update(item);
                     transaction.Commit();
                     return 0;
@@ -180,5 +192,69 @@ namespace ModelServices.EntitiesServices
                 }
             }
         }
+
+        public Int32 EditAnexo(AGENDA_ANEXO item)
+        {
+            using (DbContextTransaction transaction = Db.Database.BeginTransaction(IsolationLevel.ReadCommitted))
+            {
+                try
+                {
+                    AGENDA_ANEXO obj = _anexoRepository.GetById(item.AGAN_CD_ID);
+                    _anexoRepository.Detach(obj);
+                    _anexoRepository.Update(item);
+                    transaction.Commit();
+                    return 0;
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                    throw ex;
+                }
+            }
+        }
+
+        public Int32 CreateContato(AGENDA_CONTATO item)
+        {
+            using (DbContextTransaction transaction = Db.Database.BeginTransaction(IsolationLevel.ReadCommitted))
+            {
+                try
+                {
+                    _contRepository.Add(item);
+                    transaction.Commit();
+                    return 0;
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                    throw ex;
+                }
+            }
+        }
+
+        public AGENDA_CONTATO GetContatoById(Int32 id)
+        {
+            return _contRepository.GetItemById(id);
+        }
+
+        public Int32 EditContato(AGENDA_CONTATO item)
+        {
+            using (DbContextTransaction transaction = Db.Database.BeginTransaction(IsolationLevel.ReadCommitted))
+            {
+                try
+                {
+                    AGENDA_CONTATO obj = _contRepository.GetById(item.AGCO_CD_ID);
+                    _contRepository.Detach(obj);
+                    _contRepository.Update(item);
+                    transaction.Commit();
+                    return 0;
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                    throw ex;
+                }
+            }
+        }
+
     }
 }

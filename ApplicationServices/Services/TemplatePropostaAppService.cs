@@ -51,11 +51,11 @@ namespace ApplicationServices.Services
             return item;
         }
 
-        public Int32 ExecuteFilter(String sigla, String nome, String conteudo, Int32 idAss, out List<TEMPLATE_PROPOSTA> objeto)
+        public Tuple<Int32, List<TEMPLATE_PROPOSTA>, Boolean> ExecuteFilter(String sigla, String nome, String conteudo, Int32 idAss)
         {
             try
             {
-                objeto = new List<TEMPLATE_PROPOSTA>();
+                List<TEMPLATE_PROPOSTA> objeto = new List<TEMPLATE_PROPOSTA>();
                 Int32 volta = 0;
 
                 // Processa filtro
@@ -64,7 +64,10 @@ namespace ApplicationServices.Services
                 {
                     volta = 1;
                 }
-                return volta;
+
+                // Monta tupla
+                var tupla = Tuple.Create(volta, objeto, true);
+                return tupla;
             }
             catch (Exception ex)
             {
@@ -94,12 +97,14 @@ namespace ApplicationServices.Services
                     ASSI_CD_ID = usuario.ASSI_CD_ID,
                     LOG_NM_OPERACAO = "AddTEPR",
                     LOG_IN_ATIVO = 1,
-                    LOG_TX_REGISTRO = Serialization.SerializeJSON<TEMPLATE_PROPOSTA>(item)
+                    LOG_TX_REGISTRO = Serialization.SerializeJSON<TEMPLATE_PROPOSTA>(item),
+                    LOG_IN_SISTEMA = 1
+
                 };
 
                 // Persiste
                 Int32 volta = _baseService.Create(item, log);
-                return volta;
+                return log.LOG_CD_ID;
             }
             catch (Exception ex)
             {
@@ -117,14 +122,16 @@ namespace ApplicationServices.Services
                     LOG_DT_DATA = DateTime.Now,
                     USUA_CD_ID = usuario.USUA_CD_ID,
                     ASSI_CD_ID = usuario.ASSI_CD_ID,
-                    LOG_NM_OPERACAO = "EditTEEM",
+                    LOG_NM_OPERACAO = "EdtTEEM",
                     LOG_IN_ATIVO = 1,
-                    LOG_TX_REGISTRO = item.TEPR_SG_SIGLA + "|" + item.TEPR_NM_NOME,
-                    LOG_TX_REGISTRO_ANTES = String.Empty
+                    LOG_TX_REGISTRO = Serialization.SerializeJSON<TEMPLATE_PROPOSTA>(item),
+                    LOG_TX_REGISTRO_ANTES = Serialization.SerializeJSON<TEMPLATE_PROPOSTA>(itemAntes),
+                    LOG_IN_SISTEMA = 1
                 };
 
                 // Persiste
-                return _baseService.Edit(item, log);
+                Int32 volta = _baseService.Edit(item, log);
+                return log.LOG_CD_ID;
             }
             catch (Exception ex)
             {
@@ -156,11 +163,13 @@ namespace ApplicationServices.Services
                     ASSI_CD_ID = usuario.ASSI_CD_ID,
                     LOG_IN_ATIVO = 1,
                     LOG_NM_OPERACAO = "DelTEPR",
-                    LOG_TX_REGISTRO = "Template: " + item.TEPR_NM_NOME
+                    LOG_TX_REGISTRO = Serialization.SerializeJSON<TEMPLATE_PROPOSTA>(item),
+                    LOG_IN_SISTEMA = 1
                 };
 
                 // Persiste
-                return _baseService.Edit(item, log);
+                Int32 volta = _baseService.Edit(item, log);
+                return log.LOG_CD_ID;
             }
             catch (Exception ex)
             {
@@ -184,17 +193,20 @@ namespace ApplicationServices.Services
                     USUA_CD_ID = usuario.USUA_CD_ID,
                     ASSI_CD_ID = usuario.ASSI_CD_ID,
                     LOG_IN_ATIVO = 1,
-                    LOG_NM_OPERACAO = "ReatTEPR",
-                    LOG_TX_REGISTRO = "Template: " + item.TEPR_NM_NOME
+                    LOG_NM_OPERACAO = "ReaTEPR",
+                    LOG_TX_REGISTRO = Serialization.SerializeJSON<TEMPLATE_PROPOSTA>(item),
+                    LOG_IN_SISTEMA = 1
                 };
 
                 // Persiste
-                return _baseService.Edit(item, log);
+                Int32 volta = _baseService.Edit(item, log);
+                return log.LOG_CD_ID;
             }
             catch (Exception ex)
             {
                 throw;
             }
         }
+
     }
 }

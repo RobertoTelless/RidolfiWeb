@@ -17,5 +17,6 @@ namespace ApplicationServices.Interfaces
         List<TIPO_PESSOA> GetAllItens();
         List<TIPO_PESSOA> GetAllItensAdm();
         TIPO_PESSOA GetItemById(Int32 id);
+
     }
 }

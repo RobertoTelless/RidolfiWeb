@@ -41,7 +41,7 @@ namespace ModelServices.Interfaces.EntitiesServices
         CLIENTE_CONTATO GetContatoById(Int32 id);
         CLIENTE_ANOTACAO GetAnotacaoById(Int32 id);
         CLIENTE_REFERENCIA GetReferenciaById(Int32 id);
-        List<CLIENTE> ExecuteFilter(Int32? id, Int32? catId, String razao, String nome, String cpf, String cnpj, String email, String cidade, Int32? uf, Int32? ativo, Int32? filial, Int32 idAss);
+        List<CLIENTE> ExecuteFilter(Int32? id, Int32? catId, String razao, String nome, String cpf, String cnpj, String email, String cidade, Int32? uf, Int32? ativo, Int32? filial, Int32? usu, Int32 idAss);
         CLIENTE_ANOTACAO GetComentarioById(Int32 id);
         GRUPO_CLIENTE GetGrupoById(Int32 id);
 

@@ -14,6 +14,7 @@ namespace ERP_Condominios_Solution.ViewModels
         public int CRM1_CD_ID { get; set; }
         [Required(ErrorMessage = "Campo NOME obrigatorio")]
         [StringLength(50, MinimumLength = 1, ErrorMessage = "O NOME deve conter no minimo 1 e no máximo 50 caracteres.")]
+        [RegularExpression(@"^([a-zA-Zà-úÀ-Ú0-9]|-|_|\s)+$$", ErrorMessage = "Nome inválido")]
         public string CRCO_NM_NOME { get; set; }
         [StringLength(50, ErrorMessage = "O TELEFONE deve conter no máximo 50 caracteres.")]
         public string CRCO_NR_TELEFONE { get; set; }
@@ -24,6 +25,7 @@ namespace ERP_Condominios_Solution.ViewModels
         [RegularExpression("^[a-zA-Z0-9_\\.-]+@([a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$", ErrorMessage = "Deve ser um e-mail válido")]
         public string CRCO_NM_EMAIL { get; set; }
         [StringLength(50, ErrorMessage = "O CARGO deve conter no máximo 50 caracteres.")]
+        [RegularExpression(@"^([a-zA-Zà-úÀ-Ú0-9]|-|_|\s)+$$", ErrorMessage = "Cargo inválido")]
         public string CRCO_NM_CARGO { get; set; }
         [Required(ErrorMessage = "Campo PRINCIPAL obrigatorio")]
         public Nullable<int> CRCO_IN_PRINCIPAL { get; set; }

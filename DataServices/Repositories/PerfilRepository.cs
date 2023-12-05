@@ -25,7 +25,6 @@ namespace DataServices.Repositories
         {
             return Db.USUARIO.Where(p => p.PERF_CD_ID == perfil.PERF_CD_ID).FirstOrDefault();
         }
-
     }
 }
  

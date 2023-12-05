@@ -17,9 +17,10 @@ namespace SystemBRPresentation.ViewModels
         [Required(ErrorMessage = "Campo NOME obrigatorio")]
         [StringLength(50, MinimumLength = 1, ErrorMessage = "O NOME deve ter no minimo 1 caractere e no máximo 50.")]
         public string PERF_NM_NOME { get; set; }
-        [StringLength(100, ErrorMessage = "O COMENTÁRIO deve ter no máximo 100 caracteres.")]
-        public string PERF_NM_COMENTARIOS { get; set; }
-        public int PERF_IN_ATIVO { get; set; }
+        [Required(ErrorMessage = "Campo ATIVO obrigatorio")]
+        public Nullable<int> PERF_IN_ATIVO { get; set; }
+        [Required(ErrorMessage = "Campo FIXO obrigatorio")]
+        public Nullable<int> PERF_IN_FIXO { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<USUARIO> USUARIO { get; set; }

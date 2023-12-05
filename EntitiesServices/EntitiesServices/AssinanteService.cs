@@ -192,6 +192,9 @@ namespace ModelServices.EntitiesServices
             {
                 try
                 {
+                    item.PLANO = null;
+                    item.TIPO_PESSOA = null;
+                    item.UF = null;
                     ASSINANTE obj = _baseRepository.GetById(item.ASSI_CD_ID);
                     _baseRepository.Detach(obj);
                     _baseRepository.Update(item);

@@ -19,6 +19,7 @@ namespace DataServices.Repositories
             IQueryable<GRUPO> query = Db.GRUPO;
             query = query.Where(p => p.GRUP_NM_NOME == conta.GRUP_NM_NOME);
             query = query.Where(p => p.ASSI_CD_ID == idAss);
+            query = query.Where(p => p.GRUP_IN_ATIVO == 1);
             return query.FirstOrDefault();
         }
 

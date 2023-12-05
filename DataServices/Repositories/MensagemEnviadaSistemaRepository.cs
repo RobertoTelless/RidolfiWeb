@@ -16,10 +16,12 @@ namespace DataServices.Repositories
     {
         public List<MENSAGENS_ENVIADAS_SISTEMA> GetByDate(DateTime data, Int32 idAss)
         {
+            List<MENSAGENS_ENVIADAS_SISTEMA> lista = new List<MENSAGENS_ENVIADAS_SISTEMA>();
             IQueryable<MENSAGENS_ENVIADAS_SISTEMA> query = Db.MENSAGENS_ENVIADAS_SISTEMA;
             query = query.Where(p => DbFunctions.TruncateTime(p.MEEN_DT_DATA_ENVIO) == DbFunctions.TruncateTime(DateTime.Today.Date));
             query = query.Where(p => p.ASSI_CD_ID == idAss);
-            return query.ToList();
+            lista = query.ToList<MENSAGENS_ENVIADAS_SISTEMA>();
+            return lista;
         }
 
         public MENSAGENS_ENVIADAS_SISTEMA GetItemById(Int32 id)

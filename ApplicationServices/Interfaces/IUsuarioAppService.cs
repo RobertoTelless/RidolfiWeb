@@ -33,18 +33,20 @@ namespace ApplicationServices.Interfaces
         Int32 ValidateChangePassword(USUARIO usuario);
         Int32 ValidateChangePasswordFinal(USUARIO usuario);
         Int32 ValidateReativar(USUARIO usuario, USUARIO usuarioLogado);
+        List<VOLTA_PESQUISA> PesquisarTudo(String parm, Int32 idUsu, Int32 idAss);
+        Int32 ValidateEditAnexo(USUARIO_ANEXO item);
 
-        Int32 GenerateNewPassword(String email);
+        Task<Int32> GenerateNewPassword(String email);
         List<PERFIL> GetAllPerfis();
         Tuple<Int32, List<USUARIO>, Boolean> ExecuteFilter(Int32? perfilId, Int32? cargoId, String nome, String login, String email, Int32 idAss);
         List<NOTICIA> GetAllNoticias(Int32 idAss);
         USUARIO GetAdministrador(Int32 idAss);
         List<CARGO> GetAllCargos(Int32 idAss);
         USUARIO_ANOTACAO GetAnotacaoById(Int32 id);
+        Tuple<Int32, List<LOG_EXCECAO_NOVO>, Boolean> ExecuteFilterExcecao(Int32? usuaId, DateTime? data, String gerador, Int32 idAss);
 
         LOG_EXCECAO_NOVO GetLogExcecaoById(Int32 id);
         List<LOG_EXCECAO_NOVO> GetAllLogExcecao(Int32 idAss);
         Int32 ValidateCreateLogExcecao(LOG_EXCECAO_NOVO log);
-
     }
 }

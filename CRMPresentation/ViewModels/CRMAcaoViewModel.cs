@@ -21,9 +21,11 @@ namespace ERP_Condominios_Solution.ViewModels
         public Nullable<int> USUA_CD_ID2 { get; set; }
         [Required(ErrorMessage = "Campo TÍTULO obrigatorio")]
         [StringLength(150, MinimumLength = 1, ErrorMessage = "O TÍTULO deve conter no minimo 1 e no máximo 150 caracteres.")]
+        [RegularExpression(@"^([a-zA-Zà-úÀ-Ú0-9]|-|_|\s)+$$", ErrorMessage = "Título inválido")]
         public string CRAC_NM_TITULO { get; set; }
         [Required(ErrorMessage = "Campo DESCRIÇÂO obrigatorio")]
         [StringLength(5000, MinimumLength = 1, ErrorMessage = "A DESCRIÇÃO deve conter no minimo 1 e no máximo 5000 caracteres.")]
+        [RegularExpression(@"^([a-zA-Zà-úÀ-Ú0-9]|-|_|\s)+$$", ErrorMessage = "Descrição inválida")]
         public string CRAC_DS_DESCRICAO { get; set; }
         [Required(ErrorMessage = "Campo DATA PREVISTA obrigatorio")]
         [DataType(DataType.Date, ErrorMessage = "A DATA PREVISTA deve ser uma data válida")]
@@ -41,6 +43,9 @@ namespace ERP_Condominios_Solution.ViewModels
         public virtual USUARIO USUARIO1 { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<DIARIO_PROCESSO> DIARIO_PROCESSO { get; set; }
+        public virtual EMPRESA EMPRESA { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<AGENDA> AGENDA { get; set; }
 
     }
 }

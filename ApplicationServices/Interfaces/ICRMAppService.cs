@@ -32,6 +32,8 @@ namespace ApplicationServices.Interfaces
         Int32 ValidateEditFollow(CRM_FOLLOW item);
         List<TIPO_FOLLOW> GetAllTipoFollow(Int32 idAss);
         List<CRM_FOLLOW> GetAllFollow(Int32 idAss);
+        List<CRM_COMENTARIO> GetAllAnotacao(Int32 idAss);
+        Int32 ValidateEditAnexo(CRM_ANEXO item);
 
         List<CRM_ACAO> GetAllAcoes(Int32 idAss);
         List<TIPO_CRM> GetAllTipos();
@@ -75,5 +77,11 @@ namespace ApplicationServices.Interfaces
         Int32 ValidateEnviarPedidoVenda(CRM_PEDIDO_VENDA item);
         Int32 ValidateExpedicaoPedidoVenda(CRM_PEDIDO_VENDA item);
         Int32 ValidateEntregarPedidoVenda(CRM_PEDIDO_VENDA item);
+
+
+        //CRM_PEDIDO_VENDA_ITEM GetItemPedidoById(Int32 id);
+        //Int32 ValidateEditItemPedido(CRM_PEDIDO_VENDA_ITEM item);
+        //Int32 ValidateCreateItemPedido(CRM_PEDIDO_VENDA_ITEM item);
+
     }
 }

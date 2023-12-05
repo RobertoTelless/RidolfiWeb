@@ -11,6 +11,7 @@ namespace ApplicationServices.Interfaces
     {
         Int32 ValidateCreate(ASSINANTE perfil, USUARIO usuario);
         Int32 ValidateEdit(ASSINANTE perfil, ASSINANTE perfilAntes, USUARIO usuario);
+        Int32 ValidateEdit(ASSINANTE perfil);
         Int32 ValidateDelete(ASSINANTE perfil, USUARIO usuario);
         Int32 ValidateReativar(ASSINANTE perfil, USUARIO usuario);
 

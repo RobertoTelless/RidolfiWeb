@@ -16,9 +16,7 @@ namespace ApplicationServices.Services
     public class FunilAppService : AppServiceBase<FUNIL>, IFunilAppService
     {
         private readonly IFunilService _baseService;
-        private readonly IConfiguracaoService _confService;
-        
-
+        private readonly IConfiguracaoService _confService;      
 
         public FunilAppService(IFunilService baseService,  IConfiguracaoService confService) : base(baseService)
         {

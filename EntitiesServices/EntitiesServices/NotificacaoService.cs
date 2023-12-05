@@ -174,5 +174,26 @@ namespace ModelServices.EntitiesServices
                 }
             }
         }
+
+        public Int32 EditAnexo(NOTIFICACAO_ANEXO item)
+        {
+            using (DbContextTransaction transaction = Db.Database.BeginTransaction(IsolationLevel.ReadCommitted))
+            {
+                try
+                {
+                    NOTIFICACAO_ANEXO obj = _anexoRepository.GetById(item.NOAN_CD_ID);
+                    _anexoRepository.Detach(obj);
+                    _anexoRepository.Update(item);
+                    transaction.Commit();
+                    return 0;
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                    throw ex;
+                }
+            }
+        }
+
     }
 }

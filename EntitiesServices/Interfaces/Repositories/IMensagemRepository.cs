@@ -14,8 +14,8 @@ namespace ModelServices.Interfaces.Repositories
         MENSAGENS GetItemById(Int32 id);
         List<MENSAGENS> GetAllItens(Int32 idAss);
         List<MENSAGENS> GetAllItensAdm(Int32 idAss);
-        List<MENSAGENS> ExecuteFilterSMS(DateTime? envio, Int32 cliente, String texto, Int32 idAss);
-        List<MENSAGENS> ExecuteFilterEMail(DateTime? envio, Int32 cliente, String texto, Int32 idAss);
+        List<MENSAGENS> ExecuteFilterSMS(DateTime? envio, DateTime? faixa, Int32 cliente, String texto, Int32 idAss);
+        List<MENSAGENS> ExecuteFilterEMail(DateTime? envio,  DateTime? faixa, Int32 cliente, String texto, Int32 idAss);
         List<MENSAGENS> FilterMensagensNotSend(Int32? mensID, Enumerador.MensagemTipo mensagemTipo);
 
     }

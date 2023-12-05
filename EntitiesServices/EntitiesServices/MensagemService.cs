@@ -104,21 +104,16 @@ namespace ModelServices.EntitiesServices
             return _tsmsRepository.GetAllItens(idAss);
         }
 
-        public List<MENSAGENS> ExecuteFilterSMS(DateTime? envio, Int32 cliente, String texto, Int32 idAss)
+        public List<MENSAGENS> ExecuteFilterSMS(DateTime? envio, DateTime? faixa, Int32 cliente, String texto, Int32 idAss)
         {
-            return _baseRepository.ExecuteFilterSMS(envio, cliente, texto, idAss);
+            return _baseRepository.ExecuteFilterSMS(envio, faixa, cliente, texto, idAss);
         }
 
-        public List<MENSAGENS> ExecuteFilterEMail(DateTime? envio, Int32 cliente, String texto, Int32 idAss)
+        public List<MENSAGENS> ExecuteFilterEMail(DateTime? envio, DateTime? faixa, Int32 cliente, String texto, Int32 idAss)
         {
-            return _baseRepository.ExecuteFilterEMail(envio, cliente, texto, idAss);
+            return _baseRepository.ExecuteFilterEMail(envio, faixa, cliente, texto, idAss);
         }
 
-        public List<RESULTADO_ROBOT> ExecuteFilterRobot(Int32? tipo, DateTime? inicio, DateTime? final, String cliente, String email, String celular, Int32? status, Int32 idAss)
-        {
-            return _robRepository.ExecuteFilter(tipo, inicio, final, cliente, email, celular, status, idAss);
-
-        }
 
         public Int32 Create(MENSAGENS item, LOG log)
         {

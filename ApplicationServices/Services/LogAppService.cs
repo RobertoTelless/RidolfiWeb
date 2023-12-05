@@ -41,15 +41,36 @@ namespace ApplicationServices.Services
             return _baseService.GetAllItensUsuario(id, idAss);
         }
 
-
         public List<LOG> GetAllItensMesCorrente(Int32 idAss)
         {
             return _baseService.GetAllItensMesCorrente(idAss);
         }
 
+        public List<LOG> GetLogByFaixa(DateTime inicio, DateTime final, Int32 idAss)
+        {
+            return _baseService.GetLogByFaixa(inicio, final, idAss);
+        }
+
         public List<LOG> GetAllItensMesAnterior(Int32 idAss)
         {
             return _baseService.GetAllItensMesAnterior(idAss);
+        }
+
+        public Int32 ValidateCreate(LOG item)
+        {
+            try
+            {
+                // Completa objeto
+                item.LOG_IN_ATIVO = 1;
+
+                // Persiste
+                Int32 volta = _baseService.Create(item);
+                return 0;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
 
         public Tuple<Int32, List<LOG>, Boolean> ExecuteFilterTuple(Int32? usuId, DateTime? data, String operacao, Int32 idAss)

@@ -123,6 +123,5 @@ namespace ApplicationServices.Services
                 throw;
             }
         }
-
     }
 }

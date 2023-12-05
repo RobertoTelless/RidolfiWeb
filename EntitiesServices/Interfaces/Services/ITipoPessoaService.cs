@@ -18,6 +18,5 @@ namespace ModelServices.Interfaces.EntitiesServices
         TIPO_PESSOA GetItemById(Int32 id);
         List<TIPO_PESSOA> GetAllItens();
         List<TIPO_PESSOA> GetAllItensAdm();
-
     }
 }

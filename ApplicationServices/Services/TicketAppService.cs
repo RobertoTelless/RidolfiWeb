@@ -21,6 +21,7 @@ namespace ApplicationServices.Services
             _baseService = baseService;
         }
 
+
         public TICKET_ALIMENTACAO CheckExist(TICKET_ALIMENTACAO conta, Int32 idAss)
         {
             TICKET_ALIMENTACAO item = _baseService.CheckExist(conta, idAss);

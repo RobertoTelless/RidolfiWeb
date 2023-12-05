@@ -96,6 +96,65 @@ namespace CrossCutting
             }
         }
 
+        public static async Task SendMailAsync(EmailAzure mail, List<AttachmentModel> anexos)
+        {
+            // Conecta serviço
+            EmailClient emailClient = ConnectMail(mail.ConnectionString);
+
+            try
+            {
+                // Monta mensagem
+                var emailContent = new EmailContent(mail.ASSUNTO)
+                {
+                    PlainText = mail.CORPO,
+                    Html = mail.CORPO
+                };
+
+                // Checa destinos
+                List<EmailAddress> toRecipients = new List<EmailAddress>();
+                EmailAddress add = new EmailAddress(address: mail.EMAIL_TO_DESTINO, displayName: mail.DISPLAY_NAME);
+                toRecipients.Add(add);
+
+                var emailRecipients = new EmailRecipients(toRecipients);
+
+                var emailMessage = new EmailMessage(
+                    senderAddress: mail.NOME_EMISSOR_AZURE,
+                    emailRecipients,
+                    emailContent);
+
+                // Checa anexos
+                if (anexos != null)
+                {
+                    if (anexos.Count > 0)
+                    {
+                        foreach (AttachmentModel anexo in anexos)
+                        {
+                            var contentType = anexo.CONTENT_TYPE;
+                            var content = new BinaryData(System.IO.File.ReadAllBytes(anexo.PATH));
+                            var emailAttachment = new EmailAttachment(anexo.ATTACHMENT_NAME, contentType, content);
+                            emailMessage.Attachments.Add(emailAttachment);
+                        }
+                    }
+                }
+
+                //Envia mensagem
+                var emailSendOperation = await emailClient.SendAsync(
+                    wait: WaitUntil.Started,
+                    message: emailMessage);
+
+                //EmailSendStatus status = emailSendOperation.Value.Status;
+                //String operationId = emailSendOperation.Id;
+
+                // Monta retorno
+                //var tupla = Tuple.Create(status, operationId, true);
+                return;
+            }
+            catch (RequestFailedException ex)
+            {
+                throw ex;
+            }
+        }
+
         public static Tuple<EmailSendStatus, String, Boolean> SendMailList(EmailAzure mail, List<AttachmentModel> anexos, List<EmailAddress> nomes)
         {
             // Conecta serviço
@@ -161,6 +220,78 @@ namespace CrossCutting
                 // Monta retorno
                 var tupla = Tuple.Create(status, operationId, true);
                 return tupla;
+            }
+            catch (RequestFailedException ex)
+            {
+                throw ex;
+            }
+        }
+
+        public static async Task SendMailListAsync(EmailAzure mail, List<AttachmentModel> anexos, List<EmailAddress> nomes)
+        {
+            // Conecta serviço
+            EmailClient emailClient = ConnectMail(mail.ConnectionString);
+
+            try
+            {
+                // Monta mensagem
+                var emailContent = new EmailContent(mail.ASSUNTO)
+                {
+                    PlainText = mail.CORPO,
+                    Html = mail.CORPO
+                };
+
+                // Checa destinos
+                List<EmailAddress> toRecipients = new List<EmailAddress>();
+                if (nomes != null)
+                {
+                    if (nomes.Count > 0)
+                    {
+                        foreach (EmailAddress nome in nomes)
+                        {
+                            toRecipients.Add(nome);
+                        }
+                    }
+                }
+                else
+                {
+                    EmailAddress add = new EmailAddress(address: mail.EMAIL_TO_DESTINO, displayName: mail.DISPLAY_NAME);
+                    toRecipients.Add(add);
+                }
+
+                var emailRecipients = new EmailRecipients(toRecipients);
+
+                var emailMessage = new EmailMessage(
+                    senderAddress: mail.NOME_EMISSOR_AZURE,
+                    emailRecipients,
+                    emailContent);
+
+                // Checa anexos
+                if (anexos != null)
+                {
+                    if (anexos.Count > 0)
+                    {
+                        foreach (AttachmentModel anexo in anexos)
+                        {
+                            var contentType = anexo.CONTENT_TYPE;
+                            var content = new BinaryData(System.IO.File.ReadAllBytes(anexo.PATH));
+                            var emailAttachment = new EmailAttachment(anexo.ATTACHMENT_NAME, contentType, content);
+                            emailMessage.Attachments.Add(emailAttachment);
+                        }
+                    }
+                }
+
+                //Envia mensagem
+                var emailSendOperation = await emailClient.SendAsync(
+                    wait: WaitUntil.Started,
+                    message: emailMessage);
+
+                //EmailSendStatus status = emailSendOperation.Value.Status;
+                //String operationId = emailSendOperation.Id;
+
+                // Monta retorno
+                //var tupla = Tuple.Create(status, operationId, true);
+                return;
             }
             catch (RequestFailedException ex)
             {

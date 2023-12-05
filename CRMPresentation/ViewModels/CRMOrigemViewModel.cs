@@ -15,6 +15,7 @@ namespace ERP_Condominios_Solution.ViewModels
         public int ASSI_CD_ID { get; set; }
         [Required(ErrorMessage = "Campo NOME obrigatorio")]
         [StringLength(50, MinimumLength = 1, ErrorMessage = "O NOME deve conter no minimo 1 e no máximo 50 caracteres.")]
+        [RegularExpression(@"^([a-zA-Zà-úÀ-Ú0-9]|-|_|\s)+$$", ErrorMessage = "Nome inválido")]
         public string CROR_NM_NOME { get; set; }
         public Nullable<int> CROR_IN_ATIVO { get; set; }
 

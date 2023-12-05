@@ -21,7 +21,7 @@ namespace ModelServices.EntitiesServices
         private readonly IVideoRepository _baseRepository;
         private readonly ILogRepository _logRepository;
         private readonly IVideoComentarioRepository _comRepository;
-        protected RidolfiDB_WebEntities Db = new RidolfiDB_WebEntities();
+        protected CRMSysDBEntities Db = new CRMSysDBEntities();
 
         public VideoService(IVideoRepository baseRepository, ILogRepository logRepository, IVideoComentarioRepository comRepository) : base(baseRepository)
         {

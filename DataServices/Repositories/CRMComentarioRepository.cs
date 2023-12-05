@@ -13,9 +13,10 @@ namespace DataServices.Repositories
 {
     public class CRMComentarioRepository : RepositoryBase<CRM_COMENTARIO>, ICRMComentarioRepository
     {
-        public List<CRM_COMENTARIO> GetAllItens()
+        public List<CRM_COMENTARIO> GetAllItens(Int32 idAss)
         {
-            return Db.CRM_COMENTARIO.ToList();
+            IQueryable<CRM_COMENTARIO> query = Db.CRM_COMENTARIO.Where(p => p.CRCM_IN_ATIVO == 1);
+            return query.ToList();
         }
 
         public CRM_COMENTARIO GetItemById(Int32 id)

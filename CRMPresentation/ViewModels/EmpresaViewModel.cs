@@ -13,9 +13,12 @@ namespace ERP_Condominios_Solution.ViewModels
         [Key]
         public int EMPR_CD_ID { get; set; }
         public int ASSI_CD_ID { get; set; }
+        public Nullable<int> CAPR_CD_ID { get; set; }
+        public Nullable<int> PROD_CD_ID { get; set; }
         public int RETR_CD_ID { get; set; }
         [Required(ErrorMessage = "Campo NOME DA EMPRESA obrigatorio")]
         [StringLength(100, MinimumLength = 1, ErrorMessage = "O NOME DA EMPRESA deve conter no minimo 1 caracteres e no máximo 100 caracteres.")]
+        [RegularExpression(@"^([a-zA-Zà-úÀ-Ú0-9@#$%&*]|-|_|\s)+$$", ErrorMessage = "NOME com caracteres inválidos")]
         public string EMPR_NM_NOME { get; set; }
         [RegularExpression(@"^[0-9]+([,.][0-9]+)?$", ErrorMessage = "Deve ser um valor numérico positivo")]
         public Nullable<decimal> EMPR_VL_PATRIMONIO_LIQUIDO { get; set; }
@@ -48,27 +51,36 @@ namespace ERP_Condominios_Solution.ViewModels
         [RegularExpression(@"^[0-9]+([,.][0-9]+)?$", ErrorMessage = "Deve ser um valor numérico positivo")]
         public Nullable<decimal> EMPR_PC_VENDA_DINHEIRO { get; set; }
         [StringLength(100, ErrorMessage = "A RAZÃO SOCIAL deve conter no máximo 100 caracteres.")]
+        [RegularExpression(@"^([a-zA-Zà-úÀ-Ú0-9@#$%&*]|-|_|\s)+$$", ErrorMessage = "RAZÃO SOCIAL com caracteres inválidos")]
         public string EMPR_NM_RAZAO { get; set; }
         [StringLength(20, ErrorMessage = "O CNPJ deve conter no máximo 20 caracteres.")]
         [CustomValidationCNPJ(ErrorMessage = "CNPJ inválido")]
         [Required(ErrorMessage = "Campo CNPJ obrigatorio")]
         public string EMPR_NR_CNPJ { get; set; }
         [StringLength(20, ErrorMessage = "A INSCRIÇÃO MUNICIPAL deve conter no máximo 20 caracteres.")]
+        [RegularExpression(@"^([a-zA-Zà-úÀ-Ú0-9]|-|_|\s)+$$", ErrorMessage = "Inscrição Municipal inválido")]
         public string EMPR_NR_INSCRICAO_MUNICIPAL { get; set; }
         [StringLength(20, ErrorMessage = "A INSCRIÇÃO ESTADUAL deve conter no máximo 20 caracteres.")]
+        [RegularExpression(@"^([a-zA-Zà-úÀ-Ú0-9]|-|_|\s)+$$", ErrorMessage = "Inscrição Municipal inválido")]
         public string EMPR_NR_INSCRICAO_ESTADUAL { get; set; }
+        [RegularExpression(@"^([a-zA-Zà-úÀ-Ú0-9@#$%&*]|-|_|\s)+$$", ErrorMessage = "ENDEREÇO com caracteres inválidos")]
         [StringLength(50, ErrorMessage = "O ENDEREÇO deve conter no máximo 50 caracteres.")]
         public string EMPR_NM_ENDERECO { get; set; }
-        [StringLength(20, ErrorMessage = "O NÚMERO deve conter no máximo 20 caracteres.")]
+        [RegularExpression(@"^([a-zA-Zà-úÀ-Ú0-9]|-|_|\s)+$$", ErrorMessage = "Número inválido")]
+        [StringLength(50, ErrorMessage = "O NÚMERO deve conter no máximo 20 caracteres.")]
         public string EMPR_NM_NUMERO { get; set; }
         [StringLength(20, ErrorMessage = "O COMPLEMENTO deve conter no máximo 20 caracteres.")]
+        [RegularExpression(@"^([a-zA-Zà-úÀ-Ú0-9@#$%&*]|-|_|\s)+$$", ErrorMessage = "COMPLEMENTO com caracteres inválidos")]
         public string EMPR_NM_COMPLEMENTO { get; set; }
         [StringLength(50, ErrorMessage = "O BAIRRO deve conter no máximo 50 caracteres.")]
+        [RegularExpression(@"^([a-zA-Zà-úÀ-Ú0-9@#$%&*]|-|_|\s)+$$", ErrorMessage = "BAIROO com caracteres inválidos")]
         public string EMPR_NM_BAIRRO { get; set; }
         [StringLength(50, ErrorMessage = "A CIDADE deve conter no máximo 50 caracteres.")]
+        [RegularExpression(@"^([a-zA-Zà-úÀ-Ú0-9@#$%&*]|-|_|\s)+$$", ErrorMessage = "CIDADE com caracteres inválidos")]
         public string EMPR_NM_CIDADE { get; set; }
         public Nullable<int> UF_CD_ID { get; set; }
         [StringLength(10, ErrorMessage = "O CEP deve conter no máximo 10 caracteres.")]
+        [RegularExpression(@"^([0-9]|-|_|\s)+$$", ErrorMessage = "CEP inválido")]
         public string EMPR_NR_CEP { get; set; }
         public Nullable<int> PLEN_CD_ID { get; set; }
         [RegularExpression(@"^[0-9]+([,.][0-9]+)?$", ErrorMessage = "Deve ser um valor numérico positivo")]
@@ -94,30 +106,19 @@ namespace ERP_Condominios_Solution.ViewModels
         public Nullable<decimal> EMPR_VL_FUNDO_SEGURANCA { get; set; }
         public Nullable<int> EMPR_IN_CALCULADO { get; set; }
         public string EMPR_AQ_LOGO { get; set; }
-        public Nullable<int> EMPR_IN_MATRIZ { get; set; }
-        [StringLength(50, ErrorMessage = "O NOME DO GERENTE deve conter no máximo 50 caracteres.")]
-        public string EMPR_NM_GERENTE { get; set; }
-        [StringLength(50, ErrorMessage = "O TELEFONE deve conter no máximo 50 caracteres.")]
-        public string EMPR_NR_TELEFONE { get; set; }
-        [StringLength(20, ErrorMessage = "O CELULAR deve conter no máximo 20 caracteres.")]
-        public string EMPR_NR_CELULAR { get; set; }
-        [StringLength(100, ErrorMessage = "O E-MAIL deve conter no máximo 100 caracteres.")]
-        [RegularExpression("^[a-zA-Z0-9_\\.-]+@([a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$", ErrorMessage = "Deve ser um e-mail válido")]
-        public string EMPR_NM_EMAIL { get; set; }
+        public Nullable<int> CALC_IN_ESCOPO { get; set; }
+        public Nullable<int> CALC_IN_TIPO { get; set; }
+        public Nullable<int> CALC_IN_CALCULO { get; set; }
+        public Nullable<decimal> CALC_VL_ESTOQUE_MAXIMO { get; set; }
+        public Nullable<decimal> CALC_VL_DESCONTO { get; set; }
+        public Nullable<decimal> CALC_VL_PRECO { get; set; }
+        public Nullable<decimal> CALC_VL_CMV { get; set; }
+        public Nullable<decimal> CALC_VL_MARGEM_PERC { get; set; }
+        public Nullable<decimal> CALC_VL_MARGEM_REAL { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ANTECIPACAO> ANTECIPACAO { get; set; }
         public virtual ASSINANTE ASSINANTE { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<ATENDIMENTO> ATENDIMENTO { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<ATENDIMENTO_PROPOSTA> ATENDIMENTO_PROPOSTA { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<CLIENTE> CLIENTE { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<CRM> CRM { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<CRM_PEDIDO_VENDA> CRM_PEDIDO_VENDA { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<CUSTO_FIXO> CUSTO_FIXO { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
@@ -134,30 +135,6 @@ namespace ERP_Condominios_Solution.ViewModels
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<EMPRESA_TICKET> EMPRESA_TICKET { get; set; }
         public virtual UF UF { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<GRUPO> GRUPO { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<MENSAGENS> MENSAGENS { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<META> META { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<ORDEM_SERVICO> ORDEM_SERVICO { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<PEDIDO_VENDA> PEDIDO_VENDA { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<USUARIO> USUARIO { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<VENDA_MENSAL> VENDA_MENSAL { get; set; }
         public virtual REGIME_TRIBUTARIO REGIME_TRIBUTARIO { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<TEMPLATE_EMAIL> TEMPLATE_EMAIL { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<TEMPLATE_PROPOSTA> TEMPLATE_PROPOSTA { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<TEMPLATE_SMS> TEMPLATE_SMS { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<CRM_ACAO> CRM_ACAO { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<CRM_FOLLOW> CRM_FOLLOW { get; set; }
     }
 }

@@ -20,6 +20,7 @@ namespace DataServices.Repositories
             query = query.Where(p => p.CRM1_NM_NOME == tarefa.CRM1_NM_NOME);
             query = query.Where(p => p.USUA_CD_ID == idUsu);
             query = query.Where(p => p.ASSI_CD_ID == idAss);
+            query = query.Where(p => p.CRM1_IN_ATIVO != 2);
             return query.FirstOrDefault();
         }
 
@@ -28,6 +29,7 @@ namespace DataServices.Repositories
             IQueryable<CRM> query = Db.CRM.Where(p => p.CRM1_IN_ATIVO == 1);
             query = query.Where(p => p.CRM1_DT_CRIACAO == data);
             query = query.Where(p => p.ASSI_CD_ID == idAss);
+            query = query.Where(p => p.CRM1_IN_ATIVO != 2);
             return query.ToList();
         }
 
@@ -35,6 +37,7 @@ namespace DataServices.Repositories
         {
             IQueryable<CRM> query = Db.CRM.Where(p => p.CRM1_IN_ATIVO == 1);
             query = query.Where(p => p.USUA_CD_ID == user);
+            query = query.Where(p => p.CRM1_IN_ATIVO != 2);
             return query.ToList();
         }
 
@@ -43,6 +46,7 @@ namespace DataServices.Repositories
             IQueryable<CRM> query = Db.CRM.Where(p => p.CRM1_IN_ATIVO == 1);
             query = query.Where(p => p.ASSI_CD_ID == idAss);
             query = query.Where(p => p.CRM1_IN_STATUS == tipo);
+            query = query.Where(p => p.CRM1_IN_ATIVO != 2);
             return query.ToList();
         }
 
@@ -138,7 +142,7 @@ namespace DataServices.Repositories
             }
             if (!String.IsNullOrEmpty(busca))
             {
-                query = query.Where(p => p.PRECATORIO.PREC_NM_PRECATORIO.Contains(busca) || p.PRECATORIO.PREC_NM_ASSUNTO.Contains(busca) || p.PRECATORIO.PREC_NM_REQUERENTE.Contains(busca)  || p.PRECATORIO.PREC_NM_REQUERIDO.Contains(busca));
+                query = query.Where(p => p.CLIENTE.CLIE_NM_NOME.Contains(busca) || p.CLIENTE.CLIE_NM_RAZAO.Contains(busca) || p.CLIENTE.CLIE_NR_CPF.Contains(busca));
             }
 
             if (inicio != null)

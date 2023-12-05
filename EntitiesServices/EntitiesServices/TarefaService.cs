@@ -203,5 +203,25 @@ namespace ModelServices.EntitiesServices
             }
         }
 
+        public Int32 EditAnexo(TAREFA_ANEXO item)
+        {
+            using (DbContextTransaction transaction = Db.Database.BeginTransaction(IsolationLevel.ReadCommitted))
+            {
+                try
+                {
+                    TAREFA_ANEXO obj = _anexoRepository.GetById(item.TAAN_CD_ID);
+                    _anexoRepository.Detach(obj);
+                    _anexoRepository.Update(item);
+                    transaction.Commit();
+                    return 0;
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                    throw ex;
+                }
+            }
+        }
+
     }
 }

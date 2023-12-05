@@ -77,6 +77,7 @@ namespace ModelServices.EntitiesServices
             {
                 try
                 {
+                    item.ASSINANTE = null;
                     _baseRepository.Add(item);
                     transaction.Commit();
                     return 0;

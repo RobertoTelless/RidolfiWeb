@@ -106,7 +106,7 @@ namespace ApplicationServices.Services
             return lista;
         }
 
-        public Tuple<Int32, List<MENSAGENS>, Boolean> ExecuteFilterSMS(DateTime? envio, Int32 cliente, String texto, Int32 idAss)
+        public Tuple<Int32, List<MENSAGENS>, Boolean> ExecuteFilterSMS(DateTime? envio, DateTime? faixa, Int32 cliente, String texto, Int32 idAss)
         {
             try
             {
@@ -114,7 +114,7 @@ namespace ApplicationServices.Services
                 Int32 volta = 0;
 
                 // Processa filtro
-                objeto = _baseService.ExecuteFilterSMS(envio, cliente, texto, idAss);
+                objeto = _baseService.ExecuteFilterSMS(envio, faixa, cliente, texto, idAss);
                 if (objeto.Count == 0)
                 {
                     volta = 1;
@@ -130,7 +130,7 @@ namespace ApplicationServices.Services
             }
         }
 
-        public Tuple<Int32, List<MENSAGENS>, Boolean> ExecuteFilterEMail(DateTime? envio, Int32 cliente, String texto, Int32 idAss)
+        public Tuple<Int32, List<MENSAGENS>, Boolean> ExecuteFilterEMail(DateTime? envio, DateTime? faixa, Int32 cliente, String texto, Int32 idAss)
         {
             try
             {
@@ -138,7 +138,7 @@ namespace ApplicationServices.Services
                 Int32 volta = 0;
 
                 // Processa filtro
-                objeto = _baseService.ExecuteFilterEMail(envio, cliente, texto, idAss);
+                objeto = _baseService.ExecuteFilterEMail(envio, faixa, cliente, texto, idAss);
                 if (objeto.Count == 0)
                 {
                     volta = 1;
@@ -154,29 +154,6 @@ namespace ApplicationServices.Services
             }
         }
 
-        public Tuple<Int32, List<RESULTADO_ROBOT>, Boolean> ExecuteFilterRobot(Int32? tipo, DateTime? inicio, DateTime? final, String cliente, String email, String celular, Int32? status, Int32 idAss)
-        {
-            try
-            {
-                List<RESULTADO_ROBOT> objeto = new List<RESULTADO_ROBOT>();
-                Int32 volta = 0;
-
-                // Processa filtro
-                objeto = _baseService.ExecuteFilterRobot(tipo, inicio, final, cliente, email, celular, status, idAss);
-                if (objeto.Count == 0)
-                {
-                    volta = 1;
-                }
-
-                // Monta tupla
-                var tupla = Tuple.Create(volta, objeto, true);
-                return tupla;
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
-        }
 
         public Int32 ValidateCreate(MENSAGENS item, USUARIO usuario)
         {
@@ -452,381 +429,6 @@ namespace ApplicationServices.Services
                         mg.MENS_IN_STATUS = (int)Enumerador.StatusEnvioEmail.ERRO;
                         _mensagemRepository.Update(mg);
                     }
-
-                    /*
-                    // Template HTML
-                    if (mg.TEEM_CD_ID != null)
-                    {
-                        TEMPLATE_EMAIL temp = _temaApp.GetItemById((int)mg.TEEM_CD_ID);
-                        if (temp.TEEM_IN_HTML == 1)
-                        {
-                            // Prepara corpo do e-mail e trata link
-                            String corpo = String.Empty;
-                            String caminho = "/Imagens/" + mg.ASSI_CD_ID.ToString() + "/TemplatesHTML/" + temp.TEEM_CD_ID.ToString() + "/Arquivos/" + temp.TEEM_AQ_ARQUIVO;
-                            String path = Path.Combine(server.MapPath(caminho));
-                            using (StreamReader reader = new System.IO.StreamReader(path))
-                            {
-                                corpo = reader.ReadToEnd();
-                            }
-                            StringBuilder str = new StringBuilder();
-                            str.AppendLine(corpo);
-                            String body = str.ToString();
-                            String emailBody = body;
-
-                            // Checa e monta anexos
-                            List<System.Net.Mail.Attachment> listaAnexo = new List<System.Net.Mail.Attachment>();
-                            if (mg.MENSAGEM_ANEXO.Count > 0)
-                            {
-                                foreach (MENSAGEM_ANEXO item in mg.MENSAGEM_ANEXO)
-                                {
-                                    String fn = server.MapPath(item.MEAN_AQ_ARQUIVO);
-                                    System.Net.Mail.Attachment anexo = new System.Net.Mail.Attachment(fn);
-                                    listaAnexo.Add(anexo);
-                                }
-                            }
-
-                            // Monta mensagem
-                            NetworkCredential net = new NetworkCredential(conf.CONF_NM_SENDGRID_LOGIN, conf.CONF_NM_SENDGRID_APIKEY);
-                            Email mensagem = new Email();
-                            mensagem.ASSUNTO = mg.MENS_NM_CAMPANHA != null ? mg.MENS_NM_CAMPANHA : "Assunto Diverso";
-                            mensagem.CORPO = emailBody;
-                            mensagem.DEFAULT_CREDENTIALS = false;
-                            mensagem.EMAIL_EMISSOR = conf.CONF_NM_EMAIL_EMISSOO;
-                            mensagem.ENABLE_SSL = true;
-                            mensagem.NOME_EMISSOR = mg.USUARIO.ASSINANTE.ASSI_NM_NOME;
-                            mensagem.PORTA = conf.CONF_NM_PORTA_SMTP;
-                            mensagem.PRIORIDADE = System.Net.Mail.MailPriority.High;
-                            mensagem.SENHA_EMISSOR = conf.CONF_NM_SENHA_EMISSOR;
-                            mensagem.SMTP = conf.CONF_NM_HOST_SMTP;
-                            mensagem.NETWORK_CREDENTIAL = net;
-                            mensagem.ATTACHMENT = listaAnexo;
-
-                            // Monta destinos
-                            MailAddressCollection col = new MailAddressCollection();
-                            foreach (CLIENTE item in listaCli)
-                            {
-                                col.Add(item.CLIE_NM_EMAIL);
-                            }
-
-                            // Envia mensagem
-                            try
-                            {
-                                controlError = CommunicationPackage.SendEmailCollectionAsync(mensagem, col);
-                            }
-                            catch (Exception ex)
-                            {
-                                controlError.IsOK = false;
-                                controlError.HandleExeption(ex);
-
-                                if (ex.GetType() == typeof(SmtpFailedRecipientException))
-                                {
-                                    var se = (SmtpFailedRecipientException)ex;
-                                    controlError.HandleExeption(se.FailedRecipient);
-                                }
-                            }
-
-                            // Grava mensagem/destino e erros
-                            if (controlError.IsOK)
-                            {
-                                foreach (CLIENTE item in listaCli)
-                                {
-                                    MENSAGENS_DESTINOS dest = new MENSAGENS_DESTINOS();
-                                    dest.MEDE_IN_ATIVO = 1;
-                                    dest.MEDE_IN_POSICAO = 1;
-                                    dest.MEDE_IN_STATUS = 1;
-                                    dest.CLIE_CD_ID = item.CLIE_CD_ID;
-                                    dest.MEDE_DS_ERRO_ENVIO = controlError.GetMenssage();
-                                    dest.MENS_CD_ID = mg.MENS_CD_ID;
-                                    mg.MENSAGENS_DESTINOS.Add(dest);
-                                    mg.MENS_DT_ENVIO = DateTime.Now;
-                                    mg.MENS_TX_TEXTO = body;
-                                    mg.MENS_IN_STATUS = (int)Enumerador.StatusEnvioEmail.ENVIADO;
-                                    _mensagemRepository.Update(mg);
-                                }
-                            }
-                            else
-                            {
-                                mg.MENS_TX_RETORNO = controlError.GetMenssage();
-                                mg.MENS_IN_STATUS = (int)Enumerador.StatusEnvioEmail.ERRO;
-                                _mensagemRepository.Update(mg);
-                            }
-                        }
-                        else
-                        {
-                            // Prepara inicial
-                            String body = String.Empty;
-                            String header = String.Empty;
-                            String footer = String.Empty;
-                            String link = String.Empty;
-                            if (mg.TEEM_CD_ID != null)
-                            {
-                                body = temp.TEEM_TX_CORPO;
-                                header = temp.TEEM_TX_CABECALHO;
-                                footer = temp.TEEM_TX_DADOS;
-                                link = temp.TEEM_LK_LINK;
-                            }
-
-                            // Trata corpo
-                            StringBuilder str = new StringBuilder();
-                            str.AppendLine(body);
-
-                            // Trata link
-                            if (!String.IsNullOrEmpty(link))
-                            {
-                                if (!link.Contains("www."))
-                                {
-                                    link = "www." + link;
-                                }
-                                if (!link.Contains("http://"))
-                                {
-                                    link = "http://" + link;
-                                }
-                                str.AppendLine("<a href='" + link + "'>Clique aqui para maiores informações</a>");
-                            }
-                            body = str.ToString();
-
-                            // Checa e monta anexos
-                            List<System.Net.Mail.Attachment> listaAnexo = new List<System.Net.Mail.Attachment>();
-                            if (mg.MENSAGEM_ANEXO.Count > 0)
-                            {
-                                foreach (MENSAGEM_ANEXO item in mg.MENSAGEM_ANEXO)
-                                {
-                                    String fn = server.MapPath(item.MEAN_AQ_ARQUIVO);
-                                    System.Net.Mail.Attachment anexo = new System.Net.Mail.Attachment(fn);
-                                    listaAnexo.Add(anexo);
-                                }
-                            }
-
-                            // Prepara rodape
-                            ASSINANTE assi = mg.ASSINANTE;
-
-                            footer = footer.Replace("{Assinatura}", assi.ASSI_NM_NOME);
-
-                            // Monta Mensagem
-                            NetworkCredential net = new NetworkCredential(conf.CONF_NM_SENDGRID_LOGIN, conf.CONF_NM_SENDGRID_APIKEY);
-                            Email mensagem = new Email();
-                            mensagem.ASSUNTO = mg.MENS_NM_CAMPANHA != null ? mg.MENS_NM_CAMPANHA : "Assunto Diverso";
-                            mensagem.DEFAULT_CREDENTIALS = false;
-                            mensagem.EMAIL_EMISSOR = conf.CONF_NM_EMAIL_EMISSOO;
-                            mensagem.ENABLE_SSL = true;
-                            mensagem.NOME_EMISSOR = assi.ASSI_NM_NOME;
-                            mensagem.PORTA = conf.CONF_NM_PORTA_SMTP;
-                            mensagem.PRIORIDADE = System.Net.Mail.MailPriority.High;
-                            mensagem.SENHA_EMISSOR = conf.CONF_NM_SENDGRID_PWD;
-                            mensagem.SMTP = conf.CONF_NM_HOST_SMTP;
-                            mensagem.NETWORK_CREDENTIAL = net;
-                            mensagem.IS_HTML = true;
-                            mensagem.ATTACHMENT = listaAnexo;                            
-
-
-                            // Checa cabeçalho e envia
-                            if (header.Contains("{Nome}"))
-                            {
-                                foreach (CLIENTE item in listaCli)
-                                {
-                                    // Prepara cabeçalho
-                                    header = header.Replace("{Nome}", item.CLIE_NM_NOME);
-                                    String emailBody = header + body + footer;
-
-                                    // Monta e-mail
-                                    mensagem.CORPO = emailBody;
-                                    mensagem.EMAIL_TO_DESTINO = item.CLIE_NM_EMAIL;
-
-                                    // Envia mensagem
-                                    try
-                                    {
-                                        controlError = CrossCutting.CommunicationPackage.SendEmail(mensagem);                                        
-                                    }
-                                    catch (Exception ex)
-                                    {
-                                        controlError.HandleExeption(ex);
-                                        if (ex.GetType() == typeof(SmtpFailedRecipientException))
-                                        {
-                                            var se = (SmtpFailedRecipientException)ex;
-                                            controlError.HandleExeption(se.FailedRecipient);
-                                        }
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                String emailBody = header + body + footer;
-                                mensagem.CORPO = emailBody;
-
-                                MailAddressCollection col = new MailAddressCollection();
-                                foreach (CLIENTE item in listaCli)
-                                {
-                                    col.Add(item.CLIE_NM_EMAIL);
-                                }
-
-                                // Envia mensagem
-                                try
-                                {
-                                    controlError = CommunicationPackage.SendEmailCollectionAsync(mensagem, col);
-                                    
-                                }
-                                catch (Exception ex)
-                                {
-                                    controlError.IsOK = false;
-                                    controlError.HandleExeption(ex);
-
-                                    if (ex.GetType() == typeof(SmtpFailedRecipientException))
-                                    {
-                                        var se = (SmtpFailedRecipientException)ex;
-
-                                        controlError.HandleExeption(se.FailedRecipient);
-                                    }
-                                }
-                            }
-
-                            // Grava mensagem/destino e erros
-                            if (controlError.IsOK)
-                            {
-                                foreach (CLIENTE item in listaCli)
-                                {
-                                    MENSAGENS_DESTINOS dest = new MENSAGENS_DESTINOS();
-                                    dest.MEDE_IN_ATIVO = 1;
-                                    dest.MEDE_IN_POSICAO = 1;
-                                    dest.MEDE_IN_STATUS = 1;
-                                    dest.CLIE_CD_ID = item.CLIE_CD_ID;
-                                    dest.MEDE_DS_ERRO_ENVIO = controlError.GetMenssage();
-                                    dest.MENS_CD_ID = mg.MENS_CD_ID;
-                                    mg.MENSAGENS_DESTINOS.Add(dest);
-                                    mg.MENS_DT_ENVIO = DateTime.Now;
-                                    mg.MENS_TX_TEXTO = body;
-                                    mg.MENS_IN_STATUS = (int)Enumerador.StatusEnvioEmail.ENVIADO;
-                                    _mensagemRepository.Update(mg);
-                                }
-                            }
-                            else
-                            {
-                                mg.MENS_TX_RETORNO = controlError.GetMenssage();
-                                mg.MENS_IN_STATUS = (int)Enumerador.StatusEnvioEmail.ERRO;
-                                _mensagemRepository.Update(mg);
-                            }
-                        }
-                    }
-                    // Normal
-                    else
-                    {
-                        // Prepara inicial
-                        String body = String.Empty;
-                        String header = String.Empty;
-                        String footer = String.Empty;
-                        String link = String.Empty;
-                        body = mg.MENS_TX_TEXTO;
-                        header = mg.MENS_NM_CABECALHO == null ? "": mg.MENS_NM_CABECALHO;
-                        footer = mg.MENS_NM_RODAPE == null ? "" : mg.MENS_NM_RODAPE;
-                        link = mg.MENS_NM_LINK;
-
-                        // Prepara rodape
-                        ASSINANTE assi = mg.ASSINANTE;
-                        footer = footer.Replace("{Assinatura}", assi.ASSI_NM_NOME);
-                        
-                        
-
-                        // Trata corpo
-                        StringBuilder str = new StringBuilder();
-                        str.AppendLine(body);
-
-                        // Trata link
-                        if (!String.IsNullOrEmpty(link))
-                        {
-                            if (!link.Contains("www."))
-                            {
-                                link = "www." + link;
-                            }
-                            if (!link.Contains("http://"))
-                            {
-                                link = "http://" + link;
-                            }
-                            str.AppendLine("<a href='" + link + "'>Clique aqui para maiores informações</a>");
-                        }
-                        body = str.ToString();
-
-                        // Checa e monta anexos
-                        List<System.Net.Mail.Attachment> listaAnexo = new List<System.Net.Mail.Attachment>();
-                        if (mg.MENSAGEM_ANEXO.Count > 0)
-                        {
-                            foreach (MENSAGEM_ANEXO item in mg.MENSAGEM_ANEXO)
-                            {
-                                String fn = server.MapPath(item.MEAN_AQ_ARQUIVO);
-                                System.Net.Mail.Attachment anexo = new System.Net.Mail.Attachment(fn);
-                                listaAnexo.Add(anexo);
-                            }
-                        }
-
-                        // Monta Mensagem
-                        NetworkCredential net = new NetworkCredential(conf.CONF_NM_SENDGRID_LOGIN, conf.CONF_NM_SENDGRID_APIKEY);
-                        Email mensagem = new Email();
-                        mensagem.ASSUNTO = mg.MENS_NM_CAMPANHA != null ? mg.MENS_NM_CAMPANHA : "Assunto Diverso";
-                        mensagem.DEFAULT_CREDENTIALS = false;
-                        mensagem.EMAIL_EMISSOR = conf.CONF_NM_EMAIL_EMISSOO;
-                        mensagem.ENABLE_SSL = true;
-                        mensagem.NOME_EMISSOR = assi.ASSI_NM_NOME;
-                        mensagem.PORTA = conf.CONF_NM_PORTA_SMTP;
-                        mensagem.PRIORIDADE = System.Net.Mail.MailPriority.High;
-                        mensagem.SENHA_EMISSOR = conf.CONF_NM_SENHA_EMISSOR;
-                        mensagem.SMTP = conf.CONF_NM_HOST_SMTP;
-                        mensagem.NETWORK_CREDENTIAL = net;
-                        mensagem.ATTACHMENT = listaAnexo;
-
-                        String emailBody = header + body + footer;
-                        mensagem.CORPO = emailBody;
-
-                        MailAddressCollection col = new MailAddressCollection();
-                        foreach (CLIENTE item in listaCli)
-                        {
-                            col.Add(item.CLIE_NM_EMAIL);
-                        }
-
-                        // Envia mensagem
-                        try
-                        {
-                            controlError = CommunicationPackage.SendEmailCollectionAsync(mensagem, col);     
-                            
-                        }
-                        catch (Exception ex)
-                        {
-                            controlError.HandleExeption(ex);
-
-                            if (ex.GetType() == typeof(SmtpFailedRecipientException))
-                            {
-                                var se = (SmtpFailedRecipientException)ex;
-
-                                controlError.HandleExeption(se.FailedRecipient);
-                            }
-                        }
-
-                        // Grava mensagem/destino e erros
-                        if (controlError.IsOK)
-                        {
-                            foreach (CLIENTE item in listaCli)
-                            {
-                                MENSAGENS_DESTINOS dest = new MENSAGENS_DESTINOS();
-                                dest.MEDE_IN_ATIVO = 1;
-                                dest.MEDE_IN_POSICAO = 1;
-                                dest.MEDE_IN_STATUS = 1;
-                                dest.CLIE_CD_ID = item.CLIE_CD_ID;
-                                dest.MEDE_DS_ERRO_ENVIO = controlError.GetMenssage();
-                                dest.MENS_CD_ID = mg.MENS_CD_ID;
-                                mg.MENSAGENS_DESTINOS.Add(dest);
-                                mg.MENS_DT_ENVIO = DateTime.Now;
-                                mg.MENS_TX_TEXTO = body;
-                                mg.MENS_IN_STATUS = (int)Enumerador.StatusEnvioEmail.ENVIADO;
-                                _mensagemRepository.Update(mg);
-                            }
-                        }
-                        else
-                        {
-                            mg.MENS_TX_RETORNO = controlError.GetMenssage();
-                            mg.MENS_IN_STATUS = (int)Enumerador.StatusEnvioEmail.ERRO;
-                            _mensagemRepository.Update(mg);
-                        }
-
-                    }
-
-                    */
                 }
                 catch(Exception ex)
                 {

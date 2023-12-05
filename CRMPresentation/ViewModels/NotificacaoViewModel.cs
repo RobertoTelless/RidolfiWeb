@@ -33,6 +33,7 @@ namespace ERP_Condominios_Solution.ViewModels
         [DataType(DataType.Date, ErrorMessage = "DATA DE VISTA Deve ser uma data válida")]
         public Nullable<System.DateTime> NOTI_DT_VISTA { get; set; }
         public int NOTI_IN_NIVEL { get; set; }
+        public Nullable<int> NOTI_IN_SISTEMA { get; set; }
 
         public virtual ASSINANTE ASSINANTE { get; set; }
         public virtual CATEGORIA_NOTIFICACAO CATEGORIA_NOTIFICACAO { get; set; }

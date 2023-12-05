@@ -19,6 +19,7 @@ namespace ModelServices.Interfaces.EntitiesServices
         Int32 EditUser(USUARIO usuario, LOG log);
         Int32 VerifyUserSubscription(USUARIO usuario);
         Int32 EditUser(USUARIO usuario);
+        Int32 EditAnexo(USUARIO_ANEXO item);
 
         USUARIO CheckExist(USUARIO item, Int32 idAss);
         Endereco GetAdressCEP(string CEP);
@@ -40,6 +41,7 @@ namespace ModelServices.Interfaces.EntitiesServices
         TEMPLATE GetTemplate(String code);
         USUARIO GetAdministrador(Int32 idAss);
         USUARIO_ANOTACAO GetAnotacaoById(Int32 id);
+        List<LOG_EXCECAO_NOVO> ExecuteFilterExcecao(Int32? usuaId, DateTime? data, String gerador, Int32 idAss);
 
         LOG_EXCECAO_NOVO GetLogExcecaoById(Int32 id);
         List<LOG_EXCECAO_NOVO> GetAllLogExcecao(Int32 idAss);

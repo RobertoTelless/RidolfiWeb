@@ -2372,5 +2372,806 @@ namespace CRMPresentation.App_Start {
                 return ResourceManager.GetString("M0279", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Desconto não especificado.
+        /// </summary>
+        internal static string M0280 {
+            get {
+                return ResourceManager.GetString("M0280", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Dia de entrada deve ser um dia válido.
+        /// </summary>
+        internal static string M0281 {
+            get {
+                return ResourceManager.GetString("M0281", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Existe algum produto composto no escopo desta precificação que não tem valor de CMV calculado.
+        /// </summary>
+        internal static string M0282 {
+            get {
+                return ResourceManager.GetString("M0282", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Existe algum produto não composto no escopo desta precificação que não tem preço de custo informado.
+        /// </summary>
+        internal static string M0283 {
+            get {
+                return ResourceManager.GetString("M0283", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Venda Mensal já cadastrada para essa data de referência e tipo de venda.
+        /// </summary>
+        internal static string M0284 {
+            get {
+                return ResourceManager.GetString("M0284", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Valor total das vendas não pode ser zero para data de referencia e para o tipo de venda selecionado.
+        /// </summary>
+        internal static string M0285 {
+            get {
+                return ResourceManager.GetString("M0285", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Soma das parcelas de comissão diferentes do valor total.
+        /// </summary>
+        internal static string M0286 {
+            get {
+                return ResourceManager.GetString("M0286", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Custo de produto já inserido para esta data.
+        /// </summary>
+        internal static string M0287 {
+            get {
+                return ResourceManager.GetString("M0287", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Impossível excluir este custo. O histórico de custos não pode ficar vazio.
+        /// </summary>
+        internal static string M0288 {
+            get {
+                return ResourceManager.GetString("M0288", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Impossível reativar. Custo de produto já inserido para esta data.
+        /// </summary>
+        internal static string M0289 {
+            get {
+                return ResourceManager.GetString("M0289", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Impossível excluir este preço de venda. O histórico de preços não pode ficar vazio.
+        /// </summary>
+        internal static string M0290 {
+            get {
+                return ResourceManager.GetString("M0290", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Impossível reativar. Preço de venda de produto já inserido para esta data.
+        /// </summary>
+        internal static string M0291 {
+            get {
+                return ResourceManager.GetString("M0291", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Preço de venda de produto já inserido para esta data.
+        /// </summary>
+        internal static string M0292 {
+            get {
+                return ResourceManager.GetString("M0292", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Cálculo de Custos Variáveis desatualizado. Execute o cálculo e retorne a essa tela.
+        /// </summary>
+        internal static string M0293 {
+            get {
+                return ResourceManager.GetString("M0293", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Nenhuma venda cadastrada para o mês corrente. Impossivel calcular os percentuais de custis variáveis para vendas.
+        /// </summary>
+        internal static string M0294 {
+            get {
+                return ResourceManager.GetString("M0294", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Categoria de custo já cadastrada.
+        /// </summary>
+        internal static string M0295 {
+            get {
+                return ResourceManager.GetString("M0295", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Impossível excluir esta categoria de custo. Ela está vinculada a outros registros.
+        /// </summary>
+        internal static string M0296 {
+            get {
+                return ResourceManager.GetString("M0296", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a A data de início não pode ser inferior a data de término.
+        /// </summary>
+        internal static string M0297 {
+            get {
+                return ResourceManager.GetString("M0297", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Máquina de cartão incluída com sucesso.
+        /// </summary>
+        internal static string M0298 {
+            get {
+                return ResourceManager.GetString("M0298", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Meta já definida para esta data de referencia..
+        /// </summary>
+        internal static string M0299 {
+            get {
+                return ResourceManager.GetString("M0299", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a A soma das metas de comissões não pode ser maior que a soma das metas de vendas.
+        /// </summary>
+        internal static string M0300 {
+            get {
+                return ResourceManager.GetString("M0300", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Para periodicidade semanal, o dia da semana deverá ser informado.
+        /// </summary>
+        internal static string M0301 {
+            get {
+                return ResourceManager.GetString("M0301", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Dia do vencimento não informado.
+        /// </summary>
+        internal static string M0302 {
+            get {
+                return ResourceManager.GetString("M0302", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Ficha técnica já cadastrada para esse produto.
+        /// </summary>
+        internal static string M0303 {
+            get {
+                return ResourceManager.GetString("M0303", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Nenhum insumo definido nesta ficha técnica.
+        /// </summary>
+        internal static string M0304 {
+            get {
+                return ResourceManager.GetString("M0304", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Mensagem de E-Mail enviada com sucesso..
+        /// </summary>
+        internal static string M0305 {
+            get {
+                return ResourceManager.GetString("M0305", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Falha no envio de E-Mail..
+        /// </summary>
+        internal static string M0306 {
+            get {
+                return ResourceManager.GetString("M0306", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Validade do código de validação de alteração de senha expirado. Solicite uma senha provisória para entrar no CRMSys..
+        /// </summary>
+        internal static string M0307 {
+            get {
+                return ResourceManager.GetString("M0307", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Usuário com senha pendente de validação..
+        /// </summary>
+        internal static string M0308 {
+            get {
+                return ResourceManager.GetString("M0308", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Código de validação errado..
+        /// </summary>
+        internal static string M0309 {
+            get {
+                return ResourceManager.GetString("M0309", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Sua senha precisa ser redefinida. Já ultrapassou a validade definida nas configurações do sistema.
+        /// </summary>
+        internal static string M0310 {
+            get {
+                return ResourceManager.GetString("M0310", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Data final da faixa de datas não pode ser inferior a data corrente.
+        /// </summary>
+        internal static string M0311 {
+            get {
+                return ResourceManager.GetString("M0311", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Número de linhas da planilha maior do que o máximo. Limite a 500 produtos por importação.
+        /// </summary>
+        internal static string M0312 {
+            get {
+                return ResourceManager.GetString("M0312", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Fornecedor já cadastrado.
+        /// </summary>
+        internal static string M0313 {
+            get {
+                return ResourceManager.GetString("M0313", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Impossível excluir Fornecedor. Existem registros vinculados a ele..
+        /// </summary>
+        internal static string M0314 {
+            get {
+                return ResourceManager.GetString("M0314", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Percentual do estoque máximo não informado.
+        /// </summary>
+        internal static string M0315 {
+            get {
+                return ResourceManager.GetString("M0315", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Número de linhas da planilha maior do que o máximo. Limite a 5000 produtos por atualização de estoque.
+        /// </summary>
+        internal static string M0316 {
+            get {
+                return ResourceManager.GetString("M0316", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Foram enviadas mensagens de confirmação de reunião aos contatos do evento. Total:.
+        /// </summary>
+        internal static string M0317 {
+            get {
+                return ResourceManager.GetString("M0317", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Número de dias para início da exclusão deve ser maior que o número de dias para o final da exclusão.
+        /// </summary>
+        internal static string M0318 {
+            get {
+                return ResourceManager.GetString("M0318", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Data de início da faixa maior que a data final.
+        /// </summary>
+        internal static string M0319 {
+            get {
+                return ResourceManager.GetString("M0319", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a registros de log foram movidos para o backup e removidos da base principal.
+        /// </summary>
+        internal static string M0320 {
+            get {
+                return ResourceManager.GetString("M0320", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Impossível agendar esse evento. Ele se sobrepõe a um ou mais eventos ja agendados para essa data.
+        /// </summary>
+        internal static string M0321 {
+            get {
+                return ResourceManager.GetString("M0321", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Todas as informações de login dvem ser preenchidas.
+        /// </summary>
+        internal static string M0322 {
+            get {
+                return ResourceManager.GetString("M0322", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Nenhuma venda cadastrada.
+        /// </summary>
+        internal static string M0323 {
+            get {
+                return ResourceManager.GetString("M0323", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Código SKU obrigatório para este tipo de produto.
+        /// </summary>
+        internal static string M0324 {
+            get {
+                return ResourceManager.GetString("M0324", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Quantidade do estoque não informada.
+        /// </summary>
+        internal static string M0325 {
+            get {
+                return ResourceManager.GetString("M0325", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Justificativa do movimento não informada.
+        /// </summary>
+        internal static string M0326 {
+            get {
+                return ResourceManager.GetString("M0326", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Estoque especificado igual ao anterior.
+        /// </summary>
+        internal static string M0327 {
+            get {
+                return ResourceManager.GetString("M0327", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Nenhum parâmetro de seleção especificado.
+        /// </summary>
+        internal static string M0328 {
+            get {
+                return ResourceManager.GetString("M0328", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Custos variáveis recalculados com sucesso.
+        /// </summary>
+        internal static string M0329 {
+            get {
+                return ResourceManager.GetString("M0329", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a A sua senha provisória foi enviada para seu e-mail cadastrado..
+        /// </summary>
+        internal static string M0330 {
+            get {
+                return ResourceManager.GetString("M0330", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Valor total das vendas diferente da soma das vendas por categoria.
+        /// </summary>
+        internal static string M0331 {
+            get {
+                return ResourceManager.GetString("M0331", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Você foi redirecionado para a página de entrada do SysPrec.
+        /// </summary>
+        internal static string M0332 {
+            get {
+                return ResourceManager.GetString("M0332", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Impossível editar um evento com data/hora inferior a data/hora corrente.
+        /// </summary>
+        internal static string M0333 {
+            get {
+                return ResourceManager.GetString("M0333", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Já existe agendamento nesta data que sobrepõe esse horário.
+        /// </summary>
+        internal static string M0334 {
+            get {
+                return ResourceManager.GetString("M0334", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Início do evento anterior ao final.
+        /// </summary>
+        internal static string M0335 {
+            get {
+                return ResourceManager.GetString("M0335", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Esse evento deve ter um contato especificado.
+        /// </summary>
+        internal static string M0336 {
+            get {
+                return ResourceManager.GetString("M0336", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Impossível desvincular essa máquina. Ela já está associada à vendas mensais.
+        /// </summary>
+        internal static string M0337 {
+            get {
+                return ResourceManager.GetString("M0337", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Impossível desvincular essa plataforma. Ela já está associada à vendas mensais.
+        /// </summary>
+        internal static string M0338 {
+            get {
+                return ResourceManager.GetString("M0338", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Impossível desvincular esse ticket. Ele já está associado à vendas mensais.
+        /// </summary>
+        internal static string M0339 {
+            get {
+                return ResourceManager.GetString("M0339", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a suporte Rti pelos canais de comunicação.
+        /// </summary>
+        internal static string M0340 {
+            get {
+                return ResourceManager.GetString("M0340", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Nenhum assinante encontrado para esse usuário. Entre em contato com o suporte Rti pelos canais de comunicação.
+        /// </summary>
+        internal static string M0341 {
+            get {
+                return ResourceManager.GetString("M0341", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Assinante bloqueado. Entre em contato com o suporte Rti pelos canais de comunicação.
+        /// </summary>
+        internal static string M0342 {
+            get {
+                return ResourceManager.GetString("M0342", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Assinante com plano vencido e será bloqueado. Entre em contato com o suporte Rti pelos canais de comunicação.
+        /// </summary>
+        internal static string M0343 {
+            get {
+                return ResourceManager.GetString("M0343", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Assinante inativo. Entre em contato com o suporte Rti pelos canais de comunicação.
+        /// </summary>
+        internal static string M0344 {
+            get {
+                return ResourceManager.GetString("M0344", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Assinante com parcelas em aberto. Entre em contato com o suporte Rti pelos canais de comunicação.
+        /// </summary>
+        internal static string M0345 {
+            get {
+                return ResourceManager.GetString("M0345", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Faltam algumas tags obrigatórias no modelo de mensagem. Verifique se conteúdo.
+        /// </summary>
+        internal static string M0346 {
+            get {
+                return ResourceManager.GetString("M0346", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Texto da mensagem não especificado.
+        /// </summary>
+        internal static string M0347 {
+            get {
+                return ResourceManager.GetString("M0347", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Impossível incluir/reativar fornecedores. Número de fornecedores ativos excede o contratado no Plano de Assinatura.
+        /// </summary>
+        internal static string M0348 {
+            get {
+                return ResourceManager.GetString("M0348", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Impossível incluir/reativar produtos. Número de produtos ativos excede o contratado no Plano de Assinatura.
+        /// </summary>
+        internal static string M0349 {
+            get {
+                return ResourceManager.GetString("M0349", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Impossível executar uma nova precificação. Número de precificações executadas no mês corrente excede o contratado no Plano de Assinatura.
+        /// </summary>
+        internal static string M0350 {
+            get {
+                return ResourceManager.GetString("M0350", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Impossível enviar mensagem de e-mail. Número de envios  no mês corrente excede o contratado no Plano de Assinatura.
+        /// </summary>
+        internal static string M0351 {
+            get {
+                return ResourceManager.GetString("M0351", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Impossível enviar mensagem de SMS. Número de envios  no mês corrente excede o contratado no Plano de Assinatura.
+        /// </summary>
+        internal static string M0352 {
+            get {
+                return ResourceManager.GetString("M0352", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Texto da mensagem não informado.
+        /// </summary>
+        internal static string M0353 {
+            get {
+                return ResourceManager.GetString("M0353", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Data de pagamento não informada.
+        /// </summary>
+        internal static string M0354 {
+            get {
+                return ResourceManager.GetString("M0354", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Valor pago não informado.
+        /// </summary>
+        internal static string M0355 {
+            get {
+                return ResourceManager.GetString("M0355", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Arquivo anexo não encontrado.
+        /// </summary>
+        internal static string M0356 {
+            get {
+                return ResourceManager.GetString("M0356", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Arquivo anexo com nome maior que 150 caracteres.
+        /// </summary>
+        internal static string M0357 {
+            get {
+                return ResourceManager.GetString("M0357", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Formato de anexo inválido. Formatos permitidos: JPG e PNG.
+        /// </summary>
+        internal static string M0358 {
+            get {
+                return ResourceManager.GetString("M0358", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Telefone não informado.
+        /// </summary>
+        internal static string M0359 {
+            get {
+                return ResourceManager.GetString("M0359", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Celular não informado.
+        /// </summary>
+        internal static string M0360 {
+            get {
+                return ResourceManager.GetString("M0360", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a E-Mail não informado.
+        /// </summary>
+        internal static string M0361 {
+            get {
+                return ResourceManager.GetString("M0361", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Nenhuma forma de resposta selecionada.
+        /// </summary>
+        internal static string M0362 {
+            get {
+                return ResourceManager.GetString("M0362", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Nenhum plano selecionado.
+        /// </summary>
+        internal static string M0363 {
+            get {
+                return ResourceManager.GetString("M0363", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Plano selecionado igual ao plano atual.
+        /// </summary>
+        internal static string M0364 {
+            get {
+                return ResourceManager.GetString("M0364", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a E-Mail enviado ao usuário selecionado.
+        /// </summary>
+        internal static string M0365 {
+            get {
+                return ResourceManager.GetString("M0365", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Motivo de cancelamento não informado.
+        /// </summary>
+        internal static string M0366 {
+            get {
+                return ResourceManager.GetString("M0366", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a E-Mail enviado para o suporte da Rti com sua solicitação de alteração do plano de assinatura.
+        /// </summary>
+        internal static string M0367 {
+            get {
+                return ResourceManager.GetString("M0367", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a E-Mail enviado para o suporte da Rti com sua solicitação.
+        /// </summary>
+        internal static string M0368 {
+            get {
+                return ResourceManager.GetString("M0368", resourceCulture);
+            }
+        }
     }
 }

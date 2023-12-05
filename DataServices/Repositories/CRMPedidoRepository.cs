@@ -23,7 +23,7 @@ namespace DataServices.Repositories
 
         public List<CRM_PEDIDO_VENDA> GetAllItensGeral(Int32 idUsu)
         {
-            IQueryable<CRM_PEDIDO_VENDA> query = Db.CRM_PEDIDO_VENDA.Where(p => p.CRPV_IN_ATIVO == 1);
+            IQueryable<CRM_PEDIDO_VENDA> query = Db.CRM_PEDIDO_VENDA;
             query = query.Where(p => p.ASSI_CD_ID == idUsu);
             return query.ToList();
         }
@@ -41,7 +41,7 @@ namespace DataServices.Repositories
             IQueryable<CRM_PEDIDO_VENDA> query = Db.CRM_PEDIDO_VENDA.Where(p => p.CRPV_CD_ID == id);
             query = query.Include(p => p.CRM_PEDIDO_VENDA_ACOMPANHAMENTO);
             query = query.Include(p => p.CRM_PEDIDO_VENDA_ANEXO);
-            //query = query.Include(p => p.CRM_PEDIDO_VENDA_ITEM);
+            query = query.Include(p => p.MOTIVO_CANCELAMENTO);
             return query.FirstOrDefault();
         }
 

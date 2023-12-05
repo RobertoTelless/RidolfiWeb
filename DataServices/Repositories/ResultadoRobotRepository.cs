@@ -11,67 +11,53 @@ using System.Data.Entity;
 
 namespace DataServices.Repositories
 {
-    public class ResultadoRobotRepository : RepositoryBase<RESULTADO_ROBOT>, IResultadoRobotRepository
+    public class ResultadoRobotRepository : RepositoryBase<RESULTADO_ROBOT_CUSTO>, IResultadoRobotRepository
     {
-        public List<RESULTADO_ROBOT> GetAllItens(Int32 idAss)
+        public List<RESULTADO_ROBOT_CUSTO> GetAllItens(Int32 idAss)
         {
-            IQueryable<RESULTADO_ROBOT> query = Db.RESULTADO_ROBOT.Where(p => p.ASSI_CD_ID == idAss);
+            IQueryable<RESULTADO_ROBOT_CUSTO> query = Db.RESULTADO_ROBOT_CUSTO.Where(p => p.ASSI_CD_ID == idAss);
             return query.ToList();
         }
 
-        public RESULTADO_ROBOT GetItemById(Int32 id)
+        public RESULTADO_ROBOT_CUSTO GetItemById(Int32 id)
         {
-            IQueryable<RESULTADO_ROBOT> query = Db.RESULTADO_ROBOT.Where(p => p.RERO_CD_ID == id);
+            IQueryable<RESULTADO_ROBOT_CUSTO> query = Db.RESULTADO_ROBOT_CUSTO.Where(p => p.RERC_CD_ID == id);
             return query.FirstOrDefault();
         }
 
-        public List<RESULTADO_ROBOT> ExecuteFilter(Int32? tipo, DateTime? dataInicio, DateTime? dataFim, String cliente, String email, String celular, Int32? status, Int32 idAss)
+        public List<RESULTADO_ROBOT_CUSTO> ExecuteFilter(Int32? tipo, DateTime? dataInicio, DateTime? dataFim, Int32? usuario, Int32 idAss)
         {
-            List<RESULTADO_ROBOT> lista = new List<RESULTADO_ROBOT>();
-            IQueryable<RESULTADO_ROBOT> query = Db.RESULTADO_ROBOT;
+            List<RESULTADO_ROBOT_CUSTO> lista = new List<RESULTADO_ROBOT_CUSTO>();
+            IQueryable<RESULTADO_ROBOT_CUSTO> query = Db.RESULTADO_ROBOT_CUSTO;
+            if (dataInicio != null & dataFim == null)
+            {
+                query = query.Where(p => DbFunctions.TruncateTime(p.RERC_DT_ENVIO) >= DbFunctions.TruncateTime(dataInicio));
+            }
+            if (dataInicio == null & dataFim != null)
+            {
+                query = query.Where(p => DbFunctions.TruncateTime(p.RERC_DT_ENVIO) <= DbFunctions.TruncateTime(dataFim));
+            }
+            if (dataInicio != null & dataFim != null)
+            {
+                query = query.Where(p => DbFunctions.TruncateTime(p.RERC_DT_ENVIO) >= DbFunctions.TruncateTime(dataInicio) & DbFunctions.TruncateTime(p.RERC_DT_ENVIO) <= DbFunctions.TruncateTime(dataFim));
+            }
+            if (usuario > 0)
+            {
+                query = query.Where(p => p.USUA_CD_ID == usuario);
+            }
             if (tipo > 0)
             {
-                query = query.Where(p => p.RERO_IN_TIPO == tipo);
-            }
-
-            if (status > 0)
-            {
-                query = query.Where(p => p.RERO_IN_STATUS == status);
-            }
-            if (!String.IsNullOrEmpty(cliente))
-            {
-                query = query.Where(p => p.CLIENTE.CLIE_NM_NOME.Contains(cliente) || p.CLIENTE.CLIE_NM_RAZAO.Contains(cliente) || p.CLIENTE.CLIE_NR_CPF.Contains(cliente));
-            }
-            if (email != null)
-            {
-                query = query.Where(p => p.RERO_NM_EMAIL.Contains(email));
-            }
-            if (celular != null)
-            {
-                query = query.Where(p => p.RERO_NR_CELULAR.Contains(celular));
-            }
-
-            if ((dataInicio != DateTime.MinValue & dataInicio != null) & (dataFim == DateTime.MinValue || dataFim == null))
-            {
-                query = query.Where(p => DbFunctions.TruncateTime(p.RERO_DT_ENVIO) >= DbFunctions.TruncateTime(dataInicio));
-            }
-            if ((dataInicio == DateTime.MinValue || dataInicio == null) & (dataFim != DateTime.MinValue & dataFim != null))
-            {
-                query = query.Where(p => DbFunctions.TruncateTime(p.RERO_DT_ENVIO) <= DbFunctions.TruncateTime(dataFim));
-            }
-            if ((dataInicio != DateTime.MinValue & dataInicio != null) & (dataFim != DateTime.MinValue & dataFim != null))
-            {
-                query = query.Where(p => DbFunctions.TruncateTime(p.RERO_DT_ENVIO) >= DbFunctions.TruncateTime(dataInicio) & DbFunctions.TruncateTime(p.RERO_DT_ENVIO) <= DbFunctions.TruncateTime(dataFim));
+                query = query.Where(p => p.RERC_IN_TIPO == tipo);
             }
             if (query != null)
             {
-                query = query.Where(p => p.RERO_IN_ATIVO == 1);
                 query = query.Where(p => p.ASSI_CD_ID == idAss);
-                query = query.OrderBy(a => a.RERO_DT_ENVIO);
-                lista = query.ToList<RESULTADO_ROBOT>();
+                query = query.OrderBy(a => a.RERC_DT_ENVIO);
+                lista = query.ToList<RESULTADO_ROBOT_CUSTO>();
             }
             return lista;
         }
+
     }
 }
  

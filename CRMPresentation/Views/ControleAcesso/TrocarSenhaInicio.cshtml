@@ -63,6 +63,9 @@
                             @Html.HiddenFor(m => m.USUA_NR_WHATSAPP)
                             @Html.HiddenFor(m => m.USUA_TX_OBSERVACOES)
                             @Html.HiddenFor(m => m.EMPR_CD_ID)
+                            @Html.HiddenFor(m => m.USUA_NM_SENHA_HASH)
+                            @Html.HiddenFor(m => m.USUA_NM_SALT_HASH)
+                            @Html.HiddenFor(m => m.USUA_NM_SALT)
                             @Html.EditorFor(model => model.USUA_NM_NOVA_SENHA, new { htmlAttributes = new { @class = "form-control pwd1", placeholder = "Nova Senha", @type = "password", @id="Password1" , autofocus = true} })
                             @Html.ValidationMessageFor(model => model.USUA_NM_NOVA_SENHA, "", new { @class = "text-danger" })
                         </div>

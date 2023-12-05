@@ -4,28 +4,17 @@
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<div style="display: none;" class="dotContainer">
-    <div class="dotWrapper">
-        <div class="circle"></div>
-        <div class="circle"></div>
-        <div class="circle"></div>
-        <div class="shadow"></div>
-        <div class="shadow"></div>
-        <div class="shadow"></div>
-    </div>
-</div>
+
 <div id="login" class="wrapper wrapper-content animated fadeInRight">
     <div class="row">
         <div class="col-lg-12 col-md-12 col-xs-12">
             <div class="col-lg-8 col-md-8 col-xs-12">       
-                @*<div style="text-align: center; margin-top: 1px; line-height: 10px;">*@
-                    <img src="~/Images/ImagemRidolfi.png" style="width: 100%; height: 100%; max-height: 1400px; max-width: 1400px;">
-                @*</div>*@
+                <img src="~/Images/ImagemRidolfi.png" style="width: 100%; height: 100%; max-height: 1400px; max-width: 1400px;">
             </div>
             <div class="col-lg-4 col-md-4 col-xs-4">
                 <div class="col-lg-12 col-md-12 col-xs-12 ibox float-e-margins">
                     <div class="ibox-title">
-                        <h5>Login no RidolfiWeb</h5>
+                        <h5>Login no RidolfiNet</h5>
                     </div>
                     @using (Html.BeginForm("Login", "ControleAcesso", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal" }))
                     {
@@ -46,12 +35,10 @@
                                 @Html.EditorFor(model => model.USUA_NM_SENHA, new { htmlAttributes = new { @class = "form-control", placeholder = "Senha", @type = "password" } })
                                 @Html.ValidationMessageFor(model => model.USUA_NM_SENHA, "", new { @class = "text-danger" })
                             </div>
-                            @*@Html.Captcha(6)
-                            <br />*@
                             <div class="form-group">
                                 <img  src="@Model.CapImage" alt="" />
                                 <br /><br />
-                                @Html.TextBoxFor(t => t.CaptchaCodeText, new { @class = "form-control", autofocus = true, placeholder = "Código de Verificação" })
+                                @Html.TextBoxFor(t => t.CaptchaCodeText, new { @class = "form-control", autofocus = true, placeholder = "Código de Verificação", @id="captcha" })
                                 @Html.HiddenFor(t => t.CapImageText)
                             </div>
                             <div class="form-group">
@@ -80,14 +67,48 @@
                         </div>
                     </div>
                 </div>
-            
+                <div class="col-lg-12 col-md-12 col-xs-12 ibox float-e-margins">
+                    <div style="display: none; z-index:1000" class="dotContainer">
+                        <div class="spiner-example">
+                            <div class="sk-spinner sk-spinner-three-bounce">
+                                <div class="sk-bounce1"></div>
+                                <div class="sk-bounce2"></div>
+                                <div class="sk-bounce3"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
 @section Styles {
+    <link href="~/Content/themes/base/all.css" rel="stylesheet" />  
+    @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
+    @Styles.Render("~/plugins/jasnyBootstrapStyles")
+    @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
+    @Styles.Render("~/plugins/touchSpinStyles")
+    @Styles.Render("~/plugins/sweetAlertStyles")
+    @Styles.Render("~/plugins/toastrStyles")
+    @Styles.Render("~/Content/loadingDots.css")
 }
+@section Scripts {
+    @Scripts.Render("~/plugins/toastr")
+    @Scripts.Render("~/plugins/dataTables")
+    @Scripts.Render("~/bundles/inputmask")
+    @Scripts.Render("~/plugins/jasnyBootstrap")
+    @Scripts.Render("~/plugins/sparkline")
+    @Scripts.Render("~/plugins/touchSpin")
+    @Scripts.Render("~/plugins/iCheck")
+    @Scripts.Render("~/plugins/sweetAlert")
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.maskedinput/1.4.1/jquery.maskedinput.js"></script>
+
+    <script type="text/javascript">
+        $(function () {
+            $("#captcha").mask("9999");
+        });
+    </script>
 
 <script>
     function Fade() {
@@ -95,6 +116,15 @@
         $('#login').css("filter", "blur(4px)");
     }
 </script>
+<script>
+    $(window).on("load", function () {
+        $('.dotContainer').fadeOut("slow");
+        $('#title').css("filter", "blur(0)");
+        $('#content').css("filter", "blur(0)");
+    });
+</script>
+
+}
 @if (ViewBag.Message != null)
 {
     <script type="text/javascript">

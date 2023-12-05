@@ -9,7 +9,7 @@ namespace ModelServices.Interfaces.Repositories
 {
     public interface ICRMComentarioRepository : IRepositoryBase<CRM_COMENTARIO>
     {
-        List<CRM_COMENTARIO> GetAllItens();
+        List<CRM_COMENTARIO> GetAllItens(Int32 idAss);
         CRM_COMENTARIO GetItemById(Int32 id);
     }
 }

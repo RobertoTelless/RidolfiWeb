@@ -94,7 +94,9 @@ namespace ApplicationServices.Services
                     ASSI_CD_ID = usuario.ASSI_CD_ID,
                     LOG_NM_OPERACAO = "AddTEMP",
                     LOG_IN_ATIVO = 1,
-                    LOG_TX_REGISTRO = Serialization.SerializeJSON<TEMPLATE>(item)
+                    LOG_TX_REGISTRO = Serialization.SerializeJSON<TEMPLATE>(item),
+                    LOG_IN_SISTEMA = 1
+
                 };
 
                 // Persiste
@@ -120,11 +122,26 @@ namespace ApplicationServices.Services
                     LOG_NM_OPERACAO = "EditTEMP",
                     LOG_IN_ATIVO = 1,
                     LOG_TX_REGISTRO = Serialization.SerializeJSON<TEMPLATE>(item),
-                    LOG_TX_REGISTRO_ANTES = Serialization.SerializeJSON<TEMPLATE>(itemAntes)
+                    LOG_TX_REGISTRO_ANTES = Serialization.SerializeJSON<TEMPLATE>(itemAntes),
+                    LOG_IN_SISTEMA = 1
+
                 };
 
                 // Persiste
                 return _baseService.Edit(item, log);
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
+        public Int32 ValidateEdit(TEMPLATE item)
+        {
+            try
+            {
+                // Persiste
+                return _baseService.Edit(item);
             }
             catch (Exception ex)
             {
@@ -153,7 +170,9 @@ namespace ApplicationServices.Services
                     ASSI_CD_ID = usuario.ASSI_CD_ID,
                     LOG_IN_ATIVO = 1,
                     LOG_NM_OPERACAO = "DelTEMP",
-                    LOG_TX_REGISTRO = Serialization.SerializeJSON<TEMPLATE>(item)
+                    LOG_TX_REGISTRO = Serialization.SerializeJSON<TEMPLATE>(item),
+                    LOG_IN_SISTEMA = 1
+
                 };
 
                 // Persiste
@@ -181,8 +200,10 @@ namespace ApplicationServices.Services
                     USUA_CD_ID = usuario.USUA_CD_ID,
                     ASSI_CD_ID = usuario.ASSI_CD_ID,
                     LOG_IN_ATIVO = 1,
-                    LOG_NM_OPERACAO = "ReatTEMP",
-                    LOG_TX_REGISTRO = Serialization.SerializeJSON<TEMPLATE>(item)
+                    LOG_NM_OPERACAO = "ReaTEMP",
+                    LOG_TX_REGISTRO = Serialization.SerializeJSON<TEMPLATE>(item),
+                    LOG_IN_SISTEMA = 1
+
                 };
 
                 // Persiste
@@ -193,5 +214,6 @@ namespace ApplicationServices.Services
                 throw;
             }
         }
+
     }
 }

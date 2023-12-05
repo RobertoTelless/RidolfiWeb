@@ -20,10 +20,15 @@
                             @Html.ValidationSummary(false, "", new { @class = "text-danger" })
                         </div>
                     }
+                    <div class="form-group" style=" margin-left: -15px; margin-right: -15px;">
+                        @Html.ButtonLinkIndex(text: "Voltar", controller: "ControleAcesso", action: "Login")
+                        <br />
+                    </div>
+
                     @using (Html.BeginForm("GerarSenha", "ControleAcesso", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal" }))
                     {
                         <div class="form-group">
-                            <label>Informe o e-mail cadastrado no RidolfiWeb</label>
+                            <label>Informe o e-mail cadastrado no CRMSys</label>
                             <label>Uma senha provisória será enviada para este e-mail</label>
                         </div>
                         <div class="form-group">
@@ -59,6 +64,9 @@
                             @Html.HiddenFor(m => m.USUA_NM_NOVA_SENHA)
                             @Html.HiddenFor(m => m.USUA_NM_SENHA_CONFIRMA)
                             @Html.HiddenFor(m => m.EMPR_CD_ID)
+                            @Html.HiddenFor(m => m.USUA_NM_SENHA_HASH)
+                            @Html.HiddenFor(m => m.USUA_NM_SALT_HASH)
+                            @Html.HiddenFor(m => m.USUA_NM_SALT)
                             @Html.EditorFor(model => model.USUA_NM_EMAIL, new { htmlAttributes = new { @class = "form-control", placeholder = "E-mail", autofocus = true, id = "email" } })
                             @Html.ValidationMessageFor(model => model.USUA_NM_EMAIL, "", new { @class = "text-danger" })
                         </div>

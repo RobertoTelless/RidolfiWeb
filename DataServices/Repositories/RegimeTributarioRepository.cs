@@ -38,6 +38,7 @@ namespace DataServices.Repositories
             IQueryable<REGIME_TRIBUTARIO> query = Db.REGIME_TRIBUTARIO.Where(p => p.RETR_IN_ATIVO == 1);
             return query.ToList();
         }
+
     }
 }
  

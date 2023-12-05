@@ -114,7 +114,7 @@ namespace ApplicationServices.Services
                     LOG_DT_DATA = DateTime.Now,
                     USUA_CD_ID = usuario.USUA_CD_ID,
                     ASSI_CD_ID = usuario.ASSI_CD_ID,
-                    LOG_NM_OPERACAO = "EditNOTI",
+                    LOG_NM_OPERACAO = "EdtNOTI",
                     LOG_IN_ATIVO = 1,
                     LOG_TX_REGISTRO = Serialization.SerializeJSON<NOTICIA>(item),
                     LOG_TX_REGISTRO_ANTES = Serialization.SerializeJSON<NOTICIA>(itemAntes)
@@ -188,7 +188,7 @@ namespace ApplicationServices.Services
                     USUA_CD_ID = usuario.USUA_CD_ID,
                     ASSI_CD_ID = usuario.ASSI_CD_ID,
                     LOG_IN_ATIVO = 1,
-                    LOG_NM_OPERACAO = "ReatNOTI",
+                    LOG_NM_OPERACAO = "ReaNOTI",
                     LOG_TX_REGISTRO = item.NOTC_NM_TITULO
                 };
 
@@ -200,6 +200,5 @@ namespace ApplicationServices.Services
                 throw;
             }
         }
-
     }
 }

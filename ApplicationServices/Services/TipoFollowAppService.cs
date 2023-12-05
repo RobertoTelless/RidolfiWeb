@@ -21,6 +21,7 @@ namespace ApplicationServices.Services
             _baseService = baseService;
         }
 
+
         public List<TIPO_FOLLOW> GetAllItens(Int32 idAss)
         {
             List<TIPO_FOLLOW> lista = _baseService.GetAllItens(idAss);
@@ -68,7 +69,9 @@ namespace ApplicationServices.Services
                         USUA_CD_ID = usuario.USUA_CD_ID,
                         LOG_NM_OPERACAO = "AddTIFL",
                         LOG_IN_ATIVO = 1,
-                        LOG_TX_REGISTRO = Serialization.SerializeJSON<TIPO_FOLLOW>(item)
+                        LOG_TX_REGISTRO = Serialization.SerializeJSON<TIPO_FOLLOW>(item),
+                        LOG_IN_SISTEMA = 1
+
                     };
 
                     // Persiste
@@ -101,10 +104,12 @@ namespace ApplicationServices.Services
                     LOG_DT_DATA = DateTime.Now,
                     ASSI_CD_ID = usuario.ASSI_CD_ID,
                     USUA_CD_ID = usuario.USUA_CD_ID,
-                    LOG_NM_OPERACAO = "EditTIFL",
+                    LOG_NM_OPERACAO = "EdtTIFL",
                     LOG_IN_ATIVO = 1,
                     LOG_TX_REGISTRO = Serialization.SerializeJSON<TIPO_FOLLOW>(item),
-                    LOG_TX_REGISTRO_ANTES = Serialization.SerializeJSON<TIPO_FOLLOW>(itemAntes)
+                    LOG_TX_REGISTRO_ANTES = Serialization.SerializeJSON<TIPO_FOLLOW>(itemAntes),
+                    LOG_IN_SISTEMA = 1
+
                 };
 
                 // Persiste
@@ -137,7 +142,9 @@ namespace ApplicationServices.Services
                     USUA_CD_ID = usuario.USUA_CD_ID,
                     LOG_IN_ATIVO = 1,
                     LOG_NM_OPERACAO = "DelTIFL",
-                    LOG_TX_REGISTRO = item.TIFL_NM_NOME
+                    LOG_TX_REGISTRO = item.TIFL_NM_NOME,
+                    LOG_IN_SISTEMA = 1
+
                 };
 
                 // Persiste
@@ -165,8 +172,10 @@ namespace ApplicationServices.Services
                     ASSI_CD_ID = usuario.ASSI_CD_ID,
                     USUA_CD_ID = usuario.USUA_CD_ID,
                     LOG_IN_ATIVO = 1,
-                    LOG_NM_OPERACAO = "ReatTIFL",
-                    LOG_TX_REGISTRO = item.TIFL_NM_NOME
+                    LOG_NM_OPERACAO = "ReaTIFL",
+                    LOG_TX_REGISTRO = item.TIFL_NM_NOME,
+                    LOG_IN_SISTEMA = 1
+
                 };
 
                 // Persiste

@@ -18,14 +18,12 @@ namespace ApplicationServices.Services
         private readonly ICRMService _baseService;
         private readonly INotificacaoService _notiService;
         private readonly IClienteService _cliService;
-        private readonly IPrecatorioService _preService;
 
-        public CRMAppService(ICRMService baseService, INotificacaoService notiService, IClienteService cliService, IPrecatorioService preService) : base(baseService)
+        public CRMAppService(ICRMService baseService, INotificacaoService notiService, IClienteService cliService): base(baseService)
         {
             _baseService = baseService;
             _notiService = notiService;
             _cliService = cliService;
-            _preService = preService;
         }
 
         public List<CRM> GetAllItens(Int32 idAss)
@@ -106,6 +104,7 @@ namespace ApplicationServices.Services
             return lista;
         }
 
+
         public List<TEMPLATE_PROPOSTA> GetAllTemplateProposta(Int32 id)
         {
             List<TEMPLATE_PROPOSTA> lista = _baseService.GetAllTemplateProposta(id);
@@ -127,6 +126,12 @@ namespace ApplicationServices.Services
         public List<CRM_FOLLOW> GetAllFollow(Int32 idAss)
         {
             List<CRM_FOLLOW> lista = _baseService.GetAllFollow(idAss);
+            return lista;
+        }
+
+        public List<CRM_COMENTARIO> GetAllAnotacao(Int32 idAss)
+        {
+            List<CRM_COMENTARIO> lista = _baseService.GetAllAnotacao(idAss);
             return lista;
         }
 
@@ -268,20 +273,9 @@ namespace ApplicationServices.Services
                 }
 
                 // Verifica existencia prévia
-                if (_baseService.CheckExist(item, usuario.USUA_CD_ID, usuario.ASSI_CD_ID) != null)
-                {
-                    return 1;
-                }
 
                 // Completa objeto
                 item.CRM1_IN_ATIVO = 1;
-
-                // Serializa registro
-                PRECATORIO cli = _preService.GetItemById(item.PREC_CD_ID.Value);
-                String serial = item.ASSI_CD_ID.ToString() + "|" + cli.PREC_NM_PRECATORIO + "|" + item.CRM1_DS_DESCRICAO + "|" + item.CRM1_DT_CRIACAO.Value.ToShortDateString() + "|" + item.CRM1_IN_ATIVO.ToString() + "|" + item.CRM1_IN_STATUS.ToString() + "|" + item.CRM1_NM_NOME;
-
-                item.USUA_CD_ID = cli.USUA_CD_ID;
-
 
                 // Monta Log
                 LOG log = new LOG
@@ -291,37 +285,25 @@ namespace ApplicationServices.Services
                     ASSI_CD_ID = usuario.ASSI_CD_ID,
                     LOG_NM_OPERACAO = "AddCRM",
                     LOG_IN_ATIVO = 1,
-                    LOG_TX_REGISTRO = serial
+                    LOG_TX_REGISTRO = Serialization.SerializeJSON<CRM>(item),
+                    LOG_IN_SISTEMA = 1
                 };
-                
+
                 // Persiste
                 Int32 volta = _baseService.Create(item, log);
 
                 // Gera diario
+                CLIENTE cli = _cliService.GetItemById(item.CLIE_CD_ID);
                 DIARIO_PROCESSO dia = new DIARIO_PROCESSO();
                 dia.ASSI_CD_ID = usuario.ASSI_CD_ID;
                 dia.USUA_CD_ID = usuario.USUA_CD_ID;
                 dia.DIPR_DT_DATA = DateTime.Today.Date;
                 dia.CRM1_CD_ID = item.CRM1_CD_ID;
                 dia.DIPR_NM_OPERACAO = "Criação de Processo";
-                dia.DIPR_DS_DESCRICAO = "Criação do Processo " + item.CRM1_NM_NOME + ". Precatório: " + cli.PREC_NM_PRECATORIO;
+                dia.DIPR_DS_DESCRICAO = "Criação do Processo " + item.CRM1_NM_NOME + ". Cliente: " + cli.CLIE_NM_NOME;
+                dia.EMPR_CD_ID = usuario.EMPR_CD_ID;
                 Int32 volta1 = _baseService.CreateDiario(dia);
-
-                // Gera Notificação
-                NOTIFICACAO noti = new NOTIFICACAO();
-                noti.CANO_CD_ID = 1;
-                noti.ASSI_CD_ID = usuario.ASSI_CD_ID;
-                noti.NOTI_DT_EMISSAO = DateTime.Now;
-                noti.NOTI_DT_VALIDADE = DateTime.Today.Date.AddDays(30);
-                noti.NOTI_IN_VISTA = 0;
-                noti.NOTI_NM_TITULO = "Atribuição de Processo CRM";
-                noti.NOTI_IN_ATIVO = 1;
-                noti.NOTI_TX_TEXTO = "ATENÇÃO: O Processo CRM " + item.CRM1_NM_NOME + " do cliente " + cli.PREC_NM_PRECATORIO + " foi colocado sob sua responsabilidade em "  + DateTime.Today.Date.ToLongDateString() + ".";
-                noti.USUA_CD_ID = item.USUA_CD_ID.Value;
-                noti.NOTI_IN_STATUS = 1;
-                noti.NOTI_IN_NIVEL = 1;
-                Int32 volta5 = _notiService.Create(noti);
-                return volta;
+                return log.LOG_CD_ID;
             }
             catch (Exception ex)
             {
@@ -356,12 +338,14 @@ namespace ApplicationServices.Services
                     {
                         return 4;
                     }
+                    if (item.CRM1_DS_MOTIVO_CANCELAMENTO == null)
+                    {
+                        return 5;
+                    }
                 }
 
                 // Serializa registro
                 CLIENTE cli = _cliService.GetItemById(item.CLIE_CD_ID);
-                String serial = item.ASSI_CD_ID.ToString() + "|" + cli.CLIE_NM_NOME + "|" + item.CRM1_CD_ID.ToString() + "|" + item.CRM1_DS_DESCRICAO + "|" + item.CRM1_DT_CRIACAO.Value.ToShortDateString() + "|" + item.CRM1_IN_ATIVO.ToString() + "|" + item.CRM1_IN_STATUS.ToString() + "|" + item.CRM1_NM_NOME;
-                String antes = itemAntes.ASSI_CD_ID.ToString() + "|" + cli.CLIE_NM_NOME + "|" + itemAntes.CRM1_CD_ID.ToString() + "|" + itemAntes.CRM1_DS_DESCRICAO + "|" + itemAntes.CRM1_DT_CRIACAO.Value.ToShortDateString() + "|" + itemAntes.CRM1_IN_ATIVO.ToString() + "|" + itemAntes.CRM1_IN_STATUS.ToString() + "|" + itemAntes.CRM1_NM_NOME;
 
                 // Monta Log
                 LOG log = new LOG();
@@ -372,10 +356,11 @@ namespace ApplicationServices.Services
                         LOG_DT_DATA = DateTime.Now,
                         USUA_CD_ID = usuario.USUA_CD_ID,
                         ASSI_CD_ID = usuario.ASSI_CD_ID,
-                        LOG_NM_OPERACAO = "CancCRM",
+                        LOG_NM_OPERACAO = "CanCRM",
                         LOG_IN_ATIVO = 1,
-                        LOG_TX_REGISTRO = serial,
-                        LOG_TX_REGISTRO_ANTES = antes
+                        LOG_TX_REGISTRO = Serialization.SerializeJSON<CRM>(item),
+                        LOG_TX_REGISTRO_ANTES = Serialization.SerializeJSON<CRM>(itemAntes),
+                        LOG_IN_SISTEMA = 1
                     };
                 }
                 else if (item.CRM1_DT_PREVISAO_ENTREGA != null)
@@ -385,10 +370,11 @@ namespace ApplicationServices.Services
                         LOG_DT_DATA = DateTime.Now,
                         USUA_CD_ID = usuario.USUA_CD_ID,
                         ASSI_CD_ID = usuario.ASSI_CD_ID,
-                        LOG_NM_OPERACAO = "ExpeCRM",
+                        LOG_NM_OPERACAO = "ExpCRM",
                         LOG_IN_ATIVO = 1,
-                        LOG_TX_REGISTRO = serial,
-                        LOG_TX_REGISTRO_ANTES = antes
+                        LOG_TX_REGISTRO = Serialization.SerializeJSON<CRM>(item),
+                        LOG_TX_REGISTRO_ANTES = Serialization.SerializeJSON<CRM>(itemAntes),
+                        LOG_IN_SISTEMA = 1
                     };
                 }
                 else
@@ -398,10 +384,11 @@ namespace ApplicationServices.Services
                         LOG_DT_DATA = DateTime.Now,
                         USUA_CD_ID = usuario.USUA_CD_ID,
                         ASSI_CD_ID = usuario.ASSI_CD_ID,
-                        LOG_NM_OPERACAO = "EditCRM",
+                        LOG_NM_OPERACAO = "EdtCRM",
                         LOG_IN_ATIVO = 1,
-                        LOG_TX_REGISTRO = serial,
-                        LOG_TX_REGISTRO_ANTES = antes
+                        LOG_TX_REGISTRO = null,
+                        LOG_TX_REGISTRO_ANTES = null,
+                        LOG_IN_SISTEMA = 1
                     };
                 }
 
@@ -420,21 +407,7 @@ namespace ApplicationServices.Services
                 dia.DIPR_DS_DESCRICAO = "Alteração do Processo " + item.CRM1_NM_NOME + ". Cliente: " + cli.CLIE_NM_NOME;
                 Int32 volta3 = _baseService.CreateDiario(dia);
 
-                // Gera Notificação
-                NOTIFICACAO noti = new NOTIFICACAO();
-                noti.CANO_CD_ID = 1;
-                noti.ASSI_CD_ID = usuario.ASSI_CD_ID;
-                noti.NOTI_DT_EMISSAO = DateTime.Today;
-                noti.NOTI_DT_VALIDADE = DateTime.Today.Date.AddDays(30);
-                noti.NOTI_IN_VISTA = 0;
-                noti.NOTI_NM_TITULO = "Alteração de Processo CRM";
-                noti.NOTI_IN_ATIVO = 1;
-                noti.NOTI_TX_TEXTO = "ATENÇÃO: O Processo CRM " + item.CRM1_NM_NOME + " do cliente " + cli.CLIE_NM_NOME + " sob sua responsabilidade, foi alterado em " + DateTime.Today.Date.ToLongDateString() + ".";
-                noti.USUA_CD_ID = usuario.USUA_CD_ID;
-                noti.NOTI_IN_STATUS = 1;
-                noti.NOTI_IN_NIVEL = 1;
-                Int32 volta1 = _notiService.Create(noti);
-                return volta;
+                return log.LOG_CD_ID;
             }
             catch (Exception ex)
             {
@@ -472,8 +445,6 @@ namespace ApplicationServices.Services
 
                 // Serializa registro
                 CLIENTE cli = _cliService.GetItemById(item.CLIE_CD_ID);
-                String serial = item.ASSI_CD_ID.ToString() + "|" + cli.CLIE_NM_NOME + "|" + item.CRM1_CD_ID.ToString() + "|" + item.CRM1_DS_DESCRICAO + "|" + item.CRM1_DT_CRIACAO.Value.ToShortDateString() + "|" + item.CRM1_IN_ATIVO.ToString() + "|" + item.CRM1_IN_STATUS.ToString() + "|" + item.CRM1_NM_NOME;
-                String antes = itemAntes.ASSI_CD_ID.ToString() + "|" + cli.CLIE_NM_NOME + "|" + itemAntes.CRM1_CD_ID.ToString() + "|" + itemAntes.CRM1_DS_DESCRICAO + "|" + itemAntes.CRM1_DT_CRIACAO.Value.ToShortDateString() + "|" + itemAntes.CRM1_IN_ATIVO.ToString() + "|" + itemAntes.CRM1_IN_STATUS.ToString() + "|" + itemAntes.CRM1_NM_NOME;
 
                 // Monta Log
                 LOG log = new LOG();
@@ -484,10 +455,11 @@ namespace ApplicationServices.Services
                         LOG_DT_DATA = DateTime.Now,
                         USUA_CD_ID = usuario.USUA_CD_ID,
                         ASSI_CD_ID = usuario.ASSI_CD_ID,
-                        LOG_NM_OPERACAO = "CancCRM",
+                        LOG_NM_OPERACAO = "CanCRM",
                         LOG_IN_ATIVO = 1,
-                        LOG_TX_REGISTRO = serial,
-                        LOG_TX_REGISTRO_ANTES = antes
+                        LOG_TX_REGISTRO = Serialization.SerializeJSON<CRM>(item),
+                        LOG_TX_REGISTRO_ANTES = Serialization.SerializeJSON<CRM>(itemAntes),
+                        LOG_IN_SISTEMA = 1
                     };
                 }
                 else
@@ -497,10 +469,11 @@ namespace ApplicationServices.Services
                         LOG_DT_DATA = DateTime.Now,
                         USUA_CD_ID = usuario.USUA_CD_ID,
                         ASSI_CD_ID = usuario.ASSI_CD_ID,
-                        LOG_NM_OPERACAO = "EditCRM",
+                        LOG_NM_OPERACAO = "EdtCRM",
                         LOG_IN_ATIVO = 1,
-                        LOG_TX_REGISTRO = serial,
-                        LOG_TX_REGISTRO_ANTES = antes
+                        LOG_TX_REGISTRO = Serialization.SerializeJSON<CRM>(item),
+                        LOG_TX_REGISTRO_ANTES = Serialization.SerializeJSON<CRM>(itemAntes),
+                        LOG_IN_SISTEMA = 1
                     };
                 }
 
@@ -508,7 +481,7 @@ namespace ApplicationServices.Services
                 item.CLIENTE = null;
                 item.CRM_ORIGEM = null;
                 Int32 volta = _baseService.Edit(item, log);
-                return volta;
+                return log.LOG_CD_ID;
             }
             catch (Exception ex)
             {
@@ -570,10 +543,6 @@ namespace ApplicationServices.Services
                     return 1;
                 }
 
-                // Serializa registro
-                CLIENTE cli = _cliService.GetItemById(item.CLIE_CD_ID);
-                String serial = item.ASSI_CD_ID.ToString() + "|" + cli.CLIE_NM_NOME + "|" + item.CRM1_CD_ID.ToString() + "|" + item.CRM1_DS_DESCRICAO + "|" + item.CRM1_DT_CRIACAO.Value.ToShortDateString() + "|" + item.CRM1_IN_ATIVO.ToString() + "|" + item.CRM1_IN_STATUS.ToString() + "|" + item.CRM1_NM_NOME + "|" + item.CRM_ORIGEM.CROR_NM_NOME;
-
                 // Monta Log
                 LOG log = new LOG
                 {
@@ -582,7 +551,9 @@ namespace ApplicationServices.Services
                     ASSI_CD_ID = usuario.ASSI_CD_ID,
                     LOG_IN_ATIVO = 1,
                     LOG_NM_OPERACAO = "DelCRM",
-                    LOG_TX_REGISTRO = serial
+                    //LOG_TX_REGISTRO = Serialization.SerializeJSON<CRM>(item),
+                    LOG_TX_REGISTRO = null,
+                    LOG_IN_SISTEMA = 1
                 };
 
                 // Persiste
@@ -595,10 +566,10 @@ namespace ApplicationServices.Services
                 dia.DIPR_DT_DATA = DateTime.Today.Date;
                 dia.CRM1_CD_ID = item.CRM1_CD_ID;
                 dia.DIPR_NM_OPERACAO = "Exclusão de Processo";
-                dia.DIPR_DS_DESCRICAO = "Exclusão do Processo " + item.CRM1_NM_NOME + ". Cliente: " + cli.CLIE_NM_NOME;
+                dia.DIPR_DS_DESCRICAO = "Exclusão do Processo " + item.CRM1_NM_NOME + ". Cliente: " + item.CLIENTE.CLIE_NM_NOME;
                 Int32 volta3 = _baseService.CreateDiario(dia);
 
-                return volta;
+                return log.LOG_CD_ID;
             }
             catch (Exception ex)
             {
@@ -617,7 +588,6 @@ namespace ApplicationServices.Services
 
                 // Serializa registro
                 CLIENTE cli = _cliService.GetItemById(item.CLIE_CD_ID);
-                String serial = item.ASSI_CD_ID.ToString() + "|" + cli.CLIE_NM_NOME + "|" + item.CRM1_CD_ID.ToString() + "|" + item.CRM1_DS_DESCRICAO + "|" + item.CRM1_DT_CRIACAO.Value.ToShortDateString() + "|" + item.CRM1_IN_ATIVO.ToString() + "|" + item.CRM1_IN_STATUS.ToString() + "|" + item.CRM1_NM_NOME + "|" + item.CRM_ORIGEM.CROR_NM_NOME;
 
                 // Monta Log
                 LOG log = new LOG
@@ -626,8 +596,10 @@ namespace ApplicationServices.Services
                     USUA_CD_ID = usuario.USUA_CD_ID,
                     ASSI_CD_ID = usuario.ASSI_CD_ID,
                     LOG_IN_ATIVO = 1,
-                    LOG_NM_OPERACAO = "ReatCRM",
-                    LOG_TX_REGISTRO = serial
+                    LOG_NM_OPERACAO = "ReaCRM",
+                    //LOG_TX_REGISTRO = Serialization.SerializeJSON<CRM>(item),
+                    LOG_TX_REGISTRO = null,
+                    LOG_IN_SISTEMA = 1
                 };
 
                 // Persiste
@@ -836,41 +808,6 @@ namespace ApplicationServices.Services
             }
         }
 
-        //public CRM_PEDIDO_VENDA_ITEM GetItemPedidoById(Int32 id)
-        //{
-        //    CRM_PEDIDO_VENDA_ITEM lista = _baseService.GetItemPedidoById(id);
-        //    return lista;
-        //}
-
-        //public Int32 ValidateCreateItemPedido(CRM_PEDIDO_VENDA_ITEM item)
-        //{
-        //    item.CRPI_IN_ATIVO = 1;
-
-        //    try
-        //    {
-        //        // Persiste
-        //        Int32 volta = _baseService.CreateItemPedido(item);
-        //        return volta;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        throw;
-        //    }
-        //}
-
-        //public Int32 ValidateEditItemPedido(CRM_PEDIDO_VENDA_ITEM item)
-        //{
-        //    try
-        //    {
-        //        // Persiste
-        //        return _baseService.EditItemPedido(item);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        throw;
-        //    }
-        //}
-
         public Int32 ValidateCancelarPedido(CRM_PEDIDO_VENDA item)
         {
             try
@@ -996,23 +933,6 @@ namespace ApplicationServices.Services
 
                 // Persiste
                 Int32 volta = _baseService.EditPedido(item);
-
-                // Gera Notificação
-                CRM crm = _baseService.GetItemById(item.CRM1_CD_ID.Value);
-                NOTIFICACAO noti = new NOTIFICACAO();
-                noti.CANO_CD_ID = 1;
-                noti.ASSI_CD_ID = item.ASSI_CD_ID.Value;
-                noti.NOTI_DT_EMISSAO = DateTime.Today;
-                noti.NOTI_DT_VALIDADE = DateTime.Today.Date.AddDays(30);
-                noti.NOTI_IN_VISTA = 0;
-                noti.NOTI_NM_TITULO = "Reprovação de Pedido";
-                noti.NOTI_IN_ATIVO = 1;
-                noti.NOTI_TX_TEXTO = "ATENÇÃO: P Pedido " + item.CRPV_NR_NUMERO + " do processo CRM " + crm.CRM1_NM_NOME + " foi reprovado pelo cliente em " + item.CRPV_DT_REPROVACAO.Value.ToLongDateString() + ".";
-                noti.USUA_CD_ID = item.USUA_CD_ID.Value;
-                noti.NOTI_IN_STATUS = 1;
-                noti.NOTI_IN_NIVEL = 1;
-                Int32 volta1 = _notiService.Create(noti);
-
                 return volta;
             }
             catch (Exception ex)
@@ -1046,23 +966,6 @@ namespace ApplicationServices.Services
 
                 // Persiste
                 Int32 volta = _baseService.EditPedido(item);
-
-                // Gera Notificação
-                CRM crm = _baseService.GetItemById(item.CRM1_CD_ID.Value);
-                NOTIFICACAO noti = new NOTIFICACAO();
-                noti.CANO_CD_ID = 1;
-                noti.ASSI_CD_ID = item.ASSI_CD_ID.Value;
-                noti.NOTI_DT_EMISSAO = DateTime.Today;
-                noti.NOTI_DT_VALIDADE = DateTime.Today.Date.AddDays(30);
-                noti.NOTI_IN_VISTA = 0;
-                noti.NOTI_NM_TITULO = "Reprovação de Pedido";
-                noti.NOTI_IN_ATIVO = 1;
-                noti.NOTI_TX_TEXTO = "ATENÇÃO: O Pedido " + item.CRPV_NR_NUMERO + " foi reprovado pelo cliente em " + item.CRPV_DT_REPROVACAO.Value.ToLongDateString() + ".";
-                noti.USUA_CD_ID = item.USUA_CD_ID.Value;
-                noti.NOTI_IN_STATUS = 1;
-                noti.NOTI_IN_NIVEL = 1;
-                Int32 volta1 = _notiService.Create(noti);
-
                 return volta;
             }
             catch (Exception ex)
@@ -1081,10 +984,6 @@ namespace ApplicationServices.Services
                 {
                     return 1;
                 }
-                //if (item.CRPV_DS_APROVACAO == null)
-                //{
-                //    return 2;
-                //}
                 if (item.CRPV_DT_APROVACAO < item.CRPV_DT_PEDIDO)
                 {
                     return 3;
@@ -1096,23 +995,6 @@ namespace ApplicationServices.Services
 
                 // Persiste
                 Int32 volta = _baseService.EditPedido(item);
-
-                // Gera Notificação
-                CRM crm = _baseService.GetItemById(item.CRM1_CD_ID.Value);
-                NOTIFICACAO noti = new NOTIFICACAO();
-                noti.CANO_CD_ID = 1;
-                noti.ASSI_CD_ID = item.ASSI_CD_ID.Value;
-                noti.NOTI_DT_EMISSAO = DateTime.Today;
-                noti.NOTI_DT_VALIDADE = DateTime.Today.Date.AddDays(30);
-                noti.NOTI_IN_VISTA = 0;
-                noti.NOTI_NM_TITULO = "Aprovação de Pedido";
-                noti.NOTI_IN_ATIVO = 1;
-                noti.NOTI_TX_TEXTO = "ATENÇÃO: O Pedido " + item.CRPV_NR_NUMERO + " do processo CRM " + crm.CRM1_NM_NOME + " foi aprovado pelo cliente em " + item.CRPV_DT_APROVACAO.Value.ToLongDateString() + ".";
-                noti.USUA_CD_ID = item.USUA_CD_ID.Value;
-                noti.NOTI_IN_STATUS = 1;
-                noti.NOTI_IN_NIVEL = 1;
-                Int32 volta1 = _notiService.Create(noti);
-
                 return volta;
             }
             catch (Exception ex)
@@ -1142,23 +1024,6 @@ namespace ApplicationServices.Services
 
                 // Persiste
                 Int32 volta = _baseService.EditPedido(item);
-
-                // Gera Notificação
-                CRM crm = _baseService.GetItemById(item.CRM1_CD_ID.Value);
-                NOTIFICACAO noti = new NOTIFICACAO();
-                noti.CANO_CD_ID = 1;
-                noti.ASSI_CD_ID = item.ASSI_CD_ID.Value;
-                noti.NOTI_DT_EMISSAO = DateTime.Today;
-                noti.NOTI_DT_VALIDADE = DateTime.Today.Date.AddDays(30);
-                noti.NOTI_IN_VISTA = 0;
-                noti.NOTI_NM_TITULO = "Faturamento de Venda";
-                noti.NOTI_IN_ATIVO = 1;
-                noti.NOTI_TX_TEXTO = "ATENÇÃO: A Venda " + item.CRPV_NR_NUMERO + " foi faturada em " + item.CRPV_DT_FATURAMENTO.Value.ToLongDateString() + ".";
-                noti.USUA_CD_ID = item.USUA_CD_ID.Value;
-                noti.NOTI_IN_STATUS = 1;
-                noti.NOTI_IN_NIVEL = 1;
-                Int32 volta1 = _notiService.Create(noti);
-
                 return volta;
             }
             catch (Exception ex)
@@ -1234,23 +1099,6 @@ namespace ApplicationServices.Services
 
                 // Persiste
                 Int32 volta = _baseService.EditPedido(item);
-
-                // Gera Notificação
-                CRM crm = _baseService.GetItemById(item.CRM1_CD_ID.Value);
-                NOTIFICACAO noti = new NOTIFICACAO();
-                noti.CANO_CD_ID = 1;
-                noti.ASSI_CD_ID = item.ASSI_CD_ID.Value;
-                noti.NOTI_DT_EMISSAO = DateTime.Today;
-                noti.NOTI_DT_VALIDADE = DateTime.Today.Date.AddDays(30);
-                noti.NOTI_IN_VISTA = 0;
-                noti.NOTI_NM_TITULO = "Expedição de Venda";
-                noti.NOTI_IN_ATIVO = 1;
-                noti.NOTI_TX_TEXTO = "ATENÇÃO: A Venda " + item.CRPV_NR_NUMERO + " foi entregue em " + item.CRPV_DT_ENTREGA.Value.ToLongDateString() + ".";
-                noti.USUA_CD_ID = item.USUA_CD_ID.Value;
-                noti.NOTI_IN_STATUS = 1;
-                noti.NOTI_IN_NIVEL = 1;
-                Int32 volta1 = _notiService.Create(noti);
-
                 return volta;
             }
             catch (Exception ex)
@@ -1284,23 +1132,6 @@ namespace ApplicationServices.Services
 
                 // Persiste
                 Int32 volta = _baseService.EditPedido(item);
-
-                // Gera Notificação
-                CRM crm = _baseService.GetItemById(item.CRM1_CD_ID.Value);
-                NOTIFICACAO noti = new NOTIFICACAO();
-                noti.CANO_CD_ID = 1;
-                noti.ASSI_CD_ID = item.ASSI_CD_ID.Value;
-                noti.NOTI_DT_EMISSAO = DateTime.Today;
-                noti.NOTI_DT_VALIDADE = DateTime.Today.Date.AddDays(30);
-                noti.NOTI_IN_VISTA = 0;
-                noti.NOTI_NM_TITULO = "Aprovação de Pedido";
-                noti.NOTI_IN_ATIVO = 1;
-                noti.NOTI_TX_TEXTO = "ATENÇÃO: O Pedido " + item.CRPV_NR_NUMERO + " do processo CRM " + crm.CRM1_NM_NOME + " foi aprovado pelo cliente em " + item.CRPV_DT_APROVACAO.Value.ToLongDateString() + ".";
-                noti.USUA_CD_ID = item.USUA_CD_ID.Value;
-                noti.NOTI_IN_STATUS = 1;
-                noti.NOTI_IN_NIVEL = 1;
-                Int32 volta1 = _notiService.Create(noti);
-
                 return volta;
             }
             catch (Exception ex)
@@ -1330,22 +1161,6 @@ namespace ApplicationServices.Services
 
                 // Persiste
                 Int32 volta = _baseService.EditPedido(item);
-
-                // Gera Notificação
-                CRM crm = _baseService.GetItemById(item.CRM1_CD_ID.Value);
-                NOTIFICACAO noti = new NOTIFICACAO();
-                noti.CANO_CD_ID = 1;
-                noti.ASSI_CD_ID = item.ASSI_CD_ID.Value;
-                noti.NOTI_DT_EMISSAO = DateTime.Today;
-                noti.NOTI_DT_VALIDADE = DateTime.Today.Date.AddDays(30);
-                noti.NOTI_IN_VISTA = 0;
-                noti.NOTI_NM_TITULO = "Envio de Pedido";
-                noti.NOTI_IN_ATIVO = 1;
-                noti.NOTI_TX_TEXTO = "ATENÇÃO: O Pedido " + item.CRPV_NR_NUMERO + " do processo CRM " + crm.CRM1_NM_NOME + " foi enviado para o cliente em " + item.CRPV_DT_ENVIO.Value.ToLongDateString() + ".";
-                noti.USUA_CD_ID = item.USUA_CD_ID.Value;
-                noti.NOTI_IN_STATUS = 1;
-                noti.NOTI_IN_NIVEL = 1;
-                Int32 volta1 = _notiService.Create(noti);
                 return volta;
             }
             catch (Exception ex)
@@ -1379,21 +1194,6 @@ namespace ApplicationServices.Services
 
                 // Persiste
                 Int32 volta = _baseService.EditPedido(item);
-
-                // Gera Notificação
-                NOTIFICACAO noti = new NOTIFICACAO();
-                noti.CANO_CD_ID = 1;
-                noti.ASSI_CD_ID = item.ASSI_CD_ID.Value;
-                noti.NOTI_DT_EMISSAO = DateTime.Today;
-                noti.NOTI_DT_VALIDADE = DateTime.Today.Date.AddDays(30);
-                noti.NOTI_IN_VISTA = 0;
-                noti.NOTI_NM_TITULO = "Envio de Pedido";
-                noti.NOTI_IN_ATIVO = 1;
-                noti.NOTI_TX_TEXTO = "ATENÇÃO: O Pedido " + item.CRPV_NR_NUMERO + " foi enviado para o cliente em " + item.CRPV_DT_ENVIO.Value.ToLongDateString() + ".";
-                noti.USUA_CD_ID = item.USUA_CD_ID.Value;
-                noti.NOTI_IN_STATUS = 1;
-                noti.NOTI_IN_NIVEL = 1;
-                Int32 volta1 = _notiService.Create(noti);
                 return volta;
             }
             catch (Exception ex)
@@ -1401,5 +1201,19 @@ namespace ApplicationServices.Services
                 throw;
             }
         }
+
+        public Int32 ValidateEditAnexo(CRM_ANEXO item)
+        {
+            try
+            {
+                // Persiste
+                return _baseService.EditAnexo(item);
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
     }
 }

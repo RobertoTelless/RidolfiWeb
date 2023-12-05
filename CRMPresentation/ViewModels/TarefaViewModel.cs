@@ -44,6 +44,49 @@ namespace ERP_Condominios_Solution.ViewModels
         public Nullable<int> TARE_IN_TAREFA_PAI { get; set; }
         public string TARE_NM_ORDEM { get; set; }
 
+        public String Prioridade
+        {
+            get
+            {
+                if (TARE_IN_PRIORIDADE == 2)
+                {
+                    return "Baixa";
+                }
+                if (TARE_IN_PRIORIDADE == 3)
+                {
+                    return "Alta";
+                }
+                if (TARE_IN_PRIORIDADE == 4)
+                {
+                    return "Urgente";
+                }
+                return "Normal";
+            }
+        }
+        public String Status
+        {
+            get
+            {
+                if (TARE_IN_STATUS == 2)
+                {
+                    return "Em Andamento";
+                }
+                if (TARE_IN_STATUS == 3)
+                {
+                    return "Suspensa";
+                }
+                if (TARE_IN_STATUS == 4)
+                {
+                    return "Cancelada";
+                }
+                if (TARE_IN_STATUS == 5)
+                {
+                    return "Encerrada";
+                }
+                return "Para Iniciar";
+            }
+        }
+
         public virtual PERIODICIDADE_TAREFA PERIODICIDADE_TAREFA { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<TAREFA_ACOMPANHAMENTO> TAREFA_ACOMPANHAMENTO { get; set; }

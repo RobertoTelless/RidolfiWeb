@@ -50,5 +50,38 @@ namespace DataServices.Repositories
         {
             throw new NotImplementedException();
         }
+
+        //protected DbBackupEntities bkp = new DbBackupEntities();
+
+        //public void AddBkp(TEntity obj)
+        //{
+        //    bkp.Set<TEntity>().Add(obj);
+        //    bkp.SaveChanges();
+        //}
+
+        //public TEntity GetByIdBkp(int? id)
+        //{
+        //    return bkp.Set<TEntity>().Find(id);
+        //}
+
+        //public IEnumerable<TEntity> GetAllBkp()
+        //{
+        //    return bkp.Set<TEntity>().ToList();
+        //}
+
+        //public void UpdateBkp(TEntity obj)
+        //{
+        //    bkp.Entry(obj).State = EntityState.Modified;
+        //    bkp.SaveChanges();
+        //}
+        //public void DetachBkp(TEntity obj)
+        //{
+        //    bkp.Entry(obj).State = EntityState.Detached;
+        //}
+        //public void RemoveBkp(TEntity obj)
+        //{
+        //    bkp.Set<TEntity>().Remove(obj);
+        //    bkp.SaveChanges();
+        //}
     }
 }

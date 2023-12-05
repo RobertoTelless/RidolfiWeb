@@ -12,6 +12,7 @@ using System.Text.RegularExpressions;
 
 namespace ApplicationServices.Services
 {
+
     public class FilialAppService : AppServiceBase<FILIAL>, IFilialAppService
     {
         private readonly IFilialService _baseService;

@@ -29,6 +29,7 @@ namespace DataServices.Repositories
             query = query.Where(p => p.ASSI_CD_ID == idAss);
             query = query.Where(p => DbFunctions.TruncateTime(p.LOG_DT_DATA).Value <= DbFunctions.TruncateTime(hoje).Value);
             query = query.Where(p => DbFunctions.TruncateTime(p.LOG_DT_DATA).Value >= DbFunctions.TruncateTime(doze).Value);
+            query = query.Include(p => p.USUARIO);
             query = query.OrderByDescending(a => a.LOG_DT_DATA);
             return query.ToList();
         }
@@ -38,6 +39,16 @@ namespace DataServices.Repositories
             IQueryable<LOG> query = Db.LOG.Where(p => p.LOG_IN_ATIVO == 1);
             query = query.Where(p => p.ASSI_CD_ID == idAss);
             query = query.Where(p => DbFunctions.TruncateTime(p.LOG_DT_DATA) == DbFunctions.TruncateTime(DateTime.Today.Date));
+            query = query.OrderByDescending(a => a.LOG_DT_DATA);
+            return query.ToList();
+        }
+
+        public List<LOG> GetLogByFaixa(DateTime inicio, DateTime final, Int32 idAss)
+        {
+            IQueryable<LOG> query = Db.LOG.Where(p => p.LOG_IN_ATIVO == 1);
+            query = query.Where(p => p.ASSI_CD_ID == idAss);
+            query = query.Where(p => DbFunctions.TruncateTime(p.LOG_DT_DATA) >= DbFunctions.TruncateTime(inicio));
+            query = query.Where(p => DbFunctions.TruncateTime(p.LOG_DT_DATA) <= DbFunctions.TruncateTime(final));
             query = query.OrderByDescending(a => a.LOG_DT_DATA);
             return query.ToList();
         }
@@ -90,6 +101,7 @@ namespace DataServices.Repositories
             if (query != null)
             {
                 query = query.Where(p => p.ASSI_CD_ID == idAss);
+                query = query.Include(p => p.USUARIO);
                 query = query.OrderByDescending(a => a.LOG_DT_DATA);
                 lista = query.ToList<LOG>();
             }

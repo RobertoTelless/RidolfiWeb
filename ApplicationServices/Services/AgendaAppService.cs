@@ -129,6 +129,25 @@ namespace ApplicationServices.Services
                     {
                         return 1;
                     }
+                    if (item.AGEN_HR_FINAL < DateTime.Now.TimeOfDay)
+                    {
+                        return 1;
+                    }
+                }
+                if (item.AGEN_HR_HORA > item.AGEN_HR_FINAL)
+                {
+                    return 3;
+                }
+
+                List<AGENDA> lista = _baseService.GetByUser(usuario.USUA_CD_ID, usuario.ASSI_CD_ID).Where(p => p.AGEN_DT_DATA == item.AGEN_DT_DATA).ToList();
+                List<AGENDA> lista1 = lista.Where(p => p.AGEN_HR_HORA < item.AGEN_HR_HORA & p.AGEN_HR_FINAL > item.AGEN_HR_FINAL).ToList();
+                List<AGENDA> lista2 = lista.Where(p => p.AGEN_HR_HORA < item.AGEN_HR_HORA & p.AGEN_HR_FINAL < item.AGEN_HR_FINAL & p.AGEN_HR_FINAL > item.AGEN_HR_HORA).ToList();
+                List<AGENDA> lista3 = lista.Where(p => p.AGEN_HR_HORA > item.AGEN_HR_HORA & p.AGEN_HR_FINAL > item.AGEN_HR_FINAL & p.AGEN_HR_HORA < item.AGEN_HR_FINAL).ToList();
+                List<AGENDA> lista4 = lista.Where(p => p.AGEN_HR_HORA > item.AGEN_HR_HORA & p.AGEN_HR_FINAL < item.AGEN_HR_FINAL).ToList();
+
+                if (lista1.Count > 0 || lista2.Count > 0 || lista3.Count > 0 || lista4.Count > 0)
+                {
+                    return 2;
                 }
 
                 // Completa objeto
@@ -147,7 +166,7 @@ namespace ApplicationServices.Services
 
                 // Persiste
                 Int32 volta = _baseService.Create(item, log);
-                return volta;
+                return log.LOG_CD_ID;
             }
             catch (Exception ex)
             {
@@ -159,8 +178,140 @@ namespace ApplicationServices.Services
         {
             try
             {
+                // Ajustes
+                itemAntes.CATEGORIA_AGENDA = null;
+                itemAntes.USUARIO = null;
+                itemAntes.USUARIO1 = null;
+
+                // Verifica data e hora
+                if (item.AGEN_DT_DATA < DateTime.Today.Date)
+                {
+                    return 1;
+                }
+                if (item.AGEN_DT_DATA == DateTime.Today.Date)
+                {
+                    if (item.AGEN_HR_HORA < DateTime.Now.TimeOfDay)
+                    {
+                        return 1;
+                    }
+                    if (item.AGEN_HR_FINAL < DateTime.Now.TimeOfDay)
+                    {
+                        return 1;
+                    }
+                }
+                if (item.AGEN_HR_HORA > item.AGEN_HR_FINAL)
+                {
+                    return 3;
+                }
+
+                List<AGENDA> lista = _baseService.GetByUser(usuario.USUA_CD_ID, usuario.ASSI_CD_ID).Where(p => p.AGEN_DT_DATA == item.AGEN_DT_DATA).ToList();
+                List<AGENDA> lista1 = lista.Where(p => p.AGEN_HR_HORA < item.AGEN_HR_HORA & p.AGEN_HR_FINAL > item.AGEN_HR_FINAL).ToList();
+                List<AGENDA> lista2 = lista.Where(p => p.AGEN_HR_HORA < item.AGEN_HR_HORA & p.AGEN_HR_FINAL < item.AGEN_HR_FINAL & p.AGEN_HR_FINAL > item.AGEN_HR_HORA).ToList();
+                List<AGENDA> lista3 = lista.Where(p => p.AGEN_HR_HORA > item.AGEN_HR_HORA & p.AGEN_HR_FINAL > item.AGEN_HR_FINAL & p.AGEN_HR_HORA < item.AGEN_HR_FINAL).ToList();
+                List<AGENDA> lista4 = lista.Where(p => p.AGEN_HR_HORA > item.AGEN_HR_HORA & p.AGEN_HR_FINAL < item.AGEN_HR_FINAL).ToList();
+
+                if (lista1.Count > 0 || lista2.Count > 0 || lista3.Count > 0 || lista4.Count > 0)
+                {
+                    return 2;
+                }
+
+                // Monta Log
+                LOG log = new LOG
+                {
+                    LOG_DT_DATA = DateTime.Now,
+                    ASSI_CD_ID = usuario.ASSI_CD_ID,
+                    USUA_CD_ID = usuario.USUA_CD_ID,
+                    LOG_NM_OPERACAO = "EdtAGEN",
+                    LOG_IN_ATIVO = 1,
+                    LOG_TX_REGISTRO = Serialization.SerializeJSON<AGENDA>(item),
+                    LOG_TX_REGISTRO_ANTES = Serialization.SerializeJSON<AGENDA>(item)
+                };
+
                 // Persiste
-                return _baseService.Edit(item);
+                Int32 volta = _baseService.Edit(item, log);
+                return log.LOG_CD_ID;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
+        public Int32 ValidateEdit(AGENDA item, USUARIO usuario)
+        {
+            try
+            {
+                // Verifica data e hora
+                if (item.AGEN_DT_DATA < DateTime.Today.Date)
+                {
+                    return 1;
+                }
+                if (item.AGEN_DT_DATA == DateTime.Today.Date)
+                {
+                    if (item.AGEN_HR_HORA < DateTime.Now.TimeOfDay)
+                    {
+                        return 1;
+                    }
+                    if (item.AGEN_HR_FINAL < DateTime.Now.TimeOfDay)
+                    {
+                        return 1;
+                    }
+                }
+                if (item.AGEN_HR_HORA > item.AGEN_HR_FINAL)
+                {
+                    return 3;
+                }
+
+                // Monta Log
+                LOG log = new LOG
+                {
+                    LOG_DT_DATA = DateTime.Now,
+                    ASSI_CD_ID = usuario.ASSI_CD_ID,
+                    USUA_CD_ID = usuario.USUA_CD_ID,
+                    LOG_NM_OPERACAO = "EdtAGEN",
+                    LOG_IN_ATIVO = 1,
+                    LOG_TX_REGISTRO = Serialization.SerializeJSON<AGENDA>(item),
+                    LOG_TX_REGISTRO_ANTES = Serialization.SerializeJSON<AGENDA>(item)
+                };
+
+                // Persiste
+                Int32 volta = _baseService.Edit(item, log);
+                return log.LOG_CD_ID;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
+        public Int32 ValidateEdit(AGENDA item)
+        {
+            try
+            {
+                // Verifica data e hora
+                if (item.AGEN_DT_DATA < DateTime.Today.Date)
+                {
+                    return 1;
+                }
+                if (item.AGEN_DT_DATA == DateTime.Today.Date)
+                {
+                    if (item.AGEN_HR_HORA < DateTime.Now.TimeOfDay)
+                    {
+                        return 1;
+                    }
+                    if (item.AGEN_HR_FINAL < DateTime.Now.TimeOfDay)
+                    {
+                        return 1;
+                    }
+                }
+                if (item.AGEN_HR_HORA > item.AGEN_HR_FINAL)
+                {
+                    return 3;
+                }
+
+                // Persiste
+                Int32 volta = _baseService.Edit(item);
+                return volta;
             }
             catch (Exception ex)
             {
@@ -172,6 +323,11 @@ namespace ApplicationServices.Services
         {
             try
             {
+                // Ajustes
+                //item.CATEGORIA_AGENDA = null;
+                //item.USUARIO1 = null;
+                //item.AGENDA_CONTATO = null;
+
                 // Acerta campos
                 item.AGEN_IN_ATIVO = 0;
 
@@ -183,11 +339,13 @@ namespace ApplicationServices.Services
                     USUA_CD_ID = usuario.USUA_CD_ID,
                     LOG_IN_ATIVO = 1,
                     LOG_NM_OPERACAO = "DelAGEN",
-                    LOG_TX_REGISTRO = item.AGEN_CD_ID.ToString() + "|" + item.CATEGORIA_AGENDA.CAAG_NM_NOME + "|" + item.AGEN_DS_DESCRICAO + "|" + item.AGEN_DT_DATA.ToShortDateString() + "|" + item.AGEN_HR_HORA.ToString() + "|" + item.AGEN_NM_TITULO + "|" + item.USUARIO.USUA_NM_NOME + "|" + item.AGEN_TX_OBSERVACOES
+                    //LOG_TX_REGISTRO = Serialization.SerializeJSON<AGENDA>(item),
+                    LOG_TX_REGISTRO = null
                 };
 
                 // Persiste
-                return _baseService.Edit(item, log);
+                Int32 volta = _baseService.Edit(item, log);
+                return log.LOG_CD_ID;
             }
             catch (Exception ex)
             {
@@ -199,6 +357,13 @@ namespace ApplicationServices.Services
         {
             try
             {
+                // Ajustes
+                //item.CATEGORIA_AGENDA = null;
+                //item.USUARIO1 = null;
+                //item.USUARIO = null;
+                //item.CRM = null;
+                //item.AGENDA_CONTATO = null;
+
                 // Verifica integridade referencial
 
                 // Acerta campos
@@ -211,17 +376,67 @@ namespace ApplicationServices.Services
                     ASSI_CD_ID = usuario.ASSI_CD_ID,
                     USUA_CD_ID = usuario.USUA_CD_ID,
                     LOG_IN_ATIVO = 1,
-                    LOG_NM_OPERACAO = "ReatAGEN",
-                    LOG_TX_REGISTRO = item.AGEN_CD_ID.ToString() + "|" + item.CATEGORIA_AGENDA.CAAG_NM_NOME + "|" + item.AGEN_DS_DESCRICAO + "|" + item.AGEN_DT_DATA.ToShortDateString() + "|" + item.AGEN_HR_HORA.ToString() + "|" + item.AGEN_NM_TITULO + "|" + item.USUARIO.USUA_NM_NOME + "|" + item.AGEN_TX_OBSERVACOES
-            };
+                    LOG_NM_OPERACAO = "ReaAGEN",
+                    //LOG_TX_REGISTRO = Serialization.SerializeJSON<AGENDA>(item),
+                    LOG_TX_REGISTRO = null
+                };
 
-            // Persiste
-            return _baseService.Edit(item, log);
+                // Persiste
+                Int32 volta = _baseService.Edit(item, log);
+                return log.LOG_CD_ID;
             }
             catch (Exception ex)
             {
                 throw;
             }
         }
+
+        public Int32 ValidateEditAnexo(AGENDA_ANEXO item)
+        {
+            try
+            {
+                // Persiste
+                return _baseService.EditAnexo(item);
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
+        public AGENDA_CONTATO GetContatoById(Int32 id)
+        {
+            AGENDA_CONTATO lista = _baseService.GetContatoById(id);
+            return lista;
+        }
+
+        public Int32 ValidateEditContato(AGENDA_CONTATO item)
+        {
+            try
+            {
+                // Persiste
+                return _baseService.EditContato(item);
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
+        public Int32 ValidateCreateContato(AGENDA_CONTATO item)
+        {
+            try
+            {
+                // Persiste
+                item.AGCO_IN_ATIVO = 1;
+                Int32 volta = _baseService.CreateContato(item);
+                return volta;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
     }
 }

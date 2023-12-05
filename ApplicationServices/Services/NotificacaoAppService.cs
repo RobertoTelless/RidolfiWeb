@@ -105,12 +105,13 @@ namespace ApplicationServices.Services
                     ASSI_CD_ID = usuario.ASSI_CD_ID,
                     LOG_NM_OPERACAO = "AddNOTI",
                     LOG_IN_ATIVO = 1,
-                    LOG_TX_REGISTRO = Serialization.SerializeJSON<NOTIFICACAO>(item)
+                    LOG_TX_REGISTRO = Serialization.SerializeJSON<NOTIFICACAO>(item),
+                    LOG_IN_SISTEMA = 1
                 };
 
                 // Persiste
                 Int32 volta = _baseService.Create(item, log);
-                return volta;
+                return log.LOG_CD_ID;
             }
             catch (Exception ex)
             {
@@ -128,14 +129,17 @@ namespace ApplicationServices.Services
                     LOG_DT_DATA = DateTime.Now,
                     USUA_CD_ID = usuario.USUA_CD_ID,
                     ASSI_CD_ID = usuario.ASSI_CD_ID,
-                    LOG_NM_OPERACAO = "EditNOTI",
+                    LOG_NM_OPERACAO = "EdtNOTI",
                     LOG_IN_ATIVO = 1,
                     LOG_TX_REGISTRO = Serialization.SerializeJSON<NOTIFICACAO>(item),
-                    LOG_TX_REGISTRO_ANTES = Serialization.SerializeJSON<NOTIFICACAO>(itemAntes)
+                    LOG_TX_REGISTRO_ANTES = Serialization.SerializeJSON<NOTIFICACAO>(itemAntes),
+                    LOG_IN_SISTEMA = 1
+
                 };
 
                 // Persiste
-                return _baseService.Edit(item, log);
+                Int32 volta = _baseService.Edit(item, log);
+                return log.LOG_CD_ID;
             }
             catch (Exception ex)
             {
@@ -176,11 +180,14 @@ namespace ApplicationServices.Services
                     ASSI_CD_ID = usuario.ASSI_CD_ID,
                     LOG_IN_ATIVO = 1,
                     LOG_NM_OPERACAO = "DelNOTI",
-                    LOG_TX_REGISTRO = "Notificação: " + item.NOTI_NM_TITULO
+                    LOG_TX_REGISTRO = "Notificação: " + item.NOTI_NM_TITULO,
+                    LOG_IN_SISTEMA = 1
+
                 };
 
                 // Persiste
-                return _baseService.Edit(item, log);
+                Int32 volta = _baseService.Edit(item, log);
+                return log.LOG_CD_ID;
             }
             catch (Exception ex)
             {
@@ -204,17 +211,34 @@ namespace ApplicationServices.Services
                     USUA_CD_ID = usuario.USUA_CD_ID,
                     ASSI_CD_ID = usuario.ASSI_CD_ID,
                     LOG_IN_ATIVO = 1,
-                    LOG_NM_OPERACAO = "ReatNOTI",
-                    LOG_TX_REGISTRO = "Notificação: " + item.NOTI_NM_TITULO
+                    LOG_NM_OPERACAO = "ReaNOTI",
+                    LOG_TX_REGISTRO = "Notificação: " + item.NOTI_NM_TITULO,
+                    LOG_IN_SISTEMA = 1
+
                 };
 
                 // Persiste
-                return _baseService.Edit(item, log);
+                Int32 volta = _baseService.Edit(item, log);
+                return log.LOG_CD_ID;
             }
             catch (Exception ex)
             {
                 throw;
             }
         }
+
+        public Int32 ValidateEditAnexo(NOTIFICACAO_ANEXO item)
+        {
+            try
+            {
+                // Persiste
+                return _baseService.EditAnexo(item);
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
     }
 }

@@ -16,7 +16,6 @@ namespace ERP_Condominios_Solution.ViewModels
         [DataType(DataType.Date, ErrorMessage = "Deve ser uma data válida")]
         public Nullable<System.DateTime> USAN_DT_ANOTACAO { get; set; }
         public int USAN_IN_AUTOR { get; set; }
-        [StringLength(5000, MinimumLength = 1, ErrorMessage = "O COMENTÁRIO deve conter no minimo 1 caracteres e no máximo 5000.")]
         public string USAN_TX_ANOTACAO { get; set; }
         public Nullable<int> USAN_IN_ATIVO { get; set; }
 

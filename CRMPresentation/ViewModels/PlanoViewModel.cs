@@ -16,10 +16,12 @@ namespace ERP_Condominios_Solution.ViewModels
         public string PLAN_NM_NOME { get; set; }
         [Required(ErrorMessage = "Campo DATA DE CRIAÇÃO obrigatorio")]
         [DataType(DataType.Date, ErrorMessage = "A DATA DE CRIAÇÃO deve ser uma data válida")]
+        [RegularExpression(@"^([a-zA-Zà-úÀ-Ú0-9@#$%&*]|-|_|\s)+$$", ErrorMessage = "NOME com caracteres inválidos")]
         public Nullable<System.DateTime> PLAN_DT_CRIACAO { get; set; }
         public Nullable<int> PLAN_IN_ATIVO { get; set; }
         [Required(ErrorMessage = "Campo DESCRIÇÃO obrigatorio")]
         [StringLength(500, MinimumLength = 2, ErrorMessage = "A DESCRIÇÃO deve conter no minimo 2 e no máximo 500 caracteres.")]
+        [RegularExpression(@"^([a-zA-Zà-úÀ-Ú0-9@#$%&*]|-|_|\s)+$$", ErrorMessage = "DESCRIÇÃO com caracteres inválidos")]
         public string PLAN_DS_DESCRICAO { get; set; }
         [Required(ErrorMessage = "Campo NÚMERO DE USUÁRIOS ATIVOS obrigatorio")]
         [RegularExpression(@"^[0-9]+([,.][0-9]+)?$", ErrorMessage = "Deve ser um valor numérico positivo")]
@@ -85,6 +87,7 @@ namespace ERP_Condominios_Solution.ViewModels
         public Nullable<int> PLAN_IN_DURACAO { get; set; }
         [Required(ErrorMessage = "Campo NOME DE EXIBIÇÃO obrigatorio")]
         [StringLength(10, MinimumLength = 2, ErrorMessage = "O NOME DE EXIBIÇÃO deve conter no minimo 2 e no máximo 10 caracteres.")]
+        [RegularExpression(@"^([a-zA-Zà-úÀ-Ú0-9@#$%&*]|-|_|\s)+$$", ErrorMessage = "NOME com caracteres inválidos")]
         public string PLAN_NM_EXIBE { get; set; }
         [RegularExpression(@"^[0-9]+([,.][0-9]+)?$", ErrorMessage = "Deve ser um valor numérico positivo")]
         public Nullable<int> PLAN_IN_PESQUISAS { get; set; }
@@ -92,6 +95,12 @@ namespace ERP_Condominios_Solution.ViewModels
         public Nullable<int> PLAN_NR_PESQUISAS { get; set; }
         [RegularExpression(@"^[0-9]+([,.][0-9]+)?$", ErrorMessage = "Deve ser um valor numérico positivo")]
         public Nullable<int> PLAN_NR_ATENDIMENTOS { get; set; }
+        public Nullable<int> PLAN_IN_SISTEMA { get; set; }
+        public Nullable<int> PLAN_NR_CLASSES { get; set; }
+        public Nullable<int> PLAN_NR_DOCUMENTOS { get; set; }
+        public Nullable<int> PLAN_NR_DOCUMENTOS_MES { get; set; }
+        public Nullable<int> PLAN_NR_PRECIFICACAO { get; set; }
+        public Nullable<int> PLAN_NR_PROPOSTA { get; set; }
 
         public string ValorNormal
         {
@@ -258,6 +267,8 @@ namespace ERP_Condominios_Solution.ViewModels
         public virtual ICollection<ASSINANTE> ASSINANTE { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ASSINANTE_PAGAMENTO> ASSINANTE_PAGAMENTO { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<ASSINANTE_PLANO> ASSINANTE_PLANO { get; set; }
         public virtual PLANO_PERIODICIDADE PLANO_PERIODICIDADE { get; set; }
 
     }

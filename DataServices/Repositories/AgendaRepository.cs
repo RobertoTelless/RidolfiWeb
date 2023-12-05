@@ -18,6 +18,10 @@ namespace DataServices.Repositories
             query = query.Where(p => p.ASSI_CD_ID == idAss);
             query = query.Where(p => p.AGEN_DT_DATA == data);
             query = query.Include(p => p.AGENDA_ANEXO);
+            query = query.Include(p => p.AGENDA_CONTATO);
+            query = query.Include(p => p.CATEGORIA_AGENDA);
+            query = query.Include(p => p.USUARIO);
+            query = query.Include(p => p.USUARIO1);
             return query.ToList();
         }
 
@@ -27,6 +31,10 @@ namespace DataServices.Repositories
             query = query.Where(p => p.ASSI_CD_ID == idAss);
             query = query.Where(p => p.USUA_CD_ID == id);
             query = query.Include(p => p.AGENDA_ANEXO);
+            query = query.Include(p => p.AGENDA_CONTATO);
+            query = query.Include(p => p.CATEGORIA_AGENDA);
+            query = query.Include(p => p.USUARIO);
+            query = query.Include(p => p.USUARIO1);
             return query.ToList();
         }
 
@@ -35,6 +43,10 @@ namespace DataServices.Repositories
             IQueryable<AGENDA> query = Db.AGENDA;
             query = query.Where(p => p.AGEN_CD_ID == id);
             query = query.Include(p => p.AGENDA_ANEXO);
+            query = query.Include(p => p.AGENDA_CONTATO);
+            query = query.Include(p => p.CATEGORIA_AGENDA);
+            query = query.Include(p => p.USUARIO);
+            query = query.Include(p => p.USUARIO1);
             return query.FirstOrDefault();
         }
 

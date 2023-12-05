@@ -36,18 +36,20 @@ namespace DataServices.Repositories
 
         public USUARIO GetByLogin(String login, Int32 idAss)
         {
-            List<USUARIO> lista = new List<USUARIO>();
             IQueryable<USUARIO> query = Db.USUARIO.Where(p => p.USUA_IN_ATIVO == 1);
             query = query.Where(p => p.USUA_NM_LOGIN == login);
-            lista = query.ToList<USUARIO>();
-            return lista.FirstOrDefault();
+            //lista = query.ToList<USUARIO>();
+            return query.FirstOrDefault();
         }
 
         public USUARIO GetItemById(Int32 id)
         {
-            IQueryable<USUARIO> query = Db.USUARIO.Where(p => p.USUA_IN_ATIVO == 1);
+            IQueryable<USUARIO> query = Db.USUARIO;
             query = query.Where(p => p.USUA_CD_ID == id);
             query = query.Include(p => p.PERFIL);
+            query = query.Include(p => p.NOTIFICACAO);
+            query = query.Include(p => p.AGENDA);
+            query = query.Include(p => p.TAREFA);
             return query.FirstOrDefault();
         }
 
@@ -63,7 +65,6 @@ namespace DataServices.Repositories
         public List<USUARIO> GetAllItens(Int32 idAss)
         {
             IQueryable<USUARIO> query = Db.USUARIO.Where(p => p.USUA_IN_ATIVO == 1);
-            query = query.Where(p => p.USUA_IN_BLOQUEADO == 0);
             query = query.Where(p => p.ASSI_CD_ID == idAss);
             return query.ToList();
         }
@@ -87,7 +88,7 @@ namespace DataServices.Repositories
 
         public List<USUARIO> GetAllUsuariosAdm(Int32 idAss)
         {
-            IQueryable<USUARIO> query = Db.USUARIO.Where(p => p.USUA_IN_ATIVO == 1);
+            IQueryable<USUARIO> query = Db.USUARIO;
             query = query.Where(p => p.ASSI_CD_ID == idAss);
             return query.ToList();
         }

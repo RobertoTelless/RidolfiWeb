@@ -21,6 +21,7 @@ namespace ApplicationServices.Services
             _baseService = baseService;
         }
 
+
         public PLATAFORMA_ENTREGA CheckExist(PLATAFORMA_ENTREGA conta, Int32 idAss)
         {
             PLATAFORMA_ENTREGA item = _baseService.CheckExist(conta, idAss);

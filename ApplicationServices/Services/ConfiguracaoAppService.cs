@@ -42,14 +42,17 @@ namespace ApplicationServices.Services
                     LOG_DT_DATA = DateTime.Now,
                     USUA_CD_ID = usuario.USUA_CD_ID,
                     ASSI_CD_ID = usuario.ASSI_CD_ID,
-                    LOG_NM_OPERACAO = "EditCONF",
+                    LOG_NM_OPERACAO = "EdtCONF",
                     LOG_TX_REGISTRO = Serialization.SerializeJSON<CONFIGURACAO>(item),
                     LOG_TX_REGISTRO_ANTES = Serialization.SerializeJSON<CONFIGURACAO>(itemAntes),
-                    LOG_IN_ATIVO = 1
+                    LOG_IN_ATIVO = 1,
+                    LOG_IN_SISTEMA = 1
+
                 };
 
                 // Persiste
-                return _baseService.Edit(item, log);
+                Int32 volta =  _baseService.Edit(item, log);
+                return log.LOG_CD_ID;
             }
             catch (Exception ex)
             {

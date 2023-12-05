@@ -6,12 +6,13 @@ using System.Web;
 using EntitiesServices.Model;
 using EntitiesServices.Attributes;
 
-namespace ERP_CRM_Solution.ViewModels
+namespace ERP_Condominios_Solution.ViewModels
 {
     public class TelefoneViewModel
     {
         [Key]
         public int TELE_CD_ID { get; set; }
+        public Nullable<int> ASSI_CD_ID { get; set; }
         [Required(ErrorMessage = "Campo CATEGORIA obrigatorio")]
         public Nullable<int> CATE_CD_ID { get; set; }
         [Required(ErrorMessage = "Campo NOME obrigatorio")]
@@ -39,6 +40,7 @@ namespace ERP_CRM_Solution.ViewModels
         [StringLength(5000, ErrorMessage = "AS OBSERVAÇÕES deve conter no máximo 5000 caracteres.")]
         public string TELE_TX_OBSERVACOES { get; set; }
 
+        public virtual ASSINANTE ASSINANTE { get; set; }
         public virtual CATEGORIA_TELEFONE CATEGORIA_TELEFONE { get; set; }
         public virtual UF UF { get; set; }
     }

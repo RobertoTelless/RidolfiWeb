@@ -44,7 +44,7 @@ namespace DataServices.Repositories
         }
 
 
-        public List<MENSAGENS> ExecuteFilterSMS(DateTime? envio, Int32 cliente, String texto, Int32 idAss)
+        public List<MENSAGENS> ExecuteFilterSMS(DateTime? envio,  DateTime? faixa, Int32 cliente, String texto, Int32 idAss)
         {
             List<MENSAGENS> lista = new List<MENSAGENS>();
             IQueryable<MENSAGENS> query = Db.MENSAGENS;
@@ -52,13 +52,21 @@ namespace DataServices.Repositories
             {
                 query = query.Where(p => p.MENS_TX_TEXTO.Contains(texto));
             }
-            if (envio != null)
+            if ((envio != DateTime.MinValue & envio != null) & (faixa == DateTime.MinValue || faixa == null))
             {
-                query = query.Where(p => DbFunctions.TruncateTime(p.MENS_DT_ENVIO) == DbFunctions.TruncateTime(envio));
+                query = query.Where(p => DbFunctions.TruncateTime(p.MENS_DT_CRIACAO) >= DbFunctions.TruncateTime(envio));
+            }
+            if ((envio == DateTime.MinValue || envio == null) & (faixa != DateTime.MinValue & faixa != null))
+            {
+                query = query.Where(p => DbFunctions.TruncateTime(p.MENS_DT_CRIACAO) <= DbFunctions.TruncateTime(faixa));
+            }
+            if ((envio != DateTime.MinValue & envio != null) & (faixa != DateTime.MinValue & faixa != null))
+            {
+                query = query.Where(p => DbFunctions.TruncateTime(p.MENS_DT_CRIACAO) >= DbFunctions.TruncateTime(envio) & DbFunctions.TruncateTime(p.MENS_DT_CRIACAO) <= DbFunctions.TruncateTime(faixa));
             }
             if (cliente > 0)
             {
-
+                query = query.Where(p => p.CLIE_CD_ID == cliente);
             }
             if (query != null)
             {
@@ -70,7 +78,7 @@ namespace DataServices.Repositories
             return lista;
         }
 
-        public List<MENSAGENS> ExecuteFilterEMail(DateTime? envio, Int32 cliente, String texto, Int32 idAss)
+        public List<MENSAGENS> ExecuteFilterEMail(DateTime? envio,  DateTime? faixa, Int32 cliente, String texto, Int32 idAss)
         {
             List<MENSAGENS> lista = new List<MENSAGENS>();
             IQueryable<MENSAGENS> query = Db.MENSAGENS;
@@ -78,13 +86,21 @@ namespace DataServices.Repositories
             {
                 query = query.Where(p => p.MENS_TX_TEXTO.Contains(texto));
             }
-            if (envio != null)
+            if ((envio != DateTime.MinValue & envio != null) & (faixa == DateTime.MinValue || faixa == null))
             {
-                query = query.Where(p => DbFunctions.TruncateTime(p.MENS_DT_ENVIO) == DbFunctions.TruncateTime(envio));
+                query = query.Where(p => DbFunctions.TruncateTime(p.MENS_DT_CRIACAO) >= DbFunctions.TruncateTime(envio));
+            }
+            if ((envio == DateTime.MinValue || envio == null) & (faixa != DateTime.MinValue & faixa != null))
+            {
+                query = query.Where(p => DbFunctions.TruncateTime(p.MENS_DT_CRIACAO) <= DbFunctions.TruncateTime(faixa));
+            }
+            if ((envio != DateTime.MinValue & envio != null) & (faixa != DateTime.MinValue & faixa != null))
+            {
+                query = query.Where(p => DbFunctions.TruncateTime(p.MENS_DT_CRIACAO) >= DbFunctions.TruncateTime(envio) & DbFunctions.TruncateTime(p.MENS_DT_CRIACAO) <= DbFunctions.TruncateTime(faixa));
             }
             if (cliente > 0)
             {
-
+                query = query.Where(p => p.CLIE_CD_ID == cliente);
             }
             if (query != null)
             {

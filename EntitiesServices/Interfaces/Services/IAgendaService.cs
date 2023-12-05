@@ -18,6 +18,7 @@ namespace ModelServices.Interfaces.EntitiesServices
 
         List<CATEGORIA_AGENDA> GetAllTipos(Int32 idAss);
         AGENDA_ANEXO GetAnexoById(Int32 id);
+        Int32 EditAnexo(AGENDA_ANEXO item);
 
         List<AGENDA> GetByDate(DateTime data, Int32 idAss);
         List<AGENDA> GetByUser(Int32 id, Int32 idAss);
@@ -26,6 +27,10 @@ namespace ModelServices.Interfaces.EntitiesServices
         List<AGENDA> GetAllItensAdm(Int32 idAss);
         List<AGENDA> ExecuteFilter(DateTime? data, Int32? cat, String titulo, String descricao, Int32 idAss, Int32 idUser, Int32 corp);
         Task<IEnumerable<CATEGORIA_AGENDA>> GetAllItensAsync(Int32 idAss);
+
+        AGENDA_CONTATO GetContatoById(Int32 id);
+        Int32 EditContato(AGENDA_CONTATO item);
+        Int32 CreateContato(AGENDA_CONTATO item);
 
     }
 }

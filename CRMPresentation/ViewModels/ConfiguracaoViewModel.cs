@@ -100,7 +100,12 @@ namespace ERP_Condominios_Solution.ViewModels
         public string CONF_SG_SENHA_SMS_PRIORITARIO { get; set; }
         public string CONF_NM_ENDPOINT_AZURE { get; set; }
         public string CONF_NM_EMISSOR_AZURE { get; set; }
-        public string CONF_NM_LOCAL_AUDIO { get; set; }
+        [Required(ErrorMessage = "Campo FAIXA DE EXCLUSÂO - INÍCIO  é obrigatorio")]
+        [RegularExpression(@"^([0-9]+)$", ErrorMessage = "Deve ser um valor inteiro positivo")]
+        public Nullable<int> CONF_NR_DIAS_LOG { get; set; }
+        [Required(ErrorMessage = "Campo FAIXA DE EXCLUSÂO - FINAL é obrigatorio")]
+        [RegularExpression(@"^([0-9]+)$", ErrorMessage = "Deve ser um valor inteiro positivo")]
+        public Nullable<int> CONF_NR_DIAS_FIM_LOG { get; set; }
 
         public bool NotifAcaoAdm
         {

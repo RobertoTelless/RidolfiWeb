@@ -11,6 +11,7 @@ namespace ApplicationServices.Interfaces
     {
         Int32 ValidateCreate(TEMPLATE item, USUARIO usuario);
         Int32 ValidateEdit(TEMPLATE item, TEMPLATE itemAntes, USUARIO usuario);
+        Int32 ValidateEdit(TEMPLATE item);
         Int32 ValidateDelete(TEMPLATE item, USUARIO usuario);
         Int32 ValidateReativar(TEMPLATE item, USUARIO usuario);
 

@@ -24,6 +24,7 @@ namespace ApplicationServices.Services
             _confService = confService;
         }
 
+
         public List<MENSAGEM_AUTOMACAO> GetAllItens(Int32 idAss)
         {
             List<MENSAGEM_AUTOMACAO> lista = _baseService.GetAllItens(idAss);

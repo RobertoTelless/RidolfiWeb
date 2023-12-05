@@ -18,17 +18,13 @@ namespace ApplicationServices.Services
         private readonly IConfiguracaoService _confService;
         private readonly ICRMService _crmService;
         private readonly ICategoriaClienteService _ccService;
-        private readonly IPrecatorioService _precService;
-        private readonly IBeneficiarioService _beneService;
 
-        public ClienteAppService(IClienteService baseService, IConfiguracaoService confService, ICRMService crmService, ICategoriaClienteService ccService, IPrecatorioService precService, IBeneficiarioService beneService) : base(baseService)
+        public ClienteAppService(IClienteService baseService, IConfiguracaoService confService, ICRMService crmService, ICategoriaClienteService ccService) : base(baseService)
         {
             _baseService = baseService;
             _confService = confService;
             _crmService = crmService;   
             _ccService = ccService; 
-            _precService = precService;
-            _beneService = beneService;
         }
 
         public List<CLIENTE> GetAllItens(Int32 idAss)
@@ -195,38 +191,36 @@ namespace ApplicationServices.Services
 
             // Busca em Clientes
             List<CLIENTE> listaClientes = new List<CLIENTE>();
-            listaClientes = _baseService.GetAllItens(idAss).Where(p => p.CLIE_NM_NOME.Contains(parm) || p.CLIE_NM_EMAIL.Contains(parm)).ToList();
-
-            // Busca em Precatorios
-            List<PRECATORIO> listaPrec = new List<PRECATORIO>();
-            listaPrec = _precService.GetAllItens().Where(p => p.PREC_NM_PRECATORIO.Contains(parm) || p.PREC_NM_ASSUNTO.Contains(parm)  || p.PREC_NM_REQUERENTE.Contains(parm)  || p.PREC_NM_REQUERIDO.Contains(parm)  || p.PREC_NM_DEPRECANTE.Contains(parm)  || p.PREC_NM_PROCESSO_ORIGEM.Contains(parm)).ToList();
-
-            // Busca em Beneficiarios
-            List<BENEFICIARIO> listaBene = new List<BENEFICIARIO>();
-            listaBene = _beneService.GetAllItens().Where(p => p.BENE_NM_NOME.Contains(parm)).ToList();
+            if (permissoes[0] == 1 )
+            {
+                listaClientes = _baseService.GetAllItens(idAss).Where(p => p.CLIE_NM_NOME.Contains(parm) || p.CLIE_NM_EMAIL.Contains(parm)).ToList();
+            }
 
             // Busca em Processos
             List<CRM> listaCRM = new List<CRM>();
             List<CRM_ACAO> listaAcao = new List<CRM_ACAO>();
             List<CRM_PEDIDO_VENDA> listaProp = new List<CRM_PEDIDO_VENDA>();
-            listaCRM = _crmService.GetAllItens(idAss).Where(p => p.CRM1_NM_NOME.Contains(parm) || p.CLIENTE.CLIE_NM_NOME.Contains(parm) || p.CRM1_DS_DESCRICAO.Contains(parm)).ToList();
-            if (ValidarItensDiversos.IsDateTime(parm))
+            if (permissoes[1] == 1)
             {
-                listaCRM = listaCRM.Where(p => p.CRM1_DT_CRIACAO.Value.Date == Convert.ToDateTime(parm)).ToList();
-            }
+                listaCRM = _crmService.GetAllItens(idAss).Where(p => p.CRM1_NM_NOME.Contains(parm) || p.CLIENTE.CLIE_NM_NOME.Contains(parm) || p.CRM1_DS_DESCRICAO.Contains(parm)).ToList();
+                if (ValidarItensDiversos.IsDateTime(parm))
+                {
+                    listaCRM = listaCRM.Where(p => p.CRM1_DT_CRIACAO.Value.Date == Convert.ToDateTime(parm)).ToList();
+                }
 
-            // Busca em Ações
-            listaAcao = _crmService.GetAllAcoes(idAss).Where(p => p.CRAC_NM_TITULO.Contains(parm)).ToList();
-            if (ValidarItensDiversos.IsDateTime(parm))
-            {
-                listaAcao = listaAcao.Where(p => p.CRAC_DT_CRIACAO.Value.Date == Convert.ToDateTime(parm) || p.CRAC_DT_PREVISTA.Value.Date == Convert.ToDateTime(parm)).ToList();
-            }
+                // Busca em Ações
+                listaAcao = _crmService.GetAllAcoes(idAss).Where(p => p.CRAC_NM_TITULO.Contains(parm)).ToList();
+                if (ValidarItensDiversos.IsDateTime(parm))
+                {
+                    listaAcao = listaAcao.Where(p => p.CRAC_DT_CRIACAO.Value.Date == Convert.ToDateTime(parm) || p.CRAC_DT_PREVISTA.Value.Date == Convert.ToDateTime(parm)).ToList();
+                }
 
-            // Busca em Propostas
-            listaProp = _crmService.GetAllPedidos(idAss).Where(p => p.CRPV_NM_NOME.Contains(parm) || p.CRPV_IN_NUMERO_GERADO.ToString() == parm || p.CRPV_TX_CONDICOES_COMERCIAIS.Contains(parm)).ToList();
-            if (ValidarItensDiversos.IsDateTime(parm))
-            {
-                listaProp = listaProp.Where(p => p.CRPV_DT_PEDIDO.Date.ToString() == parm || p.CRPV_DT_VALIDADE.Date.ToString() == parm).ToList();
+                // Busca em Propostas
+                listaProp = _crmService.GetAllPedidos(idAss).Where(p => p.CRPV_NM_NOME.Contains(parm) || p.CRPV_IN_NUMERO_GERADO.ToString() == parm || p.CRPV_TX_CONDICOES_COMERCIAIS.Contains(parm)).ToList();
+                if (ValidarItensDiversos.IsDateTime(parm))
+                {
+                    listaProp = listaProp.Where(p => p.CRPV_DT_PEDIDO.Date.ToString() == parm || p.CRPV_DT_VALIDADE.Date.ToString() == parm).ToList();
+                }
             }
 
             // Prepara lista de retorno
@@ -250,31 +244,6 @@ namespace ApplicationServices.Services
                 volta.ASSI_CD_ID = idAss;
                 listaVolta.Add(volta);  
             }
-            foreach (PRECATORIO item in listaPrec)
-            {
-                VOLTA_PESQUISA volta = new VOLTA_PESQUISA();
-                volta.PEGR_IN_TIPO = 5;
-                volta.PEGR_CD_ITEM = item.PREC_CD_ID;
-                volta.PEGR_NM_NOME1 = item.PREC_NM_PRECATORIO;
-                volta.PEGR_NM_NOME2 = item.TRF.TRF1_NM_NOME;
-                volta.PEGR_NM_NOME3 = item.PREC_NM_REQUERENTE;
-                volta.PEGR_NM_NOME4 = item.PREC_NM_REQUERIDO;
-                volta.ASSI_CD_ID = idAss;
-                listaVolta.Add(volta);
-            }
-            foreach (BENEFICIARIO item in listaBene)
-            {
-                VOLTA_PESQUISA volta = new VOLTA_PESQUISA();
-                volta.PEGR_IN_TIPO = 6;
-                volta.PEGR_CD_ITEM = item.BENE_CD_ID;
-                volta.PEGR_NM_NOME1 = item.BENE_NM_NOME;
-                volta.PEGR_NM_NOME2 = item.BENE_EM_EMAIL;
-                volta.PEGR_NM_NOME3 = item.BENE_NR_TELEFONE;
-                volta.PEGR_NM_NOME4 = item.BENE_NR_CELULAR;
-                volta.ASSI_CD_ID = idAss;
-                listaVolta.Add(volta);
-            }
-
             foreach (CRM item in listaCRM)
             {
                 VOLTA_PESQUISA volta = new VOLTA_PESQUISA();
@@ -311,28 +280,7 @@ namespace ApplicationServices.Services
             return listaVolta;
         }
 
-        public Int32 ExecuteFilter(Int32? id, Int32? catId, String razao, String nome, String cpf, String cnpj, String email, String cidade, Int32? uf, Int32? ativo, Int32? filial, Int32 idAss, out List<CLIENTE> objeto)
-        {
-            try
-            {
-                objeto = new List<CLIENTE>();
-                Int32 volta = 0;
-
-                // Processa filtro
-                objeto = _baseService.ExecuteFilter(id, catId, razao, nome, cpf, cnpj, email, cidade, uf, ativo, filial, idAss);
-                if (objeto.Count == 0)
-                {
-                    volta = 1;
-                }
-                return volta;
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
-        }
-
-        public Tuple < Int32, List<CLIENTE>, Boolean > ExecuteFilterTuple(Int32? id, Int32? catId, String razao, String nome, String cpf, String cnpj, String email, String cidade, Int32? uf, Int32? ativo, Int32? filial, Int32 idAss)
+        public Tuple < Int32, List<CLIENTE>, Boolean > ExecuteFilterTuple(Int32? id, Int32? catId, String razao, String nome, String cpf, String cnpj, String email, String cidade, Int32? uf, Int32? ativo, Int32? filial, Int32? usu, Int32 idAss)
         {
             try
             {
@@ -340,7 +288,7 @@ namespace ApplicationServices.Services
                 Int32 volta = 0;
 
                 // Processa filtro
-                objeto = _baseService.ExecuteFilter(id, catId, razao, nome, cpf, cnpj, email, cidade, uf, ativo, filial, idAss);
+                objeto = _baseService.ExecuteFilter(id, catId, razao, nome, cpf, cnpj, email, cidade, uf, ativo, filial, usu, idAss);
                 if (objeto.Count == 0)
                 {
                     volta = 1;
@@ -393,38 +341,38 @@ namespace ApplicationServices.Services
                 item.CLIE_IN_ATIVO = 1;
 
                 // Acerta letras
-                //if (item.CLIE_NM_NOME != null)
-                //{
-                //    item.CLIE_NM_NOME = CommonHelpers.ToPascalCase(item.CLIE_NM_NOME);
-                //}
-                //if (item.CLIE_NM_RAZAO != null)
-                //{
-                //    item.CLIE_NM_RAZAO = CommonHelpers.ToPascalCase(item.CLIE_NM_RAZAO);
-                //}
-                //if (item.CLIE_NM_ENDERECO != null)
-                //{
-                //    item.CLIE_NM_ENDERECO = CommonHelpers.ToPascalCase(item.CLIE_NM_ENDERECO);
-                //}
-                //if (item.CLIE_NM_ENDERECO_ENTREGA != null)
-                //{
-                //    item.CLIE_NM_ENDERECO_ENTREGA = CommonHelpers.ToPascalCase(item.CLIE_NM_ENDERECO_ENTREGA);
-                //}
-                //if (item.CLIE_NM_BAIRRO != null)
-                //{
-                //    item.CLIE_NM_BAIRRO = CommonHelpers.ToPascalCase(item.CLIE_NM_BAIRRO);
-                //}
-                //if (item.CLIE_NM_BAIRRO_ENTREGA != null)
-                //{
-                //    item.CLIE_NM_BAIRRO_ENTREGA = CommonHelpers.ToPascalCase(item.CLIE_NM_BAIRRO_ENTREGA);
-                //}
-                //if (item.CLIE_NM_CIDADE != null)
-                //{
-                //    item.CLIE_NM_CIDADE = CommonHelpers.ToPascalCase(item.CLIE_NM_CIDADE);
-                //}
-                //if (item.CLIE_NM_CIDADE_ENTREGA != null)
-                //{
-                //    item.CLIE_NM_CIDADE_ENTREGA = CommonHelpers.ToPascalCase(item.CLIE_NM_CIDADE_ENTREGA);
-                //}
+                if (item.CLIE_NM_NOME != null)
+                {
+                    item.CLIE_NM_NOME = CommonHelpers.ToPascalCase(item.CLIE_NM_NOME);
+                }
+                if (item.CLIE_NM_RAZAO != null)
+                {
+                    item.CLIE_NM_RAZAO = CommonHelpers.ToPascalCase(item.CLIE_NM_RAZAO);
+                }
+                if (item.CLIE_NM_ENDERECO != null)
+                {
+                    item.CLIE_NM_ENDERECO = CommonHelpers.ToPascalCase(item.CLIE_NM_ENDERECO);
+                }
+                if (item.CLIE_NM_ENDERECO_ENTREGA != null)
+                {
+                    item.CLIE_NM_ENDERECO_ENTREGA = CommonHelpers.ToPascalCase(item.CLIE_NM_ENDERECO_ENTREGA);
+                }
+                if (item.CLIE_NM_BAIRRO != null)
+                {
+                    item.CLIE_NM_BAIRRO = CommonHelpers.ToPascalCase(item.CLIE_NM_BAIRRO);
+                }
+                if (item.CLIE_NM_BAIRRO_ENTREGA != null)
+                {
+                    item.CLIE_NM_BAIRRO_ENTREGA = CommonHelpers.ToPascalCase(item.CLIE_NM_BAIRRO_ENTREGA);
+                }
+                if (item.CLIE_NM_CIDADE != null)
+                {
+                    item.CLIE_NM_CIDADE = CommonHelpers.ToPascalCase(item.CLIE_NM_CIDADE);
+                }
+                if (item.CLIE_NM_CIDADE_ENTREGA != null)
+                {
+                    item.CLIE_NM_CIDADE_ENTREGA = CommonHelpers.ToPascalCase(item.CLIE_NM_CIDADE_ENTREGA);
+                }
 
                 // Monta Log
                 LOG log = new LOG
@@ -434,12 +382,13 @@ namespace ApplicationServices.Services
                     USUA_CD_ID = usuario.USUA_CD_ID,
                     LOG_NM_OPERACAO = "AddCLIE",
                     LOG_IN_ATIVO = 1,
-                    LOG_TX_REGISTRO = Serialization.SerializeJSON<CLIENTE>(item)
+                    LOG_TX_REGISTRO = Serialization.SerializeJSON<CLIENTE>(item),
+                    LOG_IN_SISTEMA = 1
                 };
 
                 // Persiste
                 Int32 volta = _baseService.Create(item, log);
-                return volta;
+                return log.LOG_CD_ID;
             }
             catch (Exception ex)
             {
@@ -455,10 +404,6 @@ namespace ApplicationServices.Services
                 {
                     itemAntes.CATEGORIA_CLIENTE = null;
                 }
-                //if (itemAntes.FILIAL != null)
-                //{
-                //    itemAntes.FILIAL = null;
-                //}
                 if (itemAntes.SEXO != null)
                 {
                     itemAntes.SEXO = null;
@@ -486,15 +431,17 @@ namespace ApplicationServices.Services
                     LOG_DT_DATA = DateTime.Now,
                     ASSI_CD_ID = usuario.ASSI_CD_ID,
                     USUA_CD_ID = usuario.USUA_CD_ID,
-                    LOG_NM_OPERACAO = "EditCLIE",
+                    LOG_NM_OPERACAO = "EdtCLIE",
                     LOG_IN_ATIVO = 1,
                     LOG_TX_REGISTRO = Serialization.SerializeJSON<CLIENTE>(item),
-                    LOG_TX_REGISTRO_ANTES = Serialization.SerializeJSON<CLIENTE>(itemAntes)
+                    LOG_TX_REGISTRO_ANTES = Serialization.SerializeJSON<CLIENTE>(itemAntes),
+                    LOG_IN_SISTEMA = 1
                 };
 
                 // Persiste
                 item.TIPO_PESSOA = null;
-                return _baseService.Edit(item, log);
+                Int32 volta = _baseService.Edit(item, log);
+                return log.LOG_CD_ID;
             }
             catch (Exception ex)
             {
@@ -548,11 +495,14 @@ namespace ApplicationServices.Services
                     USUA_CD_ID = usuario.USUA_CD_ID,
                     LOG_IN_ATIVO = 1,
                     LOG_NM_OPERACAO = "DelCLIE",
-                    LOG_TX_REGISTRO = "Nome: " + item.CLIE_NM_NOME
+                    //LOG_TX_REGISTRO = Serialization.SerializeJSON<CLIENTE>(item),
+                    LOG_TX_REGISTRO = null,
+                    LOG_IN_SISTEMA = 1
                 };
 
                 // Persiste
-                return _baseService.Edit(item, log);
+                Int32 volta = _baseService.Edit(item, log);
+                return log.LOG_CD_ID;
             }
             catch (Exception ex)
             {
@@ -576,12 +526,15 @@ namespace ApplicationServices.Services
                     ASSI_CD_ID = usuario.ASSI_CD_ID,
                     USUA_CD_ID = usuario.USUA_CD_ID,
                     LOG_IN_ATIVO = 1,
-                    LOG_NM_OPERACAO = "ReatCLIE",
-                    LOG_TX_REGISTRO = "Nome: " + item.CLIE_NM_NOME
+                    LOG_NM_OPERACAO = "ReaCLIE",
+                    //LOG_TX_REGISTRO = Serialization.SerializeJSON<CLIENTE>(item),
+                    LOG_TX_REGISTRO = null,
+                    LOG_IN_SISTEMA = 1
                 };
 
                 // Persiste
-                return _baseService.Edit(item, log);
+                Int32 volta = _baseService.Edit(item, log);
+                return log.LOG_CD_ID;
             }
             catch (Exception ex)
             {
@@ -727,133 +680,5 @@ namespace ApplicationServices.Services
                 throw;
             }
         }
-
-        public Int32 AtualizarCategoriaClienteCalculo(Int32 idAss, CLIENTE cli)
-        {
-            // Recupera cliente
-            CATEGORIA_CLIENTE cat = _ccService.GetItemById(cli.CACL_CD_ID.Value);
-            List<CATEGORIA_CLIENTE> cats = _ccService.GetAllItens(idAss);
-            Int32? maiorOrdem = cats.Max(p => p.CACL_IN_ORDEM.Value);
-            Int32? menorOrdem = cats.Min(p => p.CACL_IN_ORDEM.Value);
-            Int32? novaOrdem = 0;
-
-            // Recupera propostas
-            List<CRM_PEDIDO_VENDA> listaProp = _crmService.GetAllPedidos(idAss).Where(p => p.CLIE_CD_ID == cli.CLIE_CD_ID).ToList();
-            listaProp = listaProp.Where(p => p.CRPV_DT_PEDIDO > DateTime.Today.Date.AddDays(-30)).ToList();
-
-            Int32 props = listaProp.Count;
-            Int32 aprovs = listaProp.Where(p => p.CRPV_IN_STATUS == 5).ToList().Count;
-            Int32 reprovs = listaProp.Where(p => p.CRPV_IN_STATUS == 4).ToList().Count;
-
-            // Verifica limites
-            Int32 emiMax = 0;
-            Int32 emiMin = 0;
-            Int32 aprMax = 0;
-            Int32 aprMin = 0;
-            Int32 repMax = 0;
-            Int32 repMin = 0;
-            Int32 sobe = 0;
-            Int32 desce = 0;
-
-            if (props >= cat.CACL_IN_LIMITE_MAXIMO_EMITIDAS)
-            {
-                emiMax = 1;
-            }
-            if (props < cat.CACL_IN_LIMITE_MINIMO_EMITIDAS)
-            {
-                emiMin = 1;
-            }
-            if (aprovs >= cat.CACL_IN_LIMITE__MAXIMO_APROVADAS)
-            {
-                aprMax = 1;
-            }
-            if (aprovs < cat.CACL_IN_LIMITE_MINIMO_APROVADAS)
-            {
-                aprMin = 1;
-            }
-            if (reprovs >= cat.CACL_IN_LIMITE__MAXIMO_REPROVADAS)
-            {
-                repMax = 1;
-            }
-            if (reprovs < cat.CACL_IN_LIMITE_MINIMO_REPROVADAS)
-            {
-                repMin = 1;
-            }
-
-            // Calcula faixa
-            if (emiMax == 1 & aprMax == 1 & repMin == 1)
-            {
-                sobe = 1;
-            }
-            if (emiMin == 1 || aprMin == 1 || repMax == 1)
-            {
-                desce = 1;
-            }
-
-            // Altera faixa
-            if (sobe == 1)
-            {
-                novaOrdem = cat.CACL_IN_ORDEM + 1;
-                if (novaOrdem > maiorOrdem)
-                {
-                    novaOrdem = cat.CACL_IN_ORDEM;
-                }
-                else
-                {
-                    Int32 k = 0;
-                    while (k == 0)
-                    {
-                        CATEGORIA_CLIENTE catOrdem = cats.Where(p => p.CACL_IN_ORDEM == novaOrdem).FirstOrDefault();
-                        if (catOrdem == null)
-                        {
-                            novaOrdem++;
-                            if (novaOrdem > maiorOrdem)
-                            {
-                                novaOrdem = cat.CACL_IN_ORDEM;
-                                k = 1;
-                            }
-                        }
-                        else
-                        {
-                            cli.CACL_CD_ID = catOrdem.CACL_CD_ID;
-                            Int32 volta = _baseService.Edit(cli);
-                        }
-                    }
-                }
-            }
-            if (desce == 1)
-            {
-                novaOrdem = cat.CACL_IN_ORDEM - 1;
-                if (novaOrdem < menorOrdem)
-                {
-                    novaOrdem = cat.CACL_IN_ORDEM;
-                }
-                else
-                {
-                    Int32 k = 0;
-                    while (k == 0)
-                    {
-                        CATEGORIA_CLIENTE catOrdem = cats.Where(p => p.CACL_IN_ORDEM == novaOrdem).FirstOrDefault();
-                        if (catOrdem == null)
-                        {
-                            novaOrdem--;
-                            if (novaOrdem > menorOrdem)
-                            {
-                                novaOrdem = cat.CACL_IN_ORDEM;
-                                k = 1;
-                            }
-                        }
-                        else
-                        {
-                            cli.CACL_CD_ID = catOrdem.CACL_CD_ID;
-                            Int32 volta = _baseService.Edit(cli);
-                            k = 1;
-                        }
-                    }
-                }
-            }
-            return 0;
-        }
-
     }
 }

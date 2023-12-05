@@ -20,7 +20,7 @@ namespace ERP_Condominios_Solution.ViewModels
         [DataType(DataType.Date, ErrorMessage = "A DATA DE CRIAÇÂO deve ser uma data válida")]
         public Nullable<System.DateTime> MENS_DT_CRIACAO { get; set; }
         [StringLength(50, ErrorMessage = "O NOME DA CAMPANHA deve conter no máximo 50 caracteres.")]
-        public string MENS_NM_CAMPANHA { get; set; }        
+        public string MENS_NM_CAMPANHA { get; set; }
         public string MENS_TX_TEXTO { get; set; }
         [Required(ErrorMessage = "Campo TIPO DE MENSAGEM obrigatorio")]
         public Nullable<int> MENS_IN_TIPO { get; set; }
@@ -32,6 +32,7 @@ namespace ERP_Condominios_Solution.ViewModels
         public string MENS_NM_CABECALHO { get; set; }
         public string MENS_NM_RODAPE { get; set; }
         [StringLength(500, ErrorMessage = "O LINK deve conter no máximo 500 caracteres.")]
+        [RegularExpression(@"^((http|ftp|https|www)://)?([\w+?\.\w+])+([a-zA-Z0-9\~\!\@\#\$\%\^\&\*\(\)_\-\=\+\\\/\?\.\:\;\'\,]*)?$", ErrorMessage = "Link inválido")]
         public string MENS_NM_LINK { get; set; }
         [StringLength(250, ErrorMessage = "O TEXTO DO SMS deve conter no máximo 250 caracteres.")]
         public string MENS_TX_SMS { get; set; }
@@ -50,6 +51,7 @@ namespace ERP_Condominios_Solution.ViewModels
         public Nullable<int> MENS_IN_TIPO_EMAIL { get; set; }
         public string MENS_AQ_ARQUIVO { get; set; }
         public Nullable<int> MENS_IN_STATUS { get; set; }
+        public string MENS_NM_ASSINATURA { get; set; }
 
         public Int32? SEXO { get; set; }
         public string NOME { get; set; }
@@ -62,28 +64,37 @@ namespace ERP_Condominios_Solution.ViewModels
         public String LINK { get; set; }
         public ExcecaoViewModel EXCECAO { get; set; }
         public Nullable<int> EMPR_CD_ID { get; set; }
+        public Nullable<int> CLIE_CD_ID { get; set; }
+        public Nullable<int> FORN_CD_ID { get; set; }
+        public Nullable<int> MENS_IN_USUARIO { get; set; }
 
         public Nullable<int> GRUP_CD_ID { get; set; }
         public String MODELO { get; set; }
         public string MENS_TX_TEXTO_LIMPO { get; set; }
+        public string MENS_GU_GUID { get; set; }
 
-        public virtual ASSINANTE ASSINANTE { get; set; }
         public virtual CLIENTE CLIENTE { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<CRM> CRM { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<EMAIL_AGENDAMENTO> EMAIL_AGENDAMENTO { get; set; }
+        public virtual EMPRESA EMPRESA { get; set; }
         public virtual GRUPO GRUPO { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<MENSAGEM_ANEXO> MENSAGEM_ANEXO { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<MENSAGENS_DESTINOS> MENSAGENS_DESTINOS { get; set; }
+        public virtual PERIODICIDADE_TAREFA PERIODICIDADE_TAREFA { get; set; }
+        public virtual PESQUISA PESQUISA { get; set; }
         public virtual TEMPLATE TEMPLATE { get; set; }
         public virtual TEMPLATE_EMAIL TEMPLATE_EMAIL { get; set; }
         public virtual TEMPLATE_SMS TEMPLATE_SMS { get; set; }
         public virtual USUARIO USUARIO { get; set; }
-        public virtual PERIODICIDADE_TAREFA PERIODICIDADE_TAREFA { get; set; }
-        public int[] IDClientes { get; set; }
-        public HttpPostedFileBase[] Files { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<RECURSIVIDADE> RECURSIVIDADE { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<RESULTADO_ROBOT> RESULTADO_ROBOT { get; set; }
+        public virtual FORNECEDOR FORNECEDOR { get; set; }
+        public virtual USUARIO USUARIO1 { get; set; }
     }
 }

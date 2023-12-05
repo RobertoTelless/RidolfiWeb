@@ -21,6 +21,7 @@ namespace ApplicationServices.Services
             _baseService = baseService;
         }
 
+
         public List<TIPO_ACAO> GetAllItens(Int32 idAss)
         {
             List<TIPO_ACAO> lista = _baseService.GetAllItens(idAss);

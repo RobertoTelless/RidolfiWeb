@@ -21,6 +21,7 @@ namespace ApplicationServices.Services
             _baseService = baseService;
         }
 
+
         public List<EMAIL_AGENDAMENTO> GetAllItens(Int32 idAss)
         {
             List<EMAIL_AGENDAMENTO> lista = _baseService.GetAllItens(idAss);

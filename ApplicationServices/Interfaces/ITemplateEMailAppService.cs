@@ -19,6 +19,6 @@ namespace ApplicationServices.Interfaces
         List<TEMPLATE_EMAIL> GetAllItens(Int32 idAss);
         TEMPLATE_EMAIL GetItemById(Int32 id);
         List<TEMPLATE_EMAIL> GetAllItensAdm(Int32 idAss);
-        Int32 ExecuteFilter(String sigla, String nome, String conteudo, Int32 idAss, out List<TEMPLATE_EMAIL> objeto);
+        Tuple<Int32, List<TEMPLATE_EMAIL>, Boolean> ExecuteFilter(String sigla, String nome, String conteudo, Int32 idAss);
     }
 }

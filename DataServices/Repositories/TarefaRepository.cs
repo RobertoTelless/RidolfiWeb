@@ -25,6 +25,11 @@ namespace DataServices.Repositories
             IQueryable<TAREFA> query = Db.TAREFA.Where(p => p.TARE_IN_ATIVO == 1);
             query = query.Where(p => p.TARE_DT_CADASTRO == data);
             query = query.Where(p => p.USUA_CD_ID == idUsu);
+            query = query.Include(p => p.USUARIO);
+            query = query.Include(p => p.TIPO_TAREFA);
+            query = query.Include(p => p.PERIODICIDADE_TAREFA);
+            query = query.Include(p => p.TAREFA1);
+            query = query.Include(p => p.TAREFA2);
             return query.ToList();
         }
 
@@ -32,6 +37,11 @@ namespace DataServices.Repositories
         {
             IQueryable<TAREFA> query = Db.TAREFA.Where(p => p.TARE_IN_ATIVO == 1);
             query = query.Where(p => p.USUA_CD_ID == user);
+            query = query.Include(p => p.USUARIO);
+            query = query.Include(p => p.TIPO_TAREFA);
+            query = query.Include(p => p.PERIODICIDADE_TAREFA);
+            query = query.Include(p => p.TAREFA1);
+            query = query.Include(p => p.TAREFA2);
             return query.ToList();
         }
 
@@ -55,6 +65,11 @@ namespace DataServices.Repositories
             {
                 query = query.Where(p => p.TARE_IN_STATUS == 4);
             }
+            query = query.Include(p => p.USUARIO);
+            query = query.Include(p => p.TIPO_TAREFA);
+            query = query.Include(p => p.PERIODICIDADE_TAREFA);
+            query = query.Include(p => p.TAREFA1);
+            query = query.Include(p => p.TAREFA2);
             return query.ToList();
         }
 
@@ -63,6 +78,10 @@ namespace DataServices.Repositories
             IQueryable<TAREFA> query = Db.TAREFA;
             query = query.Where(p => p.TARE_CD_ID == id);
             query = query.Include(p => p.USUARIO);
+            query = query.Include(p => p.TIPO_TAREFA);
+            query = query.Include(p => p.PERIODICIDADE_TAREFA);
+            query = query.Include(p => p.TAREFA1);
+            query = query.Include(p => p.TAREFA2);
             return query.FirstOrDefault();
         }
 

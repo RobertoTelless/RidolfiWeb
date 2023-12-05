@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Serialization;
 using Newtonsoft.Json;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace CrossCutting
 {
@@ -119,7 +121,22 @@ namespace CrossCutting
             {
                 return null;
             }
-            return JsonConvert.SerializeObject(toSerialize);
+
+            try
+            {
+                string json = JsonConvert.SerializeObject(toSerialize, Newtonsoft.Json.Formatting.None, new JsonSerializerSettings
+                {
+                    NullValueHandling = NullValueHandling.Ignore,
+                    MissingMemberHandling = MissingMemberHandling.Ignore,
+                    ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+                });
+                return json;
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
         }
     }
 }

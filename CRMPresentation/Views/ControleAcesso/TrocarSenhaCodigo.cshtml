@@ -58,6 +58,9 @@
                             @Html.HiddenFor(m => m.USUA_IN_PENDENTE_CODIGO)
                             @Html.HiddenFor(m => m.USUA_SG_CODIGO)
                             @Html.HiddenFor(m => m.USUA_DT_CODIGO)
+                            @Html.HiddenFor(m => m.USUA_NM_SENHA_HASH)
+                            @Html.HiddenFor(m => m.USUA_NM_SALT_HASH)
+                            @Html.HiddenFor(m => m.USUA_NM_SALT)
                             Informe o código de validação que você recebeu via e-mail*
                             @Html.TextBoxFor(m => m.USUA_NR_MATRICULA, new { @class = "form-control", autofocus = true, @style = "font-weight:bold; color:darkblue" })
                             @Html.ValidationMessageFor(m => m.USUA_NR_MATRICULA, "", new { @style = "color:red" })

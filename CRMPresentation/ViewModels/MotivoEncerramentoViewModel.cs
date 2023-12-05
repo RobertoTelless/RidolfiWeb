@@ -21,6 +21,10 @@ namespace ERP_Condominios_Solution.ViewModels
         public Nullable<int> MOEN_IN_ATIVO { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<ATENDIMENTO> ATENDIMENTO { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<ATENDIMENTO_PROPOSTA> ATENDIMENTO_PROPOSTA { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<CRM> CRM { get; set; }
 
     }

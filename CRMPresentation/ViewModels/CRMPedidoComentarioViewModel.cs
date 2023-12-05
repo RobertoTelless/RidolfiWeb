@@ -18,6 +18,7 @@ namespace ERP_Condominios_Solution.ViewModels
         public int USUA_CD_ID { get; set; }
         [Required(ErrorMessage = "Campo TEXTO obrigatorio")]
         [StringLength(5000, MinimumLength = 1, ErrorMessage = "O TEXTO deve conter no minimo 1 e no máximo 5000 caracteres.")]
+        [RegularExpression(@"^([a-zA-Zà-úÀ-Ú0-9]|-|_|\s)+$$", ErrorMessage = "Anotação inválida")]
         public string CRPC_TX_ACOMPANHAMENTO { get; set; }
         public int CRPC_IN_ATIVO { get; set; }
 

@@ -63,6 +63,7 @@ namespace ApplicationServices.Services
                     LOG_NM_OPERACAO = "AddCAAG",
                     LOG_IN_ATIVO = 1,
                     LOG_TX_REGISTRO = Serialization.SerializeJSON<CATEGORIA_AGENDA>(item)
+
                 };
 
                 // Persiste
@@ -85,7 +86,7 @@ namespace ApplicationServices.Services
                     LOG_DT_DATA = DateTime.Now,
                     USUA_CD_ID = usuario.USUA_CD_ID,
                     ASSI_CD_ID = usuario.ASSI_CD_ID,
-                    LOG_NM_OPERACAO = "EditCAAG",
+                    LOG_NM_OPERACAO = "EdtCAAG",
                     LOG_IN_ATIVO = 1,
                     LOG_TX_REGISTRO = Serialization.SerializeJSON<CATEGORIA_AGENDA>(item),
                     LOG_TX_REGISTRO_ANTES = Serialization.SerializeJSON<CATEGORIA_AGENDA>(itemAntes)
@@ -133,8 +134,9 @@ namespace ApplicationServices.Services
                     USUA_CD_ID = usuario.USUA_CD_ID,
                     ASSI_CD_ID = usuario.ASSI_CD_ID,
                     LOG_IN_ATIVO = 1,
-                    LOG_NM_OPERACAO = "DeleCAAG",
+                    LOG_NM_OPERACAO = "DelCAAG",
                     LOG_TX_REGISTRO = "Categoria: " + item.CAAG_NM_NOME
+
                 };
 
                 // Persiste
@@ -162,8 +164,9 @@ namespace ApplicationServices.Services
                     USUA_CD_ID = usuario.USUA_CD_ID,
                     ASSI_CD_ID = usuario.ASSI_CD_ID,
                     LOG_IN_ATIVO = 1,
-                    LOG_NM_OPERACAO = "ReatCAAG",
+                    LOG_NM_OPERACAO = "ReaCAAG",
                     LOG_TX_REGISTRO = "Categoria: " + item.CAAG_NM_NOME
+
                 };
 
                 // Persiste
@@ -174,5 +177,6 @@ namespace ApplicationServices.Services
                 throw;
             }
         }
+
     }
 }

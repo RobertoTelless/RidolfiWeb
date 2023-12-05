@@ -22,9 +22,8 @@ namespace ApplicationServices.Interfaces
         MENSAGENS GetItemById(Int32 id);
         MENSAGENS CheckExist(MENSAGENS conta, Int32 idAss);
         MENSAGEM_ANEXO GetAnexoById(Int32 id);
-        Tuple<Int32, List<MENSAGENS>, Boolean> ExecuteFilterSMS(DateTime? envio, Int32 cliente, String texto, Int32 idAss);
-        Tuple<Int32, List<MENSAGENS>, Boolean> ExecuteFilterEMail(DateTime? envio, Int32 cliente, String texto, Int32 idAss);
-        Tuple<Int32, List<RESULTADO_ROBOT>, Boolean> ExecuteFilterRobot(Int32? tipo, DateTime? inicio, DateTime? final, String cliente, String email, String celular, Int32? status, Int32 idAss);
+        Tuple<Int32, List<MENSAGENS>, Boolean> ExecuteFilterSMS(DateTime? envio, DateTime? faixa, Int32 cliente, String texto, Int32 idAss);
+        Tuple<Int32, List<MENSAGENS>, Boolean> ExecuteFilterEMail(DateTime? envio, DateTime? faixa, Int32 cliente, String texto, Int32 idAss);
 
         List<CATEGORIA_CLIENTE> GetAllTipos(Int32 idAss);
         List<UF> GetAllUF();

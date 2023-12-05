@@ -206,6 +206,7 @@
     <Compile Include="Interfaces\ICategoriaTelefoneAppService.cs" />
     <Compile Include="Interfaces\ICategoriaUsuarioAppService.cs" />
     <Compile Include="Interfaces\IContatoAppService.cs" />
+    <Compile Include="Interfaces\IEmpresaAppService.cs" />
     <Compile Include="Interfaces\IEscolaridadeAppService.cs" />
     <Compile Include="Interfaces\IHonorarioAppService.cs" />
     <Compile Include="Interfaces\INaturezaAppService.cs" />
@@ -247,7 +248,6 @@
     <Compile Include="Interfaces\ITRFAppService.cs" />
     <Compile Include="Interfaces\IUsuarioAppService.cs" />
     <Compile Include="Interfaces\IVaraAppService.cs" />
-    <Compile Include="Interfaces\IVideoAppService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\AgendaAppService.cs" />
     <Compile Include="Services\AppServiceBase.cs" />
@@ -262,6 +262,7 @@
     <Compile Include="Services\CategoriaTelefoneAppService.cs" />
     <Compile Include="Services\CategoriaUsuarioAppService.cs" />
     <Compile Include="Services\ContatoAppService.cs" />
+    <Compile Include="Services\EmpresaAppService.cs" />
     <Compile Include="Services\EscolaridadeAppService.cs" />
     <Compile Include="Services\HonorarioAppService.cs" />
     <Compile Include="Services\NaturezaAppService.cs" />
@@ -291,7 +292,6 @@
     <Compile Include="Services\TabelaIPCAAppService.cs" />
     <Compile Include="Services\TabelaIRRFAppService.cs" />
     <Compile Include="Services\TarefaAppService.cs" />
-    <Compile Include="Services\TelefoneAppService.cs" />
     <Compile Include="Services\TemplateAppService.cs" />
     <Compile Include="Services\TemplatePropostaAppService.cs" />
     <Compile Include="Services\TemplateEMailAppService.cs" />
@@ -303,7 +303,6 @@
     <Compile Include="Services\TRFAppService.cs" />
     <Compile Include="Services\UsuarioAppService.cs" />
     <Compile Include="Services\VaraAppService.cs" />
-    <Compile Include="Services\VideoAppService.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CrossCutting\CrossCutting.csproj">

@@ -44,6 +44,7 @@ namespace DataServices.Repositories
             IQueryable<TEMPLATE_EMAIL> query = Db.TEMPLATE_EMAIL;
             query = query.Where(p => p.TEEM_SG_SIGLA == item.TEEM_SG_SIGLA);
             query = query.Where(p => p.ASSI_CD_ID == idAss);
+            query = query.Where(p => p.TEEM_IN_ATIVO == 1);
             return query.FirstOrDefault();
         }
 

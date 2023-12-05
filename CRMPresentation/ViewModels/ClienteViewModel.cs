@@ -42,6 +42,8 @@ namespace ERP_Condominios_Solution.ViewModels
         [Display(Name = "CNPJ")]
         public string CLIE_NR_CNPJ { get; set; }
         [StringLength(20, MinimumLength = 1, ErrorMessage = "O RG deve conter no minimo 1 caracteres e no máximo 20.")]
+        [RegularExpression(@"^([0-9]|-|_|\s)+$$", ErrorMessage = "RG inválido")]
+        [Display(Name = "RG")]
         public string CLIE_NR_RG { get; set; }
         [Required(ErrorMessage = "Campo E-MAIL obrigatorio")]
         [StringLength(100, MinimumLength = 1, ErrorMessage = "O E-MAIL deve conter no minimo 1 caracteres e no máximo 100.")]
@@ -69,6 +71,7 @@ namespace ERP_Condominios_Solution.ViewModels
         [Display(Name = "Celular")]
         public string CLIE_NR_CELULAR { get; set; }
         [StringLength(50, ErrorMessage = "O WEBSITE deve conter no máximo 50.")]
+        [RegularExpression(@"^http(s)?://([\w-]+.)+[\w-]+(/[\w- ./?%&=])?$", ErrorMessage = "Website inválido")]
         public string CLIE_NM_WEBSITE { get; set; }
         [StringLength(100, ErrorMessage = "O E_MAIL para DANFE deve conter no máximo 100.")]
         [RegularExpression("^[a-zA-Z0-9_\\.-]+@([a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$", ErrorMessage = "Deve ser um e-mail válido")]
@@ -89,6 +92,7 @@ namespace ERP_Condominios_Solution.ViewModels
         [Display(Name = "Cidade")]
         public string CLIE_NM_CIDADE { get; set; }
         [StringLength(10, ErrorMessage = "O CEP deve conter no máximo 10.")]
+        [RegularExpression(@"^([0-9]|-|_|\s)+$$", ErrorMessage = "CEP inválido")]
         [Display(Name = "CEP")]
         public string CLIE_NR_CEP { get; set; }
         [Display(Name = "UF")]
@@ -102,6 +106,7 @@ namespace ERP_Condominios_Solution.ViewModels
         public string CLIE_SG_UF { get; set; }
         public string CLIE_SG_UF_ENTREGA { get; set; }
         [StringLength(10, ErrorMessage = "O CEP deve conter no máximo 50.")]
+        [RegularExpression(@"^([0-9]|-|_|\s)+$$", ErrorMessage = "CEP inválido")]
         public string CLIE_NR_CEP_ENTREGA { get; set; }
         public Nullable<int> CLIE_UF_CD_ENTREGA { get; set; }
         [RegularExpression(@"^[0-9]+([,.][0-9]+)?$", ErrorMessage = "O LIMITE DE CRÉDITO deve ser um valor numérico positivo")]
@@ -152,9 +157,6 @@ namespace ERP_Condominios_Solution.ViewModels
         public Nullable<int> NACI_CD_ID { get; set; }
         public Nullable<int> MUNI_CD_ID { get; set; }
         public Nullable<int> MUNI_SG_UF { get; set; }
-        public Nullable<int> TRF1_CD_ID { get; set; }
-        public Nullable<int> VARA_CD_ID { get; set; }
-        public Nullable<int> PREC_CD_ID { get; set; }
 
         // Filtros
         public Nullable<int> OperaCategoria { get; set; }
@@ -178,6 +180,8 @@ namespace ERP_Condominios_Solution.ViewModels
         public Nullable<int> OperaUFNatur { get; set; }
         public Nullable<int> OperaNacion { get; set; }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<ATENDIMENTO> ATENDIMENTO { get; set; }
         public virtual CATEGORIA_CLIENTE CATEGORIA_CLIENTE { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<CLIENTE_ANEXO> CLIENTE_ANEXO { get; set; }
@@ -185,8 +189,8 @@ namespace ERP_Condominios_Solution.ViewModels
         public virtual ICollection<CLIENTE_ANOTACAO> CLIENTE_ANOTACAO { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<CLIENTE_CONTATO> CLIENTE_CONTATO { get; set; }
-        public virtual MUNICIPIO MUNICIPIO { get; set; }
-        public virtual NACIONALIDADE NACIONALIDADE { get; set; }
+        public virtual EMPRESA EMPRESA { get; set; }
+        public virtual FILIAL FILIAL { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<CLIENTE_QUADRO_SOCIETARIO> CLIENTE_QUADRO_SOCIETARIO { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
@@ -199,7 +203,6 @@ namespace ERP_Condominios_Solution.ViewModels
         public virtual TIPO_PESSOA TIPO_PESSOA { get; set; }
         public virtual UF UF { get; set; }
         public virtual UF UF1 { get; set; }
-        public virtual UF UF2 { get; set; }
         public virtual USUARIO USUARIO { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<CRM> CRM { get; set; }
@@ -216,11 +219,19 @@ namespace ERP_Condominios_Solution.ViewModels
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<MENSAGENS_ENVIADAS_SISTEMA> MENSAGENS_ENVIADAS_SISTEMA { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<ORDEM_SERVICO> ORDEM_SERVICO { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<PESQUISA> PESQUISA { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<PESQUISA_ENVIO> PESQUISA_ENVIO { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<PESQUISA_RESPOSTA> PESQUISA_RESPOSTA { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<RECURSIVIDADE_DESTINO> RECURSIVIDADE_DESTINO { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<RESULTADO_ROBOT> RESULTADO_ROBOT { get; set; }
-        public virtual PRECATORIO PRECATORIO { get; set; }
-        public virtual TRF TRF { get; set; }
-        public virtual VARA VARA { get; set; }
+        public virtual MUNICIPIO MUNICIPIO { get; set; }
+        public virtual NACIONALIDADE NACIONALIDADE { get; set; }
+        public virtual UF UF2 { get; set; }
     }
 }

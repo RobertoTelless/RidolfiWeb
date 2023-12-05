@@ -85,7 +85,7 @@ namespace ApplicationServices.Services
                     LOG_DT_DATA = DateTime.Now,
                     USUA_CD_ID = usuario.USUA_CD_ID,
                     ASSI_CD_ID = usuario.ASSI_CD_ID,
-                    LOG_NM_OPERACAO = "EditCANO",
+                    LOG_NM_OPERACAO = "EdtCANO",
                     LOG_IN_ATIVO = 1,
                     LOG_TX_REGISTRO = Serialization.SerializeJSON<CATEGORIA_NOTIFICACAO>(item),
                     LOG_TX_REGISTRO_ANTES = Serialization.SerializeJSON<CATEGORIA_NOTIFICACAO>(itemAntes)
@@ -133,7 +133,7 @@ namespace ApplicationServices.Services
                     USUA_CD_ID = usuario.USUA_CD_ID,
                     ASSI_CD_ID = usuario.ASSI_CD_ID,
                     LOG_IN_ATIVO = 1,
-                    LOG_NM_OPERACAO = "DeleCANO",
+                    LOG_NM_OPERACAO = "DelCANO",
                     LOG_TX_REGISTRO = "Categoria: " + item.CANO_NM_NOME
                 };
 
@@ -162,7 +162,7 @@ namespace ApplicationServices.Services
                     USUA_CD_ID = usuario.USUA_CD_ID,
                     ASSI_CD_ID = usuario.ASSI_CD_ID,
                     LOG_IN_ATIVO = 1,
-                    LOG_NM_OPERACAO = "ReatCANO",
+                    LOG_NM_OPERACAO = "ReaCANO",
                     LOG_TX_REGISTRO = "Categoria: " + item.CANO_NM_NOME
                 };
 
@@ -174,5 +174,6 @@ namespace ApplicationServices.Services
                 throw;
             }
         }
+
     }
 }

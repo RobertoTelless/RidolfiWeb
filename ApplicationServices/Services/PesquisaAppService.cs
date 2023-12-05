@@ -22,6 +22,7 @@ namespace ApplicationServices.Services
         private readonly IMensagemEnviadaSistemaService _meService;
         private readonly IGrupoService _gruService;
 
+
         public PesquisaAppService(IPesquisaService baseService, IConfiguracaoService confService, ITemplateEMailService teemService, IClienteService cliService, IMensagemEnviadaSistemaService meService, IGrupoService gruService) : base(baseService)
         {
             _baseService = baseService;

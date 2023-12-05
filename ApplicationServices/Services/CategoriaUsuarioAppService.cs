@@ -62,7 +62,9 @@ namespace ApplicationServices.Services
                     USUA_CD_ID = usuario.USUA_CD_ID,
                     LOG_NM_OPERACAO = "AddCAUS",
                     LOG_IN_ATIVO = 1,
-                    LOG_TX_REGISTRO = Serialization.SerializeJSON<CATEGORIA_USUARIO>(item)
+                    LOG_TX_REGISTRO = Serialization.SerializeJSON<CATEGORIA_USUARIO>(item),
+                    LOG_IN_SISTEMA = 1
+
                 };
 
                 // Persiste
@@ -85,10 +87,12 @@ namespace ApplicationServices.Services
                     LOG_DT_DATA = DateTime.Now,
                     USUA_CD_ID = usuario.USUA_CD_ID,
                     ASSI_CD_ID = usuario.ASSI_CD_ID,
-                    LOG_NM_OPERACAO = "EditCAUS",
+                    LOG_NM_OPERACAO = "EdtCAUS",
                     LOG_IN_ATIVO = 1,
                     LOG_TX_REGISTRO = Serialization.SerializeJSON<CATEGORIA_USUARIO>(item),
-                    LOG_TX_REGISTRO_ANTES = Serialization.SerializeJSON<CATEGORIA_USUARIO>(itemAntes)
+                    LOG_TX_REGISTRO_ANTES = Serialization.SerializeJSON<CATEGORIA_USUARIO>(itemAntes),
+                    LOG_IN_SISTEMA = 1
+
                 };
 
                 // Persiste
@@ -133,8 +137,10 @@ namespace ApplicationServices.Services
                     USUA_CD_ID = usuario.USUA_CD_ID,
                     ASSI_CD_ID = usuario.ASSI_CD_ID,
                     LOG_IN_ATIVO = 1,
-                    LOG_NM_OPERACAO = "DeleCAUS",
-                    LOG_TX_REGISTRO = "Categoria: " + item.CAUS_NM_NOME
+                    LOG_NM_OPERACAO = "DelCAUS",
+                    LOG_TX_REGISTRO = "Categoria: " + item.CAUS_NM_NOME,
+                    LOG_IN_SISTEMA = 1
+
                 };
 
                 // Persiste
@@ -162,8 +168,10 @@ namespace ApplicationServices.Services
                     USUA_CD_ID = usuario.USUA_CD_ID,
                     ASSI_CD_ID = usuario.ASSI_CD_ID,
                     LOG_IN_ATIVO = 1,
-                    LOG_NM_OPERACAO = "ReatCAUS",
-                    LOG_TX_REGISTRO = "Categoria: " + item.CAUS_NM_NOME
+                    LOG_NM_OPERACAO = "ReaCAUS",
+                    LOG_TX_REGISTRO = "Categoria: " + item.CAUS_NM_NOME,
+                    LOG_IN_SISTEMA = 1
+
                 };
 
                 // Persiste
@@ -174,5 +182,6 @@ namespace ApplicationServices.Services
                 throw;
             }
         }
+
     }
 }

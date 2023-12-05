@@ -149,7 +149,6 @@ namespace Presentation.Start
             kernel.Bind<IPeriodicidadeService>().To<PeriodicidadeService>();
             kernel.Bind<IMensagemAutomacaoService>().To<MensagemAutomacaoService>();
             kernel.Bind<IEMailAgendaService>().To<EmailAgendaService>();
-            kernel.Bind<IVideoService>().To<VideoService>();
             kernel.Bind<ITemplatePropostaService>().To<TemplatePropostaService>();
             kernel.Bind<ICRMDiarioService>().To<CRMDiarioService>();
             kernel.Bind<IFunilService>().To<FunilService>();
@@ -250,7 +249,6 @@ namespace Presentation.Start
             kernel.Bind<IRecursividadeRepository>().To<RecursividadeRepository>();
             kernel.Bind<IRecursividadeDestinoRepository>().To<RecursividadeDestinoRepository>();
             kernel.Bind<IRecursividadeDataRepository>().To<RecursividadeDataRepository>();
-            kernel.Bind<IResultadoRobotRepository>().To<ResultadoRobotRepository>();
             kernel.Bind<ILinguaRepository>().To<LinguaRepository>();
             kernel.Bind<INacionalidadeRepository>().To<NacionalidadeRepository>();
             kernel.Bind<IMunicipioRepository>().To<MunicipioRepository>();

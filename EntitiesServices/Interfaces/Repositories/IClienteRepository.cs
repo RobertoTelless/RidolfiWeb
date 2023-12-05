@@ -17,7 +17,7 @@ namespace ModelServices.Interfaces.Repositories
         List<CLIENTE> GetAllItens(Int32 idAss);
         List<CLIENTE> GetAllItensAdm(Int32 idAss);
         List<CLIENTE> GetAllItensUltimos(Int32 num, Int32 idAss);
-        List<CLIENTE> ExecuteFilter(Int32? id, Int32? catId, String razao, String nome, String cpf, String cnpj, String email, String cidade, Int32? uf, Int32? ativo, Int32? filial, Int32 idAss);
+        List<CLIENTE> ExecuteFilter(Int32? id, Int32? catId, String razao, String nome, String cpf, String cnpj, String email, String cidade, Int32? uf, Int32? ativo, Int32? filial, Int32? usu, Int32 idAss);
         List<CLIENTE> FiltrarContatos(GRUPO grupo, Int32 idAss);
     }
 }

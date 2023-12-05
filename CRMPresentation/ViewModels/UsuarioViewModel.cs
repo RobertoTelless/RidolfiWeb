@@ -25,24 +25,24 @@ namespace ERP_Condominios_Solution.ViewModels
         [StringLength(50, MinimumLength = 1, ErrorMessage = "O NOME deve ter no minimo 1 e no máximo 50 caracteres.")]
         public string USUA_NM_NOME { get; set; }
         [Required(ErrorMessage = "Campo LOGIN obrigatorio")]
+        [RegularExpression(@"^([a-zA-Zà-úÀ-Ú0-9]|-|_|\s)+$$", ErrorMessage = "Login inválido")]
         [StringLength(10, MinimumLength = 1, ErrorMessage = "O LOGIN deve ter no minimo 1 e no máximo 10 caracteres.")]
         public string USUA_NM_LOGIN { get; set; }
         [StringLength(150, ErrorMessage = "O E-MAIL deve ter no máximo 150 caracteres.")]
         [RegularExpression("^[a-zA-Z0-9_\\.-]+@([a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$", ErrorMessage = "Deve ser um e-mail válido")]
         public string USUA_NM_EMAIL { get; set; }
         [StringLength(10, ErrorMessage = "A MATRÍCULA deve ter no máximo 10 caracteres.")]
+        [RegularExpression(@"^([0-9]|-|_|\s)+$$", ErrorMessage = "Matrícula inválida")]
         public string USUA_NR_MATRICULA { get; set; }
         [StringLength(50, ErrorMessage = "O TELEFONE deve ter no máximo 50 caracteres.")]
         public string USUA_NR_TELEFONE { get; set; }
         [StringLength(50, ErrorMessage = "O CELULAR deve ter no máximo 50 caracteres.")]
         public string USUA_NR_CELULAR { get; set; }
         [StringLength(50, ErrorMessage = "O WHATSAPP deve ter no máximo 50 caracteres.")]
+        [RegularExpression("^([1-9]{2}) (?:[2-8]|9[0-9])[0-9]{3}-[0-9]{4}$", ErrorMessage = "WHATSAPP inválido")]
         public string USUA_NR_WHATSAPP { get; set; }
-        [StringLength(10, MinimumLength = 1, ErrorMessage = "A SENHA deve ter no minimo 1 e no máximo 10 caracteres.")]
         public string USUA_NM_SENHA { get; set; }
-        [StringLength(10, ErrorMessage = "A SENHA deve ter no máximo 10 caracteres.")]
         public string USUA_NM_SENHA_CONFIRMA { get; set; }
-        [StringLength(10, ErrorMessage = "A SENHA deve ter no máximo 10 caracteres.")]
         public string USUA_NM_NOVA_SENHA { get; set; }
         public Nullable<int> USUA_IN_BLOQUEADO { get; set; }
         public Nullable<int> USUA_IN_PROVISORIO { get; set; }
@@ -69,6 +69,7 @@ namespace ERP_Condominios_Solution.ViewModels
         [CustomValidationCPF(ErrorMessage = "CPF inválido")]
         public string USUA_NR_CPF { get; set; }
         [StringLength(20, ErrorMessage = "O RG deve ter no máximo 20 caracteres.")]
+        [RegularExpression(@"^([0-9]|-|_|\s)+$$", ErrorMessage = "RG inválido")]
         public string USUA_NR_RG { get; set; }
         public Nullable<int> USUA_IN_COMPRADOR { get; set; }
         public Nullable<int> USUA_IN_APROVADOR { get; set; }
@@ -79,6 +80,9 @@ namespace ERP_Condominios_Solution.ViewModels
         public Nullable<System.DateTime> USUA_DT_CODIGO { get; set; }
         public Nullable<int> USUA_IN_PENDENTE_CODIGO { get; set; }
         public string USUA_SG_CODIGO { get; set; }
+        public string USUA_NM_SENHA_HASH { get; set; }
+        public string USUA_NM_SALT_HASH { get; set; }
+        public byte[] USUA_NM_SALT { get; set; }
 
         public bool Bloqueio
         {
@@ -125,9 +129,43 @@ namespace ERP_Condominios_Solution.ViewModels
                 USUA_IN_PROVISORIO = (value == true) ? 1 : 0;
             }
         }
+        public String Bloqueado
+        {
+            get
+            {
+                if (USUA_IN_BLOQUEADO == 1)
+                {
+                    return "Sim";
+                }
+                return "Não";
+            }
+        }
+        public String SenhaProvisoria
+        {
+            get
+            {
+                if (USUA_IN_PROVISORIO == 1)
+                {
+                    return "Sim";
+                }
+                return "Não";
+            }
+        }
+        public String LoginSenhaProvisoria
+        {
+            get
+            {
+                if (USUA_IN_LOGIN_PROVISORIO == 1)
+                {
+                    return "Sim";
+                }
+                return "Não";
+            }
+        }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<AGENDA> AGENDA { get; set; }
+        public virtual EMPRESA EMPRESA { get; set; }
         public virtual ASSINANTE ASSINANTE { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ASSINANTE_ANOTACAO> ASSINANTE_ANOTACAO { get; set; }
@@ -153,6 +191,8 @@ namespace ERP_Condominios_Solution.ViewModels
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<DIARIO_PROCESSO> DIARIO_PROCESSO { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<FORNECEDOR_ANOTACOES> FORNECEDOR_ANOTACOES { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<LOG> LOG { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<MENSAGEM_AUTOMACAO> MENSAGEM_AUTOMACAO { get; set; }
@@ -161,10 +201,26 @@ namespace ERP_Condominios_Solution.ViewModels
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<MENSAGENS_ENVIADAS_SISTEMA> MENSAGENS_ENVIADAS_SISTEMA { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<META> META { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<META_ANOTACAO> META_ANOTACAO { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<NOTICIA_COMENTARIO> NOTICIA_COMENTARIO { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<NOTIFICACAO> NOTIFICACAO { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<ORDEM_SERVICO> ORDEM_SERVICO { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<ORDEM_SERVICO_ACOMPANHAMENTO> ORDEM_SERVICO_ACOMPANHAMENTO { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<ORDEM_SERVICO_COMENTARIOS> ORDEM_SERVICO_COMENTARIOS { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<PACIENTE_ANOTACAO> PACIENTE_ANOTACAO { get; set; }
         public virtual PERFIL PERFIL { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<PRECIFICACAO> PRECIFICACAO { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<PRODUTO_ANOTACAO> PRODUTO_ANOTACAO { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<TAREFA> TAREFA { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
@@ -176,9 +232,17 @@ namespace ERP_Condominios_Solution.ViewModels
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<USUARIO_ANOTACAO> USUARIO_ANOTACAO { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<VENDA_MENSAL_ANOTACAO> VENDA_MENSAL_ANOTACAO { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<VENDA_MENSAL_CALCULO> VENDA_MENSAL_CALCULO { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<VIDEO_COMENTARIO> VIDEO_COMENTARIO { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<PESQUISA_ANOTACAO> PESQUISA_ANOTACAO { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<GRUPO> GRUPO { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<PESQUISA> PESQUISA { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<AGENDA> AGENDA1 { get; set; }
     }

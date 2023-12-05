@@ -15,11 +15,14 @@ namespace ERP_Condominios_Solution.ViewModels
         public int ASSI_CD_ID { get; set; }
         [Required(ErrorMessage = "Campo NOME obrigatorio")]
         [StringLength(50, MinimumLength = 1, ErrorMessage = "O NOME deve conter no minimo 1 caracteres e no máximo 50 caracteres.")]
+        [RegularExpression(@"^([a-zA-Zà-úÀ-Ú0-9]|-|_|\s)+$$", ErrorMessage = "Nome inválido")]
         public string FUNI_NM_NOME { get; set; }
         [Required(ErrorMessage = "Campo SIGLA obrigatorio")]
         [StringLength(10, MinimumLength = 1, ErrorMessage = "A SIGLA deve conter no minimo 1 caracteres e no máximo 10 caracteres.")]
+        [RegularExpression(@"^([a-zA-Zà-úÀ-Ú0-9]|-|_|\s)+$$", ErrorMessage = "Sigla inválida")]
         public string FUNI_SG_SIGLA { get; set; }
         [StringLength(500, ErrorMessage = "A DESCRIÇÃO deve conter no máximo 500 caracteres.")]
+        [RegularExpression(@"^([a-zA-Zà-úÀ-Ú0-9]|-|_|\s)+$$", ErrorMessage = "Dscrição inválido")]
         public string FUNI_DS_DESCRICAO { get; set; }
         public System.DateTime FUNI_DT_CADASTRO { get; set; }
         public int FUNI_IN_ATIVO { get; set; }

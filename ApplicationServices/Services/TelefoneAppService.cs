@@ -21,6 +21,7 @@ namespace ApplicationServices.Services
             _baseService = baseService;
         }
 
+
         public List<TELEFONE> GetAllItens(Int32 idAss)
         {
             List<TELEFONE> lista = _baseService.GetAllItens(idAss);
@@ -95,12 +96,35 @@ namespace ApplicationServices.Services
 
                 // Completa objeto
                 item.TELE_IN_ATIVO = 1;
+                item.ASSI_CD_ID = usuario.ASSI_CD_ID;
 
                 // Checa endereço
+                if (String.IsNullOrEmpty(item.TELE_NM_ENDERECO))
+                {
+                    item.TELE_NM_ENDERECO = "-";
+                }
+                if (String.IsNullOrEmpty(item.TELE_NM_BAIRRO))
+                {
+                    item.TELE_NM_BAIRRO = "-";
+                }
+                if (String.IsNullOrEmpty(item.TELE_NM_CIDADE))
+                {
+                    item.TELE_NM_CIDADE = "-";
+                }
+                if (String.IsNullOrEmpty(item.TELE_NR_CEP))
+                {
+                    item.TELE_NR_CEP = "-";
+                }
+                if (item.UF_CD_ID == null)
+                {
+                    item.UF_CD_ID = 18;
+                }
+
                 // Monta Log
                 LOG log = new LOG
                 {
                     LOG_DT_DATA = DateTime.Now,
+                    ASSI_CD_ID = usuario.ASSI_CD_ID,
                     USUA_CD_ID = usuario.USUA_CD_ID,
                     LOG_NM_OPERACAO = "AddTELE",
                     LOG_IN_ATIVO = 1,
@@ -117,16 +141,37 @@ namespace ApplicationServices.Services
             }
         }
 
-
         public Int32 ValidateEdit(TELEFONE item, TELEFONE itemAntes, USUARIO usuario)
         {
             try
             {
+                // Checa endereço
+                if (String.IsNullOrEmpty(item.TELE_NM_ENDERECO))
+                {
+                    item.TELE_NM_ENDERECO = "-";
+                }
+                if (String.IsNullOrEmpty(item.TELE_NM_BAIRRO))
+                {
+                    item.TELE_NM_BAIRRO = "-";
+                }
+                if (String.IsNullOrEmpty(item.TELE_NM_CIDADE))
+                {
+                    item.TELE_NM_CIDADE = "-";
+                }
+                if (String.IsNullOrEmpty(item.TELE_NR_CEP))
+                {
+                    item.TELE_NR_CEP = "-";
+                }
+                if (item.UF_CD_ID == null)
+                {
+                    item.UF_CD_ID = 28;
+                }
 
                 // Monta Log
                 LOG log = new LOG
                 {
                     LOG_DT_DATA = DateTime.Now,
+                    ASSI_CD_ID = usuario.ASSI_CD_ID,
                     USUA_CD_ID = usuario.USUA_CD_ID,
                     LOG_NM_OPERACAO = "EditTELE",
                     LOG_IN_ATIVO = 1,
@@ -147,6 +192,27 @@ namespace ApplicationServices.Services
         {
             try
             {
+                // Checa endereço
+                if (String.IsNullOrEmpty(item.TELE_NM_ENDERECO))
+                {
+                    item.TELE_NM_ENDERECO = "-";
+                }
+                if (String.IsNullOrEmpty(item.TELE_NM_BAIRRO))
+                {
+                    item.TELE_NM_BAIRRO = "-";
+                }
+                if (String.IsNullOrEmpty(item.TELE_NM_CIDADE))
+                {
+                    item.TELE_NM_CIDADE = "-";
+                }
+                if (String.IsNullOrEmpty(item.TELE_NR_CEP))
+                {
+                    item.TELE_NR_CEP = "-";
+                }
+                if (item.UF_CD_ID == null)
+                {
+                    item.UF_CD_ID = 28;
+                }
 
                 // Persiste
                 return _baseService.Edit(item);
@@ -169,10 +235,11 @@ namespace ApplicationServices.Services
                 LOG log = new LOG
                 {
                     LOG_DT_DATA = DateTime.Now,
+                    ASSI_CD_ID = usuario.ASSI_CD_ID,
                     USUA_CD_ID = usuario.USUA_CD_ID,
                     LOG_IN_ATIVO = 1,
                     LOG_NM_OPERACAO = "DelTELE",
-                    LOG_TX_REGISTRO = "Nome : "
+                    LOG_TX_REGISTRO = Serialization.SerializeJSON<TELEFONE>(item)
                 };
 
                 // Persiste
@@ -197,10 +264,11 @@ namespace ApplicationServices.Services
                 LOG log = new LOG
                 {
                     LOG_DT_DATA = DateTime.Now,
+                    ASSI_CD_ID = usuario.ASSI_CD_ID,
                     USUA_CD_ID = usuario.USUA_CD_ID,
                     LOG_IN_ATIVO = 1,
                     LOG_NM_OPERACAO = "ReatTELE",
-                    LOG_TX_REGISTRO = "Nome : "
+                    LOG_TX_REGISTRO = Serialization.SerializeJSON<TELEFONE>(item)
                 };
 
                 // Persiste

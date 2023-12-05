@@ -150,7 +150,9 @@ namespace ApplicationServices.Services
                     ASSI_CD_ID = usuario.ASSI_CD_ID,
                     LOG_NM_OPERACAO = "AddTARE",
                     LOG_IN_ATIVO = 1,
-                    LOG_TX_REGISTRO = Serialization.SerializeJSON<TAREFA>(item)
+                    LOG_TX_REGISTRO = Serialization.SerializeJSON<TAREFA>(item),
+                    LOG_IN_SISTEMA = 1
+
                 };
                 
                 // Persiste
@@ -158,7 +160,7 @@ namespace ApplicationServices.Services
 
                 // Gera Notificações e tarefas compartilhadas
 
-                return volta;
+                return log.LOG_CD_ID;
             }
             catch (Exception ex)
             {
@@ -187,15 +189,17 @@ namespace ApplicationServices.Services
                     LOG_DT_DATA = DateTime.Now,
                     USUA_CD_ID = usuario.USUA_CD_ID,
                     ASSI_CD_ID = usuario.ASSI_CD_ID,
-                    LOG_NM_OPERACAO = "EditTARE",
+                    LOG_NM_OPERACAO = "EdtTARE",
                     LOG_IN_ATIVO = 1,
                     LOG_TX_REGISTRO = Serialization.SerializeJSON<TAREFA>(item),
-                    LOG_TX_REGISTRO_ANTES = Serialization.SerializeJSON<TAREFA>(itemAntes)
+                    LOG_TX_REGISTRO_ANTES = Serialization.SerializeJSON<TAREFA>(itemAntes),
+                    LOG_IN_SISTEMA = 1
+
                 };
 
                 // Persiste
                 Int32 volta = _baseService.Edit(item, log);
-                return volta;
+                return log.LOG_CD_ID;
             }
             catch (Exception ex)
             {
@@ -262,12 +266,14 @@ namespace ApplicationServices.Services
                     ASSI_CD_ID = usuario.ASSI_CD_ID,
                     LOG_IN_ATIVO = 1,
                     LOG_NM_OPERACAO = "DelTARE",
-                    LOG_TX_REGISTRO = Serialization.SerializeJSON<TAREFA>(item)
+                    LOG_TX_REGISTRO = Serialization.SerializeJSON<TAREFA>(item),
+                    LOG_IN_SISTEMA = 1
+
                 };
 
                 // Persiste
                 Int32 volta =  _baseService.Edit(item, log);
-                return volta;
+                return log.LOG_CD_ID;
             }
             catch (Exception ex)
             {
@@ -311,13 +317,28 @@ namespace ApplicationServices.Services
                     USUA_CD_ID = usuario.USUA_CD_ID,
                     ASSI_CD_ID = usuario.ASSI_CD_ID,
                     LOG_IN_ATIVO = 1,
-                    LOG_NM_OPERACAO = "ReatTARE",
-                    LOG_TX_REGISTRO = "Tarefa: " + item.TARE_NM_TITULO
+                    LOG_NM_OPERACAO = "ReaTARE",
+                    LOG_TX_REGISTRO = Serialization.SerializeJSON<TAREFA>(item),
+                    LOG_IN_SISTEMA = 1
+
                 };
 
                 // Persiste
                 Int32 volta =  _baseService.Edit(item, log);
-                return volta;
+                return log.LOG_CD_ID;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
+        public Int32 ValidateEditAnexo(TAREFA_ANEXO item)
+        {
+            try
+            {
+                // Persiste
+                return _baseService.EditAnexo(item);
             }
             catch (Exception ex)
             {

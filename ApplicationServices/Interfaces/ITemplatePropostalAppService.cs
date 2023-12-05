@@ -19,6 +19,6 @@ namespace ApplicationServices.Interfaces
         List<TEMPLATE_PROPOSTA> GetAllItens(Int32 idAss);
         TEMPLATE_PROPOSTA GetItemById(Int32 id);
         List<TEMPLATE_PROPOSTA> GetAllItensAdm(Int32 idAss);
-        Int32 ExecuteFilter(String sigla, String nome, String conteudo, Int32 idAss, out List<TEMPLATE_PROPOSTA> objeto);
+        Tuple<Int32, List<TEMPLATE_PROPOSTA>, Boolean> ExecuteFilter(String sigla, String nome, String conteudo, Int32 idAss);
     }
 }

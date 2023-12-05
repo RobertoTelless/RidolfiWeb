@@ -124,7 +124,10 @@ namespace ERP_Condominios_Solution.ViewModels
         public virtual CLIENTE CLIENTE { get; set; }
         public virtual CRM CRM { get; set; }
         public virtual CRM_CONTATO CRM_CONTATO { get; set; }
+        public virtual FILIAL FILIAL { get; set; }
+        public virtual PACIENTE PACIENTE { get; set; }
         public virtual USUARIO USUARIO { get; set; }
         public virtual USUARIO USUARIO1 { get; set; }
+        public virtual EMPRESA EMPRESA { get; set; }
     }
 }
