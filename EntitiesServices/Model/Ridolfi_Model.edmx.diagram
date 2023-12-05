@@ -1,0 +1,717 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="ed30804d5cf24becb3d7eb1534ce5739" Name="Diagram1">
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.AGENDA" Width="1.5" PointX="39.75" PointY="333.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.AGENDA_ANEXO" Width="1.5" PointX="42" PointY="338.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.AGENDA_CONTATO" Width="1.5" PointX="48" PointY="322.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.AGENDA_VINCULO" Width="1.5" PointX="42" PointY="353.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.ASSINANTE" Width="1.5" PointX="3" PointY="295.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.ASSINANTE_ANEXO" Width="1.5" PointX="5.25" PointY="257.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.ASSINANTE_ANOTACAO" Width="1.5" PointX="8.25" PointY="301.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.ASSINANTE_CONSUMO" Width="1.5" PointX="5.25" PointY="263.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.ASSINANTE_PAGAMENTO" Width="1.5" PointX="5.25" PointY="297.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.ASSINANTE_PLANO" Width="1.5" PointX="8.25" PointY="297.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.ASSINANTE_QUADRO_SOCIETARIO" Width="1.5" PointX="5.25" PointY="275.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.ATENDIMENTO" Width="1.5" PointX="29.25" PointY="339.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.ATENDIMENTO_ACAO" Width="1.5" PointX="37.5" PointY="316.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.ATENDIMENTO_ACOMPANHAMENTO" Width="1.5" PointX="40.5" PointY="329.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.ATENDIMENTO_AGENDA" Width="1.5" PointX="45" PointY="337.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.ATENDIMENTO_ANEXO" Width="1.5" PointX="31.5" PointY="351.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.ATENDIMENTO_CRM" Width="1.5" PointX="42.75" PointY="334.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.ATENDIMENTO_PROPOSTA" Width="1.5" PointX="40.5" PointY="313.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.ATENDIMENTO_PROPOSTA_ACOMPANHAMENTO" Width="1.5" PointX="45.75" PointY="314.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.ATENDIMENTO_PROPOSTA_ANEXO" Width="1.5" PointX="42.75" PointY="320.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.ATENDIMENTO_PROPOSTA_PECA" Width="1.5" PointX="42.75" PointY="310.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.ATENDIMENTO_PROPOSTA_SERVICO" Width="1.5" PointX="48.75" PointY="317.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.BANCO" Width="1.5" PointX="5.25" PointY="278.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.BENEFICIARIO" Width="1.5" PointX="8.25" PointY="407.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.BENEFICIARIO_ANEXO" Width="1.5" PointX="10.5" PointY="410.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.BENEFICIARIO_ANOTACOES" Width="1.5" PointX="18" PointY="314.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.CARGO" Width="1.5" PointX="13.5" PointY="310.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.CARGO_TESTE" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.CATEGORIA_AGENDA" Width="1.5" PointX="37.5" PointY="345.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.CATEGORIA_ATENDIMENTO" Width="1.5" PointX="27" PointY="357.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.CATEGORIA_CLIENTE" Width="1.5" PointX="18.75" PointY="354.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.CATEGORIA_CUSTO_FIXO" Width="1.5" PointX="5.25" PointY="282.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.CATEGORIA_FORNECEDOR" Width="1.5" PointX="3" PointY="349.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.CATEGORIA_NOTIFICACAO" Width="1.5" PointX="21.75" PointY="302.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.CATEGORIA_ORDEM_SERVICO" Width="1.5" PointX="5.25" PointY="285.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.CATEGORIA_PRODUTO" Width="1.5" PointX="8.25" PointY="388.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.CATEGORIA_SERVICO" Width="1.5" PointX="24.75" PointY="383" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.CATEGORIA_TELEFONE" Width="1.5" PointX="2.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.CATEGORIA_USUARIO" Width="1.5" PointX="13.5" PointY="313.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.CENTRO_CUSTO" Width="1.5" PointX="7.5" PointY="326.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.CLIENTE" Width="1.5" PointX="21" PointY="348.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.CLIENTE_ANEXO" Width="1.5" PointX="23.25" PointY="361.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.CLIENTE_ANOTACAO" Width="1.5" PointX="26.25" PointY="342.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.CLIENTE_CONTATO" Width="1.5" PointX="23.25" PointY="368.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.CLIENTE_FALHA" Width="1.5" PointX="18" PointY="309.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.CLIENTE_QUADRO_SOCIETARIO" Width="1.5" PointX="23.25" PointY="371.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.CLIENTE_REFERENCIA" Width="1.5" PointX="23.25" PointY="375.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.CLIENTE_TAG" Width="1.5" PointX="23.25" PointY="378.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.COMISSAO" Width="1.5" PointX="0.75" PointY="3.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.COMISSAO_CARGO" Width="1.5" PointX="15.75" PointY="297.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.CONFIGURACAO" Width="1.5" PointX="5.25" PointY="305.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.CONFIGURACAO_CHAVES" Width="1.5" PointX="2.75" PointY="3.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.CONFIGURACAO_CRIPT" Width="1.5" PointX="5.25" PointY="319.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.CONTA_BANCO" Width="1.5" PointX="7.5" PointY="288.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.CONTA_BANCO_CONTATO" Width="1.5" PointX="9.75" PointY="289.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.CONTA_BANCO_LANCAMENTO" Width="1.5" PointX="9.75" PointY="292.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.CONTA_PAGAR" Width="1.5" PointX="21" PointY="315.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.CONTA_PAGAR_ANEXO" Width="1.5" PointX="23.25" PointY="332.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.CONTA_PAGAR_PARCELA" Width="1.5" PointX="26.25" PointY="302.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.CONTA_PAGAR_RATEIO" Width="1.5" PointX="26.25" PointY="320.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.CONTA_RECEBER" Width="1.5" PointX="21" PointY="335.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.CONTA_RECEBER_ANEXO" Width="1.5" PointX="23.25" PointY="336.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.CONTA_RECEBER_PARCELA" Width="1.5" PointX="23.25" PointY="347.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.CONTA_RECEBER_RATEIO" Width="1.5" PointX="26.25" PointY="338.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.CONTATO" Width="1.5" PointX="12.75" PointY="339.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.CONTATO_FALHA" Width="1.5" PointX="4.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.CONVENIO" Width="1.5" PointX="5.25" PointY="372.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.COR" Width="1.5" PointX="5.25" PointY="375.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.CRM" Width="1.5" PointX="37.5" PointY="322.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.CRM_ACAO" Width="1.5" PointX="42.75" PointY="314.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.CRM_ANEXO" Width="1.5" PointX="39.75" PointY="341.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.CRM_COMENTARIO" Width="1.5" PointX="45.75" PointY="319.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.CRM_CONTATO" Width="1.5" PointX="39.75" PointY="348.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.CRM_FOLLOW" Width="1.5" PointX="45.75" PointY="323.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.CRM_ORIGEM" Width="1.5" PointX="35.25" PointY="312.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.CRM_PEDIDO_VENDA" Width="1.5" PointX="44.75" PointY="340.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.CRM_PEDIDO_VENDA_ACOMPANHAMENTO" Width="1.5" PointX="51" PointY="328.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.CRM_PEDIDO_VENDA_ANEXO" Width="1.5" PointX="47" PointY="349.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.CUSTO_FIXO" Width="1.5" PointX="7.5" PointY="315.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.CUSTO_FIXO_CALENDARIO" Width="1.5" PointX="9.75" PointY="317.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.CUSTO_HISTORICO" Width="1.5" PointX="4.75" PointY="4.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.CUSTO_VARIAVEL" Width="1.5" PointX="5.25" PointY="330.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.CUSTO_VARIAVEL_ANTECIPACAO" Width="1.5" PointX="7.5" PointY="332.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.CUSTO_VARIAVEL_CALCULO" Width="1.5" PointX="6.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.CUSTO_VARIAVEL_HISTORICO" Width="1.5" PointX="6.75" PointY="3.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.DEPARTAMENTO" Width="1.5" PointX="13.5" PointY="315.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.DIARIO_PROCESSO" Width="1.5" PointX="48" PointY="327.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.EMAIL_AGENDAMENTO" Width="1.5" PointX="23.25" PointY="357.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.EMPRESA" Width="1.5" PointX="13.5" PointY="319.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.EMPRESA_ANEXO" Width="1.5" PointX="15.75" PointY="328.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.EMPRESA_CUSTO_VARIAVEL" Width="1.5" PointX="15.75" PointY="376.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.EMPRESA_CUSTO_VARIAVEL_NORMAL" Width="1.5" PointX="15.75" PointY="331.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.EMPRESA_MAQUINA" Width="1.5" PointX="18.75" PointY="344.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.EMPRESA_PLATAFORMA" Width="1.5" PointX="15.75" PointY="356.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.EMPRESA_TICKET" Width="1.5" PointX="18.75" PointY="379.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.ENDERECO" Width="1.5" PointX="6" PointY="301.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.ESCOLARIDADE" Width="1.5" PointX="6" PointY="407" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.ESTADO_CIVIL" Width="1.5" PointX="6" PointY="409.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.FICHA_TECNICA" Width="1.5" PointX="12.75" PointY="361.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.FICHA_TECNICA_DETALHE" Width="1.5" PointX="21" PointY="369.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.FILIAL" Width="1.5" PointX="3" PointY="391.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.FORMA_ENVIO" Width="1.5" PointX="5.25" PointY="358" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.FORMA_FRETE" Width="1.5" PointX="5.25" PointY="361" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.FORMA_PAGAMENTO" Width="1.5" PointX="12.75" PointY="295.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.FORNECEDOR" Width="1.5" PointX="5.25" PointY="346.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.FORNECEDOR_ANEXO" Width="1.5" PointX="7.5" PointY="343.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.FORNECEDOR_ANOTACOES" Width="1.5" PointX="7.5" PointY="347.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.FORNECEDOR_CONTATO" Width="1.5" PointX="7.5" PointY="350.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.FORNECEDOR_QUADRO_SOCIETARIO" Width="1.5" PointX="7.5" PointY="353.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.FUNIL" Width="1.5" PointX="35.25" PointY="307" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.FUNIL_ETAPA" Width="1.5" PointX="37.5" PointY="307.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.GRAU_INSTRUCAO" Width="1.5" PointX="5.25" PointY="381.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.GRUPO" Width="1.5" PointX="21" PointY="309.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.GRUPO_CC" Width="1.5" PointX="5.25" PointY="363.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.GRUPO_CLIENTE" Width="1.5" PointX="26.25" PointY="345.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.HONORARIO" Width="1.5" PointX="8.25" PointY="337.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.HONORARIO_ANEXO" Width="1.5" PointX="10.5" PointY="322.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.HONORARIO_ANOTACOES" Width="1.5" PointX="18" PointY="318.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.LINGUA" Width="1.5" PointX="16.5" PointY="360" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.LOAS" Width="1.5" PointX="15.75" PointY="371.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.LOG" Width="1.5" PointX="18" PointY="323.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.LOG_EXCECAO" Width="1.5" PointX="6.75" PointY="6.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.LOG_EXCECAO_NOVO" Width="1.5" PointX="18" PointY="327.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.MAQUINA" Width="1.5" PointX="5.25" PointY="367.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.MENSAGEM_ANEXO" Width="1.5" PointX="34.5" PointY="332.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.MENSAGEM_AUTOMACAO" Width="1.5" PointX="29.25" PointY="319" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.MENSAGEM_AUTOMACAO_DATAS" Width="1.5" PointX="31.5" PointY="319.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.MENSAGENS" Width="1.5" PointX="32.25" PointY="330.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.MENSAGENS_DESTINOS" Width="1.5" PointX="37.5" PointY="335.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.MENSAGENS_ENVIADAS_SISTEMA" Width="1.5" PointX="42" PointY="343.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.META" Width="1.5" PointX="15.75" PointY="335.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.META_ANEXO" Width="1.5" PointX="18" PointY="335.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.META_ANOTACAO" Width="1.5" PointX="18" PointY="338.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.MOTIVO_CANCELAMENTO" Width="1.5" PointX="35.25" PointY="303" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.MOTIVO_ENCERRAMENTO" Width="1.5" PointX="35.25" PointY="299.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.MOVIMENTO_ESTOQUE_PRODUTO" Width="1.5" PointX="5.25" PointY="340.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.MUNICIPIO" Width="1.5" PointX="3" PointY="400.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.NACIONALIDADE" Width="1.5" PointX="18.75" PointY="359.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.NATUREZA" Width="1.5" PointX="8.25" PointY="323.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.NOMENCLATURA_BRAS_SERVICOS" Width="1.5" PointX="24.75" PointY="385.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.NOTICIA" Width="1.5" PointX="21.75" PointY="297.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.NOTICIA_COMENTARIO" Width="1.5" PointX="24" PointY="314.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.NOTIFICACAO" Width="1.5" PointX="24" PointY="308.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.NOTIFICACAO_ANEXO" Width="1.5" PointX="26.25" PointY="309.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.ORDEM_SERVICO" Width="1.5" PointX="26.25" PointY="327.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.ORDEM_SERVICO_ACOMPANHAMENTO" Width="1.5" PointX="31.5" PointY="315.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.ORDEM_SERVICO_AGENDA" Width="1.5" PointX="34.5" PointY="329.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.ORDEM_SERVICO_ANEXO" Width="1.5" PointX="28.5" PointY="350.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.ORDEM_SERVICO_COMENTARIOS" Width="1.5" PointX="28.5" PointY="353.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.ORDEM_SERVICO_PRODUTO" Width="1.5" PointX="31.5" PointY="355.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.ORDEM_SERVICO_SERVICO" Width="1.5" PointX="34.5" PointY="336.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.OUTRO_CUSTO_VARIAVEL" Width="1.5" PointX="5.25" PointY="378" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.PACIENTE" Width="1.5" PointX="7.5" PointY="364.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.PACIENTE_ANAMNESE" Width="1.5" PointX="9.75" PointY="358.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.PACIENTE_ANEXO" Width="1.5" PointX="9.75" PointY="377.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.PACIENTE_ANOTACAO" Width="1.5" PointX="24" PointY="340.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.PACIENTE_CONSULTA" Width="1.5" PointX="9.75" PointY="381.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.PACIENTE_PRESCRICAO" Width="1.5" PointX="9.75" PointY="384" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.PARENTESCO" Width="1.5" PointX="6" PointY="412.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.PECA" Width="1.5" PointX="13.5" PointY="301.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.PECA_ANEXO" Width="1.5" PointX="15.75" PointY="300.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.PECA_ANOTACAO" Width="1.5" PointX="24" PointY="303.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.PEDIDO_VENDA" Width="1.5" PointX="29.25" PointY="325.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.PEDIDO_VENDA_ACOMPANHAMENTO" Width="1.5" PointX="34.5" PointY="320.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.PEDIDO_VENDA_ANEXO" Width="1.5" PointX="31.5" PointY="347.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.PERFIL" Width="1.5" PointX="13.5" PointY="292" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.PERIODICIDADE" Width="1.5" PointX="27" PointY="299.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.PERIODICIDADE_TAREFA" Width="1.5" PointX="30" PointY="308.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.PESQUISA" Width="1.5" PointX="32.25" PointY="322.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.PESQUISA_ANEXO" Width="1.5" PointX="34.5" PointY="324.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.PESQUISA_ANOTACAO" Width="1.5" PointX="34.5" PointY="315.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.PESQUISA_ENVIO" Width="1.5" PointX="34.5" PointY="346.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.PESQUISA_ITEM" Width="1.5" PointX="40.5" PointY="324.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.PESQUISA_ITEM_OPCAO" Width="1.5" PointX="42.75" PointY="324.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.PESQUISA_RESPOSTA" Width="1.5" PointX="42.75" PointY="329" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.PESQUISA_RESPOSTA_ITEM" Width="1.5" PointX="45" PointY="329.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.PLANO" Width="1.5" PointX="0.75" PointY="289.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.PLANO_PERIODICIDADE" Width="1.5" PointX="1.5" PointY="286.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.PLATAFORMA_ENTREGA" Width="1.5" PointX="5.25" PointY="389.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.PRECATORIO" Width="1.5" PointX="10.5" PointY="335.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.PRECATORIO_ANEXO" Width="1.5" PointX="12.75" PointY="373.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.PRECATORIO_ANOTACAO" Width="1.5" PointX="21" PointY="328.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.PRECATORIO_ESTADO" Width="1.5" PointX="8.25" PointY="312" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.PRECATORIO_FALHA" Width="1.5" PointX="8.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.PRECIFICACAO" Width="1.5" PointX="8.25" PointY="305.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.PRODUTO" Width="1.5" PointX="10.5" PointY="364.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.PRODUTO_ANEXO" Width="1.5" PointX="12.75" PointY="367.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.PRODUTO_ANOTACAO" Width="1.5" PointX="24" PointY="343.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.PRODUTO_CONCORRENTE" Width="1.5" PointX="12.75" PointY="377.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.PRODUTO_CUSTO" Width="1.5" PointX="12.75" PointY="380.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.PRODUTO_EMPRESA" Width="1.5" PointX="0.75" PointY="8.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.PRODUTO_ESTOQUE_FILIAL" Width="1.5" PointX="15.75" PointY="381.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.PRODUTO_FALHA" Width="1.5" PointX="5.25" PointY="426.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.PRODUTO_KIT" Width="1.5" PointX="12.75" PointY="384.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.PRODUTO_ORIGEM" Width="1.5" PointX="2.75" PointY="8.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.PRODUTO_PRECO_VENDA" Width="1.5" PointX="12.75" PointY="401.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.QUALIFICACAO" Width="1.5" PointX="10.5" PointY="350.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.QUEM_DESLIGOU" Width="1.5" PointX="10.5" PointY="353" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.RECURSIVIDADE" Width="1.5" PointX="34.5" PointY="341.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.RECURSIVIDADE_DATA" Width="1.5" PointX="36.75" PointY="342" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.RECURSIVIDADE_DESTINO" Width="1.5" PointX="36.75" PointY="353.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.REGIME_TRIBUTARIO" Width="1.5" PointX="11.25" PointY="326.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.RESULTADO_ROBOT" Width="1.5" PointX="34.5" PointY="350.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.SERVICO" Width="1.5" PointX="27" PointY="382.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.SERVICO_ANEXO" Width="1.5" PointX="29.25" PointY="384" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.SERVICO_EMPRESA" Width="1.5" PointX="8.75" PointY="3.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.SERVICO_TABELA_PRECO" Width="1.5" PointX="5.25" PointY="394" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.SEXO" Width="1.5" PointX="6" PointY="414.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.SUBCATEGORIA_PRODUTO" Width="1.5" PointX="11.25" PointY="301.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.SUBGRUPO" Width="1.5" PointX="10.5" PointY="331.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.sysdiagrams" Width="1.5" PointX="8.75" PointY="6.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.TABELA_IMPORTACAO" Width="1.5" PointX="4.75" PointY="9.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.TABELA_IPCA" Width="1.5" PointX="6.75" PointY="9.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.TABELA_IRRF" Width="1.5" PointX="8.75" PointY="9.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.TAREFA" Width="1.5" PointX="24" PointY="318.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.TAREFA_ACOMPANHAMENTO" Width="1.5" PointX="26.25" PointY="314.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.TAREFA_ANEXO" Width="1.5" PointX="26.25" PointY="323.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.TAREFA_NOTIFICACAO" Width="1.5" PointX="29.25" PointY="315.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.TAREFA_VINCULO" Width="1.5" PointX="29.25" PointY="312.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.TELEFONE" Width="1.5" PointX="13.5" PointY="410.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.TEMPLATE" Width="1.5" PointX="30" PointY="359.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.TEMPLATE_EMAIL" Width="1.5" PointX="15.75" PointY="342" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.TEMPLATE_PROPOSTA" Width="1.5" PointX="15.75" PointY="347.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.TEMPLATE_SMS" Width="1.5" PointX="15.75" PointY="352.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.TICKET_ALIMENTACAO" Width="1.5" PointX="5.25" PointY="434" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.TIPO_ACAO" Width="1.5" PointX="40.5" PointY="310.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.TIPO_CONTA" Width="1.5" PointX="5.25" PointY="291.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.TIPO_CONTRIBUINTE" Width="1.5" PointX="18.75" PointY="367" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.TIPO_CRM" Width="1.5" PointX="35.25" PointY="357.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.TIPO_EMBALAGEM" Width="1.5" PointX="5.25" PointY="437.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.TIPO_FOLLOW" Width="1.5" PointX="43.5" PointY="306.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.TIPO_GRUPO" Width="1.5" PointX="10.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.TIPO_ITEM_PESQUISA" Width="1.5" PointX="38.25" PointY="313" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.TIPO_PACIENTE" Width="1.5" PointX="5.25" PointY="442.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.TIPO_PESQUISA" Width="1.5" PointX="30" PointY="305.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.TIPO_PESSOA" Width="1.5" PointX="0.75" PointY="307" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.TIPO_TAREFA" Width="1.5" PointX="21.75" PointY="294.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.TIPO_TELEFONE" Width="1.5" PointX="10.75" PointY="3.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.TIPO_TELEFONE_BASE" Width="1.5" PointX="11.25" PointY="408.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.TITULARIDADE" Width="1.5" PointX="10.75" PointY="6.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.TRF" Width="1.5" PointX="3" PointY="403.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.UF" Width="1.5" PointX="0.75" PointY="300.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.UNIDADE" Width="1.5" PointX="8.25" PointY="392" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.USUARIO" Width="1.5" PointX="15.75" PointY="304.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.USUARIO_ANEXO" Width="1.5" PointX="18" PointY="347.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.USUARIO_ANOTACAO" Width="1.5" PointX="18" PointY="351.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.VARA" Width="1.5" PointX="5.25" PointY="403.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.VENDA_MENSAL" Width="1.5" PointX="15.75" PointY="363.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.VENDA_MENSAL_ANEXO" Width="1.5" PointX="18" PointY="363.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.VENDA_MENSAL_ANOTACAO" Width="1.5" PointX="24" PointY="327.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.VENDA_MENSAL_CALCULO" Width="1.5" PointX="18" PointY="305.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.VENDA_MENSAL_COMISSAO" Width="1.5" PointX="18" PointY="370.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.VENDA_MENSAL_PARTES" Width="1.5" PointX="18" PointY="398.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.VIDEO" Width="1.5" PointX="18.75" PointY="300.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.VIDEO_COMENTARIO" Width="1.5" PointX="21" PointY="305.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="RidolfiDB_WebModel.VOLTA_PESQUISA" Width="1.5" PointX="5.25" PointY="468.75" IsExpanded="true" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_AGENDA_ANEXO_AGENDA" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_AGENDA_CATEGORIA_AGENDA" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_AGENDA_CONTATO_AGENDA" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_AGENDA_CRM" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_AGENDA_PACIENTE" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_AGENDA_USUARIO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_AGENDA_USUARIO1" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_AGENDA_VINCULO_AGENDA" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_ATENDIMENTO_AGENDA_AGENDA" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_DIARIO_PROCESSO_AGENDA" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_ORDEM_SERVICO_AGENDA_AGENDA" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_AGENDA_CONTATO_USUARIO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_ASSINANTE_ANEXO_ASSINANTE" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_ASSINANTE_ANOTACAO_ASSINANTE" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_ASSINANTE_CONSUMO_ASSINANTE" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_ASSINANTE_PAGAMENTO_ASSINANTE" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_ASSINANTE_PLANO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_ASSINANTE_PLANO_ASSINANTE" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_ASSINANTE_QUADRO_SOCIETARIO_ASSINANTE" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_ASSINANTE_TIPO_PESSOA" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_ASSINANTE_UF" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_BANCO_ASSINANTE" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_CATEGORIA_ORDEM_SERVICO_ASSINANTE" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_CENTRO_CUSTO_ASSINANTE" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_CONFIGURACAO_ASSINANTE" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_CONFIGURACAO_CRIPT_ASSINANTE" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_CONTA_BANCO_ASSINANTE" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_CONTA_RECEBER_ASSINANTE" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_CUSTO_FIXO_ASSINANTE" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_CUSTO_VARIAVEL_ASSINANTE" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_FORMA_ENVIO_ASSINANTE" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_FORMA_FRETE_ASSINANTE" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_FORMA_PAGAMENTO_ASSINANTE" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_GRUPO_CC_ASSINANTE" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_MENSAGENS_ENVIADAS_SISTEMA_ASSINANTE" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_MENSAGENS_ENVIADAS_SISTEMA_ASSINANTE1" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_MOVIMENTO_ESTOQUE_PRODUTO_ASSINANTE" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_ORDEM_SERVICO_ASSINANTE" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_PACIENTE_ASSINANTE" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_PEDIDO_VENDA_ASSINANTE" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_PESQUISA_ASSINANTE" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_PESQUISA_RESPOSTA_ASSINANTE" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_PRECIFICACAO_ASSINANTE" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_PRODUTO_ASSINANTE" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_PRODUTO_FALHA_ASSINANTE" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_SUBCATEGORIA_PRODUTO_ASSINANTE" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_SUBGRUPO_ASSINANTE" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_TICKET_ALIMENTACAO_ASSINANTE" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_TIPO_EMBALAGEM_ASSINANTE" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_TIPO_PACIENTE_ASSINANTE" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_USUARIO_ASSINANTE" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_VENDA_MENSAL_ANOTACAO_ASSINANTE" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_VENDA_MENSAL_ASSINANTE" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_VENDA_MENSAL_CALCULO_ASSINANTE" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_VOLTA_PESQUISA_ASSINANTE" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FKCATEGORIA_825959" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FKEMPRESA495355" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FKMAQUINA36030" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FKOUTRO_CUST578807" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FKPLATAFORMA785659" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_ASSINANTE_ANOTACAO_USUARIO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_ASSINANTE_PAGAMENTO_PLANO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_ASSINANTE_PLANO_PLANO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_ATENDIMENTO_ACAO_ATENDIMENTO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_ATENDIMENTO_ACOMPANHAMENTO_ATENDIMENTO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_ATENDIMENTO_AGENDA_ATENDIMENTO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_ATENDIMENTO_ANEXO_ATENDIMENTO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_ATENDIMENTO_CATEGORIA_ATENDIMENTO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_ATENDIMENTO_CLIENTE" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_ATENDIMENTO_CRM_ATENDIMENTO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_ATENDIMENTO_DEPARTAMENTO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_ATENDIMENTO_EMPRESA" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_ATENDIMENTO_MOTIVO_CANCELAMENTO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_ATENDIMENTO_MOTIVO_ENCERRAMENTO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_ATENDIMENTO_PRODUTO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_ATENDIMENTO_PROPOSTA_ATENDIMENTO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_ATENDIMENTO_SERVICO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_ATENDIMENTO_USUARIO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_ORDEM_SERVICO_ATENDIMENTO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_ATENDIMENTO_ACAO_TIPO_ACAO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_ATENDIMENTO_ACAO_USUARIO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_ATENDIMENTO_ACAO_USUARIO1" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_ATENDIMENTO_ACOMPANHAMENTO_USUARIO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_ATENDIMENTO_CRM_CRM" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_ATENDIMENTO_PROPOSTA_ACOMPANHAMENTO_ATENDIMENTO_PROPOSTA" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_ATENDIMENTO_PROPOSTA_ANEXO_ATENDIMENTO_PROPOSTA" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_ATENDIMENTO_PROPOSTA_EMPRESA" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_ATENDIMENTO_PROPOSTA_MOTIVO_CANCELAMENTO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_ATENDIMENTO_PROPOSTA_MOTIVO_ENCERRAMENTO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_ATENDIMENTO_PROPOSTA_PECA_ATENDIMENTO_PROPOSTA" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_ATENDIMENTO_PROPOSTA_SERVICO_ATENDIMENTO_PROPOSTA" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_ATENDIMENTO_PROPOSTA_USUARIO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_ATENDIMENTO_PROPOSTA_ACOMPANHAMENTO_USUARIO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_ATENDIMENTO_PROPOSTA_PECA_PECA" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_ATENDIMENTO_PROPOSTA_SERVICO_SERVICO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_CONTA_BANCO_BANCO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FKPRECATORIO67525" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_BENEFICIARIO_ANEXO_BENEFICIARIO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_BENEFICIARIO_ANOTACOES_BENEFICIARIO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_CONTATO_BENEFICIARIO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_ENDERECO_BENEFICIARIO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_MENSAGENS_ENVIADAS_SISTEMA_BENEFICIARIO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_TELEFONE_BENEFICIARIO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FKBENEFICIAR118091" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FKBENEFICIAR279825" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FKBENEFICIAR583709" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FKBENEFICIAR821804" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FKBENEFICIAR947372" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FKPRECATORIO759277" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_BENEFICIARIO_ANOTACOES_USUARIO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_COMISSAO_CARGO_CARGO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_USUARIO_CARGO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_CLIENTE_CATEGORIA_CLIENTE" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_GRUPO_CATEGORIA_CLIENTE" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FKCUSTO_FIXO798962" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_FORNECEDOR_CATEGORIA_FORNECEDOR" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_NOTIFICACAO_CATEGORIA_NOTIFICACAO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_ORDEM_SERVICO_CATEGORIA_ORDEM_SERVICO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_PECA_CATEGORIA_PRODUTO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_PRECIFICACAO_CATEGORIA_PRODUTO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_PRODUTO_CATEGORIA_PRODUTO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_SUBCATEGORIA_PRODUTO_CATEGORIA_PRODUTO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_SERVICO_CATEGORIA_SERVICO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_USUARIO_CATEGORIA_USUARIO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_CENTRO_CUSTO_GRUPO_CC" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_CENTRO_CUSTO_SUBGRUPO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_CONTA_PAGAR_CENTRO_CUSTO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_CONTA_PAGAR_RATEIO_CENTRO_CUSTO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_CONTA_RECEBER_CENTRO_CUSTO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_CONTA_RECEBER_RATEIO_CENTRO_CUSTO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_PEDIDO_VENDA_CENTRO_CUSTO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_CLIENTE_ANEXO_CLIENTE" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_CLIENTE_ANOTACAO_CLIENTE" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_CLIENTE_CONTATO_CLIENTE" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_CLIENTE_EMPRESA" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_CLIENTE_FILIAL" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_CLIENTE_MUNICIPIO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_CLIENTE_NACIONALIDADE" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_CLIENTE_PRECATORIO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_CLIENTE_QUADRO_SOCIETARIO_CLIENTE" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_CLIENTE_REFERENCIA_CLIENTE" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_CLIENTE_REGIME_TRIBUTARIO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_CLIENTE_SEXO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_CLIENTE_TAG_CLIENTE" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_CLIENTE_TIPO_CONTRIBUINTE" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_CLIENTE_TIPO_PESSOA" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_CLIENTE_TRF" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_CLIENTE_UF" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_CLIENTE_UF1" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_CLIENTE_UF2" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_CLIENTE_USUARIO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_CLIENTE_VARA" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_CONTA_RECEBER_CLIENTE" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_CRM_PEDIDO_VENDA_CLIENTE" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_EMAIL_AGENDAMENTO_CLIENTE" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_GRUPO_CLIENTE_CLIENTE" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_MENSAGENS_CLIENTE" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_MENSAGENS_DESTINOS_CLIENTE" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_MENSAGENS_ENVIADAS_SISTEMA_CLIENTE" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_ORDEM_SERVICO_CLIENTE" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_PEDIDO_VENDA_CLIENTE" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_PESQUISA_CLIENTE" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_PESQUISA_ENVIO_CLIENTE" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_PESQUISA_RESPOSTA_CLIENTE" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_RECURSIVIDADE_DESTINO_CLIENTE" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_RESULTADO_ROBOT_CLIENTE" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_CLIENTE_ANOTACAO_USUARIO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_CLIENTE_FALHA_USUARIO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_CONTA_BANCO_CONTATO_CONTA_BANCO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_CONTA_BANCO_LANCAMENTO_CONTA_BANCO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_CONTA_BANCO_TIPO_CONTA" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_CONTA_PAGAR_CONTA_BANCO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_CONTA_PAGAR_CONTA_BANCO1" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_CONTA_PAGAR_PARCELA_CONTA_BANCO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_CONTA_RECEBER_CONTA_BANCO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_FORMA_PAGAMENTO_CONTA_BANCO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_CONTA_PAGAR_ANEXO_CONTA_PAGAR" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_CONTA_PAGAR_FORMA_PAGAMENTO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_CONTA_PAGAR_FORNECEDOR" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_CONTA_PAGAR_PARCELA_CONTA_PAGAR" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_CONTA_PAGAR_PERIODICIDADE" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_CONTA_PAGAR_RATEIO_CONTA_PAGAR" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_CONTA_PAGAR_USUARIO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_CONTA_PAGAR_PARCELA_FORMA_PAGAMENTO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_CONTA_RECEBER_ANEXO_CONTA_RECEBER" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_CONTA_RECEBER_CRM" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_CONTA_RECEBER_CRM_PEDIDO_VENDA" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_CONTA_RECEBER_FILIAL" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_CONTA_RECEBER_FORMA_PAGAMENTO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_CONTA_RECEBER_PARCELA_CONTA_RECEBER" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_CONTA_RECEBER_PERIODICIDADE" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_CONTA_RECEBER_RATEIO_CONTA_RECEBER" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_CONTA_RECEBER_USUARIO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_CONTATO_PRECATORIO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FKCONTATO7123" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FKCONTATO77904" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_PACIENTE_CONVENIO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_PACIENTE_COR" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_CRM_ACAO_CRM" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_CRM_ANEXO_CRM" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_CRM_COMENTARIO_CRM" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_CRM_CONTATO_CRM" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_CRM_CRM_ORIGEM" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_CRM_EMPRESA" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_CRM_FOLLOW_CRM" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_CRM_FUNIL" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_CRM_MENSAGENS" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_CRM_MOTIVO_CANCELAMENTO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_CRM_MOTIVO_ENCERRAMENTO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_CRM_PEDIDO_VENDA" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_CRM_PEDIDO_VENDA_CRM" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_CRM_PRECATORIO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_CRM_TIPO_CRM" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_CRM_USUARIO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_DIARIO_PROCESSO_CRM" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_MENSAGENS_ENVIADAS_SISTEMA_CRM" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_CRM_ACAO_EMPRESA" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_CRM_ACAO_TIPO_ACAO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_CRM_ACAO_USUARIO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_CRM_ACAO_USUARIO1" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_DIARIO_PROCESSO_CRM_ACAO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_CRM_COMENTARIO_USUARIO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_DIARIO_PROCESSO_CRM_COMENTARIO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_MENSAGENS_ENVIADAS_SISTEMA_CRM_CONTATO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_CRM_FOLLOW_EMPRESA" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_CRM_FOLLOW_TIPO_FOLLOW" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_CRM_FOLLOW_USUARIO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_DIARIO_PROCESSO_CRM_FOLLOW" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_CRM_PEDIDO_VENDA_ACOMPANHAMENTO_CRM_PEDIDO_VENDA" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_CRM_PEDIDO_VENDA_ANEXO_CRM_PEDIDO_VENDA" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_CRM_PEDIDO_VENDA_EMPRESA" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_CRM_PEDIDO_VENDA_FILIAL" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_CRM_PEDIDO_VENDA_MOTIVO_CANCELAMENTO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_CRM_PEDIDO_VENDA_PRECATORIO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_CRM_PEDIDO_VENDA_TEMPLATE_PROPOSTA" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_CRM_PEDIDO_VENDA_TEMPLATE_PROPOSTA1" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_CRM_PEDIDO_VENDA_USUARIO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_DIARIO_PROCESSO_CRM_PEDIDO_VENDA" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_CRM_PEDIDO_VENDA_ACOMPANHAMENTO_USUARIO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_CUSTO_FIXO_CALENDARIO_CUSTO_FIXO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_CUSTO_FIXO_FORNECEDOR" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FKCUSTO_FIXO481608" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FKCUSTO_FIXO921563" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_CUSTO_VARIAVEL_ANTECIPACAO_CUSTO_VARIAVEL" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_ORDEM_SERVICO_DEPARTAMENTO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_USUARIO_DEPARTAMENTO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_DIARIO_PROCESSO_USUARIO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_EMAIL_AGENDAMENTO_MENSAGENS" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_EMPRESA_ANEXO_EMPRESA" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_EMPRESA_CUSTO_VARIAVEL_EMPRESA" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_EMPRESA_CUSTO_VARIAVEL_NORMAL_EMPRESA" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_EMPRESA_MAQUINA" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_EMPRESA_MAQUINA_EMPRESA" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_EMPRESA_PLATAFORMA_EMPRESA" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_EMPRESA_TICKET_EMPRESA" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_EMPRESA_UF" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_GRUPO_EMPRESA" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_MENSAGENS_EMPRESA" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_META_EMPRESA" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_ORDEM_SERVICO_EMPRESA" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_PEDIDO_VENDA_EMPRESA" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_TEMPLATE_EMAIL_EMPRESA" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_TEMPLATE_PROPOSTA_EMPRESA" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_TEMPLATE_SMS_EMPRESA" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_USUARIO_EMPRESA" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_VENDA_MENSAL_EMPRESA" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FKEMPRESA834470" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_EMPRESA_CUSTO_VARIAVEL_MAQUINA" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_EMPRESA_CUSTO_VARIAVEL_PLATAFORMA_ENTREGA" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_EMPRESA_CUSTO_VARIAVEL_TICKET_ALIMENTACAO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_EMPRESA_MAQUINA_MAQUINA" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_EMPRESA_PLATAFORMA_PLATAFORMA_ENTREGA" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_EMPRESA_TICKET_TICKET_ALIMENTACAO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FKENDERECO270407" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_PACIENTE_ESTADO_CIVIL" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_FICHA_TECNICA_DETALHE_FICHA_TECNICA" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_FICHA_TECNICA_PRODUTO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_FICHA_TECNICA_DETALHE_PRODUTO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_FILIAL_UF" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_FORNECEDOR_FILIAL" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_MENSAGENS_ENVIADAS_SISTEMA_FILIAL" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_MOVIMENTO_ESTOQUE_PRODUTO_FILIAL" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_PRODUTO_ESTOQUE_FILIAL_FILIAL" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_SERVICO_TABELA_PRECO_FILIAL" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_PEDIDO_VENDA_Forma_ENVIO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_PEDIDO_VENDA_Forma_FRETE" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_ORDEM_SERVICO_FORMA_PAGAMENTO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_PEDIDO_VENDA_FORMA_PAGAMENTO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_FORNECEDOR_ANEXO_FORNECEDOR" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_FORNECEDOR_ANOTACOES_FORNECEDOR" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_FORNECEDOR_CONTATO_FORNECEDOR" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_FORNECEDOR_QUADRO_SOCIETARIO_FORNECEDOR" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_FORNECEDOR_TIPO_PESSOA" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_FORNECEDOR_UF" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_FUNIL_ETAPA_FUNIL" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_PACIENTE_GRAU_INSTRUCAO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_GRUPO_CLIENTE_GRUPO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_GRUPO_SEXO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_GRUPO_UF" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_GRUPO_USUARIO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_MENSAGEM_AUTOMACAO_GRUPO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_MENSAGENS_DESTINOS_GRUPO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_MENSAGENS_GRUPO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_PESQUISA_GRUPO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_SUBGRUPO_GRUPO_CC" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_HONORARIO_ANEXO_HONORARIO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_HONORARIO_ANOTACOES_HONORARIO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_HONORARIO_TIPO_PESSOA" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FKHONORARIO606369" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FKPRECATORIO440783" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_HONORARIO_ANOTACOES_USUARIO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_NACIONALIDADE_LINGUA" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FKLOAS131655" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FKLOAS859013" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FKLOAS974412" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_LOG_USUARIO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_LOG_EXCECAO_NOVO_USUARIO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_VENDA_MENSAL_MAQUINA" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_VENDA_MENSAL_PARTES_MAQUINA" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_MENSAGEM_ANEXO_MENSAGENS" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_MENSAGEM_AUTOMACAO_DATAS_MENSAGEM_AUTOMACAO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_MENSAGEM_AUTOMACAO_PERIODICIDADE" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_MENSAGEM_AUTOMACAO_TEMPLATE_EMAIL" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_MENSAGEM_AUTOMACAO_TEMPLATE_SMS" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_MENSAGEM_AUTOMACAO_USUARIO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_MENSAGENS_DESTINOS_MENSAGENS" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_MENSAGENS_PERIODICIDADE_TAREFA" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_MENSAGENS_PESQUISA" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_MENSAGENS_TEMPLATE" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_MENSAGENS_TEMPLATE_EMAIL" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_MENSAGENS_TEMPLATE_SMS" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_MENSAGENS_USUARIO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_RECURSIVIDADE_MENSAGENS" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_RESULTADO_ROBOT_MENSAGENS" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_MENSAGENS_ENVIADAS_SISTEMA_PACIENTE" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_MENSAGENS_ENVIADAS_SISTEMA_USUARIO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_MENSAGENS_ENVIADAS_SISTEMA_USUARIO1" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_META_ANEXO_META" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_META_ANOTACAO_META" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_MOVIMENTO_ESTOQUE_PRODUTO_PRODUTO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_MUNICIPIO_UF" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FKPRECATORIO832121" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_SERVICO_NOMENCLATURA_BRAS_SERVICOS" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_NOTICIA_COMENTARIO_NOTICIA" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_NOTICIA_COMENTARIO_USUARIO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_NOTIFICACAO_ANEXO_NOTIFICACAO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_NOTIFICACAO_USUARIO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_ORDEM_SERVICO_ACOMPANHAMENTO_ORDEM_SERVICO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_ORDEM_SERVICO_AGENDA_ORDEM_SERVICO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_ORDEM_SERVICO_ANEXO_ORDEM_SERVICO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_ORDEM_SERVICO_PRODUTO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_ORDEM_SERVICO_PRODUTO_ORDEM_SERVICO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_ORDEM_SERVICO_SERVICO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_ORDEM_SERVICO_SERVICO_ORDEM_SERVICO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_ORDEM_SERVICO_USUARIO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_OS_COMENTARIO_OS" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_ORDEM_SERVICO_ACOMPANHAMENTO_USUARIO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_ORDEM_SERVICO_PRODUTO_PRODUTO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_ORDEM_SERVICO_SERVICO_SERVICO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_PACIENTE_ANAMNESE_PACIENTE" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_PACIENTE_ANEXO_PACIENTE" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_PACIENTE_ANOTACAO_PACIENTE" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_PACIENTE_CONSULTA_PACIENTE" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_PACIENTE_PRESCRICAO_PACIENTE" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_PACIENTE_SEXO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_PACIENTE_TIPO_PACIENTE" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_PACIENTE_UF" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_PACIENTE_ANOTACAO_USUARIO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_PECA_ANEXO_PECA" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_PECA_ANOTACAO_PECA" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_PECA_SUBCATEGORIA_PRODUTO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_PECA_UNIDADE" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_PECA_ANOTACAO_USUARIO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_PEDIDO_VENDA_ACOMPANHAMENTO_PEDIDO_VENDA" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_PEDIDO_VENDA_ANEXO_PEDIDO_VENDA" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_PEDIDO_VENDA_PERIODICIDADE" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_PEDIDO_VENDA_USUARIO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_PEDIDO_VENDA_USUARIO1" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_PEDIDO_VENDA_ACOMPANHAMENTO_USUARIO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_USUARIO_PERFIL" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_TAREFA_PERIODICIDADE_TAREFA" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_PESQUISA_ENVIO_PESQUISA" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_PESQUISA_TEMPLATE_EMAIL" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_PESQUISA_USUARIO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FKPESQUISA_A636309" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FKPESQUISA_A653284" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FKPESQUISA_I132358" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FKPESQUISA_R298217" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FKPESQUISA404204" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_PESQUISA_ANOTACAO_USUARIO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_PESQUISA_RESPOSTA_PESQUISA_ITEM" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FKPESQUISA_I22249" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FKPESQUISA_I759224" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FKPESQUISA_R325328" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_PESQUISA_RESPOSTA_ITEM_PESQUISA_ITEM_OPCAO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FKPESQUISA_R293067" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_PLANO_PLANO_PERIODICIDADE" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_VENDA_MENSAL_PARTES_PLATAFORMA_ENTREGA" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_VENDA_MENSAL_PLATAFORMA_ENTREGA" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_PRECATORIO_ANEXO_PRECATORIO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_PRECATORIO_ANOTACAO_PRECATORIO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_PRECATORIO_USUARIO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FKPRECATORIO966532" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FKPRECATORIO966598" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_PRECATORIO_ANOTACAO_USUARIO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_PRECIFICACAO_PRODUTO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_PRECIFICACAO_USUARIO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_PRODUTO_ANOTACAO_PRODUTO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_PRODUTO_CONCORRENTE_PRODUTO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_PRODUTO_CUSTO_PRODUTO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_PRODUTO_ESTOQUE_FILIAL_PRODUTO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_PRODUTO_KIT_PRODUTO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_PRODUTO_KIT_PRODUTO1" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_PRODUTO_PRECO_VENDA_PRODUTO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_PRODUTO_SUBCATEGORIA_PRODUTO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_PRODUTO_TIPO_EMBALAGEM" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_PRODUTO_UNIDADE" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FKPRODUTO_AN539356" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_PRODUTO_ANOTACAO_USUARIO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_PRODUTO_PRECO_VENDA_TIPO_EMBALAGEM" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_RECURSIVIDADE_DATA_RECURSIVIDADE" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_RECURSIVIDADE_DESTINO_RECURSIVIDADE" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_SERVICO_ANEXO_SERVICO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_SERVICO_TABELA_PRECO_SERVICO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_SERVICO_UNIDADE" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_TAREFA_ACOMPANHAMENTO_TAREFA" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_TAREFA_ANEXO_TAREFA" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_TAREFA_NOTIFICACAO_TAREFA" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_TAREFA_TAREFA" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_TAREFA_TIPO_TAREFA" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_TAREFA_USUARIO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_TAREFA_VINCULO_TAREFA" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_TAREFA_ACOMPANHAMENTO_USUARIO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_TAREFA_NOTIFICACAO_USUARIO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_TAREFA_VINCULO_USUARIO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_TELEFONE_TIPO_TELEFONE_BASE" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_VENDA_MENSAL_PARTES_TICKET_ALIMENTACAO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_VENDA_MENSAL_TICKET_ALIMENTACAO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FKTRF126253" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FKVARA689447" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_USUARIO_ANEXO_USUARIO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_USUARIO_ANOTACAO_USUARIO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_VENDA_MENSAL_ANOTACAO_USUARIO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_VENDA_MENSAL_CALCULO_USUARIO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_VIDEO_COMENTARIO_USUARIO" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_VENDA_MENSAL_ANEXO_VENDA_MENSAL" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_VENDA_MENSAL_ANOTACAO_VENDA_MENSAL" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_VENDA_MENSAL_COMISSAO_VENDA_MENSAL" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_VENDA_MENSAL_PARTES_VENDA_MENSAL" ManuallyRouted="false" />
+        <AssociationConnector Association="RidolfiDB_WebModel.FK_VIDEO_COMENTARIO_VIDEO" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>
